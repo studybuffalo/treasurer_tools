@@ -2,23 +2,47 @@ from django.db import models
 
 from simple_history.models import HistoricalRecords
 
+from payee_payer.services import get_country_list
+
 class Demographics(models.Model):
     """Demographic details for payees/payers"""
-    name = models.CharField()
-    address = models.CharField()
-    city = models.CharField()
-    province = models.CharField()
-    country = models.CharField()
-    postal_code = models.CharField()
-    phone = models.CharField()
-    fax = models.CharField()
+    name = models.CharField(
+        max_length=256,
+    )
+    address = models.CharField(
+        max_length=1000,
+    )
+    city = models.CharField(
+        max_length=1000,
+    )
+    province = models.CharField(
+        max_length=100,
+    )
+    country = models.CharField(
+        choices=get_country_list(),
+        max_length=2,
+    )
+    postal_code = models.CharField(
+        max_length=10,
+    )
+    phone = models.CharField(
+        max_length=20,
+    )
+    fax = models.CharField(
+        max_length=20,
+    )
     email = models.EmailField()
-    status = models.CharField()
-    user_modified = models.ForeignKey()
-    date_modified = models.DateTimeField()
+    status = models.CharField(
+        choices=(
+            ("a", "active"),
+            ("i", "inactive"),
+        ),
+        max_length=2,
+    )
     history = HistoricalRecords()
+
     class Meta:
-        None
+        verbose_name_plural = "demographics"
 
     def __str__(self):
-        return ""
+        return self.name
