@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 from simple_history.models import HistoricalRecords
@@ -6,6 +7,12 @@ from payee_payer.services import get_country_list
 
 class Demographics(models.Model):
     """Demographic details for payees/payers"""
+    user = models.OneToOneField(
+        User,
+        unique=True,
+        blank=True,
+        null=True,
+    )
     name = models.CharField(
         max_length=256,
     )
@@ -29,7 +36,9 @@ class Demographics(models.Model):
         max_length=20,
     )
     fax = models.CharField(
+        blank=True,
         max_length=20,
+        null=True,
     )
     email = models.EmailField()
     status = models.CharField(
