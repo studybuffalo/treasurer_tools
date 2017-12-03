@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "simple_history",
+    "payee_payer.apps.PayeePayerConfig",
 ]
 
 MIDDLEWARE = [
