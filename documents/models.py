@@ -6,6 +6,15 @@ class PDF(models.Model):
     location = models.FileField(
         upload_to="attachments",
     )
-    date_uploads = models.DateTimeField(
+    date_uploaded = models.DateTimeField(
+        default=timezone.now,
+    )
+
+class OriginalFile(models.Model):
+    """Holds all the un-merged files"""
+    location = models.FileField(
+        upload_to="user_uploads",
+    )
+    date_uploaded = models.DateTimeField(
         default=timezone.now,
     )
