@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "simple_history",
     "payee_payer.apps.PayeePayerConfig",
     "documents.apps.DocumentsConfig",
+    "transactions.apps.TransactionsConfig",
 ]
 
 MIDDLEWARE = [
