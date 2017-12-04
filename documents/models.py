@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
-class PDF(models.Model):
-    """Holds PDF attachments for various other apps"""
+class FinalAttachment(models.Model):
+    """Holds the final assembled PDF attachments for other apps"""
     location = models.FileField(
         upload_to="attachments",
     )
