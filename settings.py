@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "simple_history",
     "payee_payer.apps.PayeePayerConfig",
+    "documents.apps.DocumentsConfig",
 ]
 
 MIDDLEWARE = [
