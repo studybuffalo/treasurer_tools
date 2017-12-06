@@ -26,12 +26,32 @@ django-allauth
 	- history
 
 ### Documents
--App Name: documents
+- App Name: documents
 - Models
   - pdf
 	- location
 	- date_uploaded
 		
+### Financial Codes
+- App Name: financial_codes
+- Models
+  - BudgetYear
+	- date_start
+	- date_end
+  - FinancialCodeSystem
+    - title
+	- status
+  - FinancialCodeGroup
+    - title
+	- description
+	- status
+  - FinancialCode
+    - code_system FK
+	- code_group FK
+	- budget_year FK
+	- code
+	- description
+
 ### Transactions
 - App Name: transactions
 - Models
@@ -56,21 +76,6 @@ django-allauth
 	  - Reference cshp_code model
 	- branch budget code
 	  - Reference branch_code model
-	- history
-  - budget_years
-	- date_start
-	- date_end
-	- description
-	- history
-  - cshp_code
-	- budget_year
-	- code
-	- description
-	- history
-  - branch_code
-	- budget_year
-	- code
-	- description
 	- history
   - attachments
 	- transaction FK
