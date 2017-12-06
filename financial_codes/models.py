@@ -10,6 +10,7 @@ class BudgetYear(models.Model):
     date_end = models.DateField(
         help_text="Last day of the budget year",
     )
+    history = HistoricalRecords()
 
 class FinancialCodeSystem(models.Model):
     """Name and description of a financial code system"""
@@ -25,6 +26,7 @@ class FinancialCodeSystem(models.Model):
         help_text="Current status of this code system",
         max_length="1",
     )
+    history = HistoricalRecords()
 
 class FinancialCodeGroup(models.Model):
     """A grouping for a set of Financial Codes"""
@@ -44,6 +46,7 @@ class FinancialCodeGroup(models.Model):
         help_text="Current status of this code system",
         max_length="1",
     )
+    history = HistoricalRecords()
 
 class FinancialCode(models.Model):
     """Holds data on an individual financial code"""
@@ -69,3 +72,4 @@ class FinancialCode(models.Model):
         help_text="Description of this financial code",
         max_length=100,
     )
+    history = HistoricalRecords()
