@@ -106,8 +106,12 @@ class AttachmentMatch(models.Model):
 class ReconciliationMatch(models.Model):
     """Links bank transaction to one or more financial transactions"""
     bank_transaction = models.OneToOneField(
+        BankTransaction,
+        on_delete=models.CASCADE,
     )
     financial_transaction = models.OneToOneField(
+        Transaction,
+        on_delete=models.CASCADE,
     )
     history = HistoricalRecords()
 
