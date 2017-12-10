@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "simple_history",
+    "bank_transactions.apps.BankTransactionsConfig",
     "documents.apps.DocumentsConfig",
     "financial_codes.apps.FinancialCodesConfig",
     "investments.apps.InvestmentsConfig",
