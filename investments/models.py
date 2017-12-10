@@ -9,7 +9,7 @@ class Investment(models.Model):
         help_text="Name to identify the investment",
         max_length=256,
     )
-    date_invested = models.CharField(
+    date_invested = models.DateField(
         help_text="Date of initial investment",
     )
     amount = models.DecimalField(

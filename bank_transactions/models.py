@@ -93,10 +93,12 @@ class AttachmentMatch(models.Model):
     transaction = models.OneToOneField(
         BankTransaction,
         on_delete=models.CASCADE,
+        related_name="am_bank_transaction",
     )
     attachment = models.OneToOneField(
         Attachment,
         on_delete=models.CASCADE,
+        related_name="am_attachment",
     )
     history = HistoricalRecords()
 
@@ -108,10 +110,12 @@ class ReconciliationMatch(models.Model):
     bank_transaction = models.OneToOneField(
         BankTransaction,
         on_delete=models.CASCADE,
+        related_name="rm_bank_transaction",
     )
     financial_transaction = models.OneToOneField(
         Transaction,
         on_delete=models.CASCADE,
+        related_name="rm_financial_transaction",
     )
     history = HistoricalRecords()
 
