@@ -72,8 +72,8 @@ class Item(models.Model):
 
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
-    transaction = models.OneToOneField(
-        Transaction,
+    item = models.OneToOneField(
+        Item,
         on_delete=models.CASCADE,
     )
     financial_code = models.OneToOneField(

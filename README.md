@@ -70,12 +70,10 @@ django-allauth
 	- amount
 	- gst
 	- total
-	- budget year
-	  - Reference budget_years model
-	- CSHP accounting code
-	  - Reference cshp_code model
-	- branch budget code
-	  - Reference branch_code model
+	- history
+  - financial code
+	- item FK
+	- financial code FK
 	- history
   - attachments
 	- transaction FK
