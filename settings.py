@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "simple_history",
     "payee_payer.apps.PayeePayerConfig",
     "documents.apps.DocumentsConfig",
+    "financial_codes.apps.FinancialCodesConfig",
     "transactions.apps.TransactionsConfig",
 ]
 

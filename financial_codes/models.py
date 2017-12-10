@@ -24,7 +24,7 @@ class FinancialCodeSystem(models.Model):
             ("i", "Inactive")
         ),
         help_text="Current status of this code system",
-        max_length="1",
+        max_length=1,
     )
     history = HistoricalRecords()
 
@@ -44,7 +44,7 @@ class FinancialCodeGroup(models.Model):
             ("i", "Inactive")
         ),
         help_text="Current status of this code system",
-        max_length="1",
+        max_length=1,
     )
     history = HistoricalRecords()
 
