@@ -1,12 +1,162 @@
-﻿<!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+
+    <style>
+        /* 
+            Colors
+                CSHP background green = 237, 244 242
+                CSHP blue = 40, 120, 200
+                CSHP orange = 241, 100, 69
+                CSHP other orange = 255, 128, 102
+                CSHP border grey = 69, 69, 69
+        */
+        html {
+            font-size: 62.5%;
+            height: 100%;
+        }
+
+        body {
+            background-color: rgb(255, 255, 255);
+            font-size: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        #header-bar {
+            background-color: rgb(237, 244, 242);
+            height: 5rem;
+            position: fixed;
+            width: 100%;
+            z-index: 5;
+        }
+
+        #sidebar {
+            background-color: rgb(40, 120, 200);
+            height: 100%;
+            left: -300px;
+            margin: 5rem 0 0 0;
+            padding: 0;
+            position: fixed;
+            transition: all ease-in-out 0.5s;
+            width: 280px;
+            z-index: 2;
+        }
+
+            #sidebar.show-sidebar {
+                left: 0px;
+            }
+
+            #sidebar ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            #sidebar li {
+                border-bottom: 1px solid rgb(255, 255, 255);
+                padding: 0.5rem 0.25rem;
+            }
+
+        #main-container {
+            background: rgb(255, 255, 255);
+            margin: 0;
+            min-height: 100%;
+            min-width: 100%;
+            overflow-y: scroll;
+            padding: 0;
+            position: absolute;
+            z-index: 1;
+        }
+
+        #main-content {
+            margin: 5rem 0 0 0;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    {% block content %}
-    {% endblock %}
+    <header id="header-bar">
+        <button id="toggle-sidebar">Minimize</button>
+        <!-- Other content: Search bar, settings, help? -->
+
+        <img src="" alt="Logo">
+    </header>
+
+    <nav id="sidebar">
+        <ul>
+            <li>
+                Login
+            </li>
+            <li>
+                Home
+            </li>
+            <li>
+                User management
+            </li>
+            <li>
+                Branch settings
+            </li>
+            <li>
+                Manage payees and payers
+            </li>
+            <li>
+                Expenses
+            </li>
+            <li>
+                Revenue
+            </li>
+            <li>
+                Investments
+            </li>
+            <li>
+                Banking
+            </li>
+            <li>
+                Reports
+            </li>
+        </ul>
+    </nav>
+
+    <section id="main-container">
+        <div id="main-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </section>
+
+    <!-- JS files -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+
+    <script>
+        function toggleSidebar() {
+            $("#sidebar").toggleClass("show-sidebar");
+        }
+
+        function hideSidebar() {
+            $("#sidebar").removeClass("show-sidebar");
+        }
+
+        // Add event listeners
+        $(document).ready(function () {
+            $("#toggle-sidebar").on("click", function () {
+                toggleSidebar();
+            });
+
+            $("#main-container").on("click", function () {
+                hideSidebar();
+            });
+        });
+    </script>
+    {% block js %}{% endblock %}
 </body>
 </html>
