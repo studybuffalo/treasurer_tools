@@ -2,13 +2,13 @@
 
 {% block styles %}
 	<style>
-		#sb #management_list {
+		#management_list {
 			border: 2px solid rgb(101, 101, 101);
 			margin: 0;
 			padding: 0;
 		}
 
-		#sb #management_list li {
+		#management_list li {
 			border-top: 2px solid rgb(101, 101, 101);
 			display: block;
 			list-style: none;
@@ -16,11 +16,11 @@
 			padding: 0;
 		}
 
-			#sb #management_list li:first-child {
+			#management_list li:first-child {
 				border-top: none;
 			}
 
-		#sb #management_list li a {
+		#management_list li a {
 			color: inherit;
 			cursor: pointer;
 			display: block;
@@ -29,7 +29,7 @@
 			transition: 0.25s ease-in-out;
 		}
 
-			#sb #management_list li a:hover {
+			#management_list li a:hover {
 				background-color: rgb(200, 238, 196);
 			}
 	</style>
@@ -50,7 +50,6 @@
 					{% endif %}
 				</li>
 				<li><a href="{% url 'account_reset_password' %}">Reset forgotten password</a></li>
-				<li><a href="{% url 'account_email' %}">Manage account email</a></li>
 			</ul>
 		</div>
 	</div>

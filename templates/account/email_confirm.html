@@ -1,4 +1,4 @@
-{% extends "base_generic.html" %}
+{% extends "main/base.html" %}
 
 {% load static %}
 
@@ -8,14 +8,9 @@
 	{% include 'account/snippets/message_display.html' %}
 	
 	{% if confirmation %}
-		<!-- fix this up as user_display is weird -->
-		{% with confirmation.email_address.user as user_display %}
-
 		<p>
 			{% with confirmation.email_address.email as email %}
-				Please confirm that 
-				<a href="mailto:{{ email }}">{{ email }}</a> 
-				is an e-mail address for user {{ user_display }}.
+				Please confirm that {{ email }} is your e-mail address.
 			{% endwith %}
 		</p>
 
@@ -24,7 +19,6 @@
 			
 			<button type="submit">Confirm</button>
 		</form>
-		{% endwith %}
 	{% else %}
 		{% url 'account_email' as email_url %}
 		

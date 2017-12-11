@@ -1,38 +1,38 @@
-{% extends "base_generic.html" %}
+{% extends "main/base.html" %}
 
 {% block styles %}
 	<style>
-		#sb .email_list {
+		.email_list {
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;
 			padding: 1rem;
 		}
 
-		#sb .email_list .primary {
+		.email_list .primary {
 			font-weight: 700;
 		}
 		
-		#sb .email_list .unverified {
+		.email_list .unverified {
 			font-style: italic;
 		}
 
-		#sb .email_list table label {
+		.email_list table label {
 			cursor: pointer;
 			display: block;
 			width: 100%;
 		}
 
-		#sb .email_list table tfoot td {
+		.email_list table tfoot td {
 			padding: 2rem 0 0 0;
 		}
 		
-		#sb .input_table tbody th {
+		.input_table tbody th {
 			padding: 0.4rem 2rem 0.4rem 0;
 			text-align: left;
 		}
 
-		#sb .input_table tfoot td {
+		.input_table tfoot td {
 			text-align: right;
 		}
 	</style>

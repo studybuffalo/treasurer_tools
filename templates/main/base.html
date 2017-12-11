@@ -11,7 +11,7 @@
     </title>
 
     <style>
-        /* 
+        /*
             Colors
                 CSHP background green = 237, 244 242
                 CSHP blue = 40, 120, 200
@@ -78,10 +78,20 @@
         }
 
         #main-content {
+            box-sizing: border-box;
             margin: 5rem 0 0 0;
+            padding: 0.5rem;
             width: 100%;
         }
+
+        .center_content {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
     </style>
+
+    {% block styles %}{% endblock %}
 </head>
 
 <body>
@@ -89,7 +99,7 @@
         <button id="toggle-sidebar">Minimize</button>
         <!-- Other content: Search bar, settings, help? -->
 
-        <img src="" alt="Logo">
+        <a href="{% url 'home' %}"><img src="" alt="Logo"></a>
     </header>
 
     <nav id="sidebar">
