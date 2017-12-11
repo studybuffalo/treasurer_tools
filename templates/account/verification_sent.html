@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+
+{% block content %}
+	<h1>Verify Your E-mail Address</h1>
+
+	{% include 'account/snippets/message_display.html' %}
+
+    <p>
+		We have sent an e-mail to you for verification. Follow the link 
+		provided to finalize the signup process. Please check your spam folder 
+		if you do not receive it within a few minutes.
+	</p>
+{% endblock %}

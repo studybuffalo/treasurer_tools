@@ -1,0 +1,57 @@
+{% extends "main/base.html" %}
+
+{% block styles %}
+	<style>
+		#sb #management_list {
+			border: 2px solid rgb(101, 101, 101);
+			margin: 0;
+			padding: 0;
+		}
+
+		#sb #management_list li {
+			border-top: 2px solid rgb(101, 101, 101);
+			display: block;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+			#sb #management_list li:first-child {
+				border-top: none;
+			}
+
+		#sb #management_list li a {
+			color: inherit;
+			cursor: pointer;
+			display: block;
+			padding: 1.5rem;
+			text-decoration: none;
+			transition: 0.25s ease-in-out;
+		}
+
+			#sb #management_list li a:hover {
+				background-color: rgb(200, 238, 196);
+			}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Your Profile</h1>
+
+	<div class="center_content">
+		<div>
+			<ul id="management_list">
+				<li><a href="{% url 'account_logout' %}">Logout</a></li>
+				<li>
+					{% if user.has_usable_password %}
+						<a href="{% url 'account_change_password' %}">Change account password</a>
+					{% else %}
+						<a href="{% url 'account_set_password' %}">Set account password</a>
+					{% endif %}
+				</li>
+				<li><a href="{% url 'account_reset_password' %}">Reset forgotten password</a></li>
+				<li><a href="{% url 'account_email' %}">Manage account email</a></li>
+			</ul>
+		</div>
+	</div>
+{% endblock %}

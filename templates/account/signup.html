@@ -1,0 +1,147 @@
+{% extends "base_generic.html" %}
+
+{% block styles %}
+	<style>
+		#sb .input_table tbody th {
+			padding: 0.4rem 2rem 0.4rem 0;
+			text-align: left;
+		}
+
+		#sb .input_table tfoot td {
+			text-align: right;
+		}
+
+		#sb .socialaccount_providers {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			margin: 2rem 0 0 0;
+			padding: 0;
+		}
+
+			#sb .socialaccount_providers li {
+				border: 3px solid rgb(101, 101, 101);
+				border-radius: 8px;
+				margin: 0 0.5rem;
+				list-style: none;
+				text-align: center;
+				transition: 0.25s ease-in-out;
+			}
+
+				#sb .socialaccount_providers li:hover {
+					border-color: rgb(41, 138, 0);
+					color: rgb(41, 138, 0);
+				}
+
+			#sb .socialaccount_providers a {
+				color: inherit;
+				display: block;
+				padding: 1.5rem;
+				text-decoration: none;
+			}
+
+			#sb .socialaccount_providers div.facebook {
+				background-image: url("/static/images/social-facebook-color.svg");
+				background-repeat: no-repeat;
+				background-size: 70px 70px;
+				display: inline-block;
+				height: 70px;
+				margin-top: 1rem;
+				width: 70px;
+			}
+
+			#sb .socialaccount_providers div.google {
+				background-image: url("/static/images/social-google-color.svg");
+				background-repeat: no-repeat;
+				background-size: 70px 70px;
+				display: inline-block;
+				height: 70px;
+				margin-top: 1rem;
+				width: 70px;
+			}
+
+			#sb .socialaccount_providers div.twitter {
+				background-image: url("/static/images/social-twitter-color.svg");
+				background-repeat: no-repeat;
+				background-size: 70px 70px;
+				display: inline-block;
+				height: 70px;
+				margin-top: 1rem;
+				width: 70px;
+			}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Sign Up</h1>
+
+	<p>
+		Already have an account? Then please <a href="{{ login_url }}">sign in</a>.
+	</p>
+	
+	
+	<p>
+		Create a new account with StudyBuffalo.com or use your social media
+		account to sign in below.
+	</p>
+	
+	<div class="center_content">
+		<div>
+			<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+				{% csrf_token %}
+
+				<table class="input_table">
+					<thead>
+						<tr>
+							<td colspan="2">
+								{% include 'account/snippets/message_display.html' %}
+							</td>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for field in form %}
+							<tr>
+								<th>{{ field.label_tag }}</th>
+								<td>{{ field }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<button type="submit">Sign Up &raquo;</button>
+
+								{% if redirect_field_value %}
+									<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+								{% endif %}
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+	</div>
+
+	<div class="center_content">
+		<div>
+			{% load account socialaccount %}
+			
+			{% get_providers as socialaccount_providers %}
+			
+			{% if socialaccount_providers %}
+				<ul class="socialaccount_providers">
+					{% for provider in socialaccount_providers %}
+						<li>
+							<a href="{% provider_login_url provider.id process=' login ' %}">
+								<div>Sign in with your {{ provider.name }} account</div>
+								<div class="{{ provider.id }}"></div>
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

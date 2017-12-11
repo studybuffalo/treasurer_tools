@@ -1,0 +1,85 @@
+{% extends "main/base.html" %}
+
+{% block styles %}
+	<style>
+		.input_table tbody th {
+			padding: 0.4rem 2rem 0.4rem 0;
+			text-align: left;
+		}
+
+		.input_table tfoot td {
+			text-align: right;
+		}
+
+		.input_table a {
+			color: inherit;
+			font-weight: bold;
+			text-decoration: none;
+			transition: 0.25s ease-in-out;
+		}
+			.input_table a:hover {
+				color: rgb(41, 138, 0);
+			}
+	</style>
+{% endblock %}
+
+{% load account %}
+
+{% block content %}
+	<h1>Sign In</h1>
+
+	<p>
+		If you have not created an account yet, then please 
+		<a href="{{ signup_url }}">sign up</a> first.
+	</p>
+
+	<div class="center_content">
+		<div>
+			<form class="login" method="POST" action="{% url 'account_login' %}">
+				{% csrf_token %}
+				<table class="input_table">
+					<thead>
+						<tr>
+							<td colspan="2">
+								{% include 'account/snippets/message_display.html' %}
+							</td>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<th>{{ form.login.label_tag }}</th>
+							<td>{{ form.login }}</td>
+						</tr>
+						<tr>
+							<th>{{ form.password.label_tag }}</th>
+							<td>{{ form.password }}</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								{{ form.remember.label_tag }} {{ form.remember}}
+							</td>
+						</tr>
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								<button class="primaryAction" type="submit">Sign In</button>
+
+								{% if redirect_field_value %}
+									<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+								{% endif %}
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<a class="button secondaryAction" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
+	</div>
+{% endblock %}

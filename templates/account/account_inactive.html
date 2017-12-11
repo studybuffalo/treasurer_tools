@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+
+{% block content %}
+	<h1>Account Inactive</h1>
+
+	{% include 'account/snippets/message_display.html' %}
+
+	<p>
+		We are sorry, this account is inactive. Please 
+		<a href="{% url 'contact' %}">contact us</a> if you wish to 
+		inquire about reactivating this account.
+	</p>
+{% endblock %}
