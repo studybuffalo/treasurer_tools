@@ -41,6 +41,7 @@
 
         #sidebar {
             background-color: rgb(40, 120, 200);
+            border: 1px solid rgb(69, 69, 69);
             height: 100%;
             left: -300px;
             margin: 5rem 0 0 0;
@@ -55,16 +56,45 @@
                 left: 0px;
             }
 
-            #sidebar ul {
+            #sidebar > ul {
                 list-style: none;
                 margin: 0;
                 padding: 0;
             }
 
-            #sidebar li {
-                border-bottom: 1px solid rgb(255, 255, 255);
-                padding: 0.5rem 0.25rem;
-            }
+                #sidebar > ul > li {
+                    border-bottom: 1px solid rgb(255, 255, 255);
+                }
+
+                    #sidebar > ul > li > a {
+                        color: inherit;
+                        display: block;
+                        padding: 0.5rem;
+                        text-decoration: none;
+                    }
+
+                    #sidebar > ul > li > a.show-sub-menu + ul {
+                        height: auto;
+                    }
+
+                    #sidebar > ul > li > ul {
+                        height: 0;
+                        list-style: none;
+                        margin: 0;
+                        overflow: hidden;
+                        padding: 0;
+                    }
+
+                        #sidebar > ul > li > ul > li {
+                            background-color: rgb(255, 255, 255);
+                        }
+
+                            #sidebar > ul > li > ul > li > a {
+                                color: inherit;
+                                display: block;
+                                padding: 0.5rem 1rem;
+                                text-decoration: none;
+                            }
 
         #main-container {
             background: rgb(255, 255, 255);
@@ -105,34 +135,59 @@
     <nav id="sidebar">
         <ul>
             <li>
-                Login
+                <a href="{% url 'home' %}">Home</a>
+            </li>
+
+            <li>
+                {% if user.is_authenticated %}
+                    <a class="menu-header">Account Management</a>
+                    <ul>
+                        <li><a href="{% url 'account_profile' %}">Profile</a></li>
+                        <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                    </ul>
+                {% else %}
+                    <a href="{% url 'account_login' %}">Login</a>
+                {% endif %}
             </li>
             <li>
-                Home
+                <a href="{% url 'payee_payer_dashboard' %}">Manage payees and payers</a>
             </li>
             <li>
-                User management
+                <a class="menu-header">Expenses</a>
+                <ul>
+                    <li><a href="">Enter expenses</a></li>
+                    <li><a href="">Review expenses</a></li>
+                    <li><a href="">Submit expenses</a></li>
+                </ul>
             </li>
             <li>
-                Branch settings
+                <a class="menu-header">Revenue</a>
+                <ul>
+                    <li><a href="">Enter revenues</a></li>
+                    <li><a href="">Submit revenues</a></li>
+                </ul>
             </li>
             <li>
-                Manage payees and payers
+                <a>Investments</a>
             </li>
             <li>
-                Expenses
+                <a class="menu-header">Banking</a>
+                <ul>
+                    <li><a href="">Enter transactions</a></li>
+                    <li><a href="">Reconcile transactions</a></li>
+                </ul>
             </li>
             <li>
-                Revenue
+                <a>Reports</a>
             </li>
             <li>
-                Investments
-            </li>
-            <li>
-                Banking
-            </li>
-            <li>
-                Reports
+                <a class="menu-header">Admin and Branch Settings</a>
+                <ul>
+                    <li><a href="">User management</a></li>
+                    <li><a href="">Branch Details</a></li>
+                    <li><a href="">Accounting Codes</a></li>
+                    <li><a href="">Banking details</a></li>
+                </ul>
             </li>
         </ul>
     </nav>
@@ -156,6 +211,14 @@
             $("#sidebar").removeClass("show-sidebar");
         }
 
+        function showSubMenu(menuItem) {
+            // Reset the menu display
+            $("#sidebar").find(".show-sub-menu").removeClass("show-sub-menu");
+
+            // Add display to this clicked item
+            $(menuItem).addClass("show-sub-menu");
+        }
+
         // Add event listeners
         $(document).ready(function () {
             $("#toggle-sidebar").on("click", function () {
@@ -165,6 +228,10 @@
             $("#main-container").on("click", function () {
                 hideSidebar();
             });
+
+            $(".menu-header").on("click", function () {
+                showSubMenu(this);
+            })
         });
     </script>
     {% block js %}{% endblock %}
