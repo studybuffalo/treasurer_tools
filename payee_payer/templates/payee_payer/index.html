@@ -1,5 +1,24 @@
-﻿{% extends 'main/base.html' %}
+{% extends 'main/base.html' %}
+
+{% load static %}
 
 {% block content %}
     <h1>Payee and Payers</h1>
+
+    <div>
+        <button>Add new entry</button>
+    </div>
+
+    <div>
+        Search: <input type="text"><br>
+        Status: <select><option>All</option></select>
+    </div>
+
+    <div id="payee-payer-list"></div>
+
+	{% csrf_token %}
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static 'payee_payer/js/index.js' %}"></script>
 {% endblock %}
