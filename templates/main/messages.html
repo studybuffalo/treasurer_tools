@@ -1,0 +1,11 @@
+{% if messages %}
+    <ul class="message_list">
+        {% for message in messages %}
+            {% if message.level %}
+                <li class="level_{{ message.level }}">{{ message }}</li>
+            {% else %}
+                <li>{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}

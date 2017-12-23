@@ -48,25 +48,34 @@ class Demographics(models.Model):
         on_delete=models.SET_NULL,
     )
     postal_code = models.CharField(
+        blank=True,
         help_text="Mailing address postal code, zip code, etc.",
         max_length=10,
+        null=True,
     )
     phone = models.CharField(
+        blank=True,
         max_length=20,
+        null=True,
+        verbose_name="Phone number",
     )
     fax = models.CharField(
         blank=True,
         max_length=20,
         null=True,
+        verbose_name="Fax number",
     )
-    email = models.EmailField()
+    email = models.EmailField(
+        blank=True,
+        null=True,
+    )
     status = models.CharField(
         choices=(
             ("a", "active"),
             ("i", "inactive"),
         ),
         help_text=(
-            "Whether this individual has current activity expenses or revenue"
+            "Whether this individual has recent expense or revenue activity"
         ),
         max_length=2,
     )
