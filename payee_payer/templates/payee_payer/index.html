@@ -4,6 +4,8 @@
 
 {% block content %}
     <h1>Payee and Payers</h1>
+    
+    {% include 'main/messages.html' %}
 
     <div>
         <a href="{% url 'add_payee_payer' %}">Add new entry</a>

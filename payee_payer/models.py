@@ -30,11 +30,11 @@ class Demographics(models.Model):
     name = models.CharField(
         help_text="The individual, company, or organization name",
         max_length=256,
+        unique=True,
     )
     address = models.CharField(
         help_text="The Mailing address for this individual",
         max_length=1000,
-        unique=True,
     )
     city = models.CharField(
         max_length=1000,

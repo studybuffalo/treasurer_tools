@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
@@ -79,11 +79,11 @@ def add_payee_payer(request):
     )
 
 @login_required
-def edit_payee_payer(request):
+def edit_payee_payer(request, id):
     """Generates and processes form to edit a payee/payer"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer_data = Demographics()
+        payee_payer_data = get_object_or_404(Demographics, id=id)
 
         # Create a form instance and populate it with data from the request (binding):
         form = PayeePayerForm(request.POST, instance=payee_payer_data)
@@ -121,9 +121,23 @@ def edit_payee_payer(request):
 
             return HttpResponseRedirect(reverse("payee_payer_dashboard"))
 
-    # If this is a GET (or any other method) create the default form.
+    # If this is a GET (or any other method) populate the default form.
     else:
-        form = PayeePayerForm(initial={})
+        # Get initial form data
+        payee_payer_data = get_object_or_404(Demographics, id=id)
+
+        form = PayeePayerForm(initial={
+            "name": payee_payer_data.name,
+            "address": payee_payer_data.address,
+            "country": payee_payer_data.country,
+            "province": payee_payer_data.province,
+            "city": payee_payer_data.city,
+            "postal_code": payee_payer_data.postal_code,
+            "phone": payee_payer_data.phone,
+            "fax": payee_payer_data.fax,
+            "email": payee_payer_data.email,
+            "status": payee_payer_data.status,
+        })
 
     return render(
         request, 
@@ -132,10 +146,21 @@ def edit_payee_payer(request):
     )
 
 @login_required
-def delete_payee_payer(request):
-    """Page to confirm deletion of payee/payer"""
+def delete_payee_payer(request, id):
+     # Get the Shift Code instance for this user
+    payee_payer = get_object_or_404(Demographics, id=id)
+
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        payee_payer.delete()
+       
+        # Redirect back to main list
+        messages.success(request, "Payee/payer deleted")
+
+        return HttpResponseRedirect(reverse('payee_payer_dashboard'))
+  
     return render(
-        request,
-        "payee_payer/delete.html",
-        context={},
+        request, 
+        "payee_payer/delete.html", 
+        {"name": payee_payer.name}
     )

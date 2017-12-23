@@ -7,6 +7,38 @@
 
 {% block content %}
     <h1>Delete Payee/Payer</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Are you sure you want to delete this payee/payer?</th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{{ name }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Note: A payee/payer can only be deleted once all
+                            associated expenses and revenue claims are either
+                            deleted or assigned to a new payee/payer.
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><button type="submit">Delete</button></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </form>
 {% endblock %}
 
 {% block js %}
