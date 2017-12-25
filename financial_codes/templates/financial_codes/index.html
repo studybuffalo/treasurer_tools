@@ -1,0 +1,26 @@
+﻿{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Financial Codes</h1>
+    
+    {% include 'main/messages.html' %}
+    
+    <div>
+        <a href="{% url 'system_add' %}">Add new financial code system</a><br>
+        <a href="{% url 'year_add' %}">Add new budget year</a><br>
+        <a href="{% url 'group_add' %}">Add new financial code group</a><br>
+        <a href="{% url 'code_add' %}">Add new financial code</a>
+    </div>
+
+    <h2>Financial Code Systems</h2>
+    
+    <ul>
+        {% for system in systems %}
+        <li>
+            {{ system.title }} -
+            <a href="{% url 'system_edit' system.id %}">Edit</a> - 
+            <a href="{% url 'system_delete' system.id %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

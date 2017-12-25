@@ -23,6 +23,7 @@ class FinancialCodeSystem(models.Model):
             ("a", "Active"),
             ("i", "Inactive")
         ),
+        default="a",
         help_text="Current status of this code system",
         max_length=1,
     )
