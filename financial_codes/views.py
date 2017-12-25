@@ -1,3 +1,4 @@
+"""View for the financial_codes app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -7,15 +8,15 @@ from django.urls import reverse
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
 )
-from .forms import (
-    FinancialCodeSystemForm,    
-)
 
+from .forms import (
+    FinancialCodeSystemForm,
+)
 
 @login_required
 def dashboard(request):
     """Main dashboard to manage financial codes"""
-    systems = FinancialCodeSystem.objects.all()
+    systems = FinancialCodeSystem.objects.all()  # pylint: disable=no-member
 
     return render(
         request,
@@ -61,17 +62,17 @@ def system_add(request):
         form = FinancialCodeSystemForm(initial={})
 
     return render(
-        request, 
-        "financial_codes/system_add.html", 
+        request,
+        "financial_codes/system_add.html",
         {'form': form}
     )
 
 @login_required
-def system_edit(request, id):
+def system_edit(request, system_id):
     """Generate and processes form to edit a financial system"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        system_data = get_object_or_404(FinancialCodeSystem, id=id)
+        system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
 
         # Create a form instance and populate it with data from the request (binding):
         form = FinancialCodeSystemForm(request.POST, instance=system_data)
@@ -96,7 +97,7 @@ def system_edit(request, id):
     # If this is a GET (or any other method) populate the default form.
     else:
         # Get initial form data
-        system_data = get_object_or_404(FinancialCodeSystem, id=id)
+        system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
 
         form = FinancialCodeSystemForm(initial={
             "title": system_data.title,
@@ -104,30 +105,29 @@ def system_edit(request, id):
         })
 
     return render(
-        request, 
-        "financial_codes/system_edit.html", 
+        request,
+        "financial_codes/system_edit.html",
         {'form': form}
     )
 
 @login_required
-def system_delete(request, id):
+def system_delete(request, system_id):
     """Generates and handles delete requests of financial system"""
     # Get the Shift Code instance for this user
-    system = get_object_or_404(FinancialCodeSystem, id=id)
+    system = get_object_or_404(FinancialCodeSystem, id=system_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
         system.delete()
-       
+
         # Redirect back to main list
         messages.success(request, "Financial code system deleted")
 
         return HttpResponseRedirect(reverse('financial_codes_dashboard'))
-  
     return render(
-        request, 
-        "financial_codes/system_delete.html", 
-        {"title": system.title}
+        request,
+        "financial_codes/system_delete.html",
+        {"title": system.title},
     )
 
 @login_required
@@ -135,7 +135,7 @@ def add_code(request):
     """Generates and processes form to add a new financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer_data = Demographics()
+        code_data = FinancialCode()
 
         # Create a form instance and populate it with data from the request (binding):
         form = PayeePayerForm(request.POST, instance=payee_payer_data)
@@ -178,17 +178,17 @@ def add_code(request):
         form = PayeePayerForm(initial={})
 
     return render(
-        request, 
-        "payee_payer/add.html", 
+        request,
+        "payee_payer/add.html",
         {'form': form}
     )
 
 @login_required
-def edit_payee_payer(request, id):
+def edit_code(request, code_id):
     """Generates and processes form to edit a payee/payer"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer_data = get_object_or_404(Demographics, id=id)
+        payee_payer_data = get_object_or_404(Demographics, id=code_id)
 
         # Create a form instance and populate it with data from the request (binding):
         form = PayeePayerForm(request.POST, instance=payee_payer_data)
@@ -229,7 +229,7 @@ def edit_payee_payer(request, id):
     # If this is a GET (or any other method) populate the default form.
     else:
         # Get initial form data
-        payee_payer_data = get_object_or_404(Demographics, id=id)
+        payee_payer_data = get_object_or_404(Demographics, id=code_id)
 
         form = PayeePayerForm(initial={
             "name": payee_payer_data.name,
@@ -245,27 +245,28 @@ def edit_payee_payer(request, id):
         })
 
     return render(
-        request, 
-        "payee_payer/edit.html", 
+        request,
+        "payee_payer/edit.html",
         {'form': form}
     )
 
 @login_required
-def delete_payee_payer(request, id):
+def code_delete(request, code_id):
+    """Generates and processes deletion of financial code"""
      # Get the Shift Code instance for this user
-    payee_payer = get_object_or_404(Demographics, id=id)
+    payee_payer = get_object_or_404(Demographics, id=code_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
         payee_payer.delete()
-       
+
         # Redirect back to main list
         messages.success(request, "Payee/payer deleted")
-
+        
         return HttpResponseRedirect(reverse('payee_payer_dashboard'))
-  
+    
     return render(
-        request, 
-        "payee_payer/delete.html", 
-        {"name": payee_payer.name}
+        request,
+        "payee_payer/delete.html",
+        {"name": payee_payer.name},
     )

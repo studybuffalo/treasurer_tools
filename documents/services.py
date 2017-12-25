@@ -1,3 +1,4 @@
+"""Functions to handle upload of attachment files"""
 import magic
 
 """Process Planning
@@ -21,10 +22,11 @@ def organize_file_conversion(files):
     """Method to sort file uploads into proper conversion functions"""
     converted_files = []
     user_messages = []
+
     for file in files:
         # Get filetype MIME
         file_type = magic.from_file(file, mime=True)
-        
+
         # Send file to proper conversion function
         if file_type == "application/pdf":
             converted_file = check_pypdf2_pdf(file)
@@ -42,7 +44,7 @@ def organize_file_conversion(files):
             converted_file == convert_odt(file)
         else:
             user_messages.append(invalid_file_type_message(file))
-            
+        
         if converted_file.success:
             converted_files.append(converted_file.file)
         else:

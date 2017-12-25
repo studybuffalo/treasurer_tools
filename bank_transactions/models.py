@@ -1,9 +1,10 @@
+"""Models for bank_transaction app"""
 from django.db import models
+
+from simple_history.models import HistoricalRecords
 
 from documents.models import Attachment
 from transactions.models import Transaction
-
-from simple_history.models import HistoricalRecords
 
 
 class Institution(models.Model):
@@ -87,7 +88,7 @@ class BankTransaction(models.Model):
         max_digits=12,
     )
     history = HistoricalRecords()
-    
+
 class AttachmentMatch(models.Model):
     """Links a transaction to one or more attachments"""
     transaction = models.OneToOneField(
@@ -121,5 +122,5 @@ class ReconciliationMatch(models.Model):
 
     def __str__(self):
         return "{} - {}".format(
-            self.bank_transaction, self.financial_attachment
+            self.bank_transaction, self.financial_transaction
         )

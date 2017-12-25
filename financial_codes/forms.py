@@ -1,5 +1,6 @@
+"""Forms for the financial_codes app"""
+
 from django import forms
-from django.core.exceptions import ValidationError
 
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
@@ -7,6 +8,9 @@ from .models import (
 
 
 class FinancialCodeSystemForm(forms.ModelForm):
+    """Code to add and edit financial code systems"""
+
+    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialCodeSystem
 

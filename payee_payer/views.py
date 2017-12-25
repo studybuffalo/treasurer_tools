@@ -1,3 +1,4 @@
+"""Views for the payee_payer app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -20,11 +21,12 @@ def dashboard(request):
     )
 
 class RequestPayeePayers(LoginRequiredMixin, generic.ListView):
-    model = Demographics
+    """List of all payee/payers"""
 
+    model = Demographics
     context_object_name = "payee_payer_list"
     template_name = "payee_payer/payee_payer_list.html"
-    
+
 @login_required
 def add_payee_payer(request):
     """Generates and processes form to add a new payee/payer"""
@@ -73,17 +75,17 @@ def add_payee_payer(request):
         form = PayeePayerForm(initial={})
 
     return render(
-        request, 
-        "payee_payer/add.html", 
-        {'form': form}
+        request,
+        "payee_payer/add.html",
+        {'form': form},
     )
 
 @login_required
-def edit_payee_payer(request, id):
+def edit_payee_payer(request, payee_payer_id):
     """Generates and processes form to edit a payee/payer"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer_data = get_object_or_404(Demographics, id=id)
+        payee_payer_data = get_object_or_404(Demographics, id=payee_payer_id)
 
         # Create a form instance and populate it with data from the request (binding):
         form = PayeePayerForm(request.POST, instance=payee_payer_data)
@@ -124,7 +126,7 @@ def edit_payee_payer(request, id):
     # If this is a GET (or any other method) populate the default form.
     else:
         # Get initial form data
-        payee_payer_data = get_object_or_404(Demographics, id=id)
+        payee_payer_data = get_object_or_404(Demographics, id=payee_payer_id)
 
         form = PayeePayerForm(initial={
             "name": payee_payer_data.name,
@@ -140,27 +142,28 @@ def edit_payee_payer(request, id):
         })
 
     return render(
-        request, 
-        "payee_payer/edit.html", 
+        request,
+        "payee_payer/edit.html",
         {'form': form}
     )
 
 @login_required
-def delete_payee_payer(request, id):
+def delete_payee_payer(request, payee_payer_id):
+    """Generates and processess deletion of payee_payer"""
      # Get the Shift Code instance for this user
-    payee_payer = get_object_or_404(Demographics, id=id)
+    payee_payer = get_object_or_404(Demographics, id=payee_payer_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
         payee_payer.delete()
-       
+        
         # Redirect back to main list
         messages.success(request, "Payee/payer deleted")
-
+        
         return HttpResponseRedirect(reverse('payee_payer_dashboard'))
-  
+
     return render(
-        request, 
-        "payee_payer/delete.html", 
-        {"name": payee_payer.name}
+        request,
+        "payee_payer/delete.html",
+        {"name": payee_payer.name},
     )

@@ -1,12 +1,13 @@
+"""Models for the transaction app"""
+
 from django.db import models
 from django.utils import timezone
+
+from simple_history.models import HistoricalRecords
 
 from payee_payer.models import Demographics
 from financial_codes.models import FinancialCode
 from documents.models import Attachment
-
-from simple_history.models import HistoricalRecords
-
 
 class Transaction(models.Model):
     """Holds data on the overall transaction"""
@@ -36,14 +37,19 @@ class Transaction(models.Model):
     history = HistoricalRecords
 
     def __str__(self):
+        # pylint: disable=unsubscriptable-object
+        return_string = "Accounts"
+
         if self.transaction_type == "p":
-            return "Accounts Payable - {} - {}".format(
-                self.payee_payer, self.memo[:100]
+            return_string = "{} Payable - {} - {}".format(
+                return_string, self.payee_payer, self.memo[:100]
             )
-        else:
-            return "Accounts Receivable - {} - {}".format(
-                self.payee_payer, self.memo[:100]
+        elif self.transaction_type == "a":
+            return_string = "{} Receivable - {} - {}".format(
+                return_string, self.payee_payer, self.memo[:100]
             )
+
+        return return_string
 
 class Item(models.Model):
     """Holds data on an individual transaction item"""

@@ -1,12 +1,12 @@
 """Main Site URL Conf"""
-from django.conf.urls import include, url
-from django.contrib import admin
+from django.conf.urls import url
 
 from .views import (
-    dashboard, RequestPayeePayers, add_payee_payer, edit_payee_payer, 
+    dashboard, RequestPayeePayers, add_payee_payer, edit_payee_payer,
     delete_payee_payer
 )
 
+# pylint: disable=invalid-name
 urlpatterns = [
     url(r"^retrieve-payee-payer-list/$", RequestPayeePayers.as_view()),
     url(r"^add-payee-payer/$", add_payee_payer, name="add_payee_payer"),

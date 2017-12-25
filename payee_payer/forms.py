@@ -1,9 +1,13 @@
+"""Forms for the payee_payer app"""
+
 from django import forms
-from django.core.exceptions import ValidationError
 
 from .models import Country, Demographics
 
 class PayeePayerForm(forms.ModelForm):
+    """Form for adding/editing payee/payer data"""
+
+    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = Demographics
 
@@ -23,6 +27,7 @@ class PayeePayerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PayeePayerForm, self).__init__(*args, **kwargs)
 
+        # pylint: disable=no-member
         # Sort country select by country name (alphabetical)
         self.fields["country"].queryset = Country.objects.order_by(
             "country_name"

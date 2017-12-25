@@ -1,3 +1,4 @@
+"""Models for the payee_payer app"""
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -5,6 +6,8 @@ from simple_history.models import HistoricalRecords
 
 class Country(models.Model):
     """Possible countries for the demographics list"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+
     country_code = models.CharField(
         max_length=2,
     )
@@ -20,6 +23,8 @@ class Country(models.Model):
 
 class Demographics(models.Model):
     """Demographic details for payees/payers"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+
     user = models.OneToOneField(
         User,
         blank=True,
