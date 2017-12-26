@@ -29,6 +29,7 @@ class FinancialCodeGroupForm(forms.ModelForm):
         fields = [
             "title",
             "description",
+            "type",
             "status",
         ]
 
