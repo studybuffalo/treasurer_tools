@@ -60,8 +60,11 @@ def system_add(request):
 
     return render(
         request,
-        "financial_codes/system_add.html",
-        {'form': form},
+        "financial_codes/add.html",
+        {
+            "page_name": "financial system",
+            "form": form,
+        },
     )
 
 @login_required
@@ -103,8 +106,11 @@ def system_edit(request, system_id):
 
     return render(
         request,
-        "financial_codes/system_edit.html",
-        {'form': form},
+        "financial_codes/edit.html",
+        {
+            "page_name": "financial code system",
+            "form": form,
+        },
     )
 
 @login_required
@@ -124,8 +130,11 @@ def system_delete(request, system_id):
 
     return render(
         request,
-        "financial_codes/system_delete.html",
-        {"title": system.title},
+        "financial_codes/delete.html",
+        {
+            "page_name": "financial code system",
+            "title": system.title,
+        },
     )
 
 @login_required
@@ -163,8 +172,11 @@ def group_add(request):
 
     return render(
         request,
-        "financial_codes/group_add.html",
-        {'form': form},
+        "financial_codes/add.html",
+        {
+            "page_name": "financial code group",
+            "form": form
+        },
     )
 
 @login_required
@@ -209,8 +221,11 @@ def group_edit(request, group_id):
 
     return render(
         request,
-        "financial_codes/group_edit.html",
-        {'form': form},
+        "financial_codes/edit.html",
+        {
+            "page_name": "financial code group",
+            "form": form,
+        },
     )
 
 @login_required
@@ -231,7 +246,10 @@ def group_delete(request, group_id):
     return render(
         request,
         "financial_codes/group_delete.html",
-        {"title": group.title},
+        {
+            "page_name": "financial code group",
+            "title": group.title,
+        },
     )
 
 @login_required
@@ -267,8 +285,11 @@ def year_add(request):
 
     return render(
         request,
-        "financial_codes/year_add.html",
-        {'form': form},
+        "financial_codes/add.html",
+        {
+            "page_name": "budget year",
+            "form": form,
+        },
     )
 
 @login_required
@@ -309,8 +330,11 @@ def year_edit(request, year_id):
 
     return render(
         request,
-        "financial_codes/year_edit.html",
-        {'form': form},
+        "financial_codes/edit.html",
+        {
+            "page_name": "budget year",
+            "form": form,
+        },
     )
 
 @login_required
@@ -330,8 +354,11 @@ def year_delete(request, year_id):
 
     return render(
         request,
-        "financial_codes/year_delete.html",
-        {"title": str(year)},
+        "financial_codes/delete.html",
+        {
+            "page_name": "budget year",
+            "title": str(year),
+        },
     )
 
 @login_required
@@ -374,7 +401,10 @@ def code_add(request):
     return render(
         request,
         "financial_codes/add.html",
-        {'form': form}
+        {
+            "page_name": "financial code",
+            "form": form,
+        },
     )
 
 @login_required
@@ -426,7 +456,10 @@ def code_edit(request, code_id):
     return render(
         request,
         "financial_codes/edit.html",
-        {'form': form}
+        {
+            "page_name": "financial code",
+            "form": form,
+        },
     )
 
 @login_required
@@ -447,5 +480,8 @@ def code_delete(request, code_id):
     return render(
         request,
         "financial_code/delete.html",
-        {"name": str(code)},
+        {
+            "page_name": "financial code",
+            "title": str(code),
+        },
     )

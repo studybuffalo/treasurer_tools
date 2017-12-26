@@ -7,11 +7,8 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Add Payee/Payer</h1>
+    <h1>Edit {{ page_name|title }}</h1>
 
-    <!-- TODO: Create HTML to display form fields
-        Can these form field generation be more automated?
-    -->
     {% include 'main/messages.html' %}
 	
     <form action="" method="post">
@@ -41,7 +38,7 @@
         </div>
 
         <div class="right_align">
-            <button type="submit">Add new payee/payer</button>
+            <button type="submit">Save changes</button>
         </div>
     </form>
 {% endblock %}

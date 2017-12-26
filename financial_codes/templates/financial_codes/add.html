@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Edit financial code system</h1>
+    <h1>Add New {{ page_name|title }}</h1>
 
     {% include 'main/messages.html' %}
 	
@@ -38,7 +38,7 @@
         </div>
 
         <div class="right_align">
-            <button type="submit">Save changes</button>
+            <button type="submit">Add new {{ page_name|lower }}</button>
         </div>
     </form>
 {% endblock %}
