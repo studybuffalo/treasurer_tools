@@ -58,9 +58,9 @@ class FinancialCodeGroup(models.Model):
             return_str = "Expense - {}".format(self.title)
         elif self.type == "r":
             return_str = "Revenue - {}".format(self.title)
-        
+
         return return_str
-    
+
 class BudgetYear(models.Model):
     """Start and end dates of the budget year"""
     date_start = models.DateField(

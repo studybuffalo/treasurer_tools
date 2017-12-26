@@ -156,10 +156,9 @@ def delete_payee_payer(request, payee_payer_id):
     # If this is a POST request then process the Form data
     if request.method == "POST":
         payee_payer.delete()
-        
+
         # Redirect back to main list
         messages.success(request, "Payee/payer deleted")
-        
         return HttpResponseRedirect(reverse('payee_payer_dashboard'))
 
     return render(

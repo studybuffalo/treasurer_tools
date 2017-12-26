@@ -18,7 +18,7 @@ from .forms import (
 def dashboard(request):
     """Main dashboard to manage financial codes"""
     # pylint: disable=no-member
-    systems = FinancialCodeSystem.objects.all()  
+    systems = FinancialCodeSystem.objects.all()
     groups = FinancialCodeGroup.objects.all()
     years = BudgetYear.objects.all()
     codes = FinancialCode.objects.all()
