@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Branch Transactions</h1>
+
+    {% include 'main/messages.html' %}
+
+    <ul>
+        <li>All</li>
+        <li>Expenses</li>
+        <li>Revenue</li>
+    </ul>
+
+    <div>
+        <a href="{% url 'transaction_add' 'expense' %}">New expense</a>
+        <a href="">New revenue</a>
+    </div>
+
+    <div>
+        <a href="">Submit to transactions to CSHP</a>
+    </div>
+{% endblock %}

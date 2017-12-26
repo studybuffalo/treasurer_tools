@@ -11,5 +11,6 @@ urlpatterns = [
     url(r"^contact/$", TemplateView.as_view(template_name="account/profile.html"), name="contact"),
     url(r"^settings/codes/", include("financial_codes.urls")),
     url(r"^payee-payer/", include("payee_payer.urls")),
+    url(r"^transactions/", include("transactions.urls")),
     url(r"^$", TemplateView.as_view(template_name="main/index.html"), name="home"),
 ]

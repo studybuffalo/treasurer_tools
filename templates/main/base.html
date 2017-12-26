@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 
 <!DOCTYPE html>
 
@@ -154,19 +154,7 @@
                 <a href="{% url 'payee_payer_dashboard' %}">Manage payees and payers</a>
             </li>
             <li>
-                <a class="menu-header">Expenses</a>
-                <ul>
-                    <li><a href="">Enter expenses</a></li>
-                    <li><a href="">Review expenses</a></li>
-                    <li><a href="">Submit expenses</a></li>
-                </ul>
-            </li>
-            <li>
-                <a class="menu-header">Revenue</a>
-                <ul>
-                    <li><a href="">Enter revenues</a></li>
-                    <li><a href="">Submit revenues</a></li>
-                </ul>
+                <a href="{% url 'transactions_dashboard' %}">Transactions</a>
             </li>
             <li>
                 <a>Investments</a>

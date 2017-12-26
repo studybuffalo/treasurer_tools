@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Edit {{ page_name|title }}</h1>
+
+    {% include 'main/messages.html' %}
+	
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div id="form_content">
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}
+
+                    <span>
+                        {{ field }}
+                    </span>
+                    <em>
+                        {{ field.help_text }}
+                    </em>
+
+                    {% if field.errors %}
+                        <ul class="message_list">
+                            {% for error in field.errors %}
+                                <li class="level_40">{{ error|striptags }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="right_align">
+            <button type="submit">Save changes</button>
+        </div>
+    </form>
+{% endblock %}
