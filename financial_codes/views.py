@@ -110,7 +110,7 @@ def system_edit(request, system_id):
 @login_required
 def system_delete(request, system_id):
     """Generates and handles delete requests of financial system"""
-    # Get the Shift Code instance for this user
+    # Get the FinancialSystem instance for this user
     system = get_object_or_404(FinancialCodeSystem, id=system_id)
 
     # If this is a POST request then process the Form data
@@ -121,6 +121,7 @@ def system_delete(request, system_id):
         messages.success(request, "Financial code system deleted")
 
         return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+
     return render(
         request,
         "financial_codes/system_delete.html",
@@ -169,10 +170,69 @@ def group_add(request):
 @login_required
 def group_edit(request, group_id):
     """Generates and processes form to edit a financial code group"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = FinancialCodeGroupForm(request.POST, instance=group_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # Collect the form fields
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            status = form.cleaned_data["status"]
+
+            # Update the Financial Systems object
+            group_data.title = title
+            group_data.description = description
+            group_data.status = status
+
+            group_data.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Financial code group successfully edited")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) populate the default form.
+    else:
+        # Get initial form data
+        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+        form = FinancialCodeGroupForm(initial={
+            "title": group_data.title,
+            "description": group_data.description,
+            "status": group_data.status,
+        })
+
+    return render(
+        request,
+        "financial_codes/group_edit.html",
+        {'form': form},
+    )
 
 @login_required
 def group_delete(request, group_id):
     """Generates and processes form to delete financial code group"""
+    # Get the FinancialCodeGroup instance for this user
+    group = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        group.delete()
+
+        # Redirect back to main list
+        messages.success(request, "Financial code group deleted")
+
+        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+
+    return render(
+        request,
+        "financial_codes/group_delete.html",
+        {"title": group.title},
+    )
 
 @login_required
 def year_add(request):
@@ -214,10 +274,65 @@ def year_add(request):
 @login_required
 def year_edit(request, year_id):
     """Generates and processes form to edit a budget year"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        year_data = get_object_or_404(BudgetYear, id=year_id)
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = BudgetYearForm(request.POST, instance=year_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            date_start = form.cleaned_data["date_start"]
+            date_end = form.cleaned_data["date_end"]
+
+            # Update the FinancialSystem model object
+            year_data.date_start = date_start
+            year_data.date_end = date_end
+
+            year_data.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Budget year successfully edited")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) populate the default form.
+    else:
+        # Get initial form data
+        year_data = get_object_or_404(BudgetYear, id=year_id)
+
+        form = BudgetYearForm(initial={
+            "date_start": year_data.date_start,
+            "date_end": year_data.date_end,
+        })
+
+    return render(
+        request,
+        "financial_codes/year_edit.html",
+        {'form': form},
+    )
 
 @login_required
 def year_delete(request, year_id):
     """Generates and processes form to delete a budget year"""
+        # Get the BudgetYear instance for this user
+    year = get_object_or_404(FinancialCodeGroup, id=year_id)
+
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        year.delete()
+
+        # Redirect back to main list
+        messages.success(request, "Budget yeardeleted")
+
+        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+
+    return render(
+        request,
+        "financial_codes/year_delete.html",
+        {"title": str(year)},
+    )
 
 @login_required
 def code_add(request):
@@ -267,7 +382,7 @@ def code_edit(request, code_id):
     """Generates and processes form to edit a financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        code_data = FinancialCode().objects.get(id=code_id)
+        code_data = FinancialCode().objects.get(id=code_id)  # pylint: disable=no-member
 
         # Create a form instance and populate it with data from the request (binding):
         form = FinancialCodeForm(request.POST, instance=code_data)
@@ -323,12 +438,12 @@ def code_delete(request, code_id):
     # If this is a POST request then process the Form data
     if request.method == "POST":
         code.delete()
-        
+
         # Redirect back to main list
         messages.success(request, "Financial code deleted")
-        
+
         return HttpResponseRedirect(reverse('financial_code_dashboard'))
-    
+
     return render(
         request,
         "financial_code/delete.html",

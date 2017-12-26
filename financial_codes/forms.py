@@ -21,7 +21,7 @@ class FinancialCodeSystemForm(forms.ModelForm):
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
-    
+
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialCodeGroup

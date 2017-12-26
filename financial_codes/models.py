@@ -14,6 +14,9 @@ class BudgetYear(models.Model):
     )
     history = HistoricalRecords()
 
+    def __str__(self):
+        return "{} - {}".format(self.date_start, self.date_end)
+
 class FinancialCodeSystem(models.Model):
     """Name and description of a financial code system"""
     title = models.CharField(
