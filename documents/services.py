@@ -17,6 +17,38 @@ import magic
 """
 def invalid_file_type_message(file):
     """Generates an error message for an invalid file type"""
+    return (
+        "The provided attachment is a {} file. Please provide a supported "
+        "attachment".format(file)
+    )
+
+def check_pypdf2_pdf(file):
+    """Checks if this is a workable pdf"""
+    return file
+
+def convert_gif(file):
+    """Converts gif to workable PDF"""
+    return file
+
+def convert_jpeg(file):
+    """Converts jpeg to workable PDF"""
+    return file
+
+def convert_png(file):
+    """Converts png to workable PDF"""
+    return file
+
+def convert_tiff(file):
+    """Converts tiff to workable PDF"""
+    return file
+
+def convert_doc(file):
+    """Converts word document to workable PDF"""
+    return file
+
+def convert_odt(file):
+    """Converts speadsheet to workable PDF"""
+    return file
 
 def organize_file_conversion(files):
     """Method to sort file uploads into proper conversion functions"""
@@ -37,14 +69,14 @@ def organize_file_conversion(files):
         elif file_type == "image/png":
             converted_file = convert_png(file)
         elif file_type == "image/tiff":
-            converted_file == convert_tiff(file)
+            converted_file = convert_tiff(file)
         elif file_type == "application/msword":
-            converted_file == convert_doc(file)
+            converted_file = convert_doc(file)
         elif file_type == "application/vnd.oasis.opendocument.text":
-            converted_file == convert_odt(file)
+            converted_file = convert_odt(file)
         else:
             user_messages.append(invalid_file_type_message(file))
-        
+
         if converted_file.success:
             converted_files.append(converted_file.file)
         else:
