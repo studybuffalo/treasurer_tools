@@ -40,10 +40,12 @@ class BudgetYearForm(forms.ModelForm):
     class Meta:
         model = BudgetYear
 
-        fields = [
-            "date_start",
-            "date_end",
-        ]
+        fields = ("date_start", "date_end",)
+        labels = {
+            "date_start": "Start date",
+            "date_end": "End date",
+        }
+
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""

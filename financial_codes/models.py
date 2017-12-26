@@ -4,19 +4,6 @@ from django.db import models
 
 from simple_history.models import HistoricalRecords
 
-class BudgetYear(models.Model):
-    """Start and end dates of the budget year"""
-    date_start = models.DateField(
-        help_text="First day of the budget year",
-    )
-    date_end = models.DateField(
-        help_text="Last day of the budget year",
-    )
-    history = HistoricalRecords()
-
-    def __str__(self):
-        return "{} - {}".format(self.date_start, self.date_end)
-
 class FinancialCodeSystem(models.Model):
     """Name and description of a financial code system"""
     title = models.CharField(
@@ -33,6 +20,9 @@ class FinancialCodeSystem(models.Model):
         max_length=1,
     )
     history = HistoricalRecords()
+
+    def __str__(self):
+        return self.title
 
 class FinancialCodeGroup(models.Model):
     """A grouping for a set of Financial Codes"""
@@ -63,6 +53,27 @@ class FinancialCodeGroup(models.Model):
     )
     history = HistoricalRecords()
 
+    def __str__(self):
+        if self.type == "e":
+            return_str = "Expense - {}".format(self.title)
+        elif self.type == "r":
+            return_str = "Revenue - {}".format(self.title)
+        
+        return return_str
+    
+class BudgetYear(models.Model):
+    """Start and end dates of the budget year"""
+    date_start = models.DateField(
+        help_text="First day of the budget year",
+    )
+    date_end = models.DateField(
+        help_text="Last day of the budget year",
+    )
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} to {}".format(self.date_start, self.date_end)
+
 class FinancialCode(models.Model):
     """Holds data on an individual financial code"""
     code_system = models.ForeignKey(
@@ -86,3 +97,6 @@ class FinancialCode(models.Model):
         max_length=100,
     )
     history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} - {}".format(self.code, self.description)

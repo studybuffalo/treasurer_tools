@@ -288,7 +288,7 @@ def year_add(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = BudgetYearForm(initial={})
+        form = BudgetYearForm()
 
     return render(
         request,
