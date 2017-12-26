@@ -10,7 +10,8 @@ from .models import (
 )
 
 from .forms import (
-    FinancialCodeSystemForm,
+    FinancialCodeSystemForm, FinancialCodeGroupForm, BudgetYearForm,
+    FinancialCodeForm,
 )
 
 @login_required
@@ -29,6 +30,39 @@ def dashboard(request):
 @login_required
 def add_new_year(request):
     """Generates and processes form to add budget year"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        year_data = BudgetYear()
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = BudgetYearForm(request.POST, instance=year_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # Collect the form fields
+            date_start = form.cleaned_data["date_start"]
+            date_end = form.cleaned_data["date_end"]
+
+            # Update the FinancialSystem model object
+            year_data.date_start = date_start
+            year_data.date_end = date_end
+
+            year_data.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Budget year successfully added")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = BudgetYearForm(initial={})
+
+    return render(
+        request,
+        "financial_codes/year_add.html",
+        {'form': form}
+    )
 
 @login_required
 def system_add(request):
@@ -138,115 +172,90 @@ def add_code(request):
         code_data = FinancialCode()
 
         # Create a form instance and populate it with data from the request (binding):
-        form = PayeePayerForm(request.POST, instance=payee_payer_data)
+        form = FinancialCodeForm(request.POST, instance=code_data)
 
         # Check if the form is valid:
         if form.is_valid():
             # Collect the form fields
-            name = form.cleaned_data["name"]
-            address = form.cleaned_data["address"]
-            country = form.cleaned_data["country"]
-            province = form.cleaned_data["province"]
-            city = form.cleaned_data["city"]
-            postal_code = form.cleaned_data["postal_code"]
-            phone = form.cleaned_data["phone"]
-            fax = form.cleaned_data["fax"]
-            email = form.cleaned_data["email"]
-            status = form.cleaned_data["status"]
+            code = form.cleaned_data["code"]
+            description = form.cleaned_data["description"]
+            code_system = form.cleaned_data["code_system"]
+            code_group = form.cleaned_data["code_group"]
+            budget_year = form.cleaned_data["budget_year"]
 
             # Update the Demographics model object
-            payee_payer_data.name = name
-            payee_payer_data.address = address
-            payee_payer_data.country = country
-            payee_payer_data.province = province
-            payee_payer_data.city = city
-            payee_payer_data.postal_code = postal_code
-            payee_payer_data.phone = phone
-            payee_payer_data.fax = fax
-            payee_payer_data.email = email
-            payee_payer_data.status = status
+            code_data.code = code
+            code_data.description = description
+            code_data.code_system = code_system
+            code_data.code_group = code_group
+            code_data.budget_year = budget_year
 
-            payee_payer_data.save()
+            code_data.save()
 
             # redirect to a new URL:
-            messages.success(request, "Payee/payer successfully added")
+            messages.success(request, "Financial code successfully added")
 
-            return HttpResponseRedirect(reverse("payee_payer_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = PayeePayerForm(initial={})
+        form = FinancialCodeForm(initial={})
 
     return render(
         request,
-        "payee_payer/add.html",
+        "financial_codes/add.html",
         {'form': form}
     )
 
 @login_required
 def edit_code(request, code_id):
-    """Generates and processes form to edit a payee/payer"""
+    """Generates and processes form to edit a financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer_data = get_object_or_404(Demographics, id=code_id)
+        code_data = FinancialCode().objects.get(id=code_id)
 
         # Create a form instance and populate it with data from the request (binding):
-        form = PayeePayerForm(request.POST, instance=payee_payer_data)
+        form = FinancialCodeForm(request.POST, instance=code_data)
 
         # Check if the form is valid:
         if form.is_valid():
             # Collect the form fields
-            name = form.cleaned_data["name"]
-            address = form.cleaned_data["address"]
-            country = form.cleaned_data["country"]
-            province = form.cleaned_data["province"]
-            city = form.cleaned_data["city"]
-            postal_code = form.cleaned_data["postal_code"]
-            phone = form.cleaned_data["phone"]
-            fax = form.cleaned_data["fax"]
-            email = form.cleaned_data["email"]
-            status = form.cleaned_data["status"]
+            code = form.cleaned_data["code"]
+            description = form.cleaned_data["description"]
+            code_system = form.cleaned_data["code_system"]
+            code_group = form.cleaned_data["code_group"]
+            budget_year = form.cleaned_data["budget_year"]
 
             # Update the Demographics model object
-            payee_payer_data.name = name
-            payee_payer_data.address = address
-            payee_payer_data.country = country
-            payee_payer_data.province = province
-            payee_payer_data.city = city
-            payee_payer_data.postal_code = postal_code
-            payee_payer_data.phone = phone
-            payee_payer_data.fax = fax
-            payee_payer_data.email = email
-            payee_payer_data.status = status
+            code_data.code = code
+            code_data.description = description
+            code_data.code_system = code_system
+            code_data.code_group = code_group
+            code_data.budget_year = budget_year
 
-            payee_payer_data.save()
+            code_data.save()
 
             # redirect to a new URL:
-            messages.success(request, "Payee/payer successfully edited")
+            messages.success(request, "Financial code successfully added")
 
-            return HttpResponseRedirect(reverse("payee_payer_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
         # Get initial form data
-        payee_payer_data = get_object_or_404(Demographics, id=code_id)
+        code_data = get_object_or_404(FinancialCode, id=code_id)
 
-        form = PayeePayerForm(initial={
-            "name": payee_payer_data.name,
-            "address": payee_payer_data.address,
-            "country": payee_payer_data.country,
-            "province": payee_payer_data.province,
-            "city": payee_payer_data.city,
-            "postal_code": payee_payer_data.postal_code,
-            "phone": payee_payer_data.phone,
-            "fax": payee_payer_data.fax,
-            "email": payee_payer_data.email,
-            "status": payee_payer_data.status,
+        form = FinancialCodeForm(initial={
+            "code": code_data.code,
+            "description": code_data.description,
+            "code_system": code_data.code_system,
+            "code_group": code_data.code_group,
+            "budget_year": code_data.budget_year,
         })
 
     return render(
         request,
-        "payee_payer/edit.html",
+        "financial_codes/edit.html",
         {'form': form}
     )
 
@@ -254,19 +263,19 @@ def edit_code(request, code_id):
 def code_delete(request, code_id):
     """Generates and processes deletion of financial code"""
      # Get the Shift Code instance for this user
-    payee_payer = get_object_or_404(Demographics, id=code_id)
+    code = get_object_or_404(FinancialCode, id=code_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        payee_payer.delete()
-
-        # Redirect back to main list
-        messages.success(request, "Payee/payer deleted")
+        code.delete()
         
-        return HttpResponseRedirect(reverse('payee_payer_dashboard'))
+        # Redirect back to main list
+        messages.success(request, "Financial code deleted")
+        
+        return HttpResponseRedirect(reverse('financial_code_dashboard'))
     
     return render(
         request,
-        "payee_payer/delete.html",
-        {"name": payee_payer.name},
+        "financial_code/delete.html",
+        {"name": str(code)},
     )
