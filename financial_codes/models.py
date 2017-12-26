@@ -44,11 +44,20 @@ class FinancialCodeGroup(models.Model):
         help_text="Expanded description of the financial code gouping",
         max_length=500,
     )
+    type = models.CharField(
+        choices=(
+            ("e", "Expense"),
+            ("r", "Revenue"),
+        ),
+        default="e",
+        max_length=1,
+    )
     status = models.CharField(
         choices=(
             ("a", "Active"),
             ("i", "Inactive")
         ),
+        default="a",
         help_text="Current status of this code system",
         max_length=1,
     )
@@ -62,9 +71,7 @@ class FinancialCode(models.Model):
     )
     code_group = models.ForeignKey(
         FinancialCodeGroup,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
     )
     budget_year = models.ForeignKey(
         BudgetYear,

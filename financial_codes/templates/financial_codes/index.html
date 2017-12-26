@@ -2,9 +2,9 @@
 
 {% block content %}
     <h1>Financial Codes</h1>
-    
+
     {% include 'main/messages.html' %}
-    
+
     <div>
         <a href="{% url 'system_add' %}">Add new financial code system</a><br>
         <a href="{% url 'year_add' %}">Add new budget year</a><br>
@@ -13,13 +13,49 @@
     </div>
 
     <h2>Financial Code Systems</h2>
-    
+
     <ul>
         {% for system in systems %}
         <li>
             {{ system.title }} -
-            <a href="{% url 'system_edit' system.id %}">Edit</a> - 
+            <a href="{% url 'system_edit' system.id %}">Edit</a> -
             <a href="{% url 'system_delete' system.id %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Financial Code Group</h2>
+    
+    <ul>
+        {% for group in groups %}
+            <li>
+                {{ group.title }} -
+                <a href="{% url 'group_edit' group.id %}">Edit</a> -
+                <a href="{% url 'group_delete' group.id %}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Budget Years</h2>
+
+    <ul>
+        {% for year in years %}
+        <li>
+            {{ year }} -
+            <a href="{% url 'year_edit' year.id %}">Edit</a> -
+            <a href="{% url 'year_delete' year.id %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Financial Codes</h2>
+
+    <ul>
+        {% for code in codes %}
+        <li>
+            {{ code.code }} -
+            <a href="{% url 'code_edit' code.id %}">Edit</a> -
+            <a href="{% url 'code_delete' code.id %}">Delete</a>
         </li>
         {% endfor %}
     </ul>

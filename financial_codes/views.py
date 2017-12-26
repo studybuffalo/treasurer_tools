@@ -17,13 +17,20 @@ from .forms import (
 @login_required
 def dashboard(request):
     """Main dashboard to manage financial codes"""
-    systems = FinancialCodeSystem.objects.all()  # pylint: disable=no-member
+    # pylint: disable=no-member
+    systems = FinancialCodeSystem.objects.all()  
+    groups = FinancialCodeGroup.objects.all()
+    years = BudgetYear.objects.all()
+    codes = FinancialCode.objects.all()
 
     return render(
         request,
         "financial_codes/index.html",
         context={
             "systems": systems,
+            "groups": groups,
+            "years": years,
+            "codes": codes,
         },
     )
 
