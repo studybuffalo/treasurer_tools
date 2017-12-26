@@ -46,7 +46,7 @@ class BudgetYearForm(forms.ModelForm):
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
-    
+
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialCode

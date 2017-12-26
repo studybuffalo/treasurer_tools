@@ -28,43 +28,6 @@ def dashboard(request):
     )
 
 @login_required
-def add_new_year(request):
-    """Generates and processes form to add budget year"""
-    # If this is a POST request then process the Form data
-    if request.method == "POST":
-        year_data = BudgetYear()
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = BudgetYearForm(request.POST, instance=year_data)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            # Collect the form fields
-            date_start = form.cleaned_data["date_start"]
-            date_end = form.cleaned_data["date_end"]
-
-            # Update the FinancialSystem model object
-            year_data.date_start = date_start
-            year_data.date_end = date_end
-
-            year_data.save()
-
-            # redirect to a new URL:
-            messages.success(request, "Budget year successfully added")
-
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
-
-    # If this is a GET (or any other method) create the default form.
-    else:
-        form = BudgetYearForm(initial={})
-
-    return render(
-        request,
-        "financial_codes/year_add.html",
-        {'form': form}
-    )
-
-@login_required
 def system_add(request):
     """Generates and processes form to add financial code system"""
     # If this is a POST request then process the Form data
@@ -98,7 +61,7 @@ def system_add(request):
     return render(
         request,
         "financial_codes/system_add.html",
-        {'form': form}
+        {'form': form},
     )
 
 @login_required
@@ -141,7 +104,7 @@ def system_edit(request, system_id):
     return render(
         request,
         "financial_codes/system_edit.html",
-        {'form': form}
+        {'form': form},
     )
 
 @login_required
@@ -165,7 +128,99 @@ def system_delete(request, system_id):
     )
 
 @login_required
-def add_code(request):
+def group_add(request):
+    """Generates and processes form to add a new financial code group"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        group_data = FinancialCodeGroup()
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = FinancialCodeGroupForm(request.POST, instance=group_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # Collect the form fields
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            status = form.cleaned_data["status"]
+
+            # Update the FinancialCodeGroup model object
+            group_data.title = title
+            group_data.description = description
+            group_data.status = status
+
+            group_data.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Financial code group successfully added")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = FinancialCodeGroupForm(initial={})
+
+    return render(
+        request,
+        "financial_codes/group_add.html",
+        {'form': form},
+    )
+
+@login_required
+def group_edit(request, group_id):
+    """Generates and processes form to edit a financial code group"""
+
+@login_required
+def group_delete(request, group_id):
+    """Generates and processes form to delete financial code group"""
+
+@login_required
+def year_add(request):
+    """Generates and processes form to add a new budget year"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        year_data = BudgetYear()
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = BudgetYearForm(request.POST, instance=year_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # Collect the form fields
+            date_start = form.cleaned_data["date_start"]
+            date_end = form.cleaned_data["date_end"]
+
+            # Update the FinancialSystem model object
+            year_data.date_start = date_start
+            year_data.date_end = date_end
+
+            year_data.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Budget year successfully added")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = BudgetYearForm(initial={})
+
+    return render(
+        request,
+        "financial_codes/year_add.html",
+        {'form': form},
+    )
+
+@login_required
+def year_edit(request, year_id):
+    """Generates and processes form to edit a budget year"""
+
+@login_required
+def year_delete(request, year_id):
+    """Generates and processes form to delete a budget year"""
+
+@login_required
+def code_add(request):
     """Generates and processes form to add a new financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
@@ -208,7 +263,7 @@ def add_code(request):
     )
 
 @login_required
-def edit_code(request, code_id):
+def code_edit(request, code_id):
     """Generates and processes form to edit a financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
