@@ -35,8 +35,37 @@
                     {% endif %}
                 </div>
             {% endfor %}
-        </div>
+            
+            <fieldset>
+                <legend>Transaction items</legend>
 
+                {% for field in formset %}
+                <div>
+                    {{ field.label_tag }}
+
+                    <span>
+                        {{ field }}
+                    </span>
+                    <em>
+                        {{ field.help_text }}
+                    </em>
+
+                    {% if field.errors %}
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                        <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <hr>
+                {% endfor %}
+            </fieldset>
+
+            {{ formset.management_form }}
+        </div>
+        
         <div class="right_align">
             <button type="submit">Add new {{ page_name|lower }}</button>
         </div>

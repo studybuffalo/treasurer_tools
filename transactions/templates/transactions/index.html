@@ -19,4 +19,35 @@
     <div>
         <a href="">Submit to transactions to CSHP</a>
     </div>
+
+    <div>
+        <h2>Transaction List</h2>
+        <ul>
+            {% for transaction in transactions %}
+                {% if transaction.transaction_type == "e" %}
+                    <li class="expense">
+                        {{ transaction }} - 
+                        <a href="">Edit</a> -
+                        <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
+                        <ul>
+                            {% for item in transaction.item_set.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% elif transaction.transaction_type == "r" %}
+                    <li class="revenue">
+                        {{ transaction }} - 
+                        <a href="">Edit</a> -
+                        <a href="{% url 'transaction_delete' 'revenue' transaction.id %}">Delete</a>
+                        <ul>
+                            {% for item in transaction.item_set.all %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

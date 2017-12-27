@@ -21,9 +21,10 @@ class Transaction(models.Model):
     )
     transaction_type = models.CharField(
         choices=(
-            ("p", "Payable"),
-            ("r", "Receivable"),
+            ("e", "expense"),
+            ("r", "revenue"),
         ),
+        default="e",
         help_text="The type of transaction",
         max_length=1,
     )
@@ -38,15 +39,17 @@ class Transaction(models.Model):
 
     def __str__(self):
         # pylint: disable=unsubscriptable-object
-        return_string = "Accounts"
-
-        if self.transaction_type == "p":
-            return_string = "{} Payable - {} - {}".format(
-                return_string, self.payee_payer, self.memo[:100]
+        if self.transaction_type == "e":
+            return_string = "Expense - {} - {}".format(
+                self.payee_payer, self.memo[:100]
             )
-        elif self.transaction_type == "a":
-            return_string = "{} Receivable - {} - {}".format(
-                return_string, self.payee_payer, self.memo[:100]
+        elif self.transaction_type == "r":
+            return_string = "Revenue - {} - {}".format(
+                self.payee_payer, self.memo[:100]
+            )
+        else:
+            return_string = "MISSING TRANSACTION TYPE - {} - {}".format(
+                self.payee_payer, self.memo[:100]
             )
 
         return return_string
