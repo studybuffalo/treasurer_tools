@@ -6,120 +6,106 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
+from .forms import StatementForm
 from .models import (
-    BankTransaction,
+    Institution, Account, Statement, BankTransaction,
 )
 
 @login_required
 def dashboard(request):
-    """Main dashboard to expenses and revenue"""
-    bank_transaction = BankTransaction.objects.all()
+    """Main dashboard to display banking functions"""
+    bank_transactions = BankTransaction.objects.all()
 
     return render(
         request,
         "bank_transactions/index.html",
         context={
-            "bank_transactions": bank_transaction,
+            "bank_transactions": bank_transactions,
         },
     )
 
 @login_required
-def transaction_add(request, t_type):
-    """Generates and processes form to add a transaction"""
+def statement_add(request):
+    """Generates and processes form to add new bank statement"""
 
-    def save_transaction_form(form):
-        """Saves Transasction instance based on provided form data"""
+    def save_statement_form(form):
+        """Saves Statement instance based on provided form data"""
         # Collect the cleaned form fields
-        payee_payer = form.cleaned_data["payee_payer"]
-        memo = form.cleaned_data["memo"]
-        date_submitted = form.cleaned_data["date_submitted"]
-        transaction_type = "e" if t_type == "expense" else "r"
+        # payee_payer = form.cleaned_data["payee_payer"]
+        
 
         # Set the model data and save the instance
-        transaction_data.payee_payer = payee_payer
-        transaction_data.memo = memo
-        transaction_data.date_submitted = date_submitted
-        transaction_data.transaction_type = transaction_type
+        #transaction_data.payee_payer = payee_payer
+        
+        # transaction_data.save()
 
-        transaction_data.save()
-
-    def save_item_formset(formset):
-        """Saves an Item based on provided formset data"""
+    def save_transaction_formset(formset):
+        """Saves BankTransaction based on provided formset data"""
         # Only save non-empty forms
         if formset.cleaned_data:
-            # Create an Item object
-            item_data = Item()
+            # Create an BankTransaction object
+            transaction_data = BankTransaction()
 
             # Collect the cleaned formset data
-            date_item = formset.cleaned_data["date_item"]
-            description = formset.cleaned_data["description"]
-            amount = formset.cleaned_data["amount"]
-            gst = formset.cleaned_data["gst"]
-
+            # date_item = formset.cleaned_data["date_item"]
+            
             # Set the model data and save the instance
-            item_data.transaction = transaction_data
-            item_data.date_item = date_item
-            item_data.description = description
-            item_data.amount = amount
-            item_data.gst = gst
-
-            item_data.save()
+            # item_data.transaction = transaction_data
+            
+            # item_data.save()
 
     # Setup the inline formset for the Item model
-    item_inline_formset = inlineformset_factory(
-        Transaction,
-        Item,
-        fields=("date_item", "description", "amount", "gst",),
-        extra=5,
-        min_num=1,
-        validate_min=True,
+    bank_transaction_formset = inlineformset_factory(
+        Statement,
+        BankTransaction,
+        fields=(),
+        extra=10,
         can_delete=False,
     )
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        # Create a Transaction object
-        transaction_data = Transaction()
+        # Create a Statement object
+        statement_data = Statement()
 
         # Create a form instance and populate it with data from the request (binding):
-        form = TransactionForm(request.POST, instance=transaction_data)
+        form = StatementForm(request.POST, instance=statement_data)
 
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            item_formset = item_inline_formset(
-                request.POST, instance=transaction_data
+            transaction_formset = bank_transaction_formset(
+                request.POST, instance=statement_data
             )
 
-            if item_formset.is_valid():
-                save_transaction_form(form)
+            if transaction_formset.is_valid():
+                save_statement_form(form)
 
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:
-                    save_item_formset(formset)
+                    save_transaction_formset(formset)
 
                 # redirect to a new URL:
-                messages.success(request, "Expense successfully added")
+                messages.success(request, "Statement successfully added")
 
-                return HttpResponseRedirect(reverse("transactions_dashboard"))
+                return HttpResponseRedirect(reverse("bank_dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = TransactionForm(initial={})
-        item_formset = item_inline_formset()
+        form = StatementForm(initial={})
+        item_formset = bank_transaction_formset()
 
     return render(
         request,
-        "transactions/add.html",
+        "bank_transactions/add.html",
         {
-            "page_name": t_type,
             "form": form,
             "formset": item_formset,
         },
     )
 
 @login_required
-def transaction_edit(request, t_type, transaction_id):
+def statement_edit(request, statement_id):
     """Generate and processes form to edit a financial system"""
 
     def update_transaction_form(form):
@@ -253,7 +239,7 @@ def transaction_edit(request, t_type, transaction_id):
     )
 
 @login_required
-def transaction_delete(request, t_type, transaction_id):
+def statement_delete(request, statement_id):
     """Generates and handles delete requests of a transaction"""
 
     # Get the Transaction instance

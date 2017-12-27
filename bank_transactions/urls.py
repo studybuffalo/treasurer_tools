@@ -2,26 +2,20 @@
 from django.conf.urls import url
 
 from .views import (
-    dashboard
+    dashboard, statement_add, statement_edit, statement_delete,
 )
 # pylint: disable=invalid-name
 urlpatterns = [
+    url(r"^statement/add$", statement_add, name="statement_add"),
+    url(
+        r"^statement/edit/(?P<statement_id>\d+)$",
+        statement_edit,
+        name="statement_edit"
+    ),
+    url(
+        r"^statement/delete/(?P<statement_id>\d+)$",
+        statement_delete,
+        name="statement_delete"
+    ),
     url(r"^$", dashboard, name="bank_dashboard"),
 ]
-"""
-url(
-    r"^(?P<t_type>(expense|revenue))/add$",
-    transaction_add,
-    name="transaction_add",
-),
-url(
-    r"^(?P<t_type>(expense|revenue))/edit/(?P<transaction_id>\d+)$",
-    transaction_edit,
-    name="transaction_edit",
-),
-url(
-    r"^(?P<t_type>(expense|revenue))/delete/(?P<transaction_id>\d+)$",
-    transaction_delete,
-    name="transaction_delete",
-),
-"""

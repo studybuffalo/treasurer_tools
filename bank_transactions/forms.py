@@ -2,18 +2,14 @@
 
 from django import forms
 
-from .models import Transaction, Item
+from .models import Statement
 
 
-class TransactionForm(forms.ModelForm):
+class StatementForm(forms.ModelForm):
     """Form to add and edit transactions"""
 
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
-        model = Transaction
+        model = Statement
 
-        fields = (
-            "payee_payer",
-            "memo",
-            "date_submitted",
-        )
+        fields = ()

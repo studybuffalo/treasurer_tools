@@ -4,7 +4,12 @@
     <h1>Banking</h1>
 
     {% include 'main/messages.html' %}
-
+    
+    <div>
+        <ul>
+            <li><a href="{% url 'statement_add' %}">Add new statement</a></li>
+        </ul>
+    </div>
     <div>
         <h2>Bank Transactions</h2>
         <ul>

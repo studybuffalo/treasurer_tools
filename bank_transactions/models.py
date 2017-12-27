@@ -66,6 +66,11 @@ class Statement(models.Model):
 
 class BankTransaction(models.Model):
     """Details on a single bank transactions"""
+    statement = models.ForeignKey(
+        Statement,
+        on_delete=models.CASCADE,
+        help_text="The statement this this transaction applies to",
+    )
     date_transaction = models.DateField(
         help_text="The date of the transaction",
     )
