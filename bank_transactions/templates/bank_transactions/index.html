@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Banking</h1>
+
+    {% include 'main/messages.html' %}
+
+    <div>
+        <h2>Bank Transactions</h2>
+        <ul>
+            {% for transaction in bank_transactions %}
+                <li class="expense">
+                    {{ transaction }} - 
+                    <a href="{% url 'transaction_edit' 'expense' transaction.id %}">Edit</a> -
+                    <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
