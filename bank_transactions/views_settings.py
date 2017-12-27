@@ -26,49 +26,50 @@ def settings(request):
 def institution_add(request):
     """Generates & processes form to add new bank institutions and accounts"""
 
-    def save_institution_form(form, statement_data):
+    def save_institution_form(form, institution_data):
         """Saves Institution instance based on provided form data"""
         # Collect the cleaned form fields
-        account = form.cleaned_data["account"]
-        date_start = form.cleaned_data["date_start"]
-        date_end = form.cleaned_data["date_end"]
+        name = form.cleaned_data["name"]
+        address = form.cleaned_data["address"]
+        phone = form.cleaned_data["phone"]
+        fax = form.cleaned_data["fax"]
 
         # Set the model data and save the instance
-        statement_data.account = account
-        statement_data.date_start = date_start
-        statement_data.date_end = date_end
-        
-        statement_data.save()
+        institution_data.name = name
+        institution_data.address = address
+        institution_data.phone = phone
+        institution_data.fax = fax
 
-    def save_account_formset(formset):
+        institution_data.save()
+
+    def save_account_formset(formset, institution_data):
         """Saves BankTransaction based on provided formset data"""
         # Only save non-empty forms
         if formset.cleaned_data:
             # Create an BankTransaction object
-            transaction_data = BankTransaction()
+            account_data = Account()
 
             # Collect the cleaned formset data
-            date_transaction = formset.cleaned_data["date_transaction"]
-            description_bank = formset.cleaned_data["description_bank"]
-            description_user = formset.cleaned_data["description_user"]
-            amount_debit = formset.cleaned_data["amount_debit"]
-            amount_credit = formset.cleaned_data["amount_credit"]
+            account_number = formset.cleaned_data["account_number"]
+            name = formset.cleaned_data["name"]
+            status = formset.cleaned_data["status"]
             
             # Set the model data and save the instance
-            transaction_data.date_transaction = date_transaction
-            transaction_data.description_bank = description_bank
-            transaction_data.description_user = description_user
-            transaction_data.amount_debit = amount_debit
-            transaction_data.amount_credit = amount_credit
+            account_data.institution = institution_data
+            account_data.account_number = account_number
+            account_data.name = name
+            account_data.status = status
             
-            transaction_data.save()
+            account_data.save()
 
     # Setup the inline formset for the Item model
     account_formset = inlineformset_factory(
         Institution,
         Account,
         fields=("account_number", "name", "status",),
-        extra=1,
+        min_num=1,
+        validate_min=True,
+        extra=0,
         can_delete=False,
     )
 
@@ -83,16 +84,16 @@ def institution_add(request):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            formset = account_formset(
+            formsets = account_formset(
                 request.POST, instance=institution_data
             )
 
-            if formset.is_valid():
-                save_institution_form(form, statement_data)
+            if formsets.is_valid():
+                save_institution_form(form, institution_data)
 
                 # Cycle through each item_formset and save model data
-                for formset in item_formset:
-                    save_account_formset(formset)
+                for formset in formsets:
+                    save_account_formset(formset, institution_data)
 
                 # redirect to a new URL:
                 messages.success(request, "Banking institution added")
@@ -109,7 +110,7 @@ def institution_add(request):
         "bank_settings/add.html",
         {
             "form": form,
-            "formset": formset,
+            "formsets": formsets,
         },
     )
 

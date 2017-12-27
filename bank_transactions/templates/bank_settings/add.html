@@ -4,10 +4,18 @@
 
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+
+    <style>
+        #id_address {
+            height: 50px;
+            resize: none;
+            width: 100%;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Add New Bank Statement</h1>
+    <h1>Add New Banking Institution</h1>
 
     {% include 'main/messages.html' %}
 	
@@ -37,10 +45,10 @@
             {% endfor %}
 
             <fieldset>
-                <legend>Transaction items</legend>
+                <legend>Accounts</legend>
 
-                {% for form in formset %}
-                    <div class="item-row">
+                {% for form in formsets %}
+                    <div class="account-row">
                         {% for field in form.visible_fields %}
                             {{ field.label_tag }}
 
@@ -69,13 +77,10 @@
                 {% endfor %}
                 
                 <div>
-                    <button id="add-item-row">Add item</button>
+                    <button id="add-account-row">Add item</button>
                 </div>
             </fieldset>
 
-            <fieldset>
-                <legend>Attachments</legend>
-            </fieldset>
             {{ formset.management_form }}
         </div>
         
@@ -86,8 +91,8 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/html" id="item-form-template">
-        <div class="item-row">
+    <script type="text/html" id="account-form-template">
+        <div class="account-row">
             {% for field in formset.empty_form.visible_fields %}
                 {{ field.label_tag }}
 
@@ -114,5 +119,5 @@
 
         <hr>
     </script>
-    <script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bank_settings/js/add_edit_functions.js' %}"></script>
 {% endblock %}
