@@ -217,7 +217,7 @@ def transaction_edit(request, t_type, transaction_id):
             })
         print(len(items))
         # Populate the initial formset with the item data
-        ItemInlineFormSet.extra = len(items)
+        ItemInlineFormSet.extra = len(items) - 1
         item_formset = ItemInlineFormSet(initial=initial_item_data)
 
     return render(
