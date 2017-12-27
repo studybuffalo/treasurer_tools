@@ -24,6 +24,9 @@ class Institution(models.Model):
     )
     history = HistoricalRecords()
 
+    def __str__(self):
+        return self.name
+
 class Account(models.Model):
     """A single account associated with an institution"""
     institution = models.ForeignKey(
@@ -50,6 +53,11 @@ class Account(models.Model):
     )
     history = HistoricalRecords()
 
+    def __str__(self):
+        return "{} {} ({})".format(
+            self.institution, self.account_number, self.account_number
+        )
+
 class Statement(models.Model):
     """Details on a single bank account statement"""
     account = models.ForeignKey(
@@ -64,6 +72,9 @@ class Statement(models.Model):
         help_text="The last date the statement applies to",
     )
     history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} to {} Statement".format(self.date_start, self.date_end)
 
 class BankTransaction(models.Model):
     """Details on a single bank transactions"""
@@ -94,6 +105,18 @@ class BankTransaction(models.Model):
         max_digits=12,
     )
     history = HistoricalRecords()
+
+    def __str__(self):
+        if self.description_user:
+            return_str = "{} - {}".format(
+                self.date_transaction, self.description_user
+            )
+        else:
+            return_str = "{} - {}".format(
+                self.date_transaction, self.description_bank
+            )
+
+        return return_str
 
 class AttachmentMatch(models.Model):
     """Links a transaction to one or more attachments"""
