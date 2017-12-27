@@ -79,6 +79,18 @@ class Item(models.Model):
     )
     history = HistoricalRecords
 
+    def __str__(self):
+        return "{} - {} - {}".format(
+            self.date_item, self.description, self.total
+        )
+
+    @property
+    def total(self):
+        """Calculates an item's total"""
+        total = self.amount + self.gst
+
+        return "${}".format(total)
+
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
     item = models.OneToOneField(
