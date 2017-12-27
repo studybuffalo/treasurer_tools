@@ -10,7 +10,7 @@ function add_item_row(e) {
     var replacedTemplate = template.replace(/__prefix__/g, count);
 
     // Add the replaced template after the last item-row
-    $(".item-row").eq(count - 1).after(replacedTemplate);
+    $("#form_content hr").last().after(replacedTemplate);
 
     // Update the form count
     $("#id-item_items-TOTAL_FORMS").val(count + 1);

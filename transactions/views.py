@@ -30,8 +30,7 @@ def transaction_add(request, t_type):
     ItemInlineFormSet = inlineformset_factory(
         Transaction,
         Item,
-        form=TransactionForm,
-        fields=("date_item", "description", "amount", "gst"),
+        fields=("date_item", "description", "amount", "gst",),
         extra=5,
         min_num=1,
         validate_min=True,

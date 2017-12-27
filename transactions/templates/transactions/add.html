@@ -40,8 +40,8 @@
                 <legend>Transaction items</legend>
 
                 {% for form in formset %}
-                    {% for field in form %}
-                        <div class="item-row">
+                    <div class="item-row">
+                        {% for field in form.visible_fields %}
                             {{ field.label_tag }}
 
                             <span>
@@ -58,9 +58,13 @@
                                 {% endfor %}
                             </ul>
                             {% endif %}
-                        </div>
-                    {% endfor %}
-                
+                        {% endfor %}
+
+                        {% for field in form.hidden_fields %}
+                            {{ field }}
+                        {% endfor %}
+                    </div>
+                    
                     <hr>
                 {% endfor %}
                 
@@ -81,8 +85,8 @@
 
 {% block js %}
     <script type="text/html" id="item-form-template">
-        {% for field in formset.empty_form %}
-            <div>
+        <div class="item-row">
+            {% for field in formset.empty_form.visible_fields %}
                 {{ field.label_tag }}
 
                 <span>
@@ -91,8 +95,20 @@
                 <em>
                     {{ field.help_text }}
                 </em>
-            </div>
-        {% endfor %}
+
+                {% if field.errors %}
+                <ul class="message_list">
+                    {% for error in field.errors %}
+                    <li class="level_40">{{ error|striptags }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endfor %}
+
+            {% for field in formset.empty_form.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+        </div>
 
         <hr>
     </script>
