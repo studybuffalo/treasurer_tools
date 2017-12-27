@@ -9,12 +9,12 @@ from .views_settings import (
 urlpatterns = [
     url(r"^institution/add$", institution_add, name="institution_add"),
     url(
-        r"^institution/edit/(?P<statement_id>\d+)$",
+        r"^institution/edit/(?P<institution_id>\d+)$",
         institution_edit,
         name="institution_edit"
     ),
     url(
-        r"^institution/delete/(?P<statement_id>\d+)$",
+        r"^institution/delete/(?P<institution_id>\d+)$",
         institution_delete,
         name="institution_delete"
     ),

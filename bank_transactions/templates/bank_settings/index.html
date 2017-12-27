@@ -15,7 +15,9 @@
         <ul>
             {% for institution in institutions %}
                 <li class="expense">
-                    {{ institution }}
+                    {{ institution }} - 
+                    <a href="{% url 'institution_edit' institution.id %}">Edit</a> - 
+                    <a href="{% url 'institution_delete' institution.id %}">Delete</a>
                 </li>
             {% endfor %}
         </ul>

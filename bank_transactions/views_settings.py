@@ -115,7 +115,7 @@ def institution_add(request):
     )
 
 @login_required
-def institution_edit(request, statement_id):
+def institution_edit(request, institution_id):
     """Generate and processes form to edit a financial system"""
 
     def update_transaction_form(form):
@@ -249,7 +249,7 @@ def institution_edit(request, statement_id):
     )
 
 @login_required
-def institution_delete(request, statement_id):
+def institution_delete(request, institution_id):
     """Generates and handles delete requests of a transaction"""
 
     # Get the Transaction instance
