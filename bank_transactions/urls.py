@@ -2,8 +2,9 @@
 from django.conf.urls import url
 
 from .views import (
-    dashboard, statement_add, statement_edit, statement_delete,
+    dashboard, statement_add, statement_edit, statement_delete, settings
 )
+
 # pylint: disable=invalid-name
 urlpatterns = [
     url(r"^statement/add$", statement_add, name="statement_add"),

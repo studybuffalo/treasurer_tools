@@ -6,30 +6,28 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .forms import StatementForm
-from .models import (
-    Institution, Account, Statement, BankTransaction,
-)
+from .forms import InstitutionForm
+from .models import Institution, Account
 
 @login_required
-def dashboard(request):
-    """Main dashboard to display banking functions"""
-    bank_transactions = BankTransaction.objects.all()
+def settings(request):
+    """Page to modify bank and account settings"""
+    institutions = Institution.objects.all()
 
     return render(
         request,
-        "bank_transactions/index.html",
+        "bank_settings/index.html",
         context={
-            "bank_transactions": bank_transactions,
+            "institutions": institutions,
         },
     )
 
 @login_required
-def statement_add(request):
-    """Generates and processes form to add new bank statement"""
+def institution_add(request):
+    """Generates & processes form to add new bank institutions and accounts"""
 
-    def save_statement_form(form, statement_data):
-        """Saves Statement instance based on provided form data"""
+    def save_institution_form(form, statement_data):
+        """Saves Institution instance based on provided form data"""
         # Collect the cleaned form fields
         account = form.cleaned_data["account"]
         date_start = form.cleaned_data["date_start"]
@@ -42,7 +40,7 @@ def statement_add(request):
         
         statement_data.save()
 
-    def save_transaction_formset(formset):
+    def save_account_formset(formset):
         """Saves BankTransaction based on provided formset data"""
         # Only save non-empty forms
         if formset.cleaned_data:
@@ -66,20 +64,10 @@ def statement_add(request):
             transaction_data.save()
 
     # Setup the inline formset for the Item model
-    bank_transaction_formset = inlineformset_factory(
-        Statement,
-        BankTransaction,
-        fields=(
-            "date_transaction", "description_bank", "description_user", 
-            "amount_debit", "amount_credit"
-        ),
-        labels={
-            "date_transaction": "Transaction date",
-            "description_bank": "Bank description",
-            "description_user": "Custom description",
-            "amount_debit": "Debit amount",
-            "amount_credit": "Credit amount",
-        },
+    account_formset = inlineformset_factory(
+        Institution,
+        Account,
+        fields=("account_number", "name", "status",),
         extra=1,
         can_delete=False,
     )
@@ -87,46 +75,46 @@ def statement_add(request):
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Create a Statement object
-        statement_data = Statement()
+        institution_data = Institution()
 
         # Create a form instance and populate it with data from the request (binding):
-        form = StatementForm(request.POST, instance=statement_data)
+        form = InstitutionForm(request.POST, instance=institution_data)
 
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            transaction_formset = bank_transaction_formset(
-                request.POST, instance=statement_data
+            formset = account_formset(
+                request.POST, instance=institution_data
             )
 
-            if transaction_formset.is_valid():
-                save_statement_form(form, statement_data)
+            if formset.is_valid():
+                save_institution_form(form, statement_data)
 
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:
-                    save_transaction_formset(formset)
+                    save_account_formset(formset)
 
                 # redirect to a new URL:
-                messages.success(request, "Statement successfully added")
+                messages.success(request, "Banking institution added")
 
-                return HttpResponseRedirect(reverse("bank_dashboard"))
+                return HttpResponseRedirect(reverse("bank_settings"))
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = StatementForm(initial={})
-        item_formset = bank_transaction_formset()
+        form = InstitutionForm(initial={})
+        formset = account_formset()
 
     return render(
         request,
-        "bank_transactions/add.html",
+        "bank_settings/add.html",
         {
             "form": form,
-            "formset": item_formset,
+            "formset": formset,
         },
     )
 
 @login_required
-def statement_edit(request, statement_id):
+def institution_edit(request, statement_id):
     """Generate and processes form to edit a financial system"""
 
     def update_transaction_form(form):
@@ -260,7 +248,7 @@ def statement_edit(request, statement_id):
     )
 
 @login_required
-def statement_delete(request, statement_id):
+def institution_delete(request, statement_id):
     """Generates and handles delete requests of a transaction"""
 
     # Get the Transaction instance
@@ -281,18 +269,5 @@ def statement_delete(request, statement_id):
         {
             "page_name": t_type,
             "title": transaction
-        },
-    )
-
-@login_required
-def settings(request):
-    """Page to modify bank and account settings"""
-    institutions = Institution.objects.all()
-
-    return render(
-        request,
-        "bank_transactions/settings.html",
-        context={
-            "institutions": institutions,
         },
     )

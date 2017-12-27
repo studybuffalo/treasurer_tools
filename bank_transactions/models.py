@@ -44,6 +44,7 @@ class Account(models.Model):
             ("a", "Active"),
             ("i", "Inactive"),
         ),
+        default="a",
         help_text="The account status",
         max_length=1,
     )
