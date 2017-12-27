@@ -41,7 +41,7 @@ class Transaction(models.Model):
         # pylint: disable=unsubscriptable-object
         if self.transaction_type == "e":
             return_string = "{} - Expense - {} - {}".format(
-                self.date_submitted,self.payee_payer, self.memo[:100]
+                self.date_submitted, self.payee_payer, self.memo[:100]
             )
         elif self.transaction_type == "r":
             return_string = "{} - Revenue - {} - {}".format(

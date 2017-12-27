@@ -25,9 +25,47 @@ def dashboard(request):
 @login_required
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
-    
+
+    def save_transaction_form(form):
+        """Saves Transasction instance based on provided form data"""
+        # Collect the cleaned form fields
+        payee_payer = form.cleaned_data["payee_payer"]
+        memo = form.cleaned_data["memo"]
+        date_submitted = form.cleaned_data["date_submitted"]
+        transaction_type = "e" if t_type == "expense" else "r"
+
+        # Set the model data and save the instance
+        transaction_data.payee_payer = payee_payer
+        transaction_data.memo = memo
+        transaction_data.date_submitted = date_submitted
+        transaction_data.transaction_type = transaction_type
+
+        transaction_data.save()
+
+    def save_item_formset(formset):
+        """Saves an Item based on provided formset data"""
+        # Only save non-empty forms
+        if formset.cleaned_data:
+            # Create an Item object
+            item_data = Item()
+
+            # Collect the cleaned formset data
+            date_item = formset.cleaned_data["date_item"]
+            description = formset.cleaned_data["description"]
+            amount = formset.cleaned_data["amount"]
+            gst = formset.cleaned_data["gst"]
+
+            # Set the model data and save the instance
+            item_data.transaction = transaction_data
+            item_data.date_item = date_item
+            item_data.description = description
+            item_data.amount = amount
+            item_data.gst = gst
+
+            item_data.save()
+
     # Setup the inline formset for the Item model
-    ItemInlineFormSet = inlineformset_factory(
+    item_inline_formset = inlineformset_factory(
         Transaction,
         Item,
         fields=("date_item", "description", "amount", "gst",),
@@ -48,44 +86,16 @@ def transaction_add(request, t_type):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            item_formset = ItemInlineFormSet(request.POST, instance=transaction_data)
+            item_formset = item_inline_formset(
+                request.POST, instance=transaction_data
+            )
 
             if item_formset.is_valid():
-                # Collect the cleaned form fields
-                payee_payer = form.cleaned_data["payee_payer"]
-                memo = form.cleaned_data["memo"]
-                date_submitted = form.cleaned_data["date_submitted"]
-                transaction_type = "e" if t_type == "expense" else "r"
+                save_transaction_form(form)
 
-                # Set the model data and save the instance
-                transaction_data.payee_payer = payee_payer
-                transaction_data.memo = memo
-                transaction_data.date_submitted = date_submitted
-                transaction_data.transaction_type = transaction_type
-
-                transaction_data.save()
-                
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:
-                    # Only save non-empty forms
-                    if formset.cleaned_data:
-                        # Create an Item object
-                        item_data = Item()
-
-                        # Collect the cleaned formset data
-                        date_item = formset.cleaned_data["date_item"]
-                        description = formset.cleaned_data["description"]
-                        amount = formset.cleaned_data["amount"]
-                        gst = formset.cleaned_data["gst"]
-
-                        # Set the model data and save the instance
-                        item_data.transaction = transaction_data
-                        item_data.date_item = date_item
-                        item_data.description = description
-                        item_data.amount = amount
-                        item_data.gst = gst
-
-                        item_data.save()
+                    save_item_formset(formset)
 
                 # redirect to a new URL:
                 messages.success(request, "Expense successfully added")
@@ -95,8 +105,8 @@ def transaction_add(request, t_type):
     # If this is a GET (or any other method) create the default form.
     else:
         form = TransactionForm(initial={})
-        item_formset = ItemInlineFormSet()
-    
+        item_formset = item_inline_formset()
+
     return render(
         request,
         "transactions/add.html",
@@ -110,9 +120,64 @@ def transaction_add(request, t_type):
 @login_required
 def transaction_edit(request, t_type, transaction_id):
     """Generate and processes form to edit a financial system"""
-    
+
+    def update_transaction_form(form):
+        """Updates transaction based on the provided form"""
+
+        # Collect the cleaned form fields
+        payee_payer = form.cleaned_data["payee_payer"]
+        memo = form.cleaned_data["memo"]
+        date_submitted = form.cleaned_data["date_submitted"]
+        transaction_type = "e" if t_type == "expense" else "r"
+
+        # Set the model data and save the instance
+        transaction_data.payee_payer = payee_payer
+        transaction_data.memo = memo
+        transaction_data.date_submitted = date_submitted
+        transaction_data.transaction_type = transaction_type
+
+        transaction_data.save()
+
+    def update_item_formset(formset):
+        """Create/updates an Item based on the provided formset"""
+        # Only save non-empty forms
+        if formset.cleaned_data:
+            # Check if this item is marked for deletion
+            can_delete = formset.cleaned_data["DELETE"]
+
+            # Get this item ID
+            if formset.cleaned_data["id"]:
+                item_exists = True
+
+                # Retrieve item reference
+                item_data = Item.objects.get(
+                    id=formset.cleaned_data["id"].id
+                )
+            else:
+                item_exists = False
+                item_data = Item()
+
+            if can_delete and item_exists:
+                # Delete the retrieved item
+                item_data.delete()
+            else:
+                # Collect the cleaned formset data
+                date_item = formset.cleaned_data["date_item"]
+                description = formset.cleaned_data["description"]
+                amount = formset.cleaned_data["amount"]
+                gst = formset.cleaned_data["gst"]
+
+                # Set the model data and save the instance
+                item_data.transaction = transaction_data
+                item_data.date_item = date_item
+                item_data.description = description
+                item_data.amount = amount
+                item_data.gst = gst
+
+                item_data.save()
+
     # Setup the inline formset for the Item model
-    ItemInlineFormSet = inlineformset_factory(
+    item_inline_formset = inlineformset_factory(
         Transaction,
         Item,
         form=TransactionForm,
@@ -133,61 +198,17 @@ def transaction_edit(request, t_type, transaction_id):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            item_formset = ItemInlineFormSet(request.POST, instance=transaction_data)
+            item_formset = item_inline_formset(
+                request.POST, instance=transaction_data
+            )
 
             if item_formset.is_valid():
-                # Collect the cleaned form fields
-                payee_payer = form.cleaned_data["payee_payer"]
-                memo = form.cleaned_data["memo"]
-                date_submitted = form.cleaned_data["date_submitted"]
-                transaction_type = "e" if t_type == "expense" else "r"
+                update_transaction_form(form)
 
-                # Set the model data and save the instance
-                transaction_data.payee_payer = payee_payer
-                transaction_data.memo = memo
-                transaction_data.date_submitted = date_submitted
-                transaction_data.transaction_type = transaction_type
-
-                transaction_data.save()
-                
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:
-                    # Only save non-empty forms
-                    if formset.cleaned_data:
-                        # Check if this item is marked for deletion
-                        can_delete = formset.cleaned_data["DELETE"]
+                    update_item_formset(formset)
 
-                        # Get this item ID
-                        if formset.cleaned_data["id"]:
-                            item_exists = True
-
-                            # Retrieve item reference
-                            item_data = Item.objects.get(
-                                id=formset.cleaned_data["id"].id
-                            )
-                        else:
-                            item_exists = False
-                            item_data = Item()
-
-                        if can_delete and item_exists:
-                            # Delete the retrieved item
-                            item_data.delete()
-                        else:
-                            # Collect the cleaned formset data
-                            date_item = formset.cleaned_data["date_item"]
-                            description = formset.cleaned_data["description"]
-                            amount = formset.cleaned_data["amount"]
-                            gst = formset.cleaned_data["gst"]
-
-                            # Set the model data and save the instance
-                            item_data.transaction = transaction_data
-                            item_data.date_item = date_item
-                            item_data.description = description
-                            item_data.amount = amount
-                            item_data.gst = gst
-
-                            item_data.save()
-                            
                 # redirect to a new URL:
                 messages.success(request, "Expense successfully edited")
 
@@ -217,8 +238,8 @@ def transaction_edit(request, t_type, transaction_id):
             })
         print(len(items))
         # Populate the initial formset with the item data
-        ItemInlineFormSet.extra = len(items) - 1
-        item_formset = ItemInlineFormSet(initial=initial_item_data)
+        item_inline_formset.extra = len(items) - 1
+        item_formset = item_inline_formset(initial=initial_item_data)
 
     return render(
         request,
@@ -233,7 +254,7 @@ def transaction_edit(request, t_type, transaction_id):
 @login_required
 def transaction_delete(request, t_type, transaction_id):
     """Generates and handles delete requests of a transaction"""
-    
+
     # Get the Transaction instance
     transaction = get_object_or_404(Transaction, id=transaction_id)
 
@@ -245,7 +266,7 @@ def transaction_delete(request, t_type, transaction_id):
         messages.success(request, "Transaction deleted")
 
         return HttpResponseRedirect(reverse("transactions_dashboard"))
-    
+
     return render(
         request,
         "transactions/delete.html",
