@@ -27,7 +27,7 @@
                 {% if transaction.transaction_type == "e" %}
                     <li class="expense">
                         {{ transaction }} - 
-                        <a href="">Edit</a> -
+                        <a href="{% url 'transaction_edit' 'expense' transaction.id %}">Edit</a> -
                         <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
                         <ul>
                             {% for item in transaction.item_set.all %}
@@ -38,7 +38,7 @@
                 {% elif transaction.transaction_type == "r" %}
                     <li class="revenue">
                         {{ transaction }} - 
-                        <a href="">Edit</a> -
+                        <a href="{% url 'transaction_edit' 'revenue' transaction.id %}">Edit</a> -
                         <a href="{% url 'transaction_delete' 'revenue' transaction.id %}">Delete</a>
                         <ul>
                             {% for item in transaction.item_set.all %}

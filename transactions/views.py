@@ -40,8 +40,6 @@ def transaction_add(request, t_type):
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        print(request.POST)
-
         # Create a Transaction object
         transaction_data = Transaction()
 
@@ -111,49 +109,125 @@ def transaction_add(request, t_type):
     )
 
 @login_required
-def transaction_edit(request, transaction_type, expense_id):
+def transaction_edit(request, t_type, transaction_id):
     """Generate and processes form to edit a financial system"""
-    """
+    
+    # Setup the inline formset for the Item model
+    ItemInlineFormSet = inlineformset_factory(
+        Transaction,
+        Item,
+        form=TransactionForm,
+        fields=("date_item", "description", "amount", "gst"),
+        min_num=1,
+        validate_min=True,
+        can_delete=True,
+    )
+
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
+        # Get the transaction object
+        transaction_data = get_object_or_404(Transaction, id=transaction_id)
 
         # Create a form instance and populate it with data from the request (binding):
-        form = FinancialCodeSystemForm(request.POST, instance=system_data)
+        form = TransactionForm(request.POST, instance=transaction_data)
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            title = form.cleaned_data["title"]
-            status = form.cleaned_data["status"]
+            # Create a item form instance and provide it the transaction object
+            item_formset = ItemInlineFormSet(request.POST, instance=transaction_data)
 
-            # Update the Financial Systems object
-            system_data.title = title
-            system_data.status = status
+            if item_formset.is_valid():
+                # Collect the cleaned form fields
+                payee_payer = form.cleaned_data["payee_payer"]
+                memo = form.cleaned_data["memo"]
+                date_submitted = form.cleaned_data["date_submitted"]
+                transaction_type = "e" if t_type == "expense" else "r"
 
-            system_data.save()
+                # Set the model data and save the instance
+                transaction_data.payee_payer = payee_payer
+                transaction_data.memo = memo
+                transaction_data.date_submitted = date_submitted
+                transaction_data.transaction_type = transaction_type
 
-            # redirect to a new URL:
-            messages.success(request, "Financial code system successfully edited")
+                transaction_data.save()
+                
+                # Cycle through each item_formset and save model data
+                for formset in item_formset:
+                    # Only save non-empty forms
+                    if formset.cleaned_data:
+                        # Check if this item is marked for deletion
+                        can_delete = formset.cleaned_data["DELETE"]
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+                        # Get this item ID
+                        if formset.cleaned_data["id"]:
+                            item_exists = True
 
-    # If this is a GET (or any other method) populate the default form.
+                            # Retrieve item reference
+                            item_data = Item.objects.get(
+                                id=formset.cleaned_data["id"].id
+                            )
+                        else:
+                            item_exists = False
+                            item_data = Item()
+
+                        if can_delete and item_exists:
+                            # Delete the retrieved item
+                            item_data.delete()
+                        else:
+                            # Collect the cleaned formset data
+                            date_item = formset.cleaned_data["date_item"]
+                            description = formset.cleaned_data["description"]
+                            amount = formset.cleaned_data["amount"]
+                            gst = formset.cleaned_data["gst"]
+
+                            # Set the model data and save the instance
+                            item_data.transaction = transaction_data
+                            item_data.date_item = date_item
+                            item_data.description = description
+                            item_data.amount = amount
+                            item_data.gst = gst
+
+                            item_data.save()
+                            
+                # redirect to a new URL:
+                messages.success(request, "Expense successfully edited")
+
+                return HttpResponseRedirect(reverse("transactions_dashboard"))
+
+    # If this is a GET (or any other method) create populated forms
     else:
-        # Get initial form data
-        system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
-
-        form = FinancialCodeSystemForm(initial={
-            "title": system_data.title,
-            "status": system_data.status,
+        # Populate the initial transaction data
+        transaction_data = get_object_or_404(Transaction, id=transaction_id)
+        form = TransactionForm(initial={
+            "payee_payer": transaction_data.payee_payer,
+            "memo": transaction_data.memo,
+            "date_submitted": transaction_data.date_submitted
         })
-    """
+
+        # Create dictionary of item data
+        items = transaction_data.item_set.all()
+        initial_item_data = []
+
+        for item in items:
+            initial_item_data.append({
+                "id": item.id,
+                "date_item": item.date_item,
+                "description": item.description,
+                "amount": item.amount,
+                "gst": item.gst
+            })
+        print(len(items))
+        # Populate the initial formset with the item data
+        ItemInlineFormSet.extra = len(items)
+        item_formset = ItemInlineFormSet(initial=initial_item_data)
+
     return render(
         request,
         "transactions/edit.html",
         {
-            "page_name": "expense",
+            "page_name": t_type,
             "form": form,
+            "formset": item_formset,
         },
     )
 
