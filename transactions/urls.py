@@ -12,12 +12,12 @@ urlpatterns = [
         name="transaction_add",
     ),
     url(
-        r"^(?P<transaction_type>(expense|revenue))/edit/(?P<system_id>\d+)$",
+        r"^(?P<t_type>(expense|revenue))/edit/(?P<transaction_id>\d+)$",
         transaction_edit,
         name="transaction_edit",
     ),
     url(
-        r"^(?P<transaction_type>(expense|revenue))/delete/(?P<system_id>\d+)$",
+        r"^(?P<t_type>(expense|revenue))/delete/(?P<transaction_id>\d+)$",
         transaction_delete,
         name="transaction_delete",
     ),

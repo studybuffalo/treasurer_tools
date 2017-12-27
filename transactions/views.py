@@ -26,6 +26,7 @@ def dashboard(request):
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
     
+    # Setup the inline formset for the Item model
     ItemInlineFormSet = inlineformset_factory(
         Transaction,
         Item,
@@ -157,26 +158,26 @@ def transaction_edit(request, transaction_type, expense_id):
     )
 
 @login_required
-def transaction_delete(request, transaction_type, expense_id):
-    """Generates and handles delete requests of financial system"""
-    """
-    # Get the FinancialSystem instance for this user
-    system = get_object_or_404(FinancialCodeSystem, id=system_id)
+def transaction_delete(request, t_type, transaction_id):
+    """Generates and handles delete requests of a transaction"""
+    
+    # Get the Transaction instance
+    transaction = get_object_or_404(Transaction, id=transaction_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        system.delete()
+        transaction.delete()
 
         # Redirect back to main list
-        messages.success(request, "Financial code system deleted")
+        messages.success(request, "Transaction deleted")
 
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
-    """
+        return HttpResponseRedirect(reverse("transactions_dashboard"))
+    
     return render(
         request,
-        "financial_codes/delete.html",
+        "transactions/delete.html",
         {
-            "page_name": "expense",
-            "title": system.title,
+            "page_name": t_type,
+            "title": transaction
         },
     )
