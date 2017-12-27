@@ -13,7 +13,7 @@ function add_item_row(e) {
     $("#form_content hr").last().after(replacedTemplate);
 
     // Update the form count
-    $("#id-item_items-TOTAL_FORMS").val(count + 1);
+    $("#id_item_set-TOTAL_FORMS").val(count + 1);
 }
 
 $(document).ready(function () {
