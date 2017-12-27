@@ -26,7 +26,7 @@ def dashboard(request):
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
 
-    def save_transaction_form(form):
+    def save_transaction_form(form, transaction_data):
         """Saves Transasction instance based on provided form data"""
         # Collect the cleaned form fields
         payee_payer = form.cleaned_data["payee_payer"]
@@ -91,7 +91,7 @@ def transaction_add(request, t_type):
             )
 
             if item_formset.is_valid():
-                save_transaction_form(form)
+                save_transaction_form(form, transaction_data)
 
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:
@@ -121,7 +121,7 @@ def transaction_add(request, t_type):
 def transaction_edit(request, t_type, transaction_id):
     """Generate and processes form to edit a financial system"""
 
-    def update_transaction_form(form):
+    def update_transaction_form(form, transaction_data):
         """Updates transaction based on the provided form"""
 
         # Collect the cleaned form fields
@@ -203,7 +203,7 @@ def transaction_edit(request, t_type, transaction_id):
             )
 
             if item_formset.is_valid():
-                update_transaction_form(form)
+                update_transaction_form(form, transaction_data)
 
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:

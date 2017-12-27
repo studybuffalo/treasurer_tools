@@ -28,16 +28,19 @@ def dashboard(request):
 def statement_add(request):
     """Generates and processes form to add new bank statement"""
 
-    def save_statement_form(form):
+    def save_statement_form(form, statement_data):
         """Saves Statement instance based on provided form data"""
         # Collect the cleaned form fields
-        # payee_payer = form.cleaned_data["payee_payer"]
-        
+        account = form.cleaned_data["account"]
+        date_start = form.cleaned_data["date_start"]
+        date_end = form.cleaned_data["date_end"]
 
         # Set the model data and save the instance
-        #transaction_data.payee_payer = payee_payer
+        statement_data.account = account
+        statement_data.date_start = date_start
+        statement_data.date_end = date_end
         
-        # transaction_data.save()
+        statement_data.save()
 
     def save_transaction_formset(formset):
         """Saves BankTransaction based on provided formset data"""
@@ -47,19 +50,37 @@ def statement_add(request):
             transaction_data = BankTransaction()
 
             # Collect the cleaned formset data
-            # date_item = formset.cleaned_data["date_item"]
+            date_transaction = formset.cleaned_data["date_transaction"]
+            description_bank = formset.cleaned_data["description_bank"]
+            description_user = formset.cleaned_data["description_user"]
+            amount_debit = formset.cleaned_data["amount_debit"]
+            amount_credit = formset.cleaned_data["amount_credit"]
             
             # Set the model data and save the instance
-            # item_data.transaction = transaction_data
+            transaction_data.date_transaction = date_transaction
+            transaction_data.description_bank = description_bank
+            transaction_data.description_user = description_user
+            transaction_data.amount_debit = amount_debit
+            transaction_data.amount_credit = amount_credit
             
-            # item_data.save()
+            transaction_data.save()
 
     # Setup the inline formset for the Item model
     bank_transaction_formset = inlineformset_factory(
         Statement,
         BankTransaction,
-        fields=(),
-        extra=10,
+        fields=(
+            "date_transaction", "description_bank", "description_user", 
+            "amount_debit", "amount_credit"
+        ),
+        labels={
+            "date_transaction": "Transaction date",
+            "description_bank": "Bank description",
+            "description_user": "Custom description",
+            "amount_debit": "Debit amount",
+            "amount_credit": "Credit amount",
+        },
+        extra=1,
         can_delete=False,
     )
 
@@ -79,7 +100,7 @@ def statement_add(request):
             )
 
             if transaction_formset.is_valid():
-                save_statement_form(form)
+                save_statement_form(form, statement_data)
 
                 # Cycle through each item_formset and save model data
                 for formset in item_formset:

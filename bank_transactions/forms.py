@@ -12,4 +12,8 @@ class StatementForm(forms.ModelForm):
     class Meta:
         model = Statement
 
-        fields = ()
+        fields = ("account", "date_start", "date_end")
+        labels = {
+            "date_start": "Start date",
+            "date_end": "End date",
+        }
