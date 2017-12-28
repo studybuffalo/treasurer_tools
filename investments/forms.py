@@ -12,4 +12,4 @@ class InvestmentForm(forms.ModelForm):
     class Meta:
         model = Investment
 
-        fields = ()
+        fields = ("name", "date_invested", "amount", "rate")
