@@ -1,7 +1,6 @@
 """Views for the investment app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -34,7 +33,7 @@ def investment_add(request):
         date_invested = form.cleaned_data["date_invested"]
         amount = form.cleaned_data["amount"]
         rate = form.cleaned_data["rate"]
-        
+
         # Set the model data and save the instance
         investment_data.name = name
         investment_data.date_invested = date_invested
@@ -83,7 +82,7 @@ def investment_edit(request, investment_id):
         date_invested = form.cleaned_data["date_invested"]
         amount = form.cleaned_data["amount"]
         rate = form.cleaned_data["rate"]
-        
+
         # Set the model data and save the instance
         investment_data.name = name
         investment_data.date_invested = date_invested
