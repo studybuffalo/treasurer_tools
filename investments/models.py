@@ -24,3 +24,6 @@ class Investment(models.Model):
         max_length=256,
     )
     history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} - {}".format(self.date_invested, self.name)
