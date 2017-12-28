@@ -4,26 +4,51 @@ from django.test import TestCase
 
 from payee_payer.models import Country, Demographics
 
+class CountryModelTest(TestCase):
+    """Test functions for the Demographics model"""
+    # pylint: disable=no-member,protected-access
+    fixtures = ["payee_payer/tests/fixtures/country.json"]
+
+    def test_country_verbose_name_plural(self):
+        """Tests for expected model verbose name"""
+        country = Country.objects.get(id=1)
+
+        self.assertEqual(
+            country._meta.verbose_name_plural,
+            "countries"
+        )
+
+    def test_country_code_label(self):
+        """Tests for expected country code label"""
+        country = Country.objects.get(country_code="CA")
+
+        self.assertEqual(
+            country._meta.get_field("country_code").verbose_name,
+            "country code"
+        )
+
+    def test_country_name_label(self):
+        """Tests for expected country name label"""
+        country = Country.objects.get(country_code="CA")
+
+        self.assertEqual(
+            country._meta.get_field("country_name").verbose_name,
+            "country name"
+        )
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        country = Country.objects.get(country_code="CA")
+        self.assertEqual(str(country), country.country_name)
+
 class DemographicsModelTest(TestCase):
     """Test functions for the Demographics model"""
     # pylint: disable=no-member,protected-access
 
-    @classmethod
-    def setUpTestData(cls):
-        # Setup country data for testing
-        Country.objects.create(country_code="CA", country_name="Canada")
-        Demographics.objects.create(
-            name="Joshua Torrance",
-            address="111-2222 Test Street",
-            city="Vancouver",
-            province="British Columbia",
-            country=Country.objects.create(id=0),
-            postal_code="V1V 1V1",
-            phone="111-222-3333",
-            fax="444-555-6666",
-            email="test@email.com",
-            status="a",
-        )
+    fixtures = [
+        "payee_payer/tests/fixtures/country.json",
+        "payee_payer/tests/fixtures/demographics.json"
+    ]
 
     def test_labels(self):
         """Tests a series of fields for proper label generation"""
@@ -66,39 +91,3 @@ class DemographicsModelTest(TestCase):
         """Tests that the model string representaton returns as expected"""
         payee_payer = Demographics.objects.get(id=1)
         self.assertEqual(str(payee_payer), payee_payer.name)
-
-class CountryModelTest(TestCase):
-    """Test functions for the Demographics model"""
-    # pylint: disable=no-member,protected-access
-
-    @classmethod
-    def setUpTestData(cls):
-        # Setup country data for testing
-        Country.objects.create(country_code="CA", country_name="Canada")
-
-    def test_country_verbose_name_plural(self):
-        """Tests for expected model verbose name"""
-        country = Country.objects.get(id=1)
-
-        self.assertEqual(
-            country._meta.verbose_name_plural,
-            "countries"
-        )
-
-    def test_country_code_label(self):
-        """Tests for expected country code label"""
-        country = Country.objects.get(id=1)
-
-        self.assertEqual(
-            country._meta.get_field("country_code").verbose_name,
-            "country code"
-        )
-
-    def test_country_name_label(self):
-        """Tests for expected country name label"""
-        country = Country.objects.get(id=1)
-
-        self.assertEqual(
-            country._meta.get_field("country_name").verbose_name,
-            "country name"
-        )

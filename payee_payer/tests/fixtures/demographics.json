@@ -1,0 +1,19 @@
+[
+    {
+    "model": "payee_payer.demographics",
+    "pk": 1,
+    "fields": {
+      "user": null,
+      "name": "Joshua Torrance",
+      "address": "111-2222 Fake Street",
+      "city": "Edmonton",
+      "province": "Alberta",
+      "country": 37,
+      "postal_code": "T1T 1T1",
+      "phone": "403-123-1234",
+      "fax": "403-123-1234",
+      "email": "test@email.com",
+      "status": "a"
+    }
+  }
+]
