@@ -15,7 +15,7 @@ class CountryModelTest(TestCase):
 
     def test_country_order(self):
         """Tests for countries in proper sorted order"""
-        correct_order = False
+        correct_order = True
 
         # Create a list of the database values
         db_list = sorted(Country.objects.all().values_list("country_name"))
@@ -34,13 +34,10 @@ class CountryModelTest(TestCase):
         # Check if the two lists match in length
         if len(form_list) == len(db_list):
             # Check if the two lists match in values
-            list_match = True
-
             for i in range(0, len(form_list)):
                 if form_list[i] != db_list[i][0]:
-                    list_match = False
-
-            if list_match:
-                correct_order = True
+                    correct_order = False
+        else:
+            correct_order = False
 
         self.assertTrue(correct_order)
