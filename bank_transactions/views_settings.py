@@ -252,22 +252,21 @@ def institution_delete(request, institution_id):
     """Generates and handles delete requests of a transaction"""
 
     # Get the Transaction instance
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    institution_date = get_object_or_404(Institution, id=institution_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        transaction.delete()
+        institution_date.delete()
 
         # Redirect back to main list
-        messages.success(request, "Transaction deleted")
+        messages.success(request, "Institution and accounts deleted")
 
-        return HttpResponseRedirect(reverse("transactions_dashboard"))
+        return HttpResponseRedirect(reverse("bank_settings"))
 
     return render(
         request,
-        "transactions/delete.html",
+        "bank_settings/delete.html",
         {
-            "page_name": t_type,
-            "title": transaction
+            "title": institution_date,
         },
     )
