@@ -6,7 +6,8 @@ from payee_payer.models import Country, Demographics
 
 class DemographicsModelTest(TestCase):
     """Test functions for the Demographics model"""
-    
+    # pylint: disable=no-member,protected-access
+
     @classmethod
     def setUpTestData(cls):
         # Setup country data for testing
@@ -42,7 +43,7 @@ class DemographicsModelTest(TestCase):
         for test_item in test_list:
             payee_payer = Demographics.objects.get(id=1)
             field_label = payee_payer._meta.get_field(test_item["field_name"]).verbose_name
-            self.assertEquals(field_label, test_item["label_name"])
+            self.assertEqual(field_label, test_item["label_name"])
 
     def test_max_length(self):
         """Tests a series of fields for proper max length"""
@@ -59,40 +60,45 @@ class DemographicsModelTest(TestCase):
         for test_item in test_list:
             payee_payer = Demographics.objects.get(id=1)
             max_length = payee_payer._meta.get_field(test_item["field_name"]).max_length
-            self.assertEquals(max_length, test_item["max_length"])
+            self.assertEqual(max_length, test_item["max_length"])
 
     def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
         payee_payer = Demographics.objects.get(id=1)
         self.assertEqual(str(payee_payer), payee_payer.name)
 
 class CountryModelTest(TestCase):
     """Test functions for the Demographics model"""
-    
+    # pylint: disable=no-member,protected-access
+
     @classmethod
     def setUpTestData(cls):
         # Setup country data for testing
         Country.objects.create(country_code="CA", country_name="Canada")
-        
+
     def test_country_verbose_name_plural(self):
+        """Tests for expected model verbose name"""
         country = Country.objects.get(id=1)
-        
-        self.assertEquals(
-            country._meta.verbose_name_plural, 
+
+        self.assertEqual(
+            country._meta.verbose_name_plural,
             "countries"
         )
 
     def test_country_code_label(self):
+        """Tests for expected country code label"""
         country = Country.objects.get(id=1)
-        
-        self.assertEquals(
-            country._meta.get_field("country_code").verbose_name, 
+
+        self.assertEqual(
+            country._meta.get_field("country_code").verbose_name,
             "country code"
         )
 
     def test_country_name_label(self):
+        """Tests for expected country name label"""
         country = Country.objects.get(id=1)
-        
-        self.assertEquals(
-            country._meta.get_field("country_name").verbose_name, 
+
+        self.assertEqual(
+            country._meta.get_field("country_name").verbose_name,
             "country name"
         )
