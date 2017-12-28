@@ -20,12 +20,16 @@ def dashboard(request):
         context={},
     )
 
-class RequestPayeePayers(LoginRequiredMixin, generic.ListView):
+@login_required
+def request_payee_payers(request):
     """List of all payee/payers"""
-
-    model = Demographics
-    context_object_name = "payee_payer_list"
-    template_name = "payee_payer/payee_payer_list.html"
+    return render(
+        request,
+        "payee_payer/payee_payer_list.html",
+        context={
+            "payee_payer_list": Demographics.objects.all(),
+        }
+    )
 
 @login_required
 def add_payee_payer(request):
