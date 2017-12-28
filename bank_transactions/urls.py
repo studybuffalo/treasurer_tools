@@ -2,7 +2,7 @@
 from django.conf.urls import url
 
 from .views import (
-    dashboard, statement_add, statement_edit, statement_delete, settings
+    dashboard, statement_add, statement_edit, statement_delete
 )
 
 # pylint: disable=invalid-name

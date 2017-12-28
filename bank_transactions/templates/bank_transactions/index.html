@@ -11,13 +11,22 @@
         </ul>
     </div>
     <div>
-        <h2>Bank Transactions</h2>
+        <h2>Bank Statements</h2>
         <ul>
-            {% for transaction in bank_transactions %}
+            {% for statement in statements %}
                 <li class="expense">
-                    {{ transaction }} - 
-                    <a href="{% url 'transaction_edit' 'expense' transaction.id %}">Edit</a> -
-                    <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
+                    {{ statement }} - 
+                    <a href="{% url 'statement_edit' statement.id %}">Edit</a> -
+                    <a href="{% url 'statement_delete' statement.id %}">Delete</a>
+                    <ul>
+                        {% for transaction in statement.banktransaction_set.all %}
+                            <li>
+                                {{ transaction }} -
+                                ${{ transaction.amount_debit }} -
+                                ${{ transaction.amount_credit }}
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </li>
             {% endfor %}
         </ul>
