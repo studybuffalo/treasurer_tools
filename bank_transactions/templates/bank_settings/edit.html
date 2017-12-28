@@ -16,24 +16,25 @@
 
     <div id="form_content">
         {% for field in form %}
-        <div>
-            {{ field.label_tag }}
+            <div>
+                {{ field.label_tag }}
 
-            <span>
-                {{ field }}
-            </span>
-            <em>
-                {{ field.help_text }}
-            </em>
+                <span>
+                    {{ field }}
+                </span>
 
-            {% if field.errors %}
-            <ul class="message_list">
-                {% for error in field.errors %}
-                <li class="level_40">{{ error|striptags }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
+                <em>
+                    {{ field.help_text }}
+                </em>
+
+                {% if field.errors %}
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                            <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         {% endfor %}
 
         <fieldset>
@@ -42,22 +43,23 @@
             {% for form in formsets %}
                 <div class="account-row">
                     {% for field in form.visible_fields %}
-                    {{ field.label_tag }}
+                        {{ field.label_tag }}
 
-                    <span>
-                        {{ field }}
-                    </span>
-                    <em>
-                        {{ field.help_text }}
-                    </em>
+                        <span>
+                            {{ field }}
+                        </span>
 
-                    {% if field.errors %}
-                    <ul class="message_list">
-                        {% for error in field.errors %}
-                        <li class="level_40">{{ error|striptags }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
+                        <em>
+                            {{ field.help_text }}
+                        </em>
+
+                        {% if field.errors %}
+                            <ul class="message_list">
+                                {% for error in field.errors %}
+                                 <li class="level_40">{{ error|striptags }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     {% endfor %}
 
                     {% for field in form.hidden_fields %}
@@ -104,7 +106,7 @@
             {% endif %}
         {% endfor %}
 
-        {% for field in formset.empty_form.hidden_fields %}
+        {% for field in formsets.empty_form.hidden_fields %}
             {{ field }}
         {% endfor %}
     </div>
