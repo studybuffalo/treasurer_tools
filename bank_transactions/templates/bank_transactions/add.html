@@ -16,31 +16,31 @@
 
         <div id="form_content">
             {% for field in form %}
-            <div>
-                {{ field.label_tag }}
+                <div>
+                    {{ field.label_tag }}
 
-                <span>
-                    {{ field }}
-                </span>
-                <em>
-                    {{ field.help_text }}
-                </em>
+                    <span>
+                        {{ field }}
+                    </span>
+                    <em>
+                        {{ field.help_text }}
+                    </em>
 
-                {% if field.errors %}
-                <ul class="message_list">
-                    {% for error in field.errors %}
-                    <li class="level_40">{{ error|striptags }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
+                    {% if field.errors %}
+                        <ul class="message_list">
+                            {% for error in field.errors %}
+                                <li class="level_40">{{ error|striptags }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             {% endfor %}
 
             <fieldset>
                 <legend>Transaction items</legend>
 
-                {% for form in formset %}
-                    <div class="item-row">
+                {% for form in formsets %}
+                    <div class="bank-transaction-row">
                         {% for field in form.visible_fields %}
                             {{ field.label_tag }}
 
@@ -69,26 +69,27 @@
                 {% endfor %}
                 
                 <div>
-                    <button id="add-item-row">Add item</button>
+                    <button id="add-bank-transaction-row">Add item</button>
                 </div>
             </fieldset>
 
             <fieldset>
                 <legend>Attachments</legend>
             </fieldset>
-            {{ formset.management_form }}
+
+            {{ formsets.management_form }}
         </div>
         
         <div class="right_align">
-            <button type="submit">Add new {{ page_name|lower }}</button>
+            <button type="submit">Add additional transaction</button>
         </div>
     </form>
 {% endblock %}
 
 {% block js %}
-    <script type="text/html" id="item-form-template">
-        <div class="item-row">
-            {% for field in formset.empty_form.visible_fields %}
+    <script type="text/html" id="bank-transaction-form-template">
+        <div class="bank-transaction-row">
+            {% for field in formsets.empty_form.visible_fields %}
                 {{ field.label_tag }}
 
                 <span>
@@ -99,15 +100,15 @@
                 </em>
 
                 {% if field.errors %}
-                <ul class="message_list">
-                    {% for error in field.errors %}
-                    <li class="level_40">{{ error|striptags }}</li>
-                    {% endfor %}
-                </ul>
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                        <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
             {% endfor %}
 
-            {% for field in formset.empty_form.hidden_fields %}
+            {% for field in formsets.empty_form.hidden_fields %}
                 {{ field }}
             {% endfor %}
         </div>

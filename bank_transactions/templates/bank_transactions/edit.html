@@ -16,32 +16,7 @@
 
     <div id="form_content">
         {% for field in form %}
-        <div>
-            {{ field.label_tag }}
-
-            <span>
-                {{ field }}
-            </span>
-            <em>
-                {{ field.help_text }}
-            </em>
-
-            {% if field.errors %}
-            <ul class="message_list">
-                {% for error in field.errors %}
-                <li class="level_40">{{ error|striptags }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <fieldset>
-            <legend>Transaction items</legend>
-
-            {% for form in formset %}
-            <div class="item-row">
-                {% for field in form.visible_fields %}
+            <div>
                 {{ field.label_tag }}
 
                 <span>
@@ -52,64 +27,90 @@
                 </em>
 
                 {% if field.errors %}
-                <ul class="message_list">
-                    {% for error in field.errors %}
-                    <li class="level_40">{{ error|striptags }}</li>
-                    {% endfor %}
-                </ul>
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                        <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-                {% endfor %}
-
-                {% for field in form.hidden_fields %}
-                {{ field }}
-                {% endfor %}
             </div>
+        {% endfor %}
 
-            <hr>
+        <fieldset>
+            <legend>Bank transactions</legend>
+
+            {% for form in formsets %}
+                <div class="item-row">
+                    {% for field in form.visible_fields %}
+                        {{ field.label_tag }}
+
+                        <span>
+                            {{ field }}
+                        </span>
+                        <em>
+                            {{ field.help_text }}
+                        </em>
+
+                        {% if field.errors %}
+                            <ul class="message_list">
+                                {% for error in field.errors %}
+                                    <li class="level_40">{{ error|striptags }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for field in form.hidden_fields %}
+                        {{ field }}
+                    {% endfor %}
+                </div>
+
+                <hr>
             {% endfor %}
 
             <div>
-                <button id="add-item-row">Add item</button>
+                <button id="add-bank-transaction-row">Add additional transaction</button>
             </div>
         </fieldset>
 
-        {{ formset.management_form }}
+        {{ formsets.management_form }}
     </div>
 
     <div class="right_align">
-        <button type="submit">Save changes to {{ page_name|lower }}</button>
+        <button type="submit">Save changes to bank statement</button>
     </div>
 </form>
 {% endblock %}
 
 {% block js %}
-<script type="text/html" id="item-form-template">
-    <div class="item-row">
-        {% for field in formset.empty_form.visible_fields %}
-        {{ field.label_tag }}
+    <script type="text/html" id="bank-transaction-form-template">
+        <div class="bank-transaction-row">
+            {% for field in formsets.empty_form.visible_fields %}
+                {{ field.label_tag }}
 
-        <span>
-            {{ field }}
-        </span>
-        <em>
-            {{ field.help_text }}
-        </em>
+                <span>
+                    {{ field }}
+                </span>
+                <em>
+                    {{ field.help_text }}
+                </em>
 
-        {% if field.errors %}
-        <ul class="message_list">
-            {% for error in field.errors %}
-            <li class="level_40">{{ error|striptags }}</li>
+                {% if field.errors %}
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                            <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% endfor %}
-        </ul>
-        {% endif %}
-        {% endfor %}
 
-        {% for field in formset.empty_form.hidden_fields %}
-        {{ field }}
-        {% endfor %}
-    </div>
+            {% for field in formsets.empty_form.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+        </div>
 
-    <hr>
-</script>
-<script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
+        <hr>
+    </script>
+
+    <script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
 {% endblock %}
