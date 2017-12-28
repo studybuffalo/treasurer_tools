@@ -155,3 +155,34 @@ class AddPayeePayerTest(TestCase):
         
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/add.html")
+
+    def test_payee_payer_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("payee_payer_add"),
+            {
+                "name": "Test Case Company",
+                "address": "444 Test Boulevard",
+                "country": 1,
+                "province": "British Columbia",
+                "city": "Vancouver",
+                "postal_code": "V1V 1V1",
+                "phone": "111-111-1111",
+                "fax": "222-222-2222",
+                "email": "testcase@email.com",
+                "status": "a",
+            },
+            follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("payee_payer_dashboard"))
+
+        # Check that response message is correct
+        # messages = response.user.get_and_delete_messages()
+
+        # self.assertEqual(messages[0], "Payee/payer successfully added")
