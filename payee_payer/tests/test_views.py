@@ -90,10 +90,22 @@ class RetrieveListTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
 
         # Check that the number of retrieved entries matches the DB
-        db_count = Demographics.objects.all().count
+        db_count = Demographics.objects.all().count()
         context_count = len(response.context['payee_payer_list'])
 
-        self.assertTrue(True)
+        self.assertEqual(db_count, context_count)
+
+    def test_retrieve_list_template(self):
+        """Checks that correct template is being used"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check for proper template
+        self.assertTemplateUsed(response, "payee_payer/payee_payer_list.html")
+
 
 class AddPayeePayerTest(TestCase):
     """Tests of the add payee/payer form page"""
@@ -132,3 +144,14 @@ class AddPayeePayerTest(TestCase):
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
+
+    def test_payee_payer_add_template(self):
+        """Checks that correct template is being used"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("payee_payer_add"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check for proper template
+        self.assertTemplateUsed(response, "payee_payer/add.html")
