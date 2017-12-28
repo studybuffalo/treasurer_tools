@@ -31,6 +31,6 @@ class InstitutionForm(forms.ModelForm):
             "date_start": "Start date",
             "date_end": "End date",
         }
-        widgets={
+        widgets = {
             "address": Textarea(),
         }

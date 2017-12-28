@@ -12,6 +12,7 @@ from .models import Institution, Account
 @login_required
 def settings(request):
     """Page to modify bank and account settings"""
+    # pylint: disable=no-member
     institutions = Institution.objects.all()
 
     return render(
@@ -53,13 +54,13 @@ def institution_add(request):
             account_number = formset.cleaned_data["account_number"]
             name = formset.cleaned_data["name"]
             status = formset.cleaned_data["status"]
-            
+
             # Set the model data and save the instance
             account_data.institution = institution_data
             account_data.account_number = account_number
             account_data.name = name
             account_data.status = status
-            
+
             account_data.save()
 
     # Setup the inline formset for the Item model
@@ -134,7 +135,6 @@ def institution_edit(request, institution_id):
 
         institution_data.save()
 
-    
     def update_account_formset(formset, institution_data):
         """Create/updates BankTransaction based on provided formset data"""
         # Only save non-empty forms
@@ -147,6 +147,7 @@ def institution_edit(request, institution_id):
                 account_exists = True
 
                 # Retrieve item reference
+                # pylint: disable=no-member
                 account_data = Account.objects.get(
                     id=formset.cleaned_data["id"].id
                 )
@@ -162,13 +163,13 @@ def institution_edit(request, institution_id):
                 account_number = formset.cleaned_data["account_number"]
                 name = formset.cleaned_data["name"]
                 status = formset.cleaned_data["status"]
-            
+
                 # Set the model data and save the instance
                 account_data.institution = institution_data
                 account_data.account_number = account_number
                 account_data.name = name
                 account_data.status = status
-            
+
                 account_data.save()
 
     # Setup the inline formset for the Item model
@@ -185,7 +186,7 @@ def institution_edit(request, institution_id):
     if request.method == "POST":
         # Get the transaction object
         institution_data = get_object_or_404(Institution, id=institution_id)
-        
+
         # Create a form instance and populate it with data from the request (binding):
         form = InstitutionForm(request.POST, instance=institution_data)
 
@@ -198,14 +199,14 @@ def institution_edit(request, institution_id):
 
             if formsets.is_valid():
                 update_transaction_form(form)
-                
+
                 # Cycle through each item_formset and save model data
                 for formset in formsets:
                     update_account_formset(formset, institution_data)
 
                 # redirect to a new URL:
                 messages.success(
-                    request, 
+                    request,
                     "Institution and accounts successfully updated"
                 )
 

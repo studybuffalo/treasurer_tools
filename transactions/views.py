@@ -12,6 +12,7 @@ from .models import Transaction, Item
 @login_required
 def dashboard(request):
     """Main dashboard to expenses and revenue"""
+    # pylint: disable=no-member
     transactions = Transaction.objects.all()
 
     return render(
@@ -150,6 +151,7 @@ def transaction_edit(request, t_type, transaction_id):
                 item_exists = True
 
                 # Retrieve item reference
+                # pylint: disable=no-member
                 item_data = Item.objects.get(
                     id=formset.cleaned_data["id"].id
                 )

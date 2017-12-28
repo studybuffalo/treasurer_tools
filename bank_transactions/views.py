@@ -7,13 +7,12 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from .forms import StatementForm
-from .models import (
-    Institution, Account, Statement, BankTransaction,
-)
+from .models import Statement, BankTransaction
 
 @login_required
 def dashboard(request):
     """Main dashboard to display banking functions"""
+    # pylint: disable=no-member
     statements = Statement.objects.all()
 
     return render(
@@ -39,7 +38,7 @@ def statement_add(request):
         statement_data.account = account
         statement_data.date_start = date_start
         statement_data.date_end = date_end
-        
+
         statement_data.save()
 
     def save_transaction_formset(formset, statement_data):
@@ -55,7 +54,7 @@ def statement_add(request):
             description_user = formset.cleaned_data["description_user"]
             amount_debit = formset.cleaned_data["amount_debit"]
             amount_credit = formset.cleaned_data["amount_credit"]
-            
+
             # Set the model data and save the instance
             transaction_data.statement = statement_data
             transaction_data.date_transaction = date_transaction
@@ -63,7 +62,7 @@ def statement_add(request):
             transaction_data.description_user = description_user
             transaction_data.amount_debit = amount_debit
             transaction_data.amount_credit = amount_credit
-            
+
             transaction_data.save()
 
     # Setup the inline formset for the Item model
@@ -71,7 +70,7 @@ def statement_add(request):
         Statement,
         BankTransaction,
         fields=(
-            "date_transaction", "description_bank", "description_user", 
+            "date_transaction", "description_bank", "description_user",
             "amount_debit", "amount_credit"
         ),
         labels={
@@ -131,7 +130,7 @@ def statement_edit(request, statement_id):
     """Generate and processes form to edit a financial system"""
 
     def update_statement_form(form, statement_data):
-        """Updates transaction based on the provided form"""
+        """Updates statement based on the provided form data"""
 
         # Collect the cleaned form fields
         account = form.cleaned_data["account"]
@@ -142,22 +141,22 @@ def statement_edit(request, statement_id):
         statement_data.account = account
         statement_data.date_start = date_start
         statement_data.date_end = date_end
-        
+
         statement_data.save()
 
     def update_bank_transaction_formset(formset, statement_data):
-        """Create/updates an Item based on the provided formset"""
-        """Saves BankTransaction based on provided formset data"""
+        """Create/updates BankTransaction based on provided formset data"""
         # Only save non-empty forms
         if formset.cleaned_data:
             # Check if this item is marked for deletion
             can_delete = formset.cleaned_data["DELETE"]
-            
+
             # Get this account ID
             if formset.cleaned_data["id"]:
                 bank_transaction_exists = True
 
                 # Retrieve item reference
+                # pylint: disable=no-member
                 bank_transaction_data = BankTransaction.objects.get(
                     id=formset.cleaned_data["id"].id
                 )
@@ -175,7 +174,7 @@ def statement_edit(request, statement_id):
                 description_user = formset.cleaned_data["description_user"]
                 amount_debit = formset.cleaned_data["amount_debit"]
                 amount_credit = formset.cleaned_data["amount_credit"]
-            
+
                 # Set the model data and save the instance
                 bank_transaction_data.statement = statement_data
                 bank_transaction_data.date_transaction = date_transaction
@@ -183,15 +182,15 @@ def statement_edit(request, statement_id):
                 bank_transaction_data.description_user = description_user
                 bank_transaction_data.amount_debit = amount_debit
                 bank_transaction_data.amount_credit = amount_credit
-            
-                # bank_transaction_data.save()
+
+                bank_transaction_data.save()
 
     # Setup the inline formset for the Item model
     bank_transaction_inline_formset = inlineformset_factory(
         Statement,
         BankTransaction,
         fields=(
-            "date_transaction", "description_bank", "description_user", 
+            "date_transaction", "description_bank", "description_user",
             "amount_debit", "amount_credit"
         ),
         labels={
@@ -230,7 +229,7 @@ def statement_edit(request, statement_id):
                 messages.success(request, "Statement successfully updated")
 
                 return HttpResponseRedirect(reverse("bank_dashboard"))
-            
+
     # If this is a GET (or any other method) create populated forms
     else:
         # Populate the initial transaction data
