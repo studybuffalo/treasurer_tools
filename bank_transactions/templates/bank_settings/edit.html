@@ -40,32 +40,32 @@
             <legend>Accounts</legend>
 
             {% for form in formsets %}
-            <div class="account-row">
-                {% for field in form.visible_fields %}
-                {{ field.label_tag }}
+                <div class="account-row">
+                    {% for field in form.visible_fields %}
+                    {{ field.label_tag }}
 
-                <span>
-                    {{ field }}
-                </span>
-                <em>
-                    {{ field.help_text }}
-                </em>
+                    <span>
+                        {{ field }}
+                    </span>
+                    <em>
+                        {{ field.help_text }}
+                    </em>
 
-                {% if field.errors %}
-                <ul class="message_list">
-                    {% for error in field.errors %}
-                    <li class="level_40">{{ error|striptags }}</li>
+                    {% if field.errors %}
+                    <ul class="message_list">
+                        {% for error in field.errors %}
+                        <li class="level_40">{{ error|striptags }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                     {% endfor %}
-                </ul>
-                {% endif %}
-                {% endfor %}
 
-                {% for field in form.hidden_fields %}
-                    {{ field }}
-                {% endfor %}
-            </div>
+                    {% for field in form.hidden_fields %}
+                        {{ field }}
+                    {% endfor %}
+                </div>
 
-            <hr>
+                <hr>
             {% endfor %}
 
             <div>
@@ -73,7 +73,7 @@
             </div>
         </fieldset>
 
-        {{ formset.management_form }}
+        {{ formsets.management_form }}
     </div>
 
     <div class="right_align">
@@ -85,7 +85,7 @@
 {% block js %}
 <script type="text/html" id="account-form-template">
     <div class="account-row">
-        {% for field in formset.empty_form.visible_fields %}
+        {% for field in formsets.empty_form.visible_fields %}
             {{ field.label_tag }}
 
             <span>

@@ -135,7 +135,7 @@ def institution_edit(request, institution_id):
         institution_data.save()
 
     
-    def update_item_formset(formset, institution_data):
+    def update_account_formset(formset, institution_data):
         """Create/updates BankTransaction based on provided formset data"""
         # Only save non-empty forms
         if formset.cleaned_data:
@@ -152,9 +152,9 @@ def institution_edit(request, institution_id):
                 )
             else:
                 account_exists = False
-                item_data = Account()
+                account_data = Account()
 
-            if can_delete and item_exists:
+            if can_delete and account_exists:
                 # Delete the retrieved account
                 account_data.delete()
             else:
@@ -196,8 +196,8 @@ def institution_edit(request, institution_id):
                 request.POST, instance=institution_data
             )
 
-            if item_formset.is_valid():
-                update_transaction_form(form, institution_data)
+            if formsets.is_valid():
+                update_transaction_form(form)
                 
                 # Cycle through each item_formset and save model data
                 for formset in formsets:
