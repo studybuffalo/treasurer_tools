@@ -16,7 +16,7 @@ class Country(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = "Countries"
+        verbose_name_plural = "countries"
 
     def __str__(self):
         return self.country_name
@@ -63,13 +63,13 @@ class Demographics(models.Model):
         blank=True,
         max_length=20,
         null=True,
-        verbose_name="Phone number",
+        verbose_name="phone number",
     )
     fax = models.CharField(
         blank=True,
         max_length=20,
         null=True,
-        verbose_name="Fax number",
+        verbose_name="fax number",
     )
     email = models.EmailField(
         blank=True,
