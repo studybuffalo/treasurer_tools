@@ -94,3 +94,41 @@ class RetrieveListTest(TestCase):
         context_count = len(response.context['payee_payer_list'])
 
         self.assertTrue(True)
+
+class AddPayeePayerTest(TestCase):
+    """Tests of the add payee/payer form page"""
+    # pylint: disable=no-member,protected-access
+
+    fixtures = [
+        "payee_payer/tests/fixtures/authentication.json",
+        "payee_payer/tests/fixtures/country.json",
+        "payee_payer/tests/fixtures/demographics.json",
+    ]
+    
+    def test_add_payee_payer_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("payee_payer_add"))
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_add_payee_payer_url_exists_at_desired_location(self):
+        """Checks that the add payee/payer page uses the correct URL"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/payee-payer/add/")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_payee_payer_add_accessible_by_name(self):
+        """Checks that add payee/payer page URL name works properly"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("payee_payer_add"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)

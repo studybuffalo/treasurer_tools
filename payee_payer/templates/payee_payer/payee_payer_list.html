@@ -1,12 +1,12 @@
 {% if payee_payer_list %}
     {% for pp in payee_payer_list %}
         <div>
-            <div><a href="{% url 'edit_payee_payer' pp.id %}">Edit</a></div>
+            <div><a href="{% url 'payee_payer_edit' pp.id %}">Edit</a></div>
             <div>{{ pp.name }}</div>
             <div>{{ pp.city }}, {{ pp.province }}, {{ pp.country }}</div>
             <div>Phone: {{ pp.phone }} Fax: {{ pp.fax }}</div>
             <div>Email: {{ pp.email }}</div>
-            <div><a href="{% url 'delete_payee_payer' pp.id %}">Delete</a></div>
+            <div><a href="{% url 'payee_payer_delete' pp.id %}">Delete</a></div>
         </div>
     {% endfor %}
 {% endif %}
