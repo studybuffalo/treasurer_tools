@@ -69,14 +69,16 @@ class Statement(models.Model):
     )
     date_start = models.DateField(
         help_text="The first date the statement applies to",
+        verbose_name="start date",
     )
     date_end = models.DateField(
         help_text="The last date the statement applies to",
+        verbose_name="end date",
     )
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{} to {} Statement".format(self.date_start, self.date_end)
+        return "{} to {} statement".format(self.date_start, self.date_end)
 
 class BankTransaction(models.Model):
     """Details on a single bank transactions"""
