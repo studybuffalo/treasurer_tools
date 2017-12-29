@@ -7,7 +7,7 @@ from .views_settings import (
 
 # pylint: disable=invalid-name
 urlpatterns = [
-    url(r"^institution/add$", institution_add, name="institution_add"),
+    url(r"^institution/add/$", institution_add, name="institution_add"),
     url(
         r"^institution/edit/(?P<institution_id>\d+)$",
         institution_edit,
