@@ -13,8 +13,6 @@ class BankSettingsTest(TestCase):
         "bank_transactions/tests/fixtures/authentication.json",
         "bank_transactions/tests/fixtures/institution.json",
         "bank_transactions/tests/fixtures/account.json",
-        "bank_transactions/tests/fixtures/statement.json",
-        "bank_transactions/tests/fixtures/bank_transaction.json",
     ]
 
     def test_dashboard_redirect_if_not_logged_in(self):
