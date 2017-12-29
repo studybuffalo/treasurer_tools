@@ -3,6 +3,8 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from bank_transactions.models import Institution, Account
+
 # from bank_transactions.models import Demographics
 
 class BankSettingsTest(TestCase):
@@ -105,56 +107,62 @@ class InstitutionAddTest(TestCase):
         # Check for proper template
         self.assertTemplateUsed(response, "bank_settings/add.html")
 
-    #def test_institution_add_redirect_to_dashboard(self):
-    #    """Checks that form redirects to the dashboard on success"""
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.post(
-    #        reverse("payee_payer_add"),
-    #        {
-    #            "name": "Test Case Company",
-    #            "address": "444 Test Boulevard",
-    #            "country": 1,
-    #            "province": "British Columbia",
-    #            "city": "Vancouver",
-    #            "postal_code": "V1V 1V1",
-    #            "phone": "111-111-1111",
-    #            "fax": "222-222-2222",
-    #            "email": "testcase@email.com",
-    #            "status": "a",
-    #        },
-    #        follow=True,
-    #    )
+    def test_institution_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_add"),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "777888999",
+                "account_set-0-name": "Savings Account",
+                "account_set-0-status": "a",
+                "account_set-TOTAL_FORMS": 1,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            },
+            follow=True,
+        )
 
-    #    # Check that user logged in
-    #    self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-    #    # Check that redirection was successful
-    #    self.assertRedirects(response, reverse("payee_payer_dashboard"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_settings"))
 
-    #def test_institution_add_confirm_add(self):
-    #    """Confirms data is added to database on successful form submission"""
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.post(
-    #        reverse("payee_payer_add"),
-    #        {
-    #            "name": "Test Case Company",
-    #            "address": "444 Test Boulevard",
-    #            "country": 1,
-    #            "province": "British Columbia",
-    #            "city": "Vancouver",
-    #            "postal_code": "V1V 1V1",
-    #            "phone": "111-111-1111",
-    #            "fax": "222-222-2222",
-    #            "email": "testcase@email.com",
-    #            "status": "a",
-    #        },
-    #        follow=True,
-    #    )
+    def test_institution_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_add"),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "777888999",
+                "account_set-0-name": "Savings Account",
+                "account_set-0-status": "a",
+                "account_set-TOTAL_FORMS": 1,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            },
+            follow=True,
+        )
 
-    #    # Check that user logged in
-    #    self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-    #    self.assertEqual(2, Demographics.objects.count())
+        # Check that one institution was added
+        self.assertEqual(2, Institution.objects.count())
+
+        # Check that one account was added
+        self.assertEqual(2, Account.objects.count())
 
 #class PayeePayerEditTest(TestCase):
 #    """Tests of the edit payee/payer form page"""
