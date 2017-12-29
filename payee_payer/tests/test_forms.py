@@ -18,7 +18,9 @@ class CountryModelTest(TestCase):
         correct_order = True
 
         # Create a list of the database values
-        db_list = sorted(Country.objects.all().values_list("country_name"))
+        db_list = sorted(
+            Country.objects.all().values_list("country_name", flat=True)
+        )
 
         # Create a list of the form choices
         form = PayeePayerForm()
@@ -35,7 +37,7 @@ class CountryModelTest(TestCase):
         if len(form_list) == len(db_list):
             # Check if the two lists match in values
             for i in range(0, len(form_list)):
-                if form_list[i] != db_list[i][0]:
+                if form_list[i] != db_list[i]:
                     correct_order = False
         else:
             correct_order = False
