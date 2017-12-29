@@ -390,7 +390,7 @@ class InstitutionEditTest(TestCase):
     def test_institution_edit_post_add_account(self):
         """Checks that a new account is added via the edit institution form"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
             {
                 "name": "Another Financial Institution",
@@ -442,7 +442,7 @@ class InstitutionEditTest(TestCase):
     def test_institution_edit_post_delete_account(self):
         """Checks that account is deleted via the edit institution form"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
             {
                 "name": "Another Financial Institution",
