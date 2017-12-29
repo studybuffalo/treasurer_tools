@@ -18,9 +18,11 @@ class Institution(models.Model):
     )
     phone = models.CharField(
         max_length=30,
+        verbose_name="phone number",
     )
     fax = models.CharField(
         max_length=30,
+        verbose_name="fax number",
     )
     history = HistoricalRecords()
 

@@ -1,0 +1,12 @@
+[
+  {
+    "model": "bank_transactions.account",
+    "pk": 1,
+    "fields": {
+      "institution": 1,
+      "account_number": "123456789",
+      "name": "Chequing Account",
+      "status":  "a"
+    }
+  }
+]

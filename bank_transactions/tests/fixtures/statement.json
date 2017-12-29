@@ -1,0 +1,11 @@
+[
+  {
+    "model": "bank_transactions.statement",
+    "pk": 1,
+    "fields": {
+      "account": 1,
+      "date_start": "2017-01-01",
+      "date_end": "2017-01-31"
+    }
+  }
+]

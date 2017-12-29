@@ -1,0 +1,50 @@
+[
+  {
+    "model": "bank_transactions.banktransaction",
+    "pk": 1,
+    "fields": {
+      "statement": 1,
+      "date_transaction": "2017-01-01",
+      "description_bank": "CHQ#0001",
+      "description_user": "Cheque #0001",
+      "amount_debit": 100.00,
+      "amount_credit": 0.00
+    }
+  },
+  {
+    "model": "bank_transactions.banktransaction",
+    "pk": 2,
+    "fields": {
+      "statement": 1,
+      "date_transaction": "2017-01-02",
+      "description_bank": "CHQ#0002",
+      "description_user": "Cheque #0002",
+      "amount_debit": 200.00,
+      "amount_credit": 0.00
+    }
+  },
+  {
+    "model": "bank_transactions.banktransaction",
+    "pk": 3,
+    "fields": {
+      "statement": 1,
+      "date_transaction": "2017-01-03",
+      "description_bank": "DEP3333",
+      "description_user": "Deposit from account #3333",
+      "amount_debit": 30.00,
+      "amount_credit": 0.00
+    }
+  },
+  {
+    "model": "bank_transactions.banktransaction",
+    "pk": 4,
+    "fields": {
+      "statement": 1,
+      "date_transaction": "2017-01-04",
+      "description_bank": "DEP4444",
+      "description_user": "Deposite from account #4444",
+      "amount_debit": 40.00,
+      "amount_credit": 0.00
+    }
+  }
+]
