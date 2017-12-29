@@ -5,8 +5,6 @@ from django.test import TestCase
 
 from bank_transactions.models import Institution, Account
 
-# from bank_transactions.models import Demographics
-
 class BankSettingsTest(TestCase):
     """Test functions for the BankSettings dashboard"""
     # pylint: disable=no-member,protected-access
@@ -162,13 +160,13 @@ class InstitutionAddTest(TestCase):
         self.assertEqual(2, Institution.objects.count())
 
         # Check that one account was added
-        self.assertEqual(2, Account.objects.count())
+        self.assertEqual(3, Account.objects.count())
 
     # TODO: Add test case to handle testing of invalid data in Form
     # TODO: Add test case to handle testing of invalid data in Formset
     # TODO: Add test case to handle testing of missing formset data
 
-class PayeePayerEditTest(TestCase):
+class InstitutionEditTest(TestCase):
     """Tests of the edit Institution form page"""
     # pylint: disable=no-member,protected-access
 
@@ -239,7 +237,7 @@ class PayeePayerEditTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
         
         # Check for proper template
-        self.assertTemplateUsed(response, "institution/edit.html")
+        self.assertTemplateUsed(response, "bank_settings/edit.html")
         
     def test_institution_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -267,9 +265,9 @@ class PayeePayerEditTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
         
         # Check that redirection was successful
-        self.assertRedirects(response, reverse("bank_settings_dashboard"))
+        self.assertRedirects(response, reverse("bank_settings"))
 
-    def test_institution_edit_post_failed_on_invalid_id(self):
+    def test_institution_edit_post_failed_on_invalid_institution_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -294,8 +292,8 @@ class PayeePayerEditTest(TestCase):
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
         
-    def test_institution_edit_confirm_edit(self):
-        """Confirms deletion form works properly"""
+    def test_institution_edit_post_confirm_institution_edit(self):
+        """Confirms account is properly edited via the institution edit form"""
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
@@ -316,7 +314,7 @@ class PayeePayerEditTest(TestCase):
         )
 
         # Confirm still only 1 entry
-        self.assertEqual(1, Demographics.objects.count())
+        self.assertEqual(1, Institution.objects.count())
 
         # Confirm name has been updated properly
         self.assertEqual(
@@ -324,3 +322,159 @@ class PayeePayerEditTest(TestCase):
             "Another Financial Institution 2"
         )
 
+    def test_institution_edit_post_confirm_account_edit(self):
+        """Confirms deletion form works properly"""
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("institution_edit", kwargs={"institution_id": 1}),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "222222222",
+                "account_set-0-name": "TFSA Account",
+                "account_set-0-status": "a",
+                "account_set-0-id": 1,
+                "account_set-TOTAL_FORMS": 1,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            },
+        )
+
+        # Confirm still only 2 entrries
+        self.assertEqual(2, Account.objects.count())
+
+        # Confirm account number has been updated properly
+        self.assertEqual(
+            Account.objects.get(id=1).account_number,
+            "222222222"
+        )
+
+        # Confirm name has been updated properly
+        self.assertEqual(
+            Account.objects.get(id=1).name,
+            "TFSA Account"
+        )
+
+    def test_institution_edit_post_fail_on_invalid_account_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_edit", kwargs={"institution_id": 1}),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "000000000",
+                "account_set-0-name": "Fake Account",
+                "account_set-0-status": "a",
+                "account_set-0-id": "999999999",
+                "account_set-1-account_number": "000000000",
+                "account_set-1-name": "Fake Account",
+                "account_set-1-status": "a",
+                "account_set-1-id": "999999999",
+                "account_set-TOTAL_FORMS": 2,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            }
+        )
+
+        # Check for the expected ValidationError
+        self.assertEqual(
+            response.context["formsets"][0].errors["id"][0],
+            "Select a valid choice. That choice is not one of the available choices."
+        )
+        
+    def test_institution_edit_post_add_account(self):
+        """Checks that a new account is added via the edit institution form"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_edit", kwargs={"institution_id": 1}),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "777888999",
+                "account_set-0-name": "Savings Account",
+                "account_set-0-status": "a",
+                "account_set-0-id": 1,
+                "account_set-1-account_number": "333333333",
+                "account_set-1-name": "Embezzlement Account",
+                "account_set-1-status": "a",
+                "account_set-1-id": 2,
+                "account_set-2-account_number": "444444444",
+                "account_set-2-name": "Charity Account",
+                "account_set-2-status": "a",
+                "account_set-2-id": "",
+                "account_set-TOTAL_FORMS": 3,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            }
+        )
+
+        # Check that the number of accounts has increased
+        self.assertEqual(
+            Account.objects.count(),
+            3
+        )
+
+        # Check that original accounts still exist
+        self.assertEqual(
+            Account.objects.get(id=1).name,
+            "Savings Account"
+        )
+
+        self.assertEqual(
+            Account.objects.get(id=2).name,
+            "Embezzlement Account"
+        )
+
+        # Check that the new account was saved properly
+        self.assertEqual(
+            Account.objects.get(id=3).name,
+            "Charity Account"
+        )
+
+    def test_institution_edit_post_delete_account(self):
+        """Checks that account is deleted via the edit institution form"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_edit", kwargs={"institution_id": 1}),
+            {
+                "name": "Another Financial Institution",
+                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+                "phone": "111-222-1234",
+                "fax": "222-111-1111",
+                "account_set-0-account_number": "777888999",
+                "account_set-0-name": "Savings Account",
+                "account_set-0-status": "a",
+                "account_set-0-id": 1,
+                "account_set-1-account_number": "333333333",
+                "account_set-1-name": "Embezzlement Account",
+                "account_set-1-status": "a",
+                "account_set-1-id": 2,
+                "account_set-1-DELETE": "on",
+                "account_set-TOTAL_FORMS": 2,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000,
+            }
+        )
+        
+        # Check that the number of accounts has decreased
+        self.assertEqual(
+            Account.objects.count(),
+            1
+        )
+
+        # Check that the proper ID has been removed
+        self.assertEqual(
+            Account.objects.filter(id=2).count(),
+            0
+        )

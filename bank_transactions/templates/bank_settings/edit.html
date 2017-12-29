@@ -63,7 +63,7 @@
                     {% endfor %}
 
                     {% for field in form.hidden_fields %}
-                        {{ field }}
+                        {{ field }}{{ field.errors|striptags }}
                     {% endfor %}
                 </div>
 
