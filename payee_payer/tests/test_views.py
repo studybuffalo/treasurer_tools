@@ -182,6 +182,31 @@ class PayeePayerAddTest(TestCase):
         # Check that redirection was successful
         self.assertRedirects(response, reverse("payee_payer_dashboard"))
 
+    def test_payee_payer_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("payee_payer_add"),
+            {
+                "name": "Test Case Company",
+                "address": "444 Test Boulevard",
+                "country": 1,
+                "province": "British Columbia",
+                "city": "Vancouver",
+                "postal_code": "V1V 1V1",
+                "phone": "111-111-1111",
+                "fax": "222-222-2222",
+                "email": "testcase@email.com",
+                "status": "a",
+            },
+            follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        self.assertEqual(2, Demographics.objects.count())
+
 class PayeePayerEditTest(TestCase):
     """Tests of the edit payee/payer form page"""
     # pylint: disable=no-member,protected-access
@@ -303,6 +328,34 @@ class PayeePayerEditTest(TestCase):
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
+        
+    def test_payee_payer_edit_confirm_edit(self):
+        """Confirms deletion form works properly"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1}),
+            {
+                "name": "Test Case Company - 2",
+                "address": "444 Test Boulevard",
+                "country": 1,
+                "province": "British Columbia",
+                "city": "Vancouver",
+                "postal_code": "V1V 1V12",
+                "phone": "111-111-1111",
+                "fax": "222-222-2222",
+                "email": "testcase@email.com",
+                "status": "a",
+            },
+        )
+
+        # Confirm still only 1 entry
+        self.assertEqual(1, Demographics.objects.count())
+
+        # Confirm name has been updated properly
+        self.assertEqual(
+            Demographics.objects.get(id=1).name,
+            "Test Case Company - 2"
+        )
 
 class PayeePayerDeleteTest(TestCase):
     """Tests of the delete payee/payer form page"""
@@ -401,3 +454,12 @@ class PayeePayerDeleteTest(TestCase):
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
+
+    def test_payee_payer_delete_confirm_deletion(self):
+        """Confirms deletion form works properly"""
+        login = self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
+        )
+
+        self.assertEqual(0, Demographics.objects.filter(id=1).count())
