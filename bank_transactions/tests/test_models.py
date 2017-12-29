@@ -29,3 +29,22 @@ class InstitutionModelTest(TestCase):
             institution = Institution.objects.get(id=1)
             field_label = institution._meta.get_field(test_item["field_name"]).verbose_name
             self.assertEqual(field_label, test_item["label_name"])
+
+    def test_max_length(self):
+        """Tests a series of fields for proper max length"""
+        test_list = [
+            {"field_name": "name", "max_length": 250},
+            {"field_name": "address", "max_length": 1000},
+            {"field_name": "phone", "max_length": 30},
+            {"field_name": "fax", "max_length": 30},
+        ]
+
+        for test_item in test_list:
+            payee_payer = Demographics.objects.get(id=1)
+            max_length = payee_payer._meta.get_field(test_item["field_name"]).max_length
+            self.assertEqual(max_length, test_item["max_length"])
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        payee_payer = Demographics.objects.get(id=1)
+        self.assertEqual(str(payee_payer), payee_payer.name)

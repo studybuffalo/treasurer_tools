@@ -11,10 +11,10 @@ class Institution(models.Model):
     """Details on the bank/financial institution"""
     name = models.CharField(
         help_text="Name of the bank/financial institution",
-        max_length=200,
+        max_length=250,
     )
     address = models.CharField(
-        max_length=500,
+        max_length=1000,
     )
     phone = models.CharField(
         max_length=30,

@@ -34,7 +34,7 @@ class Demographics(models.Model):
     )
     name = models.CharField(
         help_text="The individual, company, or organization name",
-        max_length=256,
+        max_length=250,
         unique=True,
     )
     address = models.CharField(
@@ -61,13 +61,13 @@ class Demographics(models.Model):
     )
     phone = models.CharField(
         blank=True,
-        max_length=20,
+        max_length=30,
         null=True,
         verbose_name="phone number",
     )
     fax = models.CharField(
         blank=True,
-        max_length=20,
+        max_length=30,
         null=True,
         verbose_name="fax number",
     )

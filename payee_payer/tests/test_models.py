@@ -73,13 +73,13 @@ class DemographicsModelTest(TestCase):
     def test_max_length(self):
         """Tests a series of fields for proper max length"""
         test_list = [
-            {"field_name": "name", "max_length": 256},
+            {"field_name": "name", "max_length": 250},
             {"field_name": "address", "max_length": 1000},
             {"field_name": "city", "max_length": 1000},
             {"field_name": "province", "max_length": 100},
             {"field_name": "postal_code", "max_length": 10},
-            {"field_name": "phone", "max_length": 20},
-            {"field_name": "fax", "max_length": 20},
+            {"field_name": "phone", "max_length": 30},
+            {"field_name": "fax", "max_length": 30},
         ]
 
         for test_item in test_list:
