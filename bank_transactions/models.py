@@ -97,8 +97,10 @@ class BankTransaction(models.Model):
         verbose_name="bank description",
     )
     description_user = models.CharField(
+        blank=True,
         help_text="A user-specified description of the transaction",
         max_length=100,
+        null=True,
         verbose_name="user description",
     )
     amount_debit = models.DecimalField(

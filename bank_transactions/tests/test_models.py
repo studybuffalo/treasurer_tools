@@ -175,17 +175,18 @@ class BankTransactionModelTest(TestCase):
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        bank_transaction = BankTransaction.objects.get(id=1)
+        bank_transactions = BankTransaction.objects.all()
+        
+        for bank_transaction in bank_transactions:
+            if bank_transaction.description_user:
+                test_string = "{} - {}".format(
+                    bank_transaction.date_transaction,
+                    bank_transaction.description_user
+                )
+            else:
+                test_string = "{} - {}".format(
+                    bank_transaction.date_transaction,
+                    bank_transaction.description_bank
+                )
 
-        if bank_transaction.description_user:
-            test_string = "{} - {}".format(
-                bank_transaction.date_transaction,
-                bank_transaction.description_user
-            )
-        else:
-            test_string = "{} - {}".format(
-                bank_transaction.date_transaction,
-                bank_transaction.description_bank
-            )
-
-        self.assertEqual(str(bank_transaction), test_string)
+            self.assertEqual(str(bank_transaction), test_string)
