@@ -34,7 +34,7 @@ class Account(models.Model):
     institution = models.ForeignKey(
         Institution,
         help_text="The bank this account is associated with",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
     account_number = models.CharField(
         help_text="The account number/reference for this account",

@@ -478,3 +478,123 @@ class InstitutionEditTest(TestCase):
             Account.objects.filter(id=2).count(),
             0
         )
+
+class PayeePayerDeleteTest(TestCase):
+    """Tests the delete institution view"""
+    # pylint: disable=no-member,protected-access
+
+    fixtures = [
+        "bank_transactions/tests/fixtures/authentication.json",
+        "bank_transactions/tests/fixtures/institution.json",
+        "bank_transactions/tests/fixtures/account.json",
+    ]
+    
+    def test_institution_delete_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("institution_delete", kwargs={"institution_id": 1})
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_institution_delete_url_exists_at_desired_location(self):
+        """Checks that the delete institution page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/banking/institution/delete/1")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_institution_delete_html404_on_invalid_url(self):
+        """Checks that the delete institution page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/banking/institution/delete/999999999")
+        
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_institution_delete_accessible_by_name(self):
+        """Checks that delete institution page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("institution_delete", kwargs={"institution_id": 1})
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+        
+    def test_institution_delete_html404_on_invalid_name(self):
+        """Checks that delete institution page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("institution_delete", kwargs={"institution_id": 999999999})
+        )
+        
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_institution_delete_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("institution_delete", kwargs={"institution_id": 1})
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_settings/delete.html")
+        
+    def test_institution_delete_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        response = self.client.post(
+            reverse("institution_delete", kwargs={"institution_id": 1}),
+            follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_settings"))
+
+    def test_institution_delete_post_failed_on_invalid_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        response = self.client.post(
+            reverse("institution_delete", kwargs={"institution_id": 999999999}),
+            follow=True,
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_institution_delete_confirm_deletion(self):
+        """Confirms deletion form works properly"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        self.client.post(
+            reverse("institution_delete", kwargs={"institution_id": 1})
+        )
+
+        # Checks that institution was deleted
+        self.assertEqual(0, Institution.objects.filter(id=1).count())
+
+        # Checks that accounts were deleted
+        self.assertEqual(0, Account.objects.count())
