@@ -144,6 +144,7 @@ def institution_edit(request, institution_id):
             
             if can_delete:
                 # Retrieve the account for deletion
+                # pylint: disable=no-member
                 account_id = formset.cleaned_data["id"].id
                 account_data = Account.objects.get(id=account_id)
                 
@@ -152,15 +153,12 @@ def institution_edit(request, institution_id):
             else:
                 # Get this account ID
                 if formset.cleaned_data["id"]:
-                    account_exists = True
-
                     # Retrieve item reference
                     # pylint: disable=no-member
                     account_data = get_object_or_404(
                         Account, id=formset.cleaned_data["id"].id
                     )
                 else:
-                    account_exists = False
                     account_data = Account()
 
                 # Collect the cleaned formset data
