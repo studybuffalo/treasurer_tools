@@ -3,7 +3,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from payee_payer.models import Country, Demographics
+from payee_payer.models import Demographics
 
 class DashboardTest(TestCase):
     """Test functions for the Demographics model"""
@@ -23,7 +23,7 @@ class DashboardTest(TestCase):
 
     def test_dashboard_url_exists_at_desired_location(self):
         """Checks that the dashboard uses the correct URL"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/")
         
         # Check that user logged in
@@ -34,7 +34,7 @@ class DashboardTest(TestCase):
 
     def test_dashboard_accessible_by_name(self):
         """Checks that the dashboard URL name works properly"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("payee_payer_dashboard"))
         
         # Check that user logged in
@@ -45,7 +45,7 @@ class DashboardTest(TestCase):
 
     def test_dashboard_template(self):
         """Checks that the dashboard uses the correct template"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("payee_payer_dashboard"))
         
         # Check that user logged in
@@ -72,7 +72,7 @@ class RetrieveListTest(TestCase):
 
     def test_retrieve_list_url_exists_at_desired_location(self):
         """Checks that the retrieve payee/payer list URL is correct"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
 
         # Check that user logged in
@@ -83,7 +83,7 @@ class RetrieveListTest(TestCase):
 
     def test_retrieve_list_all_entries(self):
         """Checks that all payee_payer entries are retrieved"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
         
         # Check that user logged in
@@ -97,7 +97,7 @@ class RetrieveListTest(TestCase):
 
     def test_retrieve_list_template(self):
         """Checks that correct template is being used"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
         
         # Check that user logged in
@@ -125,7 +125,7 @@ class PayeePayerAddTest(TestCase):
 
     def test_payee_payer_add_url_exists_at_desired_location(self):
         """Checks that the add payee/payer page uses the correct URL"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/add/")
         
         # Check that user logged in
@@ -136,7 +136,7 @@ class PayeePayerAddTest(TestCase):
 
     def test_payee_payer_add_accessible_by_name(self):
         """Checks that add payee/payer page URL name works properly"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("payee_payer_add"))
         
         # Check that user logged in
@@ -147,7 +147,7 @@ class PayeePayerAddTest(TestCase):
 
     def test_payee_payer_add_template(self):
         """Checks that correct template is being used"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("payee_payer_add"))
         
         # Check that user logged in
@@ -158,7 +158,7 @@ class PayeePayerAddTest(TestCase):
 
     def test_payee_payer_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("payee_payer_add"),
             {
@@ -184,7 +184,7 @@ class PayeePayerAddTest(TestCase):
 
     def test_payee_payer_add_confirm_add(self):
         """Confirms data is added to database on successful form submission"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("payee_payer_add"),
             {
@@ -227,7 +227,7 @@ class PayeePayerEditTest(TestCase):
 
     def test_payee_payer_edit_url_exists_at_desired_location(self):
         """Checks that the edit payee/payer page uses the correct URL"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/edit/1")
         
         # Check that user logged in
@@ -238,7 +238,7 @@ class PayeePayerEditTest(TestCase):
 
     def test_payee_payer_edit_html404_on_invalid_url(self):
         """Checks that the edit payee/payer page URL fails on invalid ID"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/edit/999999999")
         
         # Check that page is accessible
@@ -246,7 +246,7 @@ class PayeePayerEditTest(TestCase):
 
     def test_payee_payer_edit_accessible_by_name(self):
         """Checks that edit payee/payer page URL name works properly"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 1})
         )
@@ -259,7 +259,7 @@ class PayeePayerEditTest(TestCase):
         
     def test_payee_payer_edit_html404_on_invalid_name(self):
         """Checks that edit payee/payer page URL name failed on invalid ID"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 999999999})
         )
@@ -269,7 +269,7 @@ class PayeePayerEditTest(TestCase):
 
     def test_payee_payer_edit_template(self):
         """Checks that correct template is being used"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 1})
         )
@@ -282,7 +282,7 @@ class PayeePayerEditTest(TestCase):
         
     def test_payee_payer_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 1}),
             {
@@ -308,7 +308,7 @@ class PayeePayerEditTest(TestCase):
 
     def test_payee_payer_edit_post_failed_on_invalid_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 999999999}),
             {
@@ -331,8 +331,8 @@ class PayeePayerEditTest(TestCase):
         
     def test_payee_payer_edit_confirm_edit(self):
         """Confirms deletion form works properly"""
-        login = self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
             reverse("payee_payer_edit", kwargs={"payee_payer_id": 1}),
             {
                 "name": "Test Case Company - 2",
@@ -377,7 +377,7 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_delete_url_exists_at_desired_location(self):
         """Checks that the delete payee/payer page uses the correct URL"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/delete/1")
         
         # Check that user logged in
@@ -388,7 +388,7 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_delete_html404_on_invalid_url(self):
         """Checks that the delete payee/payer page URL fails on invalid ID"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/delete/999999999")
         
         # Check that page is accessible
@@ -396,7 +396,7 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_delete_accessible_by_name(self):
         """Checks that delete payee/payer page URL name works properly"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
         )
@@ -409,7 +409,7 @@ class PayeePayerDeleteTest(TestCase):
         
     def test_payee_payer_delete_html404_on_invalid_name(self):
         """Checks that delete payee/payer page URL name failed on invalid ID"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 999999999})
         )
@@ -419,7 +419,7 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_delete_template(self):
         """Checks that correct template is being used"""
-        login = self.client.login(username="user", password="abcd123456")
+        self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
         )
@@ -432,7 +432,10 @@ class PayeePayerDeleteTest(TestCase):
         
     def test_payee_payer_delete_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
-        login = self.client.login(username="user", password="abcd123456")
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
         response = self.client.post(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 1}),
             follow=True,
@@ -446,7 +449,10 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_edit_post_failed_on_invalid_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
-        login = self.client.login(username="user", password="abcd123456")
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
         response = self.client.post(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 999999999}),
             follow=True,
@@ -457,8 +463,11 @@ class PayeePayerDeleteTest(TestCase):
 
     def test_payee_payer_delete_confirm_deletion(self):
         """Confirms deletion form works properly"""
-        login = self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        self.client.post(
             reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
         )
 

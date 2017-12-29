@@ -1,11 +1,9 @@
 """Views for the payee_payer app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views import generic
 
 from .models import Demographics
 from .forms import PayeePayerForm
@@ -23,6 +21,7 @@ def dashboard(request):
 @login_required
 def request_payee_payers(request):
     """List of all payee/payers"""
+    # pylint: disable=no-member
     return render(
         request,
         "payee_payer/payee_payer_list.html",

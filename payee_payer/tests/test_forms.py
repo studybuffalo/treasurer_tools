@@ -36,8 +36,8 @@ class CountryModelTest(TestCase):
         # Check if the two lists match in length
         if len(form_list) == len(db_list):
             # Check if the two lists match in values
-            for i in range(0, len(form_list)):
-                if form_list[i] != db_list[i]:
+            for i, db_value in enumerate(db_list):
+                if db_value != form_list[i]:
                     correct_order = False
         else:
             correct_order = False
