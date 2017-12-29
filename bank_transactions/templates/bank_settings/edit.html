@@ -100,7 +100,7 @@
             {% if field.errors %}
                 <ul class="message_list">
                     {% for error in field.errors %}
-                        li class="level_40">{{ error|striptags }}</li>
+                        <li class="level_40">{{ error|striptags }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
