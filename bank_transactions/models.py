@@ -89,24 +89,29 @@ class BankTransaction(models.Model):
     )
     date_transaction = models.DateField(
         help_text="The date of the transaction",
+        verbose_name="transaction date",
     )
     description_bank = models.CharField(
         help_text="Description of the transaction as per the bank statement",
         max_length=100,
+        verbose_name="bank description",
     )
     description_user = models.CharField(
         help_text="A user-specified description of the transaction",
         max_length=100,
+        verbose_name="user description",
     )
     amount_debit = models.DecimalField(
         decimal_places=2,
         help_text="The debit (withdrawal) amount of the transaction",
         max_digits=12,
+        verbose_name="debit amount",
     )
     amount_credit = models.DecimalField(
         decimal_places=2,
         help_text="The credit (deposit) amount of the transaction",
         max_digits=12,
+        verbose_name="credit amount",
     )
     history = HistoricalRecords()
 

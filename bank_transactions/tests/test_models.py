@@ -121,3 +121,71 @@ class StatementModelTest(TestCase):
             str(statement),
             "{} to {} statement".format(statement.date_start, statement.date_end)
         )
+
+class BankTransactionModelTest(TestCase):
+    """Test functions for the BankTransaction model"""
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = [
+        "bank_transactions/tests/fixtures/institution.json",
+        "bank_transactions/tests/fixtures/account.json",
+        "bank_transactions/tests/fixtures/statement.json",
+        "bank_transactions/tests/fixtures/bank_transaction.json",
+    ]
+
+    def test_labels(self):
+        """Tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "statement", "label_name": "statement"},
+            {"field_name": "date_transaction", "label_name": "transaction date"},
+            {"field_name": "description_bank", "label_name": "bank description"},
+            {"field_name": "description_user", "label_name": "user description"},
+            {"field_name": "amount_debit", "label_name": "debit amount"},
+            {"field_name": "amount_credit", "label_name": "credit amount"},
+        ]
+
+        for test_item in test_list:
+            bank_transaction = BankTransaction.objects.get(id=1)
+            field_label = bank_transaction._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
+            
+    def test_max_length(self):
+        """Tests a series of fields for proper max length"""
+        test_list = [
+            {"field_name": "description_bank", "max_length": 100},
+            {"field_name": "description_user", "max_length": 100},
+        ]
+
+        for test_item in test_list:
+            bank_transaction = BankTransaction.objects.get(id=1)
+            max_length = bank_transaction._meta.get_field(test_item["field_name"]).max_length
+            self.assertEqual(max_length, test_item["max_length"])
+            
+    def test_max_digits(self):
+        """Tests a series of fields for proper max digits"""
+        test_list = [
+            {"field_name": "amount_debit", "max_digits": 12},
+            {"field_name": "amount_credit", "max_digits": 12},
+        ]
+
+        for test_item in test_list:
+            bank_transaction = BankTransaction.objects.get(id=1)
+            max_digits = bank_transaction._meta.get_field(test_item["field_name"]).max_digits
+            self.assertEqual(max_digits, test_item["max_digits"])
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        bank_transaction = BankTransaction.objects.get(id=1)
+
+        if bank_transaction.description_user:
+            test_string = "{} - {}".format(
+                bank_transaction.date_transaction,
+                bank_transaction.description_user
+            )
+        else:
+            test_string = "{} - {}".format(
+                bank_transaction.date_transaction,
+                bank_transaction.description_bank
+            )
+
+        self.assertEqual(str(bank_transaction), test_string)
