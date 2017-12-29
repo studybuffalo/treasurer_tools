@@ -159,11 +159,7 @@ class InstitutionAddTest(TestCase):
 
         # Check that one account was added
         self.assertEqual(3, Account.objects.count())
-
-    # TODO: Add test case to handle testing of invalid data in Form
-    # TODO: Add test case to handle testing of invalid data in Formset
-    # TODO: Add test case to handle testing of missing formset data
-
+        
 class InstitutionEditTest(TestCase):
     """Tests of the edit Institution form page"""
     # pylint: disable=no-member,protected-access
@@ -477,7 +473,7 @@ class InstitutionEditTest(TestCase):
             0
         )
 
-class PayeePayerDeleteTest(TestCase):
+class InstitutionDeleteTest(TestCase):
     """Tests the delete institution view"""
     # pylint: disable=no-member,protected-access
 
@@ -596,3 +592,61 @@ class PayeePayerDeleteTest(TestCase):
 
         # Checks that accounts were deleted
         self.assertEqual(0, Account.objects.count())
+
+class BankDashboardTest(TestCase):
+    """Tests for the bank dashboard view"""
+
+class StatementAddTest(TestCase):
+    """Tests for the add statement view"""
+
+class StatementEditTest(TestCase):
+    """Tests for the edit statement view"""
+
+class StatementDeleteTest(TestCase):
+    """Tests for the delete statement view"""
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = [
+        "bank_transactions/tests/fixtures/authentication.json",
+        "bank_transactions/tests/fixtures/institution.json",
+        "bank_transactions/tests/fixtures/account.json",
+    ]
+
+    def test_dashboard_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.get("/banking/")
+
+        self.assertRedirects(response, "/accounts/login/?next=/banking/")
+
+    def test_dashboard_url_exists_at_desired_location(self):
+        """Checks that the dashboard uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_dashboard_accessible_by_name(self):
+        """Checks that the dashboard URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_dashboard"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_dashboard_template(self):
+        """Checks that the dashboard uses the correct template"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_dashboard"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_transactions/index.html")
