@@ -7,7 +7,7 @@ from .views import (
 
 # pylint: disable=invalid-name
 urlpatterns = [
-    url(r"^statement/add$", statement_add, name="statement_add"),
+    url(r"^statement/add/$", statement_add, name="statement_add"),
     url(
         r"^statement/edit/(?P<statement_id>\d+)$",
         statement_edit,
