@@ -14,38 +14,28 @@ class FinancialCodeSystemModelTest(TestCase):
         "financial_codes/tests/fixtures/financial_code_system.json",
     ]
 
-    #def test_labels(self):
-    #    """Tests a series of fields for proper label generation"""
-    #    test_list = [
-    #        {"field_name": "name", "label_name": "name"},
-    #        {"field_name": "address", "label_name": "address"},
-    #        {"field_name": "phone", "label_name": "phone number"},
-    #        {"field_name": "fax", "label_name": "fax number"},
-    #    ]
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "title", "label_name": "title"},
+            {"field_name": "status", "label_name": "status"},
+        ]
 
-    #    for test_item in test_list:
-    #        institution = Institution.objects.get(id=1)
-    #        field_label = institution._meta.get_field(test_item["field_name"]).verbose_name
-    #        self.assertEqual(field_label, test_item["label_name"])
+        for test_item in test_list:
+            financial_code_system = FinancialCodeSystem.objects.get(id=1)
+            field_label = financial_code_system._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
 
-    #def test_max_length(self):
-    #    """Tests a series of fields for proper max length"""
-    #    test_list = [
-    #        {"field_name": "name", "max_length": 250},
-    #        {"field_name": "address", "max_length": 1000},
-    #        {"field_name": "phone", "max_length": 30},
-    #        {"field_name": "fax", "max_length": 30},
-    #    ]
+    def test_title_max_length(self):
+        """Tests a series of fields for proper max length"""
+        financial_code_system = FinancialCodeSystem.objects.get(id=1)
+        max_length = financial_code_system._meta.get_field("title").max_length
+        self.assertEqual(max_length, 100)
 
-    #    for test_item in test_list:
-    #        institution = Institution.objects.get(id=1)
-    #        max_length = institution._meta.get_field(test_item["field_name"]).max_length
-    #        self.assertEqual(max_length, test_item["max_length"])
-
-    #def test_string_representation(self):
-    #    """Tests that the model string representaton returns as expected"""
-    #    institution = Institution.objects.get(id=1)
-    #    self.assertEqual(str(institution), institution.name)
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        financial_code_system = FinancialCodeSystem.objects.get(id=1)
+        self.assertEqual(str(financial_code_system), financial_code_system.title)
 
 #class FinancialCodeGroupModelTest(TestCase):
 #    """Test functions for the Account model"""
