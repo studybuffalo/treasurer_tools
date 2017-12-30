@@ -1,0 +1,22 @@
+[
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 1,
+    "fields": {
+      "title": "Awards & Grants",
+      "description": "Revenue for branch awards and grants",
+      "type": "r",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 2,
+    "fields": {
+      "title": "Awards & Grants",
+      "description": "Expenses for branch awards and grants",
+      "type": "e",
+      "status": "a"
+    }
+  }
+]

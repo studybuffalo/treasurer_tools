@@ -1,0 +1,24 @@
+[
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 1,
+    "fields": {
+      "code_system": 1,
+      "code_group": 1,
+      "budget_year": 1,
+      "code": 1000,
+      "description": "Funding for Travel Grant"
+    }
+  },
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 2,
+    "fields": {
+      "code_system": 1,
+      "code_group": 2,
+      "budget_year": 1,
+      "code": 6000,
+      "description": "Award of Travel Grant"
+    }
+  }
+]
