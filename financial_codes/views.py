@@ -274,10 +274,12 @@ def year_add(request):
         # Check if the form is valid:
         if form.is_valid():
             # Collect the form fields
+            financial_code_system = form.cleaned_data["financial_code_system"]
             date_start = form.cleaned_data["date_start"]
             date_end = form.cleaned_data["date_end"]
 
             # Update the FinancialSystem model object
+            year_data.financial_code_system = financial_code_system
             year_data.date_start = date_start
             year_data.date_end = date_end
 

@@ -68,6 +68,11 @@ class FinancialCodeGroup(models.Model):
 
 class BudgetYear(models.Model):
     """Start and end dates of the budget year"""
+    financial_code_system = models.ForeignKey(
+        FinancialCodeSystem,
+        on_delete=models.CASCADE,
+        help_text="The financial code system that this budget year applies to",
+    )
     date_start = models.DateField(
         help_text="First day of the budget year",
         verbose_name="start date",

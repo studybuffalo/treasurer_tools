@@ -36,16 +36,16 @@ class FinancialCodeGroupForm(forms.ModelForm):
 
 class BudgetYearForm(forms.ModelForm):
     """Form to add and edit budget years"""
-
     # pylint: disable=missing-docstring,too-few-public-methods
+
     class Meta:
         model = BudgetYear
 
-        fields = ("date_start", "date_end",)
-        labels = {
-            "date_start": "Start date",
-            "date_end": "End date",
-        }
+        fields = [
+            "financial_code_system",
+            "date_start",
+            "date_end",
+        ]
 
 
 class FinancialCodeForm(forms.ModelForm):

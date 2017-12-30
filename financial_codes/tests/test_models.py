@@ -49,6 +49,7 @@ class FinancialCodeGroupModelTest(TestCase):
     def test_labels(self):
         """tests a series of fields for proper label generation"""
         test_list = [
+            {"field_name": "financial_code_system", "label_name": "financial_code_system"},
             {"field_name": "title", "label_name": "title"},
             {"field_name": "description", "label_name": "description"},
             {"field_name": "type", "label_name": "type"},
@@ -92,6 +93,13 @@ class BudgetYearModelTest(TestCase):
         "financial_codes/tests/fixtures/budget_year.json",
     ]
     
+    def test_financial_code_system_label(self):
+        """Tests for a proper date_start label"""
+        budget_year = BudgetYear.objects.get(id=1)
+        field_label = budget_year._meta.get_field("financial_code_system").verbose_name
+
+        self.assertEqual(field_label, "financial_code_system")
+        
     def test_date_start_label(self):
         """Tests for a proper date_start label"""
         budget_year = BudgetYear.objects.get(id=1)
