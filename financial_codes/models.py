@@ -65,9 +65,11 @@ class BudgetYear(models.Model):
     """Start and end dates of the budget year"""
     date_start = models.DateField(
         help_text="First day of the budget year",
+        verbose_name="start date",
     )
     date_end = models.DateField(
         help_text="Last day of the budget year",
+        verbose_name="end date",
     )
     history = HistoricalRecords()
 

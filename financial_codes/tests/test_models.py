@@ -38,7 +38,7 @@ class FinancialCodeSystemModelTest(TestCase):
         self.assertEqual(str(financial_code_system), financial_code_system.title)
 
 class FinancialCodeGroupModelTest(TestCase):
-    """Test functions for the Account model"""
+    """Test functions for the FinancialCodeGroup"""
     # pylint: disable=no-member,protected-access
     
     fixtures = [
@@ -84,102 +84,38 @@ class FinancialCodeGroupModelTest(TestCase):
 
             self.assertEqual(str(group), test_string)
 
-#class BudgetYearModelTest(TestCase):
-#    """Test functions for the Statement model"""
-#    # pylint: disable=no-member,protected-access
+class BudgetYearModelTest(TestCase):
+    """Test functions for the BudgetYear model"""
+    # pylint: disable=no-member,protected-access
     
-#    fixtures = [
-#        "bank_transactions/tests/fixtures/institution.json",
-#        "bank_transactions/tests/fixtures/account.json",
-#        "bank_transactions/tests/fixtures/statement.json",
-#    ]
-
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "account", "label_name": "account"},
-#            {"field_name": "date_start", "label_name": "start date"},
-#            {"field_name": "date_end", "label_name": "end date"},
-#        ]
-
-#        for test_item in test_list:
-#            statement = Statement.objects.get(id=1)
-#            field_label = statement._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
-
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        statement = Statement.objects.get(id=1)
-#        self.assertEqual(
-#            str(statement),
-#            "{} to {} statement".format(statement.date_start, statement.date_end)
-#        )
-
-#class FinancialCodeModelTest(TestCase):
-#    """Test functions for the BankTransaction model"""
-#    # pylint: disable=no-member,protected-access
+    fixtures = [
+        "financial_codes/tests/fixtures/budget_year.json",
+    ]
     
-#    fixtures = [
-#        "bank_transactions/tests/fixtures/institution.json",
-#        "bank_transactions/tests/fixtures/account.json",
-#        "bank_transactions/tests/fixtures/statement.json",
-#        "bank_transactions/tests/fixtures/bank_transaction.json",
-#    ]
+    def test_date_start_label(self):
+        """Tests for a proper date_start label"""
+        budget_year = BudgetYear.objects.get(id=1)
+        field_label = budget_year._meta.get_field("date_start").verbose_name
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "statement", "label_name": "statement"},
-#            {"field_name": "date_transaction", "label_name": "transaction date"},
-#            {"field_name": "description_bank", "label_name": "bank description"},
-#            {"field_name": "description_user", "label_name": "user description"},
-#            {"field_name": "amount_debit", "label_name": "debit amount"},
-#            {"field_name": "amount_credit", "label_name": "credit amount"},
-#        ]
-
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            field_label = bank_transaction._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
-            
-#    def test_max_length(self):
-#        """Tests a series of fields for proper max length"""
-#        test_list = [
-#            {"field_name": "description_bank", "max_length": 100},
-#            {"field_name": "description_user", "max_length": 100},
-#        ]
-
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            max_length = bank_transaction._meta.get_field(test_item["field_name"]).max_length
-#            self.assertEqual(max_length, test_item["max_length"])
-            
-#    def test_max_digits(self):
-#        """Tests a series of fields for proper max digits"""
-#        test_list = [
-#            {"field_name": "amount_debit", "max_digits": 12},
-#            {"field_name": "amount_credit", "max_digits": 12},
-#        ]
-
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            max_digits = bank_transaction._meta.get_field(test_item["field_name"]).max_digits
-#            self.assertEqual(max_digits, test_item["max_digits"])
-
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        bank_transactions = BankTransaction.objects.all()
+        self.assertEqual(field_label, "start date")
         
-#        for bank_transaction in bank_transactions:
-#            if bank_transaction.description_user:
-#                test_string = "{} - {}".format(
-#                    bank_transaction.date_transaction,
-#                    bank_transaction.description_user
-#                )
-#            else:
-#                test_string = "{} - {}".format(
-#                    bank_transaction.date_transaction,
-#                    bank_transaction.description_bank
-#                )
+    def test_date_end_label(self):
+        """Tests for a proper date_end label"""
+        budget_year = BudgetYear.objects.get(id=1)
+        field_label = budget_year._meta.get_field("date_end").verbose_name
 
-#            self.assertEqual(str(bank_transaction), test_string)
+        self.assertEqual(field_label, "end date")
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        budget_year = BudgetYear.objects.get(id=1)
+        
+        self.assertEqual(
+            str(budget_year),
+            "{} to {}".format(budget_year.date_start, budget_year.date_end)
+        )
+
+class FinancialCodeModelTest(TestCase):
+    """Test functions for the FinancialCode model"""
+    # pylint: disable=no-member,protected-access
+    
