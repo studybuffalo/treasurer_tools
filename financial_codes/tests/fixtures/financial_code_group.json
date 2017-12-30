@@ -3,6 +3,7 @@
     "model": "financial_codes.financialcodegroup",
     "pk": 1,
     "fields": {
+      "financial_code_system":  1,
       "title": "Awards & Grants",
       "description": "Revenue for branch awards and grants",
       "type": "r",
@@ -13,6 +14,7 @@
     "model": "financial_codes.financialcodegroup",
     "pk": 2,
     "fields": {
+      "financial_code_system": 1,
       "title": "Awards & Grants",
       "description": "Expenses for branch awards and grants",
       "type": "e",

@@ -157,11 +157,13 @@ def group_add(request):
         # Check if the form is valid:
         if form.is_valid():
             # Collect the form fields
+            financial_code_system = form.cleaned_data["financial_code_system"]
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
             status = form.cleaned_data["status"]
 
             # Update the FinancialCodeGroup model object
+            group_data.financial_code_system = financial_code_system
             group_data.title = title
             group_data.description = description
             group_data.status = status

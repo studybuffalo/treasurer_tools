@@ -26,6 +26,11 @@ class FinancialCodeSystem(models.Model):
 
 class FinancialCodeGroup(models.Model):
     """A grouping for a set of Financial Codes"""
+    financial_code_system = models.ForeignKey(
+        FinancialCodeSystem,
+        on_delete=models.CASCADE,
+        help_text="The financial code system that this group applies to",
+    )
     title = models.CharField(
         help_text="Title of the financial code grouping",
         max_length=100,

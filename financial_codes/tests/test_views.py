@@ -133,6 +133,89 @@ class FinancialCodeSystemAddTest(TestCase):
         # Check that one statement was added
         self.assertEqual(1, FinancialCodeSystem.objects.count())
     
+class FinancialCodeGroupAddTest(TestCase):
+    """Tests for the add financial code group view"""
+    # pylint: disable=no-member,protected-access
+
+    fixtures = [
+        "financial_codes/tests/fixtures/authentication.json",
+        "financial_codes/tests/fixtures/financial_code_system.json",
+    ]
+    
+    def setUp(self):
+        self.correct_data = {
+            "financial_code_system":  1,
+            "title": "Awards & Grants",
+            "description": "Revenue for branch awards and grants",
+            "type": "r",
+            "status": "a",
+        }
+        
+    def test_financial_code_group_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("group_add"))
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_financial_code_group_add_url_exists_at_desired_location(self):
+        """Checks that the add statement page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/codes/group/add/")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_financial_code_group_add_accessible_by_name(self):
+        """Checks that add statement page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("group_add"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_financial_code_group_add_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("group_add"))
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check for proper template
+        self.assertTemplateUsed(response, "financial_codes/add.html")
+
+    def test_financial_code_group_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("group_add"), self.correct_data, follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("financial_codes_dashboard"))
+
+    def test_financial_code_group_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("group_add"), self.correct_data, follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that one statement was added
+        self.assertEqual(1, FinancialCodeGroup.objects.count())
+    
 #class StatementEditTest(TestCase):
 #    """Tests for the edit statement view"""
 #    # pylint: disable=no-member,protected-access
