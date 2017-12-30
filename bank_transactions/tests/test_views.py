@@ -64,6 +64,21 @@ class InstitutionAddTest(TestCase):
         "bank_transactions/tests/fixtures/account.json",
     ]
     
+    def setUp(self):
+        self.CORRECT_FORM_DATA = {
+            "name": "Another Financial Institution",
+            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+            "phone": "111-222-1234",
+            "fax": "222-111-1111",
+            "account_set-0-account_number": "777888999",
+            "account_set-0-name": "Savings Account",
+            "account_set-0-status": "a",
+            "account_set-TOTAL_FORMS": 1,
+            "account_set-INITIAL_FORMS": 0,
+            "account_set-MIN_NUM_FORMS": 1,
+            "account_set-MAX_NUM_FORMS": 1000,
+        }
+
     def test_institution_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(reverse("institution_add"))
@@ -107,21 +122,7 @@ class InstitutionAddTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("institution_add"),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "777888999",
-                "account_set-0-name": "Savings Account",
-                "account_set-0-status": "a",
-                "account_set-TOTAL_FORMS": 1,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            },
-            follow=True,
+            reverse("institution_add"), self.CORRECT_FORM_DATA, follow=True,
         )
 
         # Check that user logged in
@@ -134,21 +135,7 @@ class InstitutionAddTest(TestCase):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("institution_add"),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "777888999",
-                "account_set-0-name": "Savings Account",
-                "account_set-0-status": "a",
-                "account_set-TOTAL_FORMS": 1,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            },
-            follow=True,
+            reverse("institution_add"), self.CORRECT_FORM_DATA, follow=True,
         )
 
         # Check that user logged in
@@ -160,6 +147,21 @@ class InstitutionAddTest(TestCase):
         # Check that one account was added
         self.assertEqual(3, Account.objects.count())
         
+    def test_institution_add_invalid_account_status(self):
+        """Confirms that incorrect statuses are properly converted to 'a'"""
+        # Setup incorrect data
+        incorrect_data = self.CORRECT_FORM_DATA
+        incorrect_data["account_set-0-status"] = "z"
+
+        # Submit form
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_add"), incorrect_data, follow=True,
+        )
+        
+        # Confirm that new entry has been added properly
+        self.assertEqual(Account.objects.get(id=1).status, "a")
+
 class InstitutionEditTest(TestCase):
     """Tests of the edit Institution form page"""
     # pylint: disable=no-member,protected-access
@@ -169,7 +171,28 @@ class InstitutionEditTest(TestCase):
         "bank_transactions/tests/fixtures/institution.json",
         "bank_transactions/tests/fixtures/account.json",
     ]
-    
+       
+    def setUp(self):
+        # Add standard test data
+        self.CORRECT_FORM_DATA = {
+            "name": "Another Financial Institution",
+            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+            "phone": "111-222-1234",
+            "fax": "222-111-1111",
+            "account_set-0-account_number": "777888999",
+            "account_set-0-name": "Savings Account",
+            "account_set-0-status": "a",
+            "account_set-0-id": 1,
+            "account_set-1-account_number": "333333333",
+            "account_set-1-name": "Embezzlement Account",
+            "account_set-1-status": "a",
+            "account_set-1-id": 2,
+            "account_set-TOTAL_FORMS": 2,
+            "account_set-INITIAL_FORMS": 0,
+            "account_set-MIN_NUM_FORMS": 1,
+            "account_set-MAX_NUM_FORMS": 1000,
+        }
+
     def test_institution_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
@@ -288,23 +311,14 @@ class InstitutionEditTest(TestCase):
         
     def test_institution_edit_post_confirm_institution_edit(self):
         """Confirms account is properly edited via the institution edit form"""
+        # Setup edited data
+        edited_data = self.CORRECT_FORM_DATA
+        edited_data["name"] = "Another Financial Institution 2"
+
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
-            {
-                "name": "Another Financial Institution 2",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "777888999",
-                "account_set-0-name": "Savings Account",
-                "account_set-0-status": "a",
-                "account_set-0-id": 1,
-                "account_set-TOTAL_FORMS": 1,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            },
+            edited_data
         )
 
         # Confirm still only 1 entry
@@ -318,23 +332,14 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_post_confirm_account_edit(self):
         """Confirms deletion form works properly"""
+        edited_data = self.CORRECT_FORM_DATA
+        edited_data["account_set-0-account_number"] = "222222222"
+        edited_data["account_set-0-name"] = "TFSA Account"
+
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "222222222",
-                "account_set-0-name": "TFSA Account",
-                "account_set-0-status": "a",
-                "account_set-0-id": 1,
-                "account_set-TOTAL_FORMS": 1,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            },
+            edited_data
         )
 
         # Confirm still only 2 entrries
@@ -354,27 +359,14 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_post_fail_on_invalid_account_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
+        # Setup edited data
+        edited_data = self.CORRECT_FORM_DATA
+        edited_data["account_set-0-id"] = "999999999"
+
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "000000000",
-                "account_set-0-name": "Fake Account",
-                "account_set-0-status": "a",
-                "account_set-0-id": "999999999",
-                "account_set-1-account_number": "000000000",
-                "account_set-1-name": "Fake Account",
-                "account_set-1-status": "a",
-                "account_set-1-id": "999999999",
-                "account_set-TOTAL_FORMS": 2,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            }
+            edited_data
         )
 
         # Check for the expected ValidationError
@@ -385,31 +377,17 @@ class InstitutionEditTest(TestCase):
         
     def test_institution_edit_post_add_account(self):
         """Checks that a new account is added via the edit institution form"""
+        added_data = self.CORRECT_FORM_DATA
+        added_data["account_set-2-account_number"] = "444444444"
+        added_data["account_set-2-name"] = "Charity Account"
+        added_data["account_set-2-status"] = "a"
+        added_data["account_set-2-id"] = ""
+        added_data["account_set-TOTAL_FORMS"] = 3
+
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "777888999",
-                "account_set-0-name": "Savings Account",
-                "account_set-0-status": "a",
-                "account_set-0-id": 1,
-                "account_set-1-account_number": "333333333",
-                "account_set-1-name": "Embezzlement Account",
-                "account_set-1-status": "a",
-                "account_set-1-id": 2,
-                "account_set-2-account_number": "444444444",
-                "account_set-2-name": "Charity Account",
-                "account_set-2-status": "a",
-                "account_set-2-id": "",
-                "account_set-TOTAL_FORMS": 3,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            }
+            added_data
         )
 
         # Check that the number of accounts has increased
@@ -437,28 +415,14 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_post_delete_account(self):
         """Checks that account is deleted via the edit institution form"""
+        # Setup the delete data
+        delete_data = self.CORRECT_FORM_DATA
+        delete_data["account_set-1-DELETE"] = "on"
+
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
-            {
-                "name": "Another Financial Institution",
-                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-                "phone": "111-222-1234",
-                "fax": "222-111-1111",
-                "account_set-0-account_number": "777888999",
-                "account_set-0-name": "Savings Account",
-                "account_set-0-status": "a",
-                "account_set-0-id": 1,
-                "account_set-1-account_number": "333333333",
-                "account_set-1-name": "Embezzlement Account",
-                "account_set-1-status": "a",
-                "account_set-1-id": 2,
-                "account_set-1-DELETE": "on",
-                "account_set-TOTAL_FORMS": 2,
-                "account_set-INITIAL_FORMS": 0,
-                "account_set-MIN_NUM_FORMS": 1,
-                "account_set-MAX_NUM_FORMS": 1000,
-            }
+            delete_data
         )
         
         # Check that the number of accounts has decreased
@@ -472,6 +436,22 @@ class InstitutionEditTest(TestCase):
             Account.objects.filter(id=2).count(),
             0
         )
+        
+    def test_institution_add_invalid_account_status(self):
+        """Confirms that incorrect statuses are properly converted to 'a'"""
+        # Setup incorrect data
+        incorrect_data = self.CORRECT_FORM_DATA
+        incorrect_data["account_set-0-status"] = "z"
+
+        # Submit form
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("institution_edit", kwargs={"institution_id": 1}),
+            incorrect_data, follow=True,
+        )
+        
+        # Confirm that new entry has been added properly
+        self.assertEqual(Account.objects.get(id=1).status, "a")
 
 class InstitutionDeleteTest(TestCase):
     """Tests the delete institution view"""

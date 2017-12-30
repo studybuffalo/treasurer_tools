@@ -28,7 +28,7 @@ A Django-based system to assist Non-Profit Organization treasurers in managing/t
   - Test that submission redirect to proper page
   - Test that submission does what is intended (add, edit, or delete)
   - Test that invalid IDs have appropriate error handling
-  - Test that invalid data types have appropriate error handling
+  - Test that important data restrictions work when submitting form
   - Test any custom functions
   - Test that above also applies to any formsets
 
