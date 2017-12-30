@@ -37,52 +37,53 @@ class FinancialCodeSystemModelTest(TestCase):
         financial_code_system = FinancialCodeSystem.objects.get(id=1)
         self.assertEqual(str(financial_code_system), financial_code_system.title)
 
-#class FinancialCodeGroupModelTest(TestCase):
-#    """Test functions for the Account model"""
-#    # pylint: disable=no-member,protected-access
+class FinancialCodeGroupModelTest(TestCase):
+    """Test functions for the Account model"""
+    # pylint: disable=no-member,protected-access
     
-#    fixtures = [
-#        "bank_transactions/tests/fixtures/institution.json",
-#        "bank_transactions/tests/fixtures/account.json",
-#    ]
+    fixtures = [
+        "financial_codes/tests/fixtures/financial_code_system.json",
+        "financial_codes/tests/fixtures/financial_code_group.json",
+    ]
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "institution", "label_name": "institution"},
-#            {"field_name": "account_number", "label_name": "account number"},
-#            {"field_name": "name", "label_name": "name"},
-#            {"field_name": "status", "label_name": "status"},
-#        ]
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "title", "label_name": "title"},
+            {"field_name": "description", "label_name": "description"},
+            {"field_name": "type", "label_name": "type"},
+            {"field_name": "status", "label_name": "status"},
+        ]
 
-#        for test_item in test_list:
-#            account = Account.objects.get(id=1)
-#            field_label = account._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+        for test_item in test_list:
+            financial_code_group = FinancialCodeGroup.objects.get(id=1)
+            field_label = financial_code_group._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
 
-#    def test_max_length(self):
-#        """Tests a series of fields for proper max length"""
-#        test_list = [
-#            {"field_name": "account_number", "max_length": 100},
-#            {"field_name": "name", "max_length": 100},
-#            {"field_name": "status", "max_length": 1},
-#        ]
-
-#        for test_item in test_list:
-#            account = Account.objects.get(id=1)
-#            max_length = account._meta.get_field(test_item["field_name"]).max_length
-#            self.assertEqual(max_length, test_item["max_length"])
-
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        account = Account.objects.get(id=1)
-#        self.assertEqual(
-#            str(account),
-#            "{} {} ({})".format(
-#                account.institution, account.account_number, account.account_number
-#            )
-#        )
+    def test_title_max_length(self):
+        """Tests a series of fields for proper max length"""
+        financial_code_group = FinancialCodeGroup.objects.get(id=1)
+        max_length = financial_code_group._meta.get_field("title").max_length
+        self.assertEqual(max_length, 100)
         
+    def test_description_max_length(self):
+        """Tests a series of fields for proper max length"""
+        financial_code_group = FinancialCodeGroup.objects.get(id=1)
+        max_length = financial_code_group._meta.get_field("description").max_length
+        self.assertEqual(max_length, 500)
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        financial_code_group = FinancialCodeGroup.objects.all()
+
+        for group in financial_code_group:
+            if group.type == "e":
+                test_string = "Expense - {}".format(group.title)
+            elif group.type == "r":
+                test_string = "Revenue - {}".format(group.title)
+
+            self.assertEqual(str(group), test_string)
+
 #class BudgetYearModelTest(TestCase):
 #    """Test functions for the Statement model"""
 #    # pylint: disable=no-member,protected-access
