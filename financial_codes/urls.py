@@ -9,16 +9,16 @@ from .views import (
 
 # pylint: disable=invalid-name
 urlpatterns = [
-    url(r"^system/add", system_add, name="system_add"),
+    url(r"^system/add/", system_add, name="system_add"),
     url(r"^system/edit/(?P<system_id>\d+)$", system_edit, name="system_edit"),
     url(r"^system/delete/(?P<system_id>\d+)$", system_delete, name="system_delete"),
-    url(r"^group/add", group_add, name="group_add"),
+    url(r"^group/add/", group_add, name="group_add"),
     url(r"^group/edit/(?P<group_id>\d+)$", group_edit, name="group_edit"),
     url(r"^group/delete/(?P<group_id>\d+)$", group_delete, name="group_delete"),
-    url(r"^year/add", year_add, name="year_add"),
+    url(r"^year/add/", year_add, name="year_add"),
     url(r"^year/edit/(?P<year_id>\d+)$", year_edit, name="year_edit"),
     url(r"^year/delete/(?P<year_id>\d+)$", year_delete, name="year_delete"),
-    url(r"^code/add", code_add, name="code_add"),
+    url(r"^code/add/", code_add, name="code_add"),
     url(r"^code/edit/(?P<code_id>\d+)$", code_edit, name="code_edit"),
     url(r"^code/delete/(?P<code_id>\d+)$", code_delete, name="code_delete"),
     url(r"^$", dashboard, name="financial_codes_dashboard"),

@@ -54,121 +54,84 @@ class FinancialCodeDashboard(TestCase):
         # Check for proper template
         self.assertTemplateUsed(response, "financial_codes/index.html")
 
-#class StatementAddTest(TestCase):
-#    """Tests for the add statement view"""
-#    # pylint: disable=no-member,protected-access
+class FinancialCodeSystemAddTest(TestCase):
+    """Tests for the add financial code system view"""
+    # pylint: disable=no-member,protected-access
 
-#    fixtures = [
-#        "bank_transactions/tests/fixtures/authentication.json",
-#        "bank_transactions/tests/fixtures/institution.json",
-#        "bank_transactions/tests/fixtures/account.json",
-#    ]
+    fixtures = [
+        "financial_codes/tests/fixtures/authentication.json",
+    ]
     
-#    def setUp(self):
-#        self.correct_statement_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-TOTAL_FORMS": 0,
-#            "banktransaction_set-INITIAL_FORMS": 0,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#        }
-#        self.correct_transaction_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-0-date_transaction": "2017-01-01",
-#            "banktransaction_set-0-description_bank": "CHQ#0001",
-#            "banktransaction_set-0-description_user": "Cheque #0001",
-#            "banktransaction_set-0-amount_debit": 100.00,
-#            "banktransaction_set-0-amount_credit": 0.00,
-#            "banktransaction_set-TOTAL_FORMS": 1,
-#            "banktransaction_set-INITIAL_FORMS": 0,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#        }
-            
-
-#    def test_statement_add_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(reverse("statement_add"))
-
-#        self.assertEqual(response.status_code, 302)
-
-#    def test_statement_add_url_exists_at_desired_location(self):
-#        """Checks that the add statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/add/")
+    def setUp(self):
+        self.correct_data = {
+            "title": "CSHP National",
+            "status": "a"
+        }
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_financial_code_system_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("system_add"))
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
-#    def test_statement_add_accessible_by_name(self):
-#        """Checks that add statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("statement_add"))
+    def test_financial_code_system_add_url_exists_at_desired_location(self):
+        """Checks that the add statement page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/codes/system/add/")
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_statement_add_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("statement_add"))
+    def test_financial_code_system_add_accessible_by_name(self):
+        """Checks that add statement page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("system_add"))
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_financial_code_system_add_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("system_add"))
         
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/add.html")
-
-#    def test_statement_add_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"), self.correct_statement_data, follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_dashboard"))
+        # Check for proper template
+        self.assertTemplateUsed(response, "financial_codes/add.html")
 
-#    def test_statement_add_confirm_add(self):
-#        """Confirms data is added to database on successful form submission"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"), self.correct_statement_data, follow=True,
-#        )
+    def test_financial_code_system_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("system_add"), self.correct_data, follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that one statement was added
-#        self.assertEqual(1, Statement.objects.count())
-    
-#    def test_statement_add_transaction_add(self):
-#        """Confirms that a transaction can be added along with statement"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"),
-#            self.correct_transaction_data,
-#            follow=True,
-#        )
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("financial_codes_dashboard"))
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_financial_code_system_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("system_add"), self.correct_data, follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that one statement was added
-#        self.assertEqual(1, BankTransaction.objects.count())
+        # Check that one statement was added
+        self.assertEqual(1, FinancialCodeSystem.objects.count())
     
 #class StatementEditTest(TestCase):
 #    """Tests for the edit statement view"""
