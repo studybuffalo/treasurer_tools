@@ -254,7 +254,7 @@ def group_delete(request, group_id):
 
     return render(
         request,
-        "financial_codes/group_delete.html",
+        "financial_codes/delete.html",
         {
             "page_name": "financial code group",
             "title": group.title,
