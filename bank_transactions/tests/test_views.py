@@ -153,7 +153,21 @@ class StatementAddTest(TestCase):
         # Check that one statement was added
         self.assertEqual(1, Statement.objects.count())
     
-    # TODO: Test adding with a transaction
+    def test_statement_add_transaction_add(self):
+        """Confirms that a transaction can be added along with statement"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("statement_add"),
+            self.correct_transaction_data,
+            follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that one statement was added
+        self.assertEqual(1, BankTransaction.objects.count())
+    
 
 class StatementEditTest(TestCase):
     """Tests for the edit statement view"""
