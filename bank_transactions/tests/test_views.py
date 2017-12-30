@@ -63,7 +63,7 @@ class StatementAddTest(TestCase):
     ]
     
     def setUp(self):
-        self.CORRECT_STATEMENT_DATA = {
+        self.correct_statement_data = {
             "account": 1,
             "date_start": "2017-01-01",
             "date_end": "2017-01-31",
@@ -72,7 +72,7 @@ class StatementAddTest(TestCase):
             "banktransaction_set-MIN_NUM_FORMS": 0,
             "banktransaction_set-MAX_NUM_FORMS": 1000,
         }
-        self.CORRECT_TRANSACTION_DATA = {
+        self.correct_transaction_data = {
             "account": 1,
             "date_start": "2017-01-01",
             "date_end": "2017-01-31",
@@ -131,7 +131,7 @@ class StatementAddTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("statement_add"), self.CORRECT_STATEMENT_DATA, follow=True,
+            reverse("statement_add"), self.correct_statement_data, follow=True,
         )
 
         # Check that user logged in
@@ -144,7 +144,7 @@ class StatementAddTest(TestCase):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("statement_add"), self.CORRECT_STATEMENT_DATA, follow=True,
+            reverse("statement_add"), self.correct_statement_data, follow=True,
         )
 
         # Check that user logged in
@@ -169,7 +169,7 @@ class StatementEditTest(TestCase):
        
     def setUp(self):
         # Add standard test data
-        self.CORRECT_DATA = {
+        self.correct_data = {
             "account": 1,
             "date_start": "2017-01-01",
             "date_end": "2017-01-31",
@@ -251,7 +251,7 @@ class StatementEditTest(TestCase):
     def test_statement_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         # Setup the edited data
-        edited_data = self.CORRECT_DATA
+        edited_data = self.correct_data
         edited_data["end_date"] = "2017-12-31"
 
         self.client.login(username="user", password="abcd123456")
@@ -270,7 +270,7 @@ class StatementEditTest(TestCase):
     def test_statement_edit_post_failed_on_invalid_statement_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
         # Setup the edited data
-        edited_data = self.CORRECT_DATA
+        edited_data = self.correct_data
         edited_data["end_date"] = "2017-12-31"
 
         self.client.login(username="user", password="abcd123456")
@@ -286,7 +286,7 @@ class StatementEditTest(TestCase):
     def test_statement_edit_post_confirm_statement_edit(self):
         """Confirms banktransaction is properly edited via the statement edit form"""
         # Setup edited data
-        edited_data = self.CORRECT_DATA
+        edited_data = self.correct_data
         edited_data["date_end"] = "2017-12-31"
 
         self.client.login(username="user", password="abcd123456")
@@ -306,7 +306,7 @@ class StatementEditTest(TestCase):
 
     def test_statement_edit_post_confirm_bank_transaction_edit(self):
         """Confirms that transaction can be edited in edit statement form"""
-        edited_data = self.CORRECT_DATA
+        edited_data = self.correct_data
         edited_data["banktransaction_set-0-description_bank"] = "4"
         edited_data["banktransaction_set-0-description_user"] = "5"
 
@@ -334,7 +334,7 @@ class StatementEditTest(TestCase):
     def test_statement_edit_post_fail_on_invalid_bank_transaction_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
         # Setup edited data
-        edited_data = self.CORRECT_DATA
+        edited_data = self.correct_data
         edited_data["banktransaction_set-0-id"] = "999999999"
 
         self.client.login(username="user", password="abcd123456")
@@ -351,7 +351,7 @@ class StatementEditTest(TestCase):
         
     def test_statement_edit_post_add_bank_transaction(self):
         """Checks that a new banktransaction is added via the edit statement form"""
-        added_data = self.CORRECT_DATA
+        added_data = self.correct_data
         added_data["banktransaction_set-1-id"] = ""
         added_data["banktransaction_set-1-date_transaction"] = "2017-01-05"
         added_data["banktransaction_set-1-description_bank"] = "DEP"
@@ -402,7 +402,7 @@ class StatementEditTest(TestCase):
     def test_statement_edit_post_delete_bank_transaction(self):
         """Checks that bank transaction is deleted via the edit statement form"""
         # Setup the delete data
-        delete_data = self.CORRECT_DATA
+        delete_data = self.correct_data
         delete_data["banktransaction_set-0-DELETE"] = "on"
 
         self.client.login(username="user", password="abcd123456")

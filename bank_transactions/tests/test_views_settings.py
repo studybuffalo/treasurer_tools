@@ -63,7 +63,7 @@ class InstitutionAddTest(TestCase):
     ]
     
     def setUp(self):
-        self.CORRECT_FORM_DATA = {
+        self.correct_data = {
             "name": "Another Financial Institution",
             "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
             "phone": "111-222-1234",
@@ -120,7 +120,7 @@ class InstitutionAddTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("institution_add"), self.CORRECT_FORM_DATA, follow=True,
+            reverse("institution_add"), self.correct_data, follow=True,
         )
 
         # Check that user logged in
@@ -133,7 +133,7 @@ class InstitutionAddTest(TestCase):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("institution_add"), self.CORRECT_FORM_DATA, follow=True,
+            reverse("institution_add"), self.correct_data, follow=True,
         )
 
         # Check that user logged in
@@ -148,12 +148,12 @@ class InstitutionAddTest(TestCase):
     def test_institution_add_invalid_account_status(self):
         """Confirms that incorrect statuses are properly converted to 'a'"""
         # Setup incorrect data
-        incorrect_data = self.CORRECT_FORM_DATA
+        incorrect_data = self.correct_data
         incorrect_data["account_set-0-status"] = "z"
 
         # Submit form
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("institution_add"), incorrect_data, follow=True,
         )
         
@@ -172,7 +172,7 @@ class InstitutionEditTest(TestCase):
        
     def setUp(self):
         # Add standard test data
-        self.CORRECT_FORM_DATA = {
+        self.correct_data = {
             "name": "Another Financial Institution",
             "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
             "phone": "111-222-1234",
@@ -310,7 +310,7 @@ class InstitutionEditTest(TestCase):
     def test_institution_edit_post_confirm_institution_edit(self):
         """Confirms account is properly edited via the institution edit form"""
         # Setup edited data
-        edited_data = self.CORRECT_FORM_DATA
+        edited_data = self.correct_data
         edited_data["name"] = "Another Financial Institution 2"
 
         self.client.login(username="user", password="abcd123456")
@@ -330,7 +330,7 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_post_confirm_account_edit(self):
         """Confirms deletion form works properly"""
-        edited_data = self.CORRECT_FORM_DATA
+        edited_data = self.correct_data
         edited_data["account_set-0-account_number"] = "222222222"
         edited_data["account_set-0-name"] = "TFSA Account"
 
@@ -358,7 +358,7 @@ class InstitutionEditTest(TestCase):
     def test_institution_edit_post_fail_on_invalid_account_id(self):
         """Checks that a POST fails when an invalid ID is provided"""
         # Setup edited data
-        edited_data = self.CORRECT_FORM_DATA
+        edited_data = self.correct_data
         edited_data["account_set-0-id"] = "999999999"
 
         self.client.login(username="user", password="abcd123456")
@@ -375,7 +375,7 @@ class InstitutionEditTest(TestCase):
         
     def test_institution_edit_post_add_account(self):
         """Checks that a new account is added via the edit institution form"""
-        added_data = self.CORRECT_FORM_DATA
+        added_data = self.correct_data
         added_data["account_set-2-account_number"] = "444444444"
         added_data["account_set-2-name"] = "Charity Account"
         added_data["account_set-2-status"] = "a"
@@ -414,7 +414,7 @@ class InstitutionEditTest(TestCase):
     def test_institution_edit_post_delete_account(self):
         """Checks that account is deleted via the edit institution form"""
         # Setup the delete data
-        delete_data = self.CORRECT_FORM_DATA
+        delete_data = self.correct_data
         delete_data["account_set-1-DELETE"] = "on"
 
         self.client.login(username="user", password="abcd123456")
@@ -438,12 +438,12 @@ class InstitutionEditTest(TestCase):
     def test_institution_add_invalid_account_status(self):
         """Confirms that incorrect statuses are properly converted to 'a'"""
         # Setup incorrect data
-        incorrect_data = self.CORRECT_FORM_DATA
+        incorrect_data = self.correct_data
         incorrect_data["account_set-0-status"] = "z"
 
         # Submit form
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("institution_edit", kwargs={"institution_id": 1}),
             incorrect_data, follow=True,
         )
