@@ -352,14 +352,14 @@ def year_edit(request, year_id):
 def year_delete(request, year_id):
     """Generates and processes form to delete a budget year"""
         # Get the BudgetYear instance for this user
-    year = get_object_or_404(FinancialCodeGroup, id=year_id)
+    year = get_object_or_404(BudgetYear, id=year_id)
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
         year.delete()
 
         # Redirect back to main list
-        messages.success(request, "Budget yeardeleted")
+        messages.success(request, "Budget year deleted")
 
         return HttpResponseRedirect(reverse('financial_codes_dashboard'))
 
@@ -423,7 +423,7 @@ def code_edit(request, code_id):
     """Generates and processes form to edit a financial code"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        code_data = FinancialCode().objects.get(id=code_id)  # pylint: disable=no-member
+        code_data = get_object_or_404(FinancialCode, id=code_id)  # pylint: disable=no-member
 
         # Create a form instance and populate it with data from the request (binding):
         form = FinancialCodeForm(request.POST, instance=code_data)
@@ -486,11 +486,11 @@ def code_delete(request, code_id):
         # Redirect back to main list
         messages.success(request, "Financial code deleted")
 
-        return HttpResponseRedirect(reverse('financial_code_dashboard'))
+        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
 
     return render(
         request,
-        "financial_code/delete.html",
+        "financial_codes/delete.html",
         {
             "page_name": "financial code",
             "title": str(code),
