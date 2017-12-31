@@ -1,13 +1,13 @@
 [
   {
-    "model": "financial_codes.budgetyear",
+    "model": "transactions.item",
     "pk": 1,
     "fields": {
       "transaction":  1,
       "date_item": "2017-01-01",
       "description": "AGM parking",
-      "amount": 1.00,
-      "gst": 0.05
+      "amount": 100.00,
+      "gst": 5.00
     }
   }
 ]

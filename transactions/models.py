@@ -60,6 +60,7 @@ class Item(models.Model):
     )
     date_item = models.DateField(
         help_text="The date the item was purchased, cheque written, etc.",
+        verbose_name="date"
     )
     description = models.CharField(
         help_text="A description of the item",
@@ -87,7 +88,8 @@ class Item(models.Model):
         """Calculates an item's total"""
         total = self.amount + self.gst
 
-        return "${}".format(total)
+        # Return total as a proper dollar currency
+        return "${0:.2f}".format(total)
 
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
