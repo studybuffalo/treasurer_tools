@@ -1,4 +1,4 @@
-"""Test cases for the financial_codes app non-form views"""
+"""Test cases for the investments app views"""
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
