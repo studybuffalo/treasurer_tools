@@ -7,7 +7,7 @@ from .views import (
 # pylint: disable=invalid-name
 urlpatterns = [
     url(
-        r"^add$",
+        r"^add/$",
         investment_add,
         name="investment_add",
     ),

@@ -52,85 +52,86 @@ class InvestmentsDashboard(TestCase):
         # Check for proper template
         self.assertTemplateUsed(response, "investments/index.html")
 
+class InvestmentAddTest(TestCase):
+    """Tests for the add investment view"""
+    # pylint: disable=no-member,protected-access
 
-#class FinancialCodeSystemAddTest(TestCase):
-#    """Tests for the add financial code system view"""
-#    # pylint: disable=no-member,protected-access
-
-#    fixtures = [
-#        "financial_codes/tests/fixtures/authentication.json",
-#    ]
+    fixtures = [
+        "investments/tests/fixtures/authentication.json",
+    ]
     
-#    def setUp(self):
-#        self.correct_data = {
-#            "title": "CSHP National",
-#            "status": "a"
-#        }
+    def setUp(self):
+        self.correct_data = {
+            "name":  "Annual GIC",
+            "date_invested": "2017-01-01",
+            "amount": 100.00,
+            "rate":  "1% annually"
+        }
         
-#    def test_financial_code_system_add_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(reverse("system_add"))
+    def test_financial_code_investment_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("investment_add"))
 
-#        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
-#    def test_financial_code_system_add_url_exists_at_desired_location(self):
-#        """Checks that the add statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/codes/system/add/")
+    def test_financial_code_investment_add_url_exists_at_desired_location(self):
+        """Checks that the add investment page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/investments/add/")
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_financial_code_system_add_accessible_by_name(self):
-#        """Checks that add statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("system_add"))
+    def test_financial_code_investment_add_accessible_by_name(self):
+        """Checks that add investment page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("investment_add"))
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_financial_code_system_add_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("system_add"))
+    def test_financial_code_investment_add_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("investment_add"))
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "financial_codes/add.html")
+        # Check for proper template
+        self.assertTemplateUsed(response, "investments/add.html")
 
-#    def test_financial_code_system_add_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("system_add"), self.correct_data, follow=True,
-#        )
+    def test_financial_code_investment_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("investment_add"), self.correct_data, follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("financial_codes_dashboard"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("investments_dashboard"))
 
-#    def test_financial_code_system_add_confirm_add(self):
-#        """Confirms data is added to database on successful form submission"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("system_add"), self.correct_data, follow=True,
-#        )
+    def test_financial_code_investment_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("investment_add"), self.correct_data, follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that one statement was added
-#        self.assertEqual(1, FinancialCodeSystem.objects.count())
+        # Check that one statement was added
+        self.assertEqual(1, Investment.objects.count())
     
 #class FinancialCodeSystemEditTest(TestCase):
 #    """Tests for the edit financial code system view"""
