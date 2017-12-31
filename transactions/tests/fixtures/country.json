@@ -1,0 +1,26 @@
+[
+  {
+    "model": "payee_payer.country",
+    "pk": 1,
+    "fields": {
+      "country_code": "CA",
+      "country_name": "Canada"
+    }
+  },
+  {
+    "model": "payee_payer.country",
+    "pk": 2,
+    "fields": {
+      "country_code": "US",
+      "country_name": "United States"
+    }
+  },
+  {
+    "model": "payee_payer.country",
+    "pk": 3,
+    "fields": {
+      "country_code": "AU",
+      "country_name": "Australia"
+    }
+  }
+]

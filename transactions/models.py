@@ -18,6 +18,7 @@ class Transaction(models.Model):
             "applies to"
         ),
         on_delete=models.PROTECT,
+        verbose_name="payee or payer"
     )
     transaction_type = models.CharField(
         choices=(
@@ -34,6 +35,7 @@ class Transaction(models.Model):
     )
     date_submitted = models.DateField(
         default=timezone.now,
+        verbose_name="submission date"
     )
     history = HistoricalRecords
 
@@ -46,10 +48,6 @@ class Transaction(models.Model):
         elif self.transaction_type == "r":
             return_string = "{} - Revenue - {} - {}".format(
                 self.date_submitted, self.payee_payer, self.memo[:100]
-            )
-        else:
-            return_string = "MISSING TRANSACTION TYPE - {} - {}".format(
-                self.payee_payer, self.memo[:100]
             )
 
         return return_string

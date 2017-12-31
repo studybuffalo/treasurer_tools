@@ -1,0 +1,12 @@
+[
+  {
+    "model": "investments.investment",
+    "pk": 1,
+    "fields": {
+      "name":  "Annual GIC",
+      "date_invested": "2017-01-01",
+      "amount": 100.00,
+      "rate":  "1% annually"
+    }
+  }
+]

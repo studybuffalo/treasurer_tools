@@ -1,0 +1,10 @@
+[
+  {
+    "model": "financial_codes.financialcodesystem",
+    "pk": 1,
+    "fields": {
+      "title": "CSHP National",
+      "status": "a"
+    }
+  }
+]
