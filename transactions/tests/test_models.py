@@ -36,25 +36,26 @@ class TransactionModelTest(TestCase):
         
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        transaction = Transaction.objects.get(id=1)
+        transactions = Transaction.objects.all()
 
-        if transaction.transaction_type == "e":
-            test_string = "{} - Expense - {} - {}".format(
-                transaction.date_submitted,
-                transaction.payee_payer,
-                transaction.memo[:100]
-            )
-        elif transaction.transaction_type == "r":
-            test_string = "{} - Revenue - {} - {}".format(
-                transaction.date_submitted,
-                transaction.payee_payer,
-                transaction.memo[:100]
-            )
+        for transaction in transactions:
+            if transaction.transaction_type == "e":
+                test_string = "{} - Expense - {} - {}".format(
+                    transaction.date_submitted,
+                    transaction.payee_payer,
+                    transaction.memo[:100]
+                )
+            elif transaction.transaction_type == "r":
+                test_string = "{} - Revenue - {} - {}".format(
+                    transaction.date_submitted,
+                    transaction.payee_payer,
+                    transaction.memo[:100]
+                )
 
-        self.assertEqual(
-            str(transaction), 
-            test_string
-        )
+            self.assertEqual(
+                str(transaction), 
+                test_string
+            )
 
 class ItemModelTest(TestCase):
     """Test functions for the Item model"""
