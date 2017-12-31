@@ -270,118 +270,118 @@ class InvestmentEditTest(TestCase):
             "GIC - 3 Month Term"
         )
 
-#class FinancialCodeSystemDeleteTest(TestCase):
-#    """Tests for the delete financial code system view"""
-#    # pylint: disable=no-member,protected-access
+class InvestmentDeleteTest(TestCase):
+    """Tests for the delete investment view"""
+    # pylint: disable=no-member,protected-access
     
-#    fixtures = [
-#        "financial_codes/tests/fixtures/authentication.json",
-#        "financial_codes/tests/fixtures/financial_code_system.json",
-#    ]
+    fixtures = [
+        "investments/tests/fixtures/authentication.json",
+        "investments/tests/fixtures/investment.json",
+    ]
 
-#    def test_financial_code_system_delete_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("system_delete", kwargs={"system_id": 1})
-#        )
+    def test_investment_delete_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("investment_delete", kwargs={"investment_id": 1})
+        )
 
-#        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
-#    def test_financial_code_system_delete_url_exists_at_desired_location(self):
-#        """Checks that the delete financial code system page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/codes/system/delete/1")
+    def test_investment_delete_url_exists_at_desired_location(self):
+        """Checks that the delete investment page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/investments/delete/1")
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_financial_code_system_delete_html404_on_invalid_url(self):
-#        """Checks that the delete financial code system page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/codes/system/delete/999999999")
+    def test_investment_delete_html404_on_invalid_url(self):
+        """Checks that the delete investment page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/investments/delete/999999999")
         
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_financial_code_system_delete_accessible_by_name(self):
-#        """Checks that delete financial code system page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_delete", kwargs={"system_id": 1})
-#        )
+    def test_investment_delete_accessible_by_name(self):
+        """Checks that delete investment page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_delete", kwargs={"investment_id": 1})
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
         
-#    def test_financial_code_system_delete_html404_on_invalid_name(self):
-#        """Checks that delete financial code system page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_delete", kwargs={"system_id": 999999999})
-#        )
+    def test_investment_delete_html404_on_invalid_name(self):
+        """Checks that delete investment page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_delete", kwargs={"investment_id": 999999999})
+        )
         
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_financial_code_system_delete_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_delete", kwargs={"system_id": 1})
-#        )
+    def test_investment_delete_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_delete", kwargs={"investment_id": 1})
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "financial_codes/delete.html")
+        # Check for proper template
+        self.assertTemplateUsed(response, "investments/delete.html")
         
-#    def test_financial_code_system_delete_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
+    def test_investment_delete_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
 
-#        # Delete entry
-#        response = self.client.post(
-#            reverse("system_delete", kwargs={"system_id": 1}),
-#            follow=True,
-#        )
+        # Delete entry
+        response = self.client.post(
+            reverse("investment_delete", kwargs={"investment_id": 1}),
+            follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("financial_codes_dashboard"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("investments_dashboard"))
 
-#    def test_financial_code_system_delete_fails_on_invalid_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
+    def test_investment_delete_fails_on_invalid_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
 
-#        # Delete entry
-#        response = self.client.post(
-#            reverse("system_delete", kwargs={"system_id": 999999999}),
-#            follow=True,
-#        )
+        # Delete entry
+        response = self.client.post(
+            reverse("investment_delete", kwargs={"investment_id": 999999999}),
+            follow=True,
+        )
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_financial_code_system_delete_confirm_deletion(self):
-#        """Confirms deletion form works properly"""
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
+    def test_investment_delete_confirm_deletion(self):
+        """Confirms deletion form works properly"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
 
-#        # Delete entry
-#        self.client.post(
-#            reverse("system_delete", kwargs={"system_id": 1})
-#        )
+        # Delete entry
+        self.client.post(
+            reverse("investment_delete", kwargs={"investment_id": 1})
+        )
 
-#        # Checks that investment was deleted
-#        self.assertEqual(0, FinancialCodeSystem.objects.filter(id=1).count())
+        # Checks that investment was deleted
+        self.assertEqual(0, Investment.objects.filter(id=1).count())
