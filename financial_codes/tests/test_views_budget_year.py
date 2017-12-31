@@ -28,7 +28,7 @@ class BudgetYearAddTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_budget_year_add_url_exists_at_desired_location(self):
-        """Checks that the add statement page uses the correct URL"""
+        """Checks that the add budget year page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/settings/codes/year/add/")
         
@@ -83,7 +83,7 @@ class BudgetYearAddTest(TestCase):
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that one statement was added
+        # Check that one budget year was added
         self.assertEqual(1, BudgetYear.objects.count())
   
 class BudgetYearEditTest(TestCase):
@@ -132,7 +132,7 @@ class BudgetYearEditTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_budget_year_edit_accessible_by_name(self):
-        """Checks that edit statement page URL name works properly"""
+        """Checks that edit budget year page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("year_edit", kwargs={"year_id": 1})
@@ -346,5 +346,5 @@ class BudgetYearDeleteTest(TestCase):
             reverse("year_delete", kwargs={"year_id": 1})
         )
 
-        # Checks that statement was deleted
+        # Checks that budget year was deleted
         self.assertEqual(0, BudgetYear.objects.filter(id=1).count())

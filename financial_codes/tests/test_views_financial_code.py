@@ -32,7 +32,7 @@ class FinancialCodeAddTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_financial_code_add_url_exists_at_desired_location(self):
-        """Checks that the add statement page uses the correct URL"""
+        """Checks that the add financial code page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/settings/codes/code/add/")
         
@@ -87,7 +87,7 @@ class FinancialCodeAddTest(TestCase):
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that one statement was added
+        # Check that one financial code was added
         self.assertEqual(1, FinancialCode.objects.count())
 
 class FinancialCodeEditTest(TestCase):
@@ -140,7 +140,7 @@ class FinancialCodeEditTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_financial_code_edit_accessible_by_name(self):
-        """Checks that edit statement page URL name works properly"""
+        """Checks that edit financial code page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("code_edit", kwargs={"code_id": 1})
@@ -350,5 +350,5 @@ class FinancialCodeDeleteTest(TestCase):
         # Checks that only one code remains
         self.assertEqual(1, FinancialCode.objects.count())
 
-        # Checks that statement was deleted
+        # Checks that financial code was deleted
         self.assertEqual(0, FinancialCode.objects.filter(id=1).count())

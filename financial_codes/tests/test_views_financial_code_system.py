@@ -26,7 +26,7 @@ class FinancialCodeSystemAddTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_financial_code_system_add_url_exists_at_desired_location(self):
-        """Checks that the add statement page uses the correct URL"""
+        """Checks that the add financial code system page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/settings/codes/system/add/")
         
@@ -37,7 +37,7 @@ class FinancialCodeSystemAddTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_financial_code_system_add_accessible_by_name(self):
-        """Checks that add statement page URL name works properly"""
+        """Checks that add financial code system page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("system_add"))
         
@@ -81,7 +81,7 @@ class FinancialCodeSystemAddTest(TestCase):
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that one statement was added
+        # Check that one financial code system was added
         self.assertEqual(1, FinancialCodeSystem.objects.count())
     
 class FinancialCodeSystemEditTest(TestCase):
@@ -122,13 +122,13 @@ class FinancialCodeSystemEditTest(TestCase):
     def test_financial_code_system_edit_html404_on_invalid_url(self):
         """Checks that the edit financial code system page URL fails on invalid ID"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/settings//codes/system/edit/999999999")
+        response = self.client.get("/settings/codes/system/edit/999999999")
         
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 
     def test_financial_code_system_edit_accessible_by_name(self):
-        """Checks that edit statement page URL name works properly"""
+        """Checks that edit financial code system page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("system_edit", kwargs={"system_id": 1})
@@ -332,5 +332,5 @@ class FinancialCodeSystemDeleteTest(TestCase):
             reverse("system_delete", kwargs={"system_id": 1})
         )
 
-        # Checks that statement was deleted
+        # Checks that financial code system was deleted
         self.assertEqual(0, FinancialCodeSystem.objects.filter(id=1).count())

@@ -30,7 +30,7 @@ class FinancialCodeGroupAddTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_financial_code_group_add_url_exists_at_desired_location(self):
-        """Checks that the add statement page uses the correct URL"""
+        """Checks that the add financial code group page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/settings/codes/group/add/")
         
@@ -41,7 +41,7 @@ class FinancialCodeGroupAddTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_financial_code_group_add_accessible_by_name(self):
-        """Checks that add statement page URL name works properly"""
+        """Checks that add financial code group page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("group_add"))
         
@@ -85,7 +85,7 @@ class FinancialCodeGroupAddTest(TestCase):
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that one statement was added
+        # Check that one financial code group was added
         self.assertEqual(1, FinancialCodeGroup.objects.count())
       
 class FinancialCodeGroupEditTest(TestCase):
@@ -136,7 +136,7 @@ class FinancialCodeGroupEditTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_financial_code_group_edit_accessible_by_name(self):
-        """Checks that edit statement page URL name works properly"""
+        """Checks that edit financial coe group page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("group_edit", kwargs={"group_id": 1})
@@ -341,5 +341,5 @@ class FinancialCodeGroupDeleteTest(TestCase):
             reverse("group_delete", kwargs={"group_id": 1})
         )
 
-        # Checks that statement was deleted
+        # Checks that financial code group was deleted
         self.assertEqual(0, FinancialCodeGroup.objects.filter(id=1).count())

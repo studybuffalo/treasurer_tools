@@ -68,13 +68,13 @@ class InvestmentAddTest(TestCase):
             "rate":  "1% annually"
         }
         
-    def test_financial_code_investment_add_redirect_if_not_logged_in(self):
+    def test_investment_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(reverse("investment_add"))
 
         self.assertEqual(response.status_code, 302)
 
-    def test_financial_code_investment_add_url_exists_at_desired_location(self):
+    def test_investment_add_url_exists_at_desired_location(self):
         """Checks that the add investment page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/investments/add/")
@@ -85,7 +85,7 @@ class InvestmentAddTest(TestCase):
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
-    def test_financial_code_investment_add_accessible_by_name(self):
+    def test_investment_add_accessible_by_name(self):
         """Checks that add investment page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("investment_add"))
@@ -96,7 +96,7 @@ class InvestmentAddTest(TestCase):
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
-    def test_financial_code_investment_add_template(self):
+    def test_investment_add_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("investment_add"))
@@ -107,7 +107,7 @@ class InvestmentAddTest(TestCase):
         # Check for proper template
         self.assertTemplateUsed(response, "investments/add.html")
 
-    def test_financial_code_investment_add_redirect_to_dashboard(self):
+    def test_investment_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -120,7 +120,7 @@ class InvestmentAddTest(TestCase):
         # Check that redirection was successful
         self.assertRedirects(response, reverse("investments_dashboard"))
 
-    def test_financial_code_investment_add_confirm_add(self):
+    def test_investment_add_confirm_add(self):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -130,143 +130,145 @@ class InvestmentAddTest(TestCase):
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that one statement was added
+        # Check that one investment was added
         self.assertEqual(1, Investment.objects.count())
     
-#class FinancialCodeSystemEditTest(TestCase):
-#    """Tests for the edit financial code system view"""
-#    # pylint: disable=no-member,protected-access
+class InvestmentEditTest(TestCase):
+    """Tests for the edit investment view"""
+    # pylint: disable=no-member,protected-access
     
-#    fixtures = [
-#        "financial_codes/tests/fixtures/authentication.json",
-#        "financial_codes/tests/fixtures/financial_code_system.json",
-#    ]
+    fixtures = [
+        "investments/tests/fixtures/authentication.json",
+        "investments/tests/fixtures/investment.json",
+    ]
 
-#    def setUp(self):
-#        # Add standard test data
-#        self.correct_data = {
-#            "title": "CSHP National",
-#            "status": "a",
-#        }
+    def setUp(self):
+        # Add standard test data
+        self.correct_data = {
+            "name":  "Annual GIC",
+            "date_invested": "2017-01-01",
+            "amount": 100.00,
+            "rate":  "1% annually"
+        }
 
-#    def test_financial_code_system_edit_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("system_edit", kwargs={"system_id": 1})
-#        )
+    def test_investment_edit_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("investment_edit", kwargs={"investment_id": 1})
+        )
 
-#        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
-#    def test_financial_code_system_edit_url_exists_at_desired_location(self):
-#        """Checks that the edit financial code system page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/codes/system/edit/1")
+    def test_investment_edit_url_exists_at_desired_location(self):
+        """Checks that the edit investment page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/investments/edit/1")
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_financial_code_system_edit_html404_on_invalid_url(self):
-#        """Checks that the edit financial code system page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings//codes/system/edit/999999999")
+    def test_investment_edit_html404_on_invalid_url(self):
+        """Checks that the edit investment page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/investments/edit/999999999")
         
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_financial_code_system_edit_accessible_by_name(self):
-#        """Checks that edit statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_edit", kwargs={"system_id": 1})
-#        )
+    def test_investment_edit_accessible_by_name(self):
+        """Checks that edit investment page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_edit", kwargs={"investment_id": 1})
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
         
-#    def test_financial_code_system_edit_html404_on_invalid_name(self):
-#        """Checks that edit financial code system page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_edit", kwargs={"system_id": 999999999})
-#        )
+    def test_investment_edit_html404_on_invalid_name(self):
+        """Checks that edit investment page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_edit", kwargs={"investment_id": 999999999})
+        )
         
-#        # Check that a 404 response is generated
-#        self.assertEqual(response.status_code, 404)
+        # Check that a 404 response is generated
+        self.assertEqual(response.status_code, 404)
 
-#    def test_financial_code_system_edit_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("system_edit", kwargs={"system_id": 1})
-#        )
+    def test_investment_edit_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("investment_edit", kwargs={"investment_id": 1})
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "financial_codes/edit.html")
+        # Check for proper template
+        self.assertTemplateUsed(response, "investments/edit.html")
         
-#    def test_financial_code_system_edit_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["title"] = "CSHP Alberta Branch"
+    def test_investment_edit_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        # Setup the edited data
+        edited_data = self.correct_data
+        edited_data["name"] = "GIC - 3 Month Term"
 
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("system_edit", kwargs={"system_id": 1}),
-#            edited_data,
-#            follow=True,
-#        )
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("investment_edit", kwargs={"investment_id": 1}),
+            edited_data,
+            follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("financial_codes_dashboard"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("investments_dashboard"))
 
-#    def test_financial_code_system_edit_fail_on_invalid_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["title"] = "CSHP Alberta Branch"
+    def test_investment_edit_fail_on_invalid_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Setup the edited data
+        edited_data = self.correct_data
+        edited_data["name"] = "GIC - 3 Month Term"
 
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("system_edit", kwargs={"system_id": 999999999}),
-#            edited_data,
-#            follow=True,
-#        )
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("investment_edit", kwargs={"investment_id": 999999999}),
+            edited_data,
+            follow=True,
+        )
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
         
-#    def test_financial_code_system_edit_confirm_edit(self):
-#        """Confirms that the edit functionality work properly"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["title"] = "CSHP Alberta Branch"
+    def test_investment_edit_confirm_edit(self):
+        """Confirms that the edit functionality work properly"""
+        # Setup the edited data
+        edited_data = self.correct_data
+        edited_data["name"] = "GIC - 3 Month Term"
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("system_edit", kwargs={"system_id": 1}),
-#            edited_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("investment_edit", kwargs={"investment_id": 1}),
+            edited_data
+        )
 
-#        # Confirm still only 1 entry
-#        self.assertEqual(1, FinancialCodeSystem.objects.count())
+        # Confirm still only 1 entry
+        self.assertEqual(1, Investment.objects.count())
 
-#        # Confirm title has been updated properly
-#        self.assertEqual(
-#            FinancialCodeSystem.objects.get(id=1).title,
-#            "CSHP Alberta Branch"
-#        )
+        # Confirm name has been updated properly
+        self.assertEqual(
+            Investment.objects.get(id=1).name,
+            "GIC - 3 Month Term"
+        )
 
 #class FinancialCodeSystemDeleteTest(TestCase):
 #    """Tests for the delete financial code system view"""
@@ -381,5 +383,5 @@ class InvestmentAddTest(TestCase):
 #            reverse("system_delete", kwargs={"system_id": 1})
 #        )
 
-#        # Checks that statement was deleted
+#        # Checks that investment was deleted
 #        self.assertEqual(0, FinancialCodeSystem.objects.filter(id=1).count())
