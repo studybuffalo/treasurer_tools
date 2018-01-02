@@ -3,11 +3,22 @@
     "model": "transactions.item",
     "pk": 1,
     "fields": {
-      "transaction":  1,
-      "date_item": "2017-01-01",
-      "description": "AGM parking",
+      "transaction": 1,
+      "date_item": "2017-06-01",
+      "description": "Taxi costs",
       "amount": 100.00,
       "gst": 5.00
+    }
+  },
+  {
+    "model": "transactions.item",
+    "pk": 1,
+    "fields": {
+      "transaction": 2,
+      "date_item": "2017-01-01",
+      "description": "Pfizer Sponsorship",
+      "amount": 950.00,
+      "gst": 50.00
     }
   }
 ]

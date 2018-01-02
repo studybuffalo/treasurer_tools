@@ -7,7 +7,7 @@ from .views import (
 # pylint: disable=invalid-name
 urlpatterns = [
     url(
-        r"^(?P<t_type>(expense|revenue))/add$",
+        r"^(?P<t_type>(expense|revenue))/add/$",
         transaction_add,
         name="transaction_add",
     ),

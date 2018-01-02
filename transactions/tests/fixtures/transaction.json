@@ -5,8 +5,8 @@
     "fields": {
       "payee_payer": 1,
       "transaction_type": "e",
-      "memo": "Travel Grant sponsorship 2017",
-      "date_submitted": "2017-01-01"
+      "memo": "Travel Grant award 2017",
+      "date_submitted": "2017-06-01"
     }
   },
   {
@@ -15,8 +15,9 @@
     "fields": {
       "payee_payer": 1,
       "transaction_type": "r",
-      "memo": "Travel Grant award 2017",
-      "date_submitted": "2017-06-01"
+      "memo": "Travel Grant sponsorship 2017",
+      "date_submitted": "2017-01-01"
     }
   }
+
 ]
