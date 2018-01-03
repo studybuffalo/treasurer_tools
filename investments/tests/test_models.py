@@ -23,7 +23,7 @@ class FinancialCodeSystemModelTest(TestCase):
 
         for test_item in test_list:
             investment = Investment.objects.get(id=1)
-            field_label = Investment._meta.get_field(test_item["field_name"]).verbose_name
+            field_label = investment._meta.get_field(test_item["field_name"]).verbose_name
             self.assertEqual(field_label, test_item["label_name"])
 
     def test_name_max_length(self):
@@ -42,6 +42,6 @@ class FinancialCodeSystemModelTest(TestCase):
         """Tests that the model string representaton returns as expected"""
         investment = Investment.objects.get(id=1)
         self.assertEqual(
-            str(investment), 
+            str(investment),
             "{} - {}".format(investment.date_invested, investment.name)
         )

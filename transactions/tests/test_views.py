@@ -848,7 +848,7 @@ class TransactionDeleteTest(TestCase):
         try:
             self.client.get(
                 reverse(
-                    "transaction_delete", 
+                    "transaction_delete",
                     kwargs={"t_type": "abc", "transaction_id": 1}
                 )
             )

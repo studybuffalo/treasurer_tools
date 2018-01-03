@@ -53,7 +53,7 @@ class TransactionModelTest(TestCase):
                 )
 
             self.assertEqual(
-                str(transaction), 
+                str(transaction),
                 test_string
             )
 
