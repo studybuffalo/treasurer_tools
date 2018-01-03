@@ -278,6 +278,7 @@ def transaction_delete(request, t_type, transaction_id):
         "transactions/delete.html",
         {
             "page_name": t_type,
-            "title": transaction
+            "delete_message": t_type,
+            "item_to_delete": transaction,
         },
     )
