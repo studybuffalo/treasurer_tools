@@ -6,35 +6,9 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Delete Institution & Accounts</h1>
+    <h1>Delete {{ page_name }}</h1>
 
-    <form action="" method="post">
-        {% csrf_token %}
-
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            Are you sure you want to delete the following 
-                            instituion (and all associated accounts)?
-                        </th>
-                    </tr>
-                    
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>{{ title }}</strong></td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td><button type="submit">Delete</button></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    </form>
+    {% include 'main/form_delete.html' %}
 {% endblock %}
 
 {% block js %}

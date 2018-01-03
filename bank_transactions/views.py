@@ -122,6 +122,9 @@ def statement_add(request):
         {
             "form": form,
             "formsets": formsets,
+            "page_name": "bank statement",
+            "legend_title": "Transactions",
+            "formset_button": "Add transaction",
         },
     )
 
@@ -267,6 +270,9 @@ def statement_edit(request, statement_id):
         {
             "form": form,
             "formsets": formsets,
+            "page_name": "bank statement",
+            "legend_title": "Transaction items",
+            "formset_button": "Add item",
         },
     )
 
@@ -290,6 +296,8 @@ def statement_delete(request, statement_id):
         request,
         "bank_transactions/delete.html",
         {
-            "title": str(statement_data)
+            "page_name": "bank statement",
+            "delete_message": "bank statement",
+            "item_to_delete": str(statement_data),
         },
     )

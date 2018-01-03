@@ -112,6 +112,9 @@ def institution_add(request):
         {
             "form": form,
             "formsets": formsets,
+            "page_name": "banking institution & accounts",
+            "legend_title": "Accounts",
+            "formset_button": "Add account",
         },
     )
 
@@ -248,6 +251,9 @@ def institution_edit(request, institution_id):
         {
             "form": form,
             "formsets": formsets,
+            "page_name": "banking institution & accounts",
+            "legend_title": "Transaction items",
+            "formset_button": "Add item",
         },
     )
 
@@ -271,6 +277,8 @@ def institution_delete(request, institution_id):
         request,
         "bank_settings/delete.html",
         {
-            "title": institution_date,
+            "page_name": "institution & accounts",
+            "delete_message": "institution (and all associated accounts)",
+            "item_to_delete": str(institution_date),
         },
     )

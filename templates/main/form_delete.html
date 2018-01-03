@@ -1,0 +1,16 @@
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div>
+        Are you sure you want to delete the following
+        {{ delete_message }}?
+    </div>
+
+    <div>
+        {{ item_to_delete }}
+    </div>
+
+    <div>
+        <button type="submit">Delete</button>
+    </div>
+</form>
