@@ -87,15 +87,15 @@ def transaction_add(request, t_type):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            item_formset = item_inline_formset(
+            formsets = item_inline_formset(
                 request.POST, instance=transaction_data
             )
 
-            if item_formset.is_valid():
+            if formsets.is_valid():
                 save_transaction_form(form, transaction_data)
 
                 # Cycle through each item_formset and save model data
-                for formset in item_formset:
+                for formset in formsets:
                     save_item_formset(formset)
 
                 # redirect to a new URL:
@@ -106,15 +106,17 @@ def transaction_add(request, t_type):
     # If this is a GET (or any other method) create the default form.
     else:
         form = TransactionForm(initial={})
-        item_formset = item_inline_formset()
+        formsets = item_inline_formset()
 
     return render(
         request,
         "transactions/add.html",
         {
-            "page_name": t_type,
             "form": form,
-            "formset": item_formset,
+            "formsets": formsets,
+            "page_name": t_type,
+            "legend_title": "Transaction items",
+            "formset_button": "Add item",
         },
     )
 

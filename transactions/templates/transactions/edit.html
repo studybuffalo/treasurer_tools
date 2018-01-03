@@ -11,11 +11,11 @@
 
     {% include 'main/messages.html' %}
 
-    {% include 'main/form_and_formsets_edit.html' %}
+    {% include 'main/form_and_formsets.html' %}
 {% endblock %}
 
 {% block js %}
-    {% include 'main/formset_template.html' with formsets=formsets %}
+    {% include 'main/formset_template.html' %}
 
-<script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
 {% endblock %}
