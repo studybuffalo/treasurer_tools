@@ -140,7 +140,12 @@ def system_delete(request, system_id):
         "financial_codes/delete.html",
         {
             "page_name": "financial code system",
-            "title": system.title,
+            "delete_message": "financial code system",
+            "delete_restriction": (
+                "Note: A financial code system can only be deleted when there"
+                "are no transactions assigned to it."
+            ),
+            "item_to_delete": system.title,
         },
     )
 
@@ -257,7 +262,12 @@ def group_delete(request, group_id):
         "financial_codes/delete.html",
         {
             "page_name": "financial code group",
-            "title": group.title,
+            "delete_message": "financial code group",
+            "delete_restriction": (
+                "Note: A financial code group can only be deleted when there"
+                "are no transactions assigned to it."
+            ),
+            "item_to_delete": group.title,
         },
     )
 
@@ -368,7 +378,12 @@ def year_delete(request, year_id):
         "financial_codes/delete.html",
         {
             "page_name": "budget year",
-            "title": str(year),
+            "delete_message": "budget year",
+            "delete_restriction": (
+                "Note: A budget year only be deleted when there are no "
+                "transactions assigned to it."
+            ),
+            "item_to_delete": str(year),
         },
     )
 
@@ -493,6 +508,11 @@ def code_delete(request, code_id):
         "financial_codes/delete.html",
         {
             "page_name": "financial code",
-            "title": str(code),
+            "delete_message": "financial code",
+            "delete_restriction": (
+                "Note: A financial code only be deleted when there are no "
+                "transactions assigned to it."
+            ),
+            "item_to_delete": str(code),
         },
     )

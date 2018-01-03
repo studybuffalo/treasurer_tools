@@ -1,14 +1,24 @@
 <form action="" method="post">
     {% csrf_token %}
 
-    <div>
-        Are you sure you want to delete the following
-        {{ delete_message }}?
-    </div>
+    {% if delete_message %}
+        <div>
+            Are you sure you want to delete the following
+            {{ delete_message }}?
+        </div>
+    {% endif %}
 
-    <div>
-        {{ item_to_delete }}
-    </div>
+    {% if delete_restriction %}
+        <div>
+            {{ delete_restriction }}
+        </div>
+    {% endif %}
+    
+    {% if item_to_delete %}
+        <div>
+            {{ item_to_delete }}
+        </div>
+    {% endif %}
 
     <div>
         <button type="submit">Delete</button>
