@@ -139,7 +139,7 @@ def transaction_edit(request, t_type, transaction_id):
 
         transaction_data.save()
 
-    def update_item_formset(formset):
+    def update_item_formset(formset, transaction_data):
         """Create/updates an Item based on the provided formset"""
         # Only save non-empty forms
         if formset.cleaned_data:
@@ -200,16 +200,16 @@ def transaction_edit(request, t_type, transaction_id):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the transaction object
-            item_formset = item_inline_formset(
+            formsets = item_inline_formset(
                 request.POST, instance=transaction_data
             )
 
-            if item_formset.is_valid():
+            if formsets.is_valid():
                 update_transaction_form(form, transaction_data)
 
                 # Cycle through each item_formset and save model data
-                for formset in item_formset:
-                    update_item_formset(formset)
+                for formset in formsets:
+                    update_item_formset(formset, transaction_data)
 
                 # redirect to a new URL:
                 messages.success(request, "Expense successfully edited")
@@ -238,18 +238,20 @@ def transaction_edit(request, t_type, transaction_id):
                 "amount": item.amount,
                 "gst": item.gst
             })
-        print(len(items))
+
         # Populate the initial formset with the item data
         item_inline_formset.extra = len(items) - 1
-        item_formset = item_inline_formset(initial=initial_item_data)
+        formsets = item_inline_formset(initial=initial_item_data)
 
     return render(
         request,
         "transactions/edit.html",
         {
-            "page_name": t_type,
             "form": form,
-            "formset": item_formset,
+            "formsets": formsets,
+            "page_name": t_type,
+            "legend_title": "Transaction items",
+            "formset_button": "Add item",
         },
     )
 

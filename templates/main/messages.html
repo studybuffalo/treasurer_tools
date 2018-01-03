@@ -7,9 +7,5 @@
                 <li>{{ message }}</li>
             {% endif %}
         {% endfor %}
-
-        {% for error in form.non_field_errors %}
-            <li class="level_40">{{ error }}</li>
-        {% endfor %}
     </ul>
 {% endif %}

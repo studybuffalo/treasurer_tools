@@ -12,7 +12,18 @@
   },
   {
     "model": "transactions.item",
-    "pk": 1,
+    "pk": 2,
+    "fields": {
+      "transaction": 1,
+      "date_item": "2017-06-02",
+      "description": "Hotel Costs",
+      "amount": 205.57,
+      "gst": 10.72
+    }
+  },
+  {
+    "model": "transactions.item",
+    "pk": 3,
     "fields": {
       "transaction": 2,
       "date_item": "2017-01-01",

@@ -161,274 +161,313 @@ class ExpenseAddTest(TestCase):
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
 
 
-#class StatementEditTest(TestCase):
-#    """Tests for the edit statement view"""
-#    # pylint: disable=no-member,protected-access
+class ExpenseEditTest(TestCase):
+    """Tests for the edit expense view"""
+    # pylint: disable=no-member,protected-access
 
-#    fixtures = [
-#        "bank_transactions/tests/fixtures/authentication.json",
-#        "bank_transactions/tests/fixtures/institution.json",
-#        "bank_transactions/tests/fixtures/account.json",
-#        "bank_transactions/tests/fixtures/statement.json",
-#        "bank_transactions/tests/fixtures/bank_transaction.json",
-#    ]
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+    ]
        
-#    def setUp(self):
-#        # Add standard test data
-#        self.correct_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-0-id": 1,
-#            "banktransaction_set-0-date_transaction": "2017-01-01",
-#            "banktransaction_set-0-description_bank": "CHQ#0001",
-#            "banktransaction_set-0-description_user": "Cheque #0001",
-#            "banktransaction_set-0-amount_debit": 100.00,
-#            "banktransaction_set-0-amount_credit": 0.00,
-#            "banktransaction_set-TOTAL_FORMS": 1,
-#            "banktransaction_set-INITIAL_FORMS": 0,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#        }
+    def setUp(self):
+        # Add standard test data
+        self.correct_data = {
+            "payee_payer": 1,
+            "transaction_type": "e",
+            "memo": "Travel Grant award 2017",
+            "date_submitted": "2017-06-01",
+            "item_set-0-id": 1,
+            "item_set-0-date_item": "2017-06-01",
+            "item_set-0-description": "Taxi costs",
+            "item_set-0-amount": 100.00,
+            "item_set-0-gst": 5.00,
+            "item_set-1-id": 2,
+            "item_set-1-date_item": "2017-06-02",
+            "item_set-1-description": "Hotel Costs",
+            "item_set-1-amount": 205.57,
+            "item_set-1-gst": 10.72,
+            "item_set-TOTAL_FORMS": 2,
+            "item_set-INITIAL_FORMS": 0,
+            "item_set-MIN_NUM_FORMS": 1,
+            "item_set-MAX_NUM_FORMS": 1000,
+        }
 
-#    def test_statement_edit_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
+    def test_expense_edit_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            )
+        )
 
-#        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
-#    def test_statement_edit_url_exists_at_desired_location(self):
-#        """Checks that the edit statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/edit/1")
+    def test_expense_edit_url_exists_at_desired_location(self):
+        """Checks that the edit expense page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/expense/edit/1")
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_statement_edit_html404_on_invalid_url(self):
-#        """Checks that the edit statement page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/edit/999999999")
+    def test_expense_edit_html404_on_invalid_url(self):
+        """Checks that the edit expense page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/expense/edit/999999999")
         
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_statement_edit_accessible_by_name(self):
-#        """Checks that edit statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
+    def test_expense_edit_accessible_by_name(self):
+        """Checks that edit expense page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            )
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
         
-#    def test_statement_edit_html404_on_invalid_name(self):
-#        """Checks that edit statement page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 999999999})
-#        )
+    def test_expense_edit_html404_on_invalid_name(self):
+        """Checks that edit expense page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 999999999}
+            )
+        )
         
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#    def test_statement_edit_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
+    def test_expense_edit_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            )
+        )
         
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/edit.html")
+        # Check for proper template
+        self.assertTemplateUsed(response, "transactions/edit.html")
         
-#    def test_statement_edit_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["end_date"] = "2017-12-31"
+    def test_expense_edit_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        # Setup the edited data
+        edited_data = self.correct_data
+        edited_data["date_submitted"] = "2017-12-01"
 
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data,
-#            follow=True,
-#        )
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data,
+            follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_dashboard"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("transactions_dashboard"))
 
-#    def test_statement_edit_post_failed_on_invalid_statement_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["end_date"] = "2017-12-31"
+    def test_expense_edit_fails_on_invalid_transaction_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Setup the edited data
+        edited_data = self.correct_data
+        edited_data["date_submitted"] = "2017-12-01"
 
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 999999999}),
-#            edited_data,
-#            follow=True,
-#        )
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 999999999}
+            ),
+            edited_data,
+            follow=True,
+        )
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
         
-#    def test_statement_edit_post_confirm_statement_edit(self):
-#        """Confirms banktransaction is properly edited via the statement edit form"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["date_end"] = "2017-12-31"
+    def test_expense_edit_confirm_transaction_edit(self):
+        """Confirms transaction is properly edited via the expense edit form"""
+        # Setup edited data
+        edited_data = self.correct_data
+        edited_data["date_submitted"] = "2017-12-01"
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data
+        )
 
-#        # Confirm still only 1 entry
-#        self.assertEqual(1, Statement.objects.count())
+        # Confirm still only 2 transaction items
+        self.assertEqual(2, Transaction.objects.count())
 
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            str(Statement.objects.get(id=1).date_end),
-#            "2017-12-31"
-#        )
+        # Confirm name has been updated properly
+        self.assertEqual(
+            str(Transaction.objects.get(id=1).date_submitted),
+            "2017-12-01"
+        )
 
-#    def test_statement_edit_post_confirm_bank_transaction_edit(self):
-#        """Confirms that transaction can be edited in edit statement form"""
-#        edited_data = self.correct_data
-#        edited_data["banktransaction_set-0-description_bank"] = "4"
-#        edited_data["banktransaction_set-0-description_user"] = "5"
+    def test_expense_edit_confirm_item_edit(self):
+        """Confirms that item can be edited in edit expense form"""
+        edited_data = self.correct_data
+        edited_data["item_set-0-description"] = "Fancy dinner"
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data
+        )
 
-#        # Confirm still only 4 entrries
-#        self.assertEqual(4, BankTransaction.objects.count())
+        # Confirm still only 2 transaction entries
+        self.assertEqual(2, Transaction.objects.count())
 
-#        # Confirm banktransaction number has been updated properly
-#        self.assertEqual(
-#            BankTransaction.objects.get(id=1).description_bank,
-#            "4"
-#        )
+        # Confirm still only 3 item entries
+        self.assertEqual(3, Item.objects.count())
 
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            BankTransaction.objects.get(id=1).description_user,
-#            "5"
-#        )
+        # Confirm item description has been updated properly
+        self.assertEqual(
+            Item.objects.get(id=1).description,
+            "Fancy dinner"
+        )
 
-#    def test_statement_edit_post_fail_on_invalid_bank_transaction_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["banktransaction_set-0-id"] = "999999999"
+    def test_expense_edit_fails_on_invalid_item_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Setup edited data
+        edited_data = self.correct_data
+        edited_data["item_set-0-id"] = "999999999"
 
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data
+        )
 
-#        # Check for the expected ValidationError
-#        self.assertEqual(
-#            response.context["formsets"][0].errors["id"][0],
-#            "Select a valid choice. That choice is not one of the available choices."
-#        )
+        # Check for the expected ValidationError
+        self.assertEqual(
+            response.context["formsets"][0].errors["id"][0],
+            "Select a valid choice. That choice is not one of the available choices."
+        )
         
-#    def test_statement_edit_post_add_bank_transaction(self):
-#        """Checks that a new banktransaction is added via the edit statement form"""
-#        added_data = self.correct_data
-#        added_data["banktransaction_set-1-id"] = ""
-#        added_data["banktransaction_set-1-date_transaction"] = "2017-01-05"
-#        added_data["banktransaction_set-1-description_bank"] = "DEP"
-#        added_data["banktransaction_set-1-description_user"] = "Deposit"
-#        added_data["banktransaction_set-1-amount_debit"] = 0.00
-#        added_data["banktransaction_set-1-amount_credit"] = 200.00
-#        added_data["banktransaction_set-TOTAL_FORMS"] = 2
+    def test_expense_edit_add_item(self):
+        """Checks that a new item is added via the edit expense form"""
+        added_data = self.correct_data
+        added_data["item_set-2-id"] = ""
+        added_data["item_set-2-date_item"] = "2017-06-03"
+        added_data["item_set-2-description"] = "Fancy dinner"
+        added_data["item_set-2-amount"] = 50.00
+        added_data["item_set-2-gst"] = 2.50
+        added_data["item_set-TOTAL_FORMS"] = 3
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            added_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            added_data
+        )
 
-#        # Check that the number of banktransactions has increased
-#        self.assertEqual(
-#            BankTransaction.objects.count(),
-#            5
-#        )
+        # Check that the number of items has increased
+        self.assertEqual(
+            Item.objects.count(),
+            4
+        )
 
-#        # Check that original banktransactions still exist
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=1).date_transaction),
-#            "2017-01-01"
-#        )
+        # Check that original items still exist
+        self.assertEqual(
+            str(Item.objects.get(id=1).description),
+            "Taxi costs"
+        )
 
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=2).date_transaction),
-#            "2017-01-02"
-#        )
+        # Check that the new item is saved properly
+        self.assertEqual(
+            Item.objects.all().last().description,
+            "Fancy dinner"
+        )
 
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=3).date_transaction),
-#            "2017-01-03"
-#        )
+    def test_expense_edit_delete_item(self):
+        """Checks that item is deleted via the edit expense form"""
+        # Setup the delete data
+        delete_data = self.correct_data
+        delete_data["item_set-0-DELETE"] = "on"
 
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=4).date_transaction),
-#            "2017-01-04"
-#        )
-
-#        # Check that the new banktransaction was saved properly
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=5).date_transaction),
-#            "2017-01-05"
-#        )
-
-#    def test_statement_edit_post_delete_bank_transaction(self):
-#        """Checks that bank transaction is deleted via the edit statement form"""
-#        # Setup the delete data
-#        delete_data = self.correct_data
-#        delete_data["banktransaction_set-0-DELETE"] = "on"
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            delete_data
-#        )
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            delete_data
+        )
         
-#        # Check that the number of banktransactions has decreased
-#        self.assertEqual(
-#            BankTransaction.objects.count(),
-#            3
-#        )
+        # Check that the number of items has decreased
+        self.assertEqual(
+            Item.objects.count(),
+            2
+        )
 
-#        # Check that the proper ID has been removed
-#        self.assertEqual(
-#            BankTransaction.objects.filter(id=1).count(),
-#            0
-#        )
+        # Check that the proper ID has been removed
+        self.assertEqual(
+            Item.objects.filter(id=1).count(),
+            0
+        )
         
+    def test_expense_edit_delete_item_fails_on_zero_items(self):
+        """Checks that a transaction cannot be edited below zero items"""
+        # Setup the delete data
+        delete_data = self.correct_data
+        delete_data["item_set-0-DELETE"] = "on"
+        delete_data["item_set-1-DELETE"] = "on"
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            delete_data
+        )
+
+        self.assertEqual(
+            response.context["formsets"].non_form_errors()[0],
+            "Please submit 1 or more forms."
+        )
+
 #class StatementDeleteTest(TestCase):
 #    """Tests for the delete statement view"""
 #    # pylint: disable=no-member,protected-access

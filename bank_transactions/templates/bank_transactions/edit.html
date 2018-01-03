@@ -13,10 +13,36 @@
 
 <form action="" method="post">
     {% csrf_token %}
+    {{ formsets.management_form }}
 
     <div id="form_content">
         {% for field in form %}
-            <div>
+        <div>
+            {{ field.label_tag }}
+
+            <span>
+                {{ field }}
+            </span>
+            <em>
+                {{ field.help_text }}
+            </em>
+
+            {% if field.errors %}
+            <ul class="message_list">
+                {% for error in field.errors %}
+                <li class="level_40">{{ error|striptags }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <fieldset>
+            <legend>Bank transactions</legend>
+
+            {% for form in formsets %}
+            <div class="bank-transaction-row">
+                {% for field in form.visible_fields %}
                 {{ field.label_tag }}
 
                 <span>
@@ -27,53 +53,26 @@
                 </em>
 
                 {% if field.errors %}
-                    <ul class="message_list">
-                        {% for error in field.errors %}
-                        <li class="level_40">{{ error|striptags }}</li>
-                        {% endfor %}
-                    </ul>
+                <ul class="message_list">
+                    {% for error in field.errors %}
+                    <li class="level_40">{{ error|striptags }}</li>
+                    {% endfor %}
+                </ul>
                 {% endif %}
+                {% endfor %}
+
+                {% for field in form.hidden_fields %}
+                {{ field }}
+                {% endfor %}
             </div>
-        {% endfor %}
 
-        <fieldset>
-            <legend>Bank transactions</legend>
-
-            {% for form in formsets %}
-                <div class="bank-transaction-row">
-                    {% for field in form.visible_fields %}
-                        {{ field.label_tag }}
-
-                        <span>
-                            {{ field }}
-                        </span>
-                        <em>
-                            {{ field.help_text }}
-                        </em>
-
-                        {% if field.errors %}
-                            <ul class="message_list">
-                                {% for error in field.errors %}
-                                    <li class="level_40">{{ error|striptags }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% for field in form.hidden_fields %}
-                        {{ field }}
-                    {% endfor %}
-                </div>
-
-                <hr>
+            <hr>
             {% endfor %}
 
             <div>
                 <button id="add-bank-transaction-row">Add additional transaction</button>
             </div>
         </fieldset>
-
-        {{ formsets.management_form }}
     </div>
 
     <div class="right_align">
