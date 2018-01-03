@@ -552,7 +552,7 @@ class RevenueEditTest(TestCase):
         response = self.client.get(
             reverse(
                 "transaction_edit",
-                kwargs={"t_type": "revenue", "transaction_id": 1}
+                kwargs={"t_type": "revenue", "transaction_id": 2}
             )
         )
 
@@ -575,7 +575,7 @@ class RevenueEditTest(TestCase):
         response = self.client.get(
             reverse(
                 "transaction_edit",
-                kwargs={"t_type": "revenue", "transaction_id": 1}
+                kwargs={"t_type": "revenue", "transaction_id": 2}
             )
         )
         
@@ -599,7 +599,7 @@ class TransactionEditTest(TestCase):
     def test_transaction_edit_html404_on_invalid_url(self):
         """Checks that the transaction page URL fails on invalid ID"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/transactions/abc/edit/")
+        response = self.client.get("/transactions/abc/edit/1")
         
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
@@ -612,7 +612,10 @@ class TransactionEditTest(TestCase):
 
         try:
             self.client.get(
-                reverse("transaction_edit", kwargs={"t_type": "abc"})
+                reverse(
+                    "transaction_edit",
+                    kwargs={"t_type": "abc", "transaction_id": 1}
+                )
             )
         except NoReverseMatch:
             exception = True
@@ -767,3 +770,91 @@ class ExpenseDeleteTest(TestCase):
         # Check that other expeneses and items not deleted
         self.assertNotEqual(0, Transaction.objects.count())
         self.assertNotEqual(0, Item.objects.count())
+        
+class RevenueDeleteTest(TestCase):
+    """Tests covering revenue-specific delete views"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+    ]
+       
+    def test_revenue_delete_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse(
+                "transaction_delete",
+                kwargs={"t_type": "revenue", "transaction_id": 2}
+            )
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_revenue_delete_url_exists_at_desired_location(self):
+        """Checks that the delete expense page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/revenue/delete/2")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_revenue_delete_accessible_by_name(self):
+        """Checks that delete expense page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse(
+                "transaction_delete",
+                kwargs={"t_type": "revenue", "transaction_id": 2}
+            )
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+       
+class TransactionDeleteTest(TestCase):
+    """Tests covering remaining delete transaction views"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+    ]
+       
+    def test_transaction_delete_html404_on_invalid_url(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/abc/delete/2")
+        
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+        
+    def test_transaction_delete_html404_on_invalid_name(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+
+        exception = False
+
+        try:
+            self.client.get(
+                reverse(
+                    "transaction_delete", 
+                    kwargs={"t_type": "abc", "transaction_id": 1}
+                )
+            )
+        except NoReverseMatch:
+            exception = True
+
+        # Check that exception is raised
+        self.assertTrue(exception)
+ 
