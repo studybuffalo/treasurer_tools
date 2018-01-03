@@ -2,6 +2,7 @@
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.urls.exceptions import NoReverseMatch
 
 from transactions.models import Transaction, Item
 
@@ -159,7 +160,74 @@ class ExpenseAddTest(TestCase):
         
         # Check that the item was associated with the transaction
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
+        
+class RevenueAddTest(TestCase):
+    """Tests covering revenue-specific views"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+    ]
+    
+    def test_revenue_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("transaction_add", kwargs={"t_type": "revenue"})
+        )
 
+        self.assertEqual(response.status_code, 302)
+
+    def test_revenue_add_url_exists_at_desired_location(self):
+        """Checks that the add revenue page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/revenue/add/")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_revenue_add_accessible_by_name(self):
+        """Checks that add revenue page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("transaction_add", kwargs={"t_type": "revenue"})
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+class TransactionAddTest(TestCase):
+    """Tests covering remaining transaction views"""
+
+    def test_transaction_add_html404_on_invalid_url(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/abc/add/")
+        
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+        
+    def test_transaction_add_html404_on_invalid_name(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+
+        exception = False
+
+        try:
+            self.client.get(
+                reverse("transaction_add", kwargs={"t_type": "abc"})
+            )
+        except NoReverseMatch:
+            exception = True
+
+        # Check that exception is raised
+        self.assertTrue(exception)
 
 class ExpenseEditTest(TestCase):
     """Tests for the edit expense view"""
