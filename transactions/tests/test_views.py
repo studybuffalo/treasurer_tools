@@ -162,7 +162,7 @@ class ExpenseAddTest(TestCase):
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
         
 class RevenueAddTest(TestCase):
-    """Tests covering revenue-specific views"""
+    """Tests covering revenue-specific add views"""
     
     fixtures = [
         "transactions/tests/fixtures/authentication.json",
@@ -203,7 +203,7 @@ class RevenueAddTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 class TransactionAddTest(TestCase):
-    """Tests covering remaining transaction views"""
+    """Tests covering remaining add transaction views"""
 
     def test_transaction_add_html404_on_invalid_url(self):
         """Checks that the transaction page URL fails on invalid ID"""
@@ -536,6 +536,90 @@ class ExpenseEditTest(TestCase):
             "Please submit 1 or more forms."
         )
 
+class RevenueEditTest(TestCase):
+    """Tests covering revenue-specific edit views"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+    ]
+       
+    def test_revenue_edit_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "revenue", "transaction_id": 1}
+            )
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_revenue_edit_url_exists_at_desired_location(self):
+        """Checks that the edit expense page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/revenue/edit/2")
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_revenue_edit_accessible_by_name(self):
+        """Checks that edit expense page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse(
+                "transaction_edit",
+                kwargs={"t_type": "revenue", "transaction_id": 1}
+            )
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+       
+class TransactionEditTest(TestCase):
+    """Tests covering remaining edit transaction views"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+    ]
+       
+    def test_transaction_edit_html404_on_invalid_url(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/transactions/abc/edit/")
+        
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+        
+    def test_transaction_edit_html404_on_invalid_name(self):
+        """Checks that the transaction page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+
+        exception = False
+
+        try:
+            self.client.get(
+                reverse("transaction_edit", kwargs={"t_type": "abc"})
+            )
+        except NoReverseMatch:
+            exception = True
+
+        # Check that exception is raised
+        self.assertTrue(exception)
+ 
 class ExpenseDeleteTest(TestCase):
     """Tests for the delete expense view"""
     # pylint: disable=no-member,protected-access
