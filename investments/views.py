@@ -67,7 +67,8 @@ def investment_add(request):
         request,
         "investments/add.html",
         {
-            "form": form
+            "page_name": "investment",
+            "form": form,
         },
     )
 
@@ -123,6 +124,7 @@ def investment_edit(request, investment_id):
         request,
         "investments/edit.html",
         {
+            "page_name": "investment",
             "form": form,
         },
     )
@@ -147,6 +149,8 @@ def investment_delete(request, investment_id):
         request,
         "investments/delete.html",
         {
-            "investment": investment_data
+            "page_name": "investment",
+            "delete_message": "investment",
+            "item_to_delete": str(investment_data),
         },
     )
