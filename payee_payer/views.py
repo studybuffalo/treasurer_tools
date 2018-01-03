@@ -80,7 +80,10 @@ def add_payee_payer(request):
     return render(
         request,
         "payee_payer/add.html",
-        {'form': form},
+        {
+            "form": form,
+            "page_name": "payee/payer",
+        },
     )
 
 @login_required
@@ -147,7 +150,10 @@ def edit_payee_payer(request, payee_payer_id):
     return render(
         request,
         "payee_payer/edit.html",
-        {'form': form}
+        {
+            "form": form,
+            "page_name": "payee/payer",
+        }
     )
 
 @login_required
@@ -167,5 +173,14 @@ def delete_payee_payer(request, payee_payer_id):
     return render(
         request,
         "payee_payer/delete.html",
-        {"name": payee_payer.name},
+        {
+            "page_name": "payee/payer",
+            "delete_message": "payee/payee",
+            "delete_restriction": (
+                "Note: A payee/payer can only be deleted once all associated "
+                "expenses and revenue claims are either deleted or assigned "
+                "to a new payee/payer."
+            ),
+            "item_to_delete": payee_payer.name,
+        },
     )
