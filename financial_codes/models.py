@@ -10,19 +10,29 @@ class FinancialCodeSystem(models.Model):
         help_text="Title of the financial code system",
         max_length=100,
     )
-    status = models.CharField(
-        choices=(
-            ("a", "Active"),
-            ("i", "Inactive")
-        ),
-        default="a",
-        help_text="Current status of this code system",
-        max_length=1,
+    date_start = models.DateField(
+        help_text="First day this assignment applies to",
+        verbose_name="start date"
+    )
+    date_end = models.DateField(
+        blank=True,
+        help_text="Last day this assignment applies to (leave blank for no end date)",
+        null=True,
+        verbose_name="end date"
     )
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.title
+        if self.date_end:
+            return_string = "{} ({} to {})".format(
+                self.title, self.date_start, self.date_end, 
+            )
+        else:
+            return_string = "{} ({} to present)".format(
+                self.title, self.date_start
+            )
+        
+        return return_string
 
 class FinancialCodeGroup(models.Model):
     """A grouping for a set of Financial Codes"""

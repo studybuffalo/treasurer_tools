@@ -3,20 +3,20 @@
 from django import forms
 
 from .models import (
-    BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
+    BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode, 
 )
 
 
 class FinancialCodeSystemForm(forms.ModelForm):
-    """Form to add and edit financial code systems"""
-
+    """Form to add, edit, & delete entries in the FinancialCodeSystem model"""
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialCodeSystem
 
         fields = [
             "title",
-            "status",
+            "date_start",
+            "date_end",
         ]
 
 class FinancialCodeGroupForm(forms.ModelForm):
@@ -46,7 +46,6 @@ class BudgetYearForm(forms.ModelForm):
             "date_start",
             "date_end",
         ]
-
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""

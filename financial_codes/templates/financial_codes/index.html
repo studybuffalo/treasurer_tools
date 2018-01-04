@@ -5,12 +5,20 @@
 
     {% include 'main/messages.html' %}
 
-    <div>
-        <a href="{% url 'system_add' %}">Add new financial code system</a><br>
-        <a href="{% url 'group_add' %}">Add new financial code group</a><br>
-        <a href="{% url 'year_add' %}">Add new budget year</a><br>
-        <a href="{% url 'code_add' %}">Add new financial code</a>
-    </div>
+    <ul>
+        <li>
+            <a href="{% url 'financial_code_system_add' %}">Add new financial code system</a>
+        </li>
+        <li>
+            <a href="{% url 'group_add' %}">Add new financial code group</a>
+        </li>
+        <li>
+            <a href="{% url 'year_add' %}">Add new budget year</a>
+        </li>
+        <li>
+            <a href="{% url 'code_add' %}">Add new financial code</a>
+        </li>
+    </ul>
 
     <h2>Financial Code Systems</h2>
 
@@ -18,8 +26,8 @@
         {% for system in systems %}
         <li>
             {{ system }} -
-            <a href="{% url 'system_edit' system.id %}">Edit</a> -
-            <a href="{% url 'system_delete' system.id %}">Delete</a>
+            <a href="{% url 'financial_code_system_edit' system.id %}">Edit</a> -
+            <a href="{% url 'financial_code_system_delete' system.id %}">Delete</a>
         </li>
         {% endfor %}
     </ul>
@@ -59,4 +67,6 @@
         </li>
         {% endfor %}
     </ul>
+
+
 {% endblock %}
