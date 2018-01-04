@@ -4,7 +4,17 @@
     "pk": 1,
     "fields": {
       "title": "CSHP National",
-      "status": "a"
+      "date_start": "2017-01-01",
+      "date_end": null
+    }
+  },
+  {
+    "model": "financial_codes.financialcodesystem",
+    "pk": 2,
+    "fields": {
+      "title": "CSHP Alberta Branch",
+      "date_start": "2002-01-01",
+      "date_end": "2014-03-31"
     }
   }
 ]
