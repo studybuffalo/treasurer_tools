@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .forms import TransactionForm
+from .forms import TransactionForm, ItemFormSet
 from .models import Transaction, Item
 
 @login_required
@@ -27,86 +27,39 @@ def dashboard(request):
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
 
-    def save_transaction_form(form, transaction_data):
-        """Saves Transasction instance based on provided form data"""
-        # Collect the cleaned form fields
-        payee_payer = form.cleaned_data["payee_payer"]
-        memo = form.cleaned_data["memo"]
-        date_submitted = form.cleaned_data["date_submitted"]
-        transaction_type = "e" if t_type == "expense" else "r"
-
-        # Set the model data and save the instance
-        transaction_data.payee_payer = payee_payer
-        transaction_data.memo = memo
-        transaction_data.date_submitted = date_submitted
-        transaction_data.transaction_type = transaction_type
-
-        transaction_data.save()
-
-    def save_item_formset(formset):
-        """Saves an Item based on provided formset data"""
-        # Only save non-empty forms
-        if formset.cleaned_data:
-            # Create an Item object
-            item_data = Item()
-
-            # Collect the cleaned formset data
-            date_item = formset.cleaned_data["date_item"]
-            description = formset.cleaned_data["description"]
-            amount = formset.cleaned_data["amount"]
-            gst = formset.cleaned_data["gst"]
-
-            # Set the model data and save the instance
-            item_data.transaction = transaction_data
-            item_data.date_item = date_item
-            item_data.description = description
-            item_data.amount = amount
-            item_data.gst = gst
-
-            item_data.save()
-
-    # Setup the inline formset for the Item model
-    item_inline_formset = inlineformset_factory(
-        Transaction,
-        Item,
-        fields=("date_item", "description", "amount", "gst",),
-        extra=5,
-        min_num=1,
-        validate_min=True,
-        can_delete=False,
-    )
-
-    # If this is a POST request then process the Form data
+    # POST request - try and save data
     if request.method == "POST":
-        # Create a Transaction object
-        transaction_data = Transaction()
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = TransactionForm(request.POST, instance=transaction_data)
+        # Create form with POST data
+        form = TransactionForm(request.POST)
 
         # Check if the form is valid:
         if form.is_valid():
-            # Create a item form instance and provide it the transaction object
-            formsets = item_inline_formset(
-                request.POST, instance=transaction_data
-            )
+            # Get a reference to the future saved form
+            saved_form = form.save(commit=False)
 
+            # Use POST data & form reference to populate formset
+            formsets = ItemFormSet(request.POST, instance=saved_form)
+
+            # If formsets are valid, save transaction and items
             if formsets.is_valid():
-                save_transaction_form(form, transaction_data)
-
-                # Cycle through each item_formset and save model data
-                for formset in formsets:
-                    save_item_formset(formset)
-
-                # redirect to a new URL:
+                saved_form.save()
+                formsets.save()
+                
+                # Redirect to a new URL:
                 messages.success(request, "Expense successfully added")
 
                 return HttpResponseRedirect(reverse("transactions_dashboard"))
+        else:
+            # Form is not valid, so can generate formset without instance
+            formsets = ItemFormSet(request.POST)
 
-    # If this is a GET (or any other method) create the default form.
+    # GET request - generate blank form and formset
     else:
-        form = TransactionForm(initial={})
-        formsets = item_inline_formset()
+        form = TransactionForm()
+        formsets = ItemFormSet()
+
+        # Disable delete function
+        formsets.can_delete = False
 
     return render(
         request,
