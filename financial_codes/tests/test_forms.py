@@ -1,4 +1,4 @@
-"""Test cases for the bank_transaction app"""
+"""Test cases for the financial codes app forms"""
 
 from django.test import TestCase
 
