@@ -1,6 +1,7 @@
 """Forms for the financial_codes app"""
 
 from django import forms
+from django.core.exceptions import ValidationError
 
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode, 
@@ -18,6 +19,17 @@ class FinancialCodeSystemForm(forms.ModelForm):
             "date_start",
             "date_end",
         ]
+
+    def clean_date_end(self):
+        """Checks that a valid date is provided"""
+        date_start = self.cleaned_data["date_start"]
+        date_end = self.cleaned_data["date_end"]
+
+        # Check that the end date is greater than the start date
+        if date_end and date_end < date_start:
+                raise ValidationError("End date must occur after the start date.")
+
+        return date_end
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
