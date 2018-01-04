@@ -8,7 +8,7 @@ from .models import (
 
 
 class FinancialCodeSystemForm(forms.ModelForm):
-    """Form to add, edit, & delete entries in the FinancialCodeSystem model"""
+    """Form to add & edit entries in the FinancialCodeSystem model"""
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialCodeSystem

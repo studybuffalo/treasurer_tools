@@ -2,7 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.urls import reverse
 
 from .models import (
@@ -39,22 +39,12 @@ def system_add(request):
     """Generates and processes form to add financial code system"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        system_data = FinancialCodeSystem()
-
         # Create a form instance and populate it with data from the request (binding):
-        form = FinancialCodeSystemForm(request.POST, instance=system_data)
+        form = FinancialCodeSystemForm(request.POST)
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            title = form.cleaned_data["title"]
-            status = form.cleaned_data["status"]
-
-            # Update the FinancialSystem model object
-            system_data.title = title
-            system_data.status = status
-
-            system_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code system successfully added")
@@ -63,7 +53,7 @@ def system_add(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = FinancialCodeSystemForm(initial={})
+        form = FinancialCodeSystemForm()
 
     return render(
         request,
@@ -86,15 +76,7 @@ def system_edit(request, system_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            title = form.cleaned_data["title"]
-            status = form.cleaned_data["status"]
-
-            # Update the Financial Systems object
-            system_data.title = title
-            system_data.status = status
-
-            system_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code system successfully edited")
@@ -106,10 +88,7 @@ def system_edit(request, system_id):
         # Get initial form data
         system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
 
-        form = FinancialCodeSystemForm(initial={
-            "title": system_data.title,
-            "status": system_data.status,
-        })
+        form = FinancialCodeSystemForm(instance=system_data)
 
     return render(
         request,

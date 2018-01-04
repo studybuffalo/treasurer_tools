@@ -18,7 +18,8 @@ class FinancialCodeSystemModelTest(TestCase):
         """tests a series of fields for proper label generation"""
         test_list = [
             {"field_name": "title", "label_name": "title"},
-            {"field_name": "status", "label_name": "status"},
+            {"field_name": "date_start", "label_name": "start date"},
+            {"field_name": "date_end", "label_name": "end date"},
         ]
 
         for test_item in test_list:
@@ -34,8 +35,17 @@ class FinancialCodeSystemModelTest(TestCase):
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        financial_code_system = FinancialCodeSystem.objects.get(id=1)
-        self.assertEqual(str(financial_code_system), financial_code_system.title)
+        # Test entry without end date
+        self.assertEqual(
+            str(FinancialCodeSystem.objects.get(id=1)),
+            "CSHP National (2017-01-01 to present)"
+        )
+
+        # Test entry with end date
+        self.assertEqual(
+            str(FinancialCodeSystem.objects.get(id=2)),
+            "CSHP Alberta Branch (2002-01-01 to 2014-03-31)"
+        )
 
 class FinancialCodeGroupModelTest(TestCase):
     """Test functions for the FinancialCodeGroup"""

@@ -15,13 +15,13 @@ class FinancialCodeSystemAddTest(TestCase):
     
     def setUp(self):
         self.correct_data = {
-            "title": "CSHP National",
-            "status": "a"
+           "title": "CSHP National",
+           "date_start": "2017-01-01",
         }
         
     def test_financial_code_system_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
-        response = self.client.get(reverse("system_add"))
+        response = self.client.get(reverse("financial_code_system_add"))
 
         self.assertEqual(response.status_code, 302)
 
@@ -39,7 +39,7 @@ class FinancialCodeSystemAddTest(TestCase):
     def test_financial_code_system_add_accessible_by_name(self):
         """Checks that add financial code system page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("system_add"))
+        response = self.client.get(reverse("financial_code_system_add"))
         
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
@@ -50,7 +50,7 @@ class FinancialCodeSystemAddTest(TestCase):
     def test_financial_code_system_add_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("system_add"))
+        response = self.client.get(reverse("financial_code_system_add"))
         
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
@@ -62,7 +62,7 @@ class FinancialCodeSystemAddTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("system_add"), self.correct_data, follow=True,
+            reverse("financial_code_system_add"), self.correct_data, follow=True,
         )
 
         # Check that user logged in
@@ -75,7 +75,7 @@ class FinancialCodeSystemAddTest(TestCase):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("system_add"), self.correct_data, follow=True,
+            reverse("financial_code_system_add"), self.correct_data, follow=True,
         )
 
         # Check that user logged in
@@ -97,13 +97,14 @@ class FinancialCodeSystemEditTest(TestCase):
         # Add standard test data
         self.correct_data = {
             "title": "CSHP National",
-            "status": "a",
+            "date_start": "2017-01-01",
+
         }
 
     def test_financial_code_system_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("system_edit", kwargs={"system_id": 1})
+            reverse("financial_code_system_edit", kwargs={"system_id": 1})
         )
 
         self.assertEqual(response.status_code, 302)
@@ -131,7 +132,7 @@ class FinancialCodeSystemEditTest(TestCase):
         """Checks that edit financial code system page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_edit", kwargs={"system_id": 1})
+            reverse("financial_code_system_edit", kwargs={"system_id": 1})
         )
         
         # Check that user logged in
@@ -144,7 +145,7 @@ class FinancialCodeSystemEditTest(TestCase):
         """Checks that edit financial code system page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_edit", kwargs={"system_id": 999999999})
+            reverse("financial_code_system_edit", kwargs={"system_id": 999999999})
         )
         
         # Check that a 404 response is generated
@@ -154,7 +155,7 @@ class FinancialCodeSystemEditTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_edit", kwargs={"system_id": 1})
+            reverse("financial_code_system_edit", kwargs={"system_id": 1})
         )
         
         # Check that user logged in
@@ -171,7 +172,7 @@ class FinancialCodeSystemEditTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("system_edit", kwargs={"system_id": 1}),
+            reverse("financial_code_system_edit", kwargs={"system_id": 1}),
             edited_data,
             follow=True,
         )
@@ -190,7 +191,7 @@ class FinancialCodeSystemEditTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("system_edit", kwargs={"system_id": 999999999}),
+            reverse("financial_code_system_edit", kwargs={"system_id": 999999999}),
             edited_data,
             follow=True,
         )
@@ -206,12 +207,12 @@ class FinancialCodeSystemEditTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("system_edit", kwargs={"system_id": 1}),
+            reverse("financial_code_system_edit", kwargs={"system_id": 1}),
             edited_data
         )
 
-        # Confirm still only 1 entry
-        self.assertEqual(1, FinancialCodeSystem.objects.count())
+        # Confirm still only two entries
+        self.assertEqual(2, FinancialCodeSystem.objects.count())
 
         # Confirm title has been updated properly
         self.assertEqual(
@@ -231,7 +232,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
     def test_financial_code_system_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("system_delete", kwargs={"system_id": 1})
+            reverse("financial_code_system_delete", kwargs={"system_id": 1})
         )
 
         self.assertEqual(response.status_code, 302)
@@ -259,7 +260,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         """Checks that delete financial code system page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_delete", kwargs={"system_id": 1})
+            reverse("financial_code_system_delete", kwargs={"system_id": 1})
         )
         
         # Check that user logged in
@@ -272,7 +273,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         """Checks that delete financial code system page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_delete", kwargs={"system_id": 999999999})
+            reverse("financial_code_system_delete", kwargs={"system_id": 999999999})
         )
         
         # Check that page is accessible
@@ -282,7 +283,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("system_delete", kwargs={"system_id": 1})
+            reverse("financial_code_system_delete", kwargs={"system_id": 1})
         )
         
         # Check that user logged in
@@ -298,7 +299,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
 
         # Delete entry
         response = self.client.post(
-            reverse("system_delete", kwargs={"system_id": 1}),
+            reverse("financial_code_system_delete", kwargs={"system_id": 1}),
             follow=True,
         )
 
@@ -315,7 +316,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
 
         # Delete entry
         response = self.client.post(
-            reverse("system_delete", kwargs={"system_id": 999999999}),
+            reverse("financial_code_system_delete", kwargs={"system_id": 999999999}),
             follow=True,
         )
 
@@ -329,7 +330,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
 
         # Delete entry
         self.client.post(
-            reverse("system_delete", kwargs={"system_id": 1})
+            reverse("financial_code_system_delete", kwargs={"system_id": 1})
         )
 
         # Checks that financial code system was deleted
