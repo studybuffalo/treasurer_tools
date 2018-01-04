@@ -15,8 +15,8 @@ class FinancialCodeSystemAddTest(TestCase):
     
     def setUp(self):
         self.correct_data = {
-           "title": "CSHP National",
-           "date_start": "2017-01-01",
+            "title": "CSHP National",
+            "date_start": "2017-01-01",
         }
         
     def test_financial_code_system_add_redirect_if_not_logged_in(self):

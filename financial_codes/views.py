@@ -2,7 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from .models import (
@@ -227,8 +227,6 @@ def year_add(request):
     """Generates and processes form to add a new budget year"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        year_data = BudgetYear()
-
         # Create a form instance and populate it with data from the request (binding):
         form = BudgetYearForm(request.POST)
 

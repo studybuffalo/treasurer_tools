@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import (
-    BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode, 
+    BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
 )
 
 
@@ -27,7 +27,7 @@ class FinancialCodeSystemForm(forms.ModelForm):
 
         # Check that the end date is greater than the start date
         if date_end and date_end < date_start:
-                raise ValidationError("End date must occur after the start date.")
+            raise ValidationError("End date must occur after the start date.")
 
         return date_end
 

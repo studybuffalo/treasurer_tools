@@ -25,7 +25,7 @@ class FinancialCodeSystem(models.Model):
     def __str__(self):
         if self.date_end:
             return_string = "{} ({} to {})".format(
-                self.title, self.date_start, self.date_end, 
+                self.title, self.date_start, self.date_end
             )
         else:
             return_string = "{} ({} to present)".format(
