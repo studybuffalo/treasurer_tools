@@ -133,26 +133,12 @@ def group_add(request):
     """Generates and processes form to add a new financial code group"""
     # If this is a POST request then process the Form data
     if request.method == "POST":
-        group_data = FinancialCodeGroup()
-
         # Create a form instance and populate it with data from the request (binding):
-        form = FinancialCodeGroupForm(request.POST, instance=group_data)
+        form = FinancialCodeGroupForm(request.POST)
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            financial_code_system = form.cleaned_data["financial_code_system"]
-            title = form.cleaned_data["title"]
-            description = form.cleaned_data["description"]
-            status = form.cleaned_data["status"]
-
-            # Update the FinancialCodeGroup model object
-            group_data.financial_code_system = financial_code_system
-            group_data.title = title
-            group_data.description = description
-            group_data.status = status
-
-            group_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code group successfully added")
@@ -161,7 +147,7 @@ def group_add(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = FinancialCodeGroupForm(initial={})
+        form = FinancialCodeGroupForm()
 
     return render(
         request,
@@ -184,17 +170,7 @@ def group_edit(request, group_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            title = form.cleaned_data["title"]
-            description = form.cleaned_data["description"]
-            status = form.cleaned_data["status"]
-
-            # Update the Financial Systems object
-            group_data.title = title
-            group_data.description = description
-            group_data.status = status
-
-            group_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code group successfully edited")
@@ -206,11 +182,7 @@ def group_edit(request, group_id):
         # Get initial form data
         group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
 
-        form = FinancialCodeGroupForm(initial={
-            "title": group_data.title,
-            "description": group_data.description,
-            "status": group_data.status,
-        })
+        form = FinancialCodeGroupForm(instance=group_data)
 
     return render(
         request,
@@ -258,21 +230,11 @@ def year_add(request):
         year_data = BudgetYear()
 
         # Create a form instance and populate it with data from the request (binding):
-        form = BudgetYearForm(request.POST, instance=year_data)
+        form = BudgetYearForm(request.POST)
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            financial_code_system = form.cleaned_data["financial_code_system"]
-            date_start = form.cleaned_data["date_start"]
-            date_end = form.cleaned_data["date_end"]
-
-            # Update the FinancialSystem model object
-            year_data.financial_code_system = financial_code_system
-            year_data.date_start = date_start
-            year_data.date_end = date_end
-
-            year_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Budget year successfully added")
@@ -304,14 +266,7 @@ def year_edit(request, year_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            date_start = form.cleaned_data["date_start"]
-            date_end = form.cleaned_data["date_end"]
-
-            # Update the FinancialSystem model object
-            year_data.date_start = date_start
-            year_data.date_end = date_end
-
-            year_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Budget year successfully edited")
@@ -323,10 +278,7 @@ def year_edit(request, year_id):
         # Get initial form data
         year_data = get_object_or_404(BudgetYear, id=year_id)
 
-        form = BudgetYearForm(initial={
-            "date_start": year_data.date_start,
-            "date_end": year_data.date_end,
-        })
+        form = BudgetYearForm(instance=year_data)
 
     return render(
         request,
@@ -378,21 +330,7 @@ def code_add(request):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            code = form.cleaned_data["code"]
-            description = form.cleaned_data["description"]
-            code_system = form.cleaned_data["code_system"]
-            code_group = form.cleaned_data["code_group"]
-            budget_year = form.cleaned_data["budget_year"]
-
-            # Update the Demographics model object
-            code_data.code = code
-            code_data.description = description
-            code_data.code_system = code_system
-            code_data.code_group = code_group
-            code_data.budget_year = budget_year
-
-            code_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code successfully added")
@@ -401,7 +339,7 @@ def code_add(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = FinancialCodeForm(initial={})
+        form = FinancialCodeForm()
 
     return render(
         request,
@@ -424,21 +362,7 @@ def code_edit(request, code_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            code = form.cleaned_data["code"]
-            description = form.cleaned_data["description"]
-            code_system = form.cleaned_data["code_system"]
-            code_group = form.cleaned_data["code_group"]
-            budget_year = form.cleaned_data["budget_year"]
-
-            # Update the Demographics model object
-            code_data.code = code
-            code_data.description = description
-            code_data.code_system = code_system
-            code_data.code_group = code_group
-            code_data.budget_year = budget_year
-
-            code_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Financial code successfully added")
@@ -450,13 +374,7 @@ def code_edit(request, code_id):
         # Get initial form data
         code_data = get_object_or_404(FinancialCode, id=code_id)
 
-        form = FinancialCodeForm(initial={
-            "code": code_data.code,
-            "description": code_data.description,
-            "code_system": code_data.code_system,
-            "code_group": code_data.code_group,
-            "budget_year": code_data.budget_year,
-        })
+        form = FinancialCodeForm(instance=code_data)
 
     return render(
         request,
