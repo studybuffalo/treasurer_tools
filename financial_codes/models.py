@@ -3,6 +3,15 @@
 from django.db import models
 
 from simple_history.models import HistoricalRecords
+from .serializers import FinancialCodeSystemSerializer
+
+class FinancialCodeSystemManager(models.Manager):
+    """Manager for the FinancialCodeSystem model"""
+    def return_json_data(self):
+        """Returns a json list of all the model entries"""
+        return FinancialCodeSystemSerializer().serialize(
+            FinancialCodeSystem.objects.all()
+        )
 
 class FinancialCodeSystem(models.Model):
     """Name and description of a financial code system"""
@@ -21,6 +30,8 @@ class FinancialCodeSystem(models.Model):
         verbose_name="end date"
     )
     history = HistoricalRecords()
+
+    objects = FinancialCodeSystemManager()
 
     def __str__(self):
         if self.date_end:

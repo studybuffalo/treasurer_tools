@@ -7,15 +7,20 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Add New {{ page_name|title }}</h1>
+<h1>Add New {{ page_name|title }}</h1>
 
     {% include 'main/messages.html' %}
 
     {% include 'main/form_and_formsets_add_edit.html' %}
+
 {% endblock %}
 
 {% block js %}
     {% include 'main/formset_template.html' %}
+    
+    <script type="text/javascript">
+        const FINANCIAL_CODE_SYSTEMS = {{ financial_code_systems|safe }};
+    </script>
 
     <script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
 {% endblock %}

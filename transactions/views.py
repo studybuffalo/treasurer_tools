@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from .forms import TransactionForm, ItemFormSet
 from .models import Transaction, Item
+from financial_codes.models import FinancialCodeSystem
 
 @login_required
 def dashboard(request):
@@ -26,6 +27,8 @@ def dashboard(request):
 @login_required
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
+    def retrieve_financial_code_systems():
+        return FinancialCodeSystem.objects.return_json_data()
 
     # POST request - try and save data
     if request.method == "POST":
@@ -53,6 +56,9 @@ def transaction_add(request, t_type):
             # Form is not valid, so can generate formset without instance
             formsets = ItemFormSet(request.POST)
 
+            # Set up the financial code systems dictionary
+            financial_code_systems = retrieve_financial_code_systems()
+
     # GET request - generate blank form and formset
     else:
         form = TransactionForm()
@@ -60,6 +66,9 @@ def transaction_add(request, t_type):
 
         # Disable delete function
         formsets.can_delete = False
+        
+        # Set up the financial code systems dictionary
+        financial_code_systems = retrieve_financial_code_systems()
 
     return render(
         request,
@@ -67,6 +76,7 @@ def transaction_add(request, t_type):
         {
             "form": form,
             "formsets": formsets,
+            "financial_code_systems": financial_code_systems,
             "page_name": t_type,
             "legend_title": "Transaction items",
             "formset_button": "Add item",
