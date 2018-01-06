@@ -25,78 +25,84 @@ def dashboard(request):
         },
     )
 
-@login_required
-def transaction_add(request, t_type):
-    """Generates and processes form to add a transaction"""
-    def extract_financial_code_assignment_values(data, prefix):
-        """"""
-        if data:
-            budget_year_key = "{}-budget_year".format(prefix)
-            code_key = "{}-code".format(prefix)
-            
-            return {
-                "budget_year": data[budget_year_key],
-                "code": data[code_key],
-            }
-        else:
-            return None
 
-    def assemble_financial_code_forms(formsets, post_data=[]):
-        """"""
-        # Cycle through formsets and assemble financial code forms
-        code_forms = []
-        is_valid = True
+class CompiledItemForms(object):
+    """Object holding item & related financial code forms & functions"""
+    def __assemble_forms(self, formsets, post_data):
+        """Assemble the item formsets and financial code forms"""
+        # Cycle through each item's inline formset
+        forms = []
         item_id = 0
 
-        for formset in formsets:
+        for item_formset in formsets:
             # Get the date assigned to this formset
-            date_item = formset["date_item"].value()
+            date_item = item_formset["date_item"].value()
         
             # Find all the systems encompassing the provided date
-            systems = FinancialCodeSystem.objects.filter(
+            financial_code_systems = FinancialCodeSystem.objects.filter(
                 Q(date_start__lte=date_item),
                 (Q(date_end=None) | Q(date_end__gte=date_item))
             )
 
-            # Assemble each required form
-            code_forms_for_single_item = []
+            # Create a FinancialCodeAssignmentForm for each system
+            financial_code_forms = []
             form_id = 0
 
-            for system in systems:
+            for system in financial_code_systems:
+                # Setup the proper prefix for the form fields
                 prefix = "item_set-{}-coding_set-{}".format(item_id, form_id)
-                post_dictionary = extract_financial_code_assignment_values(
-                    post_data, prefix
-                )
-                
-                code_form = FinancialCodeAssignmentForm(
-                    post_dictionary,
+                    
+                financial_code_form = FinancialCodeAssignmentForm(
+                    post_data,
                     prefix=prefix,
                     system=system,
                 )
-                
-                if code_form.is_valid() == False:
-                    is_valid = False
-
-                code_forms_for_single_item.append({
+                print("Prefix = {}".format(prefix))
+                print("Data = {}".format(post_data))
+                print("Code = {}".format(financial_code_form["code"].value()))
+                print("Bound = {}".format(financial_code_form.is_bound))
+                print("Valid = {}".format(financial_code_form.is_valid()))
+                    
+                # Add the form and a system title to the list
+                financial_code_forms.append({
                     "name": str(system),
-                    "form": code_form,
+                    "form": financial_code_form,
                 })
 
+                # Increment the form_id for the prefix
                 form_id = form_id + 1
 
-
-            code_forms.append({
-                "formset": formset,
-                "code_forms": code_forms_for_single_item,
+            # Add item formset & associated financial code forms to list
+            forms.append({
+                "item_formset": item_formset,
+                "financial_code_forms": financial_code_forms,
             })
 
+            # Increment the item_id for the prefix
             item_id = item_id + 1
 
-        return {
-            "forms": code_forms,
-            "is_valid": is_valid,
-        }
+        return forms
 
+    def is_valid(self):
+        """Checks if all item formsets & financial code forms are valid"""
+        valid = True
+
+        for group in self.forms:
+            if group["item_formset"].is_valid() == False:
+                valid = False
+
+            for financial_code_form in group["financial_code_forms"]:
+                if financial_code_form["form"].is_valid() == False:
+                    valid = False
+
+        return valid
+            
+    def __init__(self, formsets, post_data={}):
+        self.forms = self.__assemble_forms(formsets, post_data)
+            
+@login_required
+def transaction_add(request, t_type):
+    """Generates and processes form to add a transaction"""
     # POST request - try and save data
     if request.method == "POST":
         # Create form with POST data
@@ -112,17 +118,17 @@ def transaction_add(request, t_type):
 
             # Check if the formsets are valid
             if formsets.is_valid():
-                financial_code_forms = assemble_financial_code_forms(formsets, request.POST)
+                compiled_forms = CompiledItemForms(formsets, request.POST)
 
-                if financial_code_forms["is_valid"]:
+                if compiled_forms.is_valid():
                     saved_form.save()
                     
-                    for code_forms in financial_code_forms["forms"]:
-                        saved_formset = code_forms["formset"].save(commit=False)
+                    for group in compiled_forms.forms:
+                        saved_formset = group["item_formset"].save(commit=False)
                         saved_formset.transaction = Transaction.objects.get(id=saved_form.id)
                         saved_formset.save()
 
-                        for code_form in code_forms["code_forms"]:
+                        for code_form in group["financial_code_forms"]:
                             # Get reference to each model
                             match_item = Item.objects.get(id=saved_formset.id)
                             match_code = FinancialCode.objects.get(
@@ -156,9 +162,8 @@ def transaction_add(request, t_type):
         formsets = ItemFormSet()
         formsets.can_delete = False
 
-        financial_code_forms = assemble_financial_code_forms(formsets)
+        financial_code_forms = CompiledItemForms(formsets)
         
-
     return render(
         request,
         "transactions/add.html",

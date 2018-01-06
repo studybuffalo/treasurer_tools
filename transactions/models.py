@@ -94,11 +94,11 @@ class Item(models.Model):
 
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
-    item = models.OneToOneField(
+    item = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,
     )
-    financial_code = models.OneToOneField(
+    financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.CASCADE,
     )
@@ -106,11 +106,11 @@ class FinancialCodeMatch(models.Model):
 
 class AttachmentMatch(models.Model):
     """Links a transaction to one or more attachments"""
-    transaction = models.OneToOneField(
+    transaction = models.ForeignKey(
         Transaction,
         on_delete=models.CASCADE,
     )
-    attachment = models.OneToOneField(
+    attachment = models.ForeignKey(
         Attachment,
         on_delete=models.CASCADE,
     )

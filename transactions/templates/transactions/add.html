@@ -53,7 +53,7 @@
                     {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
                     
                     <div class="formset-row">
-                        {% for field in group.formset.visible_fields %}
+                        {% for field in group.item_formset.visible_fields %}
                             {{ field.label_tag }}
 
                             <span>
@@ -67,13 +67,13 @@
                             {% include 'main/errors.html' with errors=field.errors %}
                         {% endfor %}
 
-                        {% for field in group.formset.hidden_fields %}
+                        {% for field in group.item_formset.hidden_fields %}
                             {{ field }}
                         
                             {% include 'main/errors.html' with errors=field.errors %}
                         {% endfor %}
 
-                        {% for code_form in group.code_forms %}
+                        {% for code_form in group.financial_code_forms %}
                             <fieldset>
                                 <legend>{{ code_form.name|title }}</legend>
                                 

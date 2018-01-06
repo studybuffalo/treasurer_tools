@@ -78,9 +78,9 @@ class FinancialCodeAssignmentForm(forms.Form):
         self.fields["code"].choices = code_choices
         
         # Update with the provided initial values (if provided)
-        if initial_values:
-            self.fields["budget_year"].initial = initial_values["budget_year"]
-            self.fields["code"].initial = initial_values["code"]
+        #if initial_values:
+        #    self.fields["budget_year"].initial = initial_values["budget_year"]
+        #    self.fields["code"].initial = initial_values["code"]
 
 ItemFormSet = inlineformset_factory(
     Transaction,
