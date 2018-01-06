@@ -103,74 +103,81 @@ class CompiledItemForms(object):
 @login_required
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
+    def save_financial_code_match(item_id, financial_code_id):
+        """Saves an item-financial code match"""
+        # Get reference to each model
+        match_item = Item.objects.get(id=item_id)
+        match_code = FinancialCode.objects.get(id=financial_code_id)
+
+        # Saves the financial code meatch
+        match = FinancialCodeMatch(
+            item=match_item,
+            financial_code=match_code
+        )
+        match.save()
+                    
     # POST request - try and save data
     if request.method == "POST":
         # Create form with POST data
-        form = TransactionForm(request.POST)
+        transaction_form = TransactionForm(request.POST)
 
         # Check if the form is valid:
-        if form.is_valid():
+        if transaction_form.is_valid():
             # Get a reference to the future saved form
-            saved_form = form.save(commit=False)
+            saved_transaction = transaction_form.save(commit=False)
 
             # Use POST data & form reference to populate formset
-            formsets = ItemFormSet(request.POST, instance=saved_form)
+            item_formsets = ItemFormSet(request.POST, instance=saved_transaction)
 
             # Check if the formsets are valid
-            if formsets.is_valid():
-                compiled_forms = CompiledItemForms(formsets, request.POST)
+            if item_formsets.is_valid():
+                # Assemble a compiled item & financial code forms object
+                compiled_forms = CompiledItemForms(item_formsets, request.POST)
 
                 if compiled_forms.is_valid():
-                    saved_form.save()
+                    # All forms are valid, may start saving entries
+                    saved_transaction.save()
                     
-                    for group in compiled_forms.forms:
-                        saved_formset = group["item_formset"].save(commit=False)
-                        saved_formset.transaction = Transaction.objects.get(id=saved_form.id)
-                        saved_formset.save()
+                    # Cycle through & save each item + financial code matches
+                    for form in compiled_forms.forms:
+                        saved_item = form["item_formset"].save(commit=False)
+                        saved_item.transaction = Transaction.objects.get(id=saved_transaction.id)
+                        saved_item.save()
 
-                        for code_form in group["financial_code_forms"]:
-                            # Get reference to each model
-                            match_item = Item.objects.get(id=saved_formset.id)
-                            match_code = FinancialCode.objects.get(
-                                id=int(code_form["form"].cleaned_data["code"])
+                        for code_form in form["financial_code_forms"]:
+                            save_financial_code_match(
+                                saved_item.id,
+                                code_form["form"].cleaned_data["code"]
                             )
-
-                            # Saves each financial code match
-                            match = FinancialCodeMatch(
-                                item=match_item,
-                                financial_code=match_code
-                            )
-                            match.save()
-                    
                     # Redirect to a new URL:
                     messages.success(request, "Expense successfully added")
 
                     return HttpResponseRedirect(reverse("transactions_dashboard"))
             else:
                 # Form is not valid, so can generate formset without instance
-                financial_code_forms = assemble_financial_code_forms(formsets, request.POST)
+                compiled_forms = CompiledItemForms(item_formsets, request.POST)
         else:
             # Form is not valid, so can generate formset without instance
-            formsets = ItemFormSet(request.POST)
-            formsets.can_delete = False
-            financial_code_forms = assemble_financial_code_forms(formsets, request.POST)
+            item_formsets = ItemFormSet(request.POST)
+            item_formsets.can_delete = False
+            compiled_forms = CompiledItemForms(item_formsets, request.POST)
 
     # GET request - generate blank form and formset
     else:
-        form = TransactionForm()
+        transaction_form = TransactionForm()
 
-        formsets = ItemFormSet()
-        formsets.can_delete = False
+        item_formsets = ItemFormSet()
+        item_formsets.can_delete = False
 
-        financial_code_forms = CompiledItemForms(formsets)
+        compiled_forms = CompiledItemForms(item_formsets)
         
     return render(
         request,
         "transactions/add.html",
         {
-            "form": form,
-            "formsets": formsets,
-            "formsets_group": financial_code_forms,
+            "form": transaction_form,
+            "formsets": item_formsets,
+            "formsets_group": compiled_forms,
             "page_name": t_type,
             "formset_button": "Add item",
         },
