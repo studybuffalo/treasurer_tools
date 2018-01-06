@@ -59,6 +59,7 @@ class Item(models.Model):
         on_delete=models.CASCADE,
     )
     date_item = models.DateField(
+        default=timezone.now,
         help_text="The date the item was purchased, cheque written, etc.",
         verbose_name="date"
     )

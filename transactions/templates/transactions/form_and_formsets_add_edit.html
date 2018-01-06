@@ -1,0 +1,75 @@
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div id="form_content">
+        {% include 'main/errors.html' with errors=form.non_field_errors %}
+
+        {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+
+                <span>
+                    {{ field }}
+                </span>
+
+                <em>
+                    {{ field.help_text }}
+                </em>
+
+                {% include 'main/errors.html' with errors=field.errors %}
+            </div>
+        {% endfor %}
+
+        {% for field in form.hidden_fields %}
+            <div>
+                {{ field }}
+            </div>
+            
+            {% include 'main/errors.html' with errors=field.errors %}
+        {% endfor %}
+
+        <fieldset>
+            <legend>{{ legend_title }}</legend>
+
+            {{ formsets.management_form }}
+            
+            {% include 'main/errors.html' with errors=formsets.non_form_errors %}
+            
+            {% for form in formsets %}
+                {% include 'main/errors.html' with errors=form.non_field_errors %}
+
+                <div class="formset-row">
+                    {% for field in form.visible_fields %}
+                        {{ field.label_tag }}
+
+                        <span>
+                            {{ field }}
+                        </span>
+
+                        <em>
+                            {{ field.help_text }}
+                        </em>
+                    
+                        {% include 'main/errors.html' with errors=field.errors %}
+                    {% endfor %}
+
+                    {% for field in form.hidden_fields %}
+                        {{ field }}
+                        
+                        {% include 'main/errors.html' with errors=field.errors %}
+                    {% endfor %}
+                </div>
+
+                <hr>
+            {% endfor %}
+
+            <div>
+                <button id="add-formset-row">{{ formset_button }}</button>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="right_align">
+        <button type="submit">Save changes to {{ page_name|lower }}</button>
+    </div>
+</form>
