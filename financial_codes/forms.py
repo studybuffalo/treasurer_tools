@@ -6,7 +6,21 @@ from django.core.exceptions import ValidationError
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
 )
-from. widgets import SelectWithSystemID
+from. widgets import SelectWithYearID
+
+def get_budget_years_with_opt_groups():
+    """Creates nested dictionary financial code systems & budget years"""
+    budget_year_choices = []
+
+    for system in FinancialCodeSystem.objects.all():
+        budget_years = []
+            
+        for budget_year in system.budgetyear_set.all():
+            budget_years.append([budget_year.id, budget_year])
+
+        budget_year_choices.append([system, budget_years])
+
+    return budget_year_choices
 
 class FinancialCodeSystemForm(forms.ModelForm):
     """Form to add & edit entries in the FinancialCodeSystem model"""
@@ -46,8 +60,8 @@ class BudgetYearForm(forms.ModelForm):
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
-
     # pylint: disable=missing-docstring,too-few-public-methods
+    
     class Meta:
         model = FinancialCodeGroup
 
@@ -62,32 +76,28 @@ class FinancialCodeGroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FinancialCodeGroupForm, self).__init__(*args, **kwargs)
 
-        # Add financial code system as opt groups to the budget year choices
-        budget_year_choices = []
-
-        for system in FinancialCodeSystem.objects.all():
-            budget_years = []
-            
-            for budget_year in system.budgetyear_set.all():
-                budget_years.append([budget_year.id, budget_year])
-
-            budget_year_choices.append([system, budget_years])
-
-        self.fields["budget_year"].choices = budget_year_choices
+        self.fields["budget_year"].choices = get_budget_years_with_opt_groups()
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
-
     # pylint: disable=missing-docstring,too-few-public-methods
+    
+    budget_year = forms.ChoiceField(
+        choices=get_budget_years_with_opt_groups(),
+        label="Budget Year",
+        required=False,
+    )
+
     class Meta:
         model = FinancialCode
 
         fields = [
+            "budget_year",
+            "financial_code_group",
             "code",
             "description",
-            "financial_code_group",
         ]
+
         widgets = {
-            "code_group": SelectWithSystemID(),
-            "budget_year": SelectWithSystemID(),
+            "financial_code_group": SelectWithYearID(),
         }

@@ -1,25 +1,22 @@
 from django.forms.widgets import Select
 
-from .models import FinancialCodeGroup, BudgetYear
+from .models import FinancialCodeGroup
 
-class SelectWithSystemID(Select):
+class SelectWithYearID(Select):
     """Select widget that allows data-attribute addition to options"""
     
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         """Modifies function to include the financial code system ID"""
-        option = super(SelectWithSystemID, self).create_option(name, value, label, selected, index, subindex, attrs)
+        option = super(SelectWithYearID, self).create_option(name, value, label, selected, index, subindex, attrs)
         
-        # Use the option value (i.e. the model ID) to retrieve the system ID
+        # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:
-            if option["name"] == "code_group":
-                system_id = FinancialCodeGroup.objects.get(id=option["value"]).financial_code_system.id
-            elif option["name"] == "budget_year":
-                system_id = BudgetYear.objects.get(id=option["value"]).financial_code_system.id
+            year_id = FinancialCodeGroup.objects.get(id=option["value"]).budget_year.id
         else:
-            system_id = ""
+            year_id = ""
 
         # Add the data attribute
-        option["attrs"]["data-system_id"] = system_id
+        option["attrs"]["data-year_id"] = year_id
         
         # Return the modified option
         return option

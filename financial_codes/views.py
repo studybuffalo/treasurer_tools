@@ -1,4 +1,5 @@
 """View for the financial_codes app"""
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -153,100 +154,6 @@ def system_delete(request, system_id):
     )
 
 @login_required
-def group_add(request):
-    """Generates and processes form to add a new financial code group"""
-    # If this is a POST request then process the Form data
-    if request.method == "POST":
-        # Create a form instance and populate it with data from the request (binding):
-        form = FinancialCodeGroupForm(request.POST)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            form.save()
-
-            # redirect to a new URL:
-            messages.success(request, "Financial code group successfully added")
-
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
-
-    # If this is a GET (or any other method) create the default form.
-    else:
-        form = FinancialCodeGroupForm()
-
-    return render(
-        request,
-        "financial_codes/add.html",
-        {
-            "page_name": "financial code group",
-            "form": form
-        },
-    )
-
-@login_required
-def group_edit(request, group_id):
-    """Generates and processes form to edit a financial code group"""
-    # If this is a POST request then process the Form data
-    if request.method == "POST":
-        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = FinancialCodeGroupForm(request.POST, instance=group_data)
-
-        # Check if the form is valid:
-        if form.is_valid():
-            form.save()
-
-            # redirect to a new URL:
-            messages.success(request, "Financial code group successfully edited")
-
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
-
-    # If this is a GET (or any other method) populate the default form.
-    else:
-        # Get initial form data
-        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
-
-        form = FinancialCodeGroupForm(instance=group_data)
-
-    return render(
-        request,
-        "financial_codes/edit.html",
-        {
-            "page_name": "financial code group",
-            "form": form,
-        },
-    )
-
-@login_required
-def group_delete(request, group_id):
-    """Generates and processes form to delete financial code group"""
-    # Get the FinancialCodeGroup instance for this user
-    group = get_object_or_404(FinancialCodeGroup, id=group_id)
-
-    # If this is a POST request then process the Form data
-    if request.method == "POST":
-        group.delete()
-
-        # Redirect back to main list
-        messages.success(request, "Financial code group deleted")
-
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
-
-    return render(
-        request,
-        "financial_codes/delete.html",
-        {
-            "page_name": "financial code group",
-            "delete_message": "financial code group",
-            "delete_restriction": (
-                "Note: A financial code group can only be deleted when there"
-                "are no transactions assigned to it."
-            ),
-            "item_to_delete": group.title,
-        },
-    )
-
-@login_required
 def year_add(request):
     """Generates and processes form to add a new budget year"""
     # If this is a POST request then process the Form data
@@ -341,6 +248,100 @@ def year_delete(request, year_id):
     )
 
 @login_required
+def group_add(request):
+    """Generates and processes form to add a new financial code group"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        # Create a form instance and populate it with data from the request (binding):
+        form = FinancialCodeGroupForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            form.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Financial code group successfully added")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = FinancialCodeGroupForm()
+
+    return render(
+        request,
+        "financial_codes/add.html",
+        {
+            "page_name": "financial code group",
+            "form": form
+        },
+    )
+
+@login_required
+def group_edit(request, group_id):
+    """Generates and processes form to edit a financial code group"""
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = FinancialCodeGroupForm(request.POST, instance=group_data)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            form.save()
+
+            # redirect to a new URL:
+            messages.success(request, "Financial code group successfully edited")
+
+            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+
+    # If this is a GET (or any other method) populate the default form.
+    else:
+        # Get initial form data
+        group_data = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+        form = FinancialCodeGroupForm(instance=group_data)
+
+    return render(
+        request,
+        "financial_codes/edit.html",
+        {
+            "page_name": "financial code group",
+            "form": form,
+        },
+    )
+
+@login_required
+def group_delete(request, group_id):
+    """Generates and processes form to delete financial code group"""
+    # Get the FinancialCodeGroup instance for this user
+    group = get_object_or_404(FinancialCodeGroup, id=group_id)
+
+    # If this is a POST request then process the Form data
+    if request.method == "POST":
+        group.delete()
+
+        # Redirect back to main list
+        messages.success(request, "Financial code group deleted")
+
+        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+
+    return render(
+        request,
+        "financial_codes/delete.html",
+        {
+            "page_name": "financial code group",
+            "delete_message": "financial code group",
+            "delete_restriction": (
+                "Note: A financial code group can only be deleted when there"
+                "are no transactions assigned to it."
+            ),
+            "item_to_delete": group.title,
+        },
+    )
+
+@login_required
 def code_add(request):
     """Generates and processes form to add a new financial code"""
     # If this is a POST request then process the Form data
@@ -366,7 +367,9 @@ def code_add(request):
     return render(
         request,
         "financial_codes/code_add.html",
-        {"form": form},
+        {
+            "form": form,
+         },
     )
 
 @login_required
