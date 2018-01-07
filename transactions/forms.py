@@ -4,7 +4,7 @@ from django import forms
 from django.forms import inlineformset_factory
 
 from .models import Transaction, Item
-from financial_codes.models import BudgetYear, FinancialCode
+from financial_codes.models import BudgetYear, FinancialCodeGroup, FinancialCode
 
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
@@ -48,7 +48,7 @@ class FinancialCodeAssignmentForm(forms.Form):
         financial_code_system = kwargs.pop("system")
         initial_values = kwargs.pop("initial", {})
 
-        # Retrieve all the children budget_year entries
+        # Retrieve all the children BudgetYears entries
         budget_years = BudgetYear.objects.filter(
             financial_code_system=financial_code_system
         )
@@ -58,18 +58,19 @@ class FinancialCodeAssignmentForm(forms.Form):
 
         for year in budget_years:
             budget_year_choices.append((year.id, str(year)))
-
-        
-        # Retrieve all the children financial_code entries
-        codes = FinancialCode.objects.filter(
-            code_system=financial_code_system
-        )
-
+            
         # Create a choice list with the budget_years
         code_choices = []
-        
-        for code in codes:
-            code_choices.append((code.id, str(code)))
+
+        # Retrieve all the children FinancialCodeGroup entries
+        for year in budget_years:
+            groups = year.financialcodegroup_set.all()
+
+            for group in groups:
+                codes = group.financialcode_set.all()
+
+                for code in codes:
+                    code_choices.append((code.id, str(code)))
             
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
         
