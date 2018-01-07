@@ -10,63 +10,50 @@
             <a href="{% url 'financial_code_system_add' %}">Add new financial code system</a>
         </li>
         <li>
-            <a href="{% url 'group_add' %}">Add new financial code group</a>
+            <a href="{% url 'year_add' %}">Add new budget year</a>
         </li>
         <li>
-            <a href="{% url 'year_add' %}">Add new budget year</a>
+            <a href="{% url 'group_add' %}">Add new financial code group</a>
         </li>
         <li>
             <a href="{% url 'code_add' %}">Add new financial code</a>
         </li>
     </ul>
-
-    <h2>Financial Code Systems</h2>
-
-    <ul>
-        {% for system in systems %}
-        <li>
-            {{ system }} -
-            <a href="{% url 'financial_code_system_edit' system.id %}">Edit</a> -
-            <a href="{% url 'financial_code_system_delete' system.id %}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
-
-    <h2>Financial Code Group</h2>
     
     <ul>
-        {% for group in groups %}
-            <li>
-                {{ group }} -
-                <a href="{% url 'group_edit' group.id %}">Edit</a> -
-                <a href="{% url 'group_delete' group.id %}">Delete</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <h2>Budget Years</h2>
-
-    <ul>
-        {% for year in years %}
+        {% for system in data %}
         <li>
-            {{ year }} -
-            <a href="{% url 'year_edit' year.id %}">Edit</a> -
-            <a href="{% url 'year_delete' year.id %}">Delete</a>
+            {{ system.system }} - 
+            <a href="{% url 'financial_code_system_edit' system.system.id %}">Edit</a> - 
+            <a href="{% url 'financial_code_system_delete' system.system.id %}">Delete</a>
+            <ul>
+                {% for budget_year in system.budget_years %}
+                <li>
+                    {{ budget_year.budget_year }} - 
+                    <a href="{% url 'year_edit' budget_year.budget_year.id %}">Edit</a> - 
+                    <a href="{% url 'year_delete' budget_year.budget_year.id %}">Delete</a>
+                    <ul>
+                        {% for financial_code_group in budget_year.financial_code_groups %}
+                        <li>
+                            {{ financial_code_group.financial_code_group }} - 
+                            <a href="{% url 'group_edit' financial_code_group.financial_code_group.id %}">Edit</a> - 
+                            <a href="{% url 'group_delete' financial_code_group.financial_code_group.id %}">Delete</a>
+                            <ul>
+                                {% for financial_code in financial_code_group.financial_codes %}
+                                <li>
+                                    {{ financial_code }} -
+                                    <a href="{% url 'code_edit' financial_code.id %}">Edit</a> -
+                                    <a href="{% url 'code_delete' financial_code.id %}">Delete</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
         </li>
         {% endfor %}
     </ul>
-
-    <h2>Financial Codes</h2>
-
-    <ul>
-        {% for code in codes %}
-        <li>
-            {{ code }} -
-            <a href="{% url 'code_edit' code.id %}">Edit</a> -
-            <a href="{% url 'code_delete' code.id %}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
-
-
 {% endblock %}

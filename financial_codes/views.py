@@ -17,20 +17,47 @@ from .forms import (
 @login_required
 def dashboard(request):
     """Main dashboard to manage financial codes"""
-    # pylint: disable=no-member
+    data = []
+    system_index = 0
+
+    # Get all the Financial Code Systems
     systems = FinancialCodeSystem.objects.all()
-    groups = FinancialCodeGroup.objects.all()
-    years = BudgetYear.objects.all()
-    codes = FinancialCode.objects.all()
+
+    # Get each financial code group releative to its parents
+    for system in systems:
+        data.append({
+            "system": system,
+            "budget_years": [],
+        })
+        
+        year_index = 0
+        budget_years = system.budgetyear_set.all()
+
+        for year in budget_years:
+            data[system_index]["budget_years"].append({
+                "budget_year": year,
+                "financial_code_groups": [],
+            })
+
+            financial_code_groups = year.financialcodegroup_set.all()
+
+            for group in financial_code_groups:
+                print("System Index = {}".format(system_index))
+                print("Year Index = {}".format(year_index))
+
+                data[system_index]["budget_years"][year_index]["financial_code_groups"].append({
+                    "financial_code_group": group,
+                    "financial_codes": group.financialcode_set.all(),
+                })
+
+            year_index = year_index + 1
+        system_index = system_index + 1
 
     return render(
         request,
         "financial_codes/index.html",
         context={
-            "systems": systems,
-            "groups": groups,
-            "years": years,
-            "codes": codes,
+            "data": data
         },
     )
 

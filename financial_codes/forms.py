@@ -39,7 +39,7 @@ class FinancialCodeGroupForm(forms.ModelForm):
         model = FinancialCodeGroup
 
         fields = [
-            "financial_code_system",
+            "budget_year",
             "title",
             "description",
             "type",
@@ -69,9 +69,7 @@ class FinancialCodeForm(forms.ModelForm):
         fields = [
             "code",
             "description",
-            "code_system",
-            "code_group",
-            "budget_year",
+            "financial_code_group",
         ]
         widgets = {
             "code_group": SelectWithSystemID(),

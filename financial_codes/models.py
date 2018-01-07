@@ -33,13 +33,33 @@ class FinancialCodeSystem(models.Model):
             )
         
         return return_string
-
-class FinancialCodeGroup(models.Model):
-    """A grouping for a set of Financial Codes"""
+    
+class BudgetYear(models.Model):
+    """Start and end dates of the budget year"""
     financial_code_system = models.ForeignKey(
         FinancialCodeSystem,
         on_delete=models.CASCADE,
-        help_text="The financial code system that this group applies to",
+        help_text="The financial code system that this budget year applies to",
+    )
+    date_start = models.DateField(
+        help_text="First day of the budget year",
+        verbose_name="start date",
+    )
+    date_end = models.DateField(
+        help_text="Last day of the budget year",
+        verbose_name="end date",
+    )
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} to {}".format(self.date_start, self.date_end)
+
+class FinancialCodeGroup(models.Model):
+    """A grouping for a set of Financial Codes"""
+    budget_year = models.ForeignKey(
+        BudgetYear,
+        on_delete=models.CASCADE,
+        help_text="The budget year that this group applies to",
     )
     title = models.CharField(
         help_text="Title of the financial code grouping",
@@ -76,38 +96,10 @@ class FinancialCodeGroup(models.Model):
 
         return return_str
 
-class BudgetYear(models.Model):
-    """Start and end dates of the budget year"""
-    financial_code_system = models.ForeignKey(
-        FinancialCodeSystem,
-        on_delete=models.CASCADE,
-        help_text="The financial code system that this budget year applies to",
-    )
-    date_start = models.DateField(
-        help_text="First day of the budget year",
-        verbose_name="start date",
-    )
-    date_end = models.DateField(
-        help_text="Last day of the budget year",
-        verbose_name="end date",
-    )
-    history = HistoricalRecords()
-
-    def __str__(self):
-        return "{} to {}".format(self.date_start, self.date_end)
-
 class FinancialCode(models.Model):
     """Holds data on an individual financial code"""
-    code_system = models.ForeignKey(
-        FinancialCodeSystem,
-        on_delete=models.CASCADE,
-    )
-    code_group = models.ForeignKey(
+    financial_code_group = models.ForeignKey(
         FinancialCodeGroup,
-        on_delete=models.PROTECT,
-    )
-    budget_year = models.ForeignKey(
-        BudgetYear,
         on_delete=models.PROTECT,
     )
     code = models.CharField(
