@@ -30,6 +30,19 @@ class FinancialCodeSystemForm(forms.ModelForm):
             raise ValidationError("End date must occur after the start date.")
 
         return date_end
+    
+class BudgetYearForm(forms.ModelForm):
+    """Form to add and edit budget years"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+
+    class Meta:
+        model = BudgetYear
+
+        fields = [
+            "financial_code_system",
+            "date_start",
+            "date_end",
+        ]
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
@@ -46,18 +59,21 @@ class FinancialCodeGroupForm(forms.ModelForm):
             "status",
         ]
 
-class BudgetYearForm(forms.ModelForm):
-    """Form to add and edit budget years"""
-    # pylint: disable=missing-docstring,too-few-public-methods
+    def __init__(self, *args, **kwargs):
+        super(FinancialCodeGroupForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = BudgetYear
+        # Add financial code system as opt groups to the budget year choices
+        budget_year_choices = []
 
-        fields = [
-            "financial_code_system",
-            "date_start",
-            "date_end",
-        ]
+        for system in FinancialCodeSystem.objects.all():
+            budget_years = []
+            
+            for budget_year in system.budgetyear_set.all():
+                budget_years.append([budget_year.id, budget_year])
+
+            budget_year_choices.append([system, budget_years])
+
+        self.fields["budget_year"].choices = budget_year_choices
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
