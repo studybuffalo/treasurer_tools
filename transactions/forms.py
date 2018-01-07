@@ -4,7 +4,9 @@ from django import forms
 from django.forms import inlineformset_factory
 
 from .models import Transaction, Item
+
 from financial_codes.models import BudgetYear, FinancialCodeGroup, FinancialCode
+from financial_codes.widgets import FinancialCodeWithYearID
 
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
@@ -41,13 +43,13 @@ class FinancialCodeAssignmentForm(forms.Form):
         choices=[],
         label="code",
         required=False,
+        widget=FinancialCodeWithYearID,
     )
     
     def __init__(self, *args, **kwargs):
         # Get the financial code system
         financial_code_system = kwargs.pop("system")
-        initial_values = kwargs.pop("initial", {})
-
+        
         # Retrieve all the children BudgetYears entries
         budget_years = BudgetYear.objects.filter(
             financial_code_system=financial_code_system
@@ -60,29 +62,28 @@ class FinancialCodeAssignmentForm(forms.Form):
             budget_year_choices.append((year.id, str(year)))
             
         # Create a choice list with the budget_years
-        code_choices = []
+        financial_code_choices = [["", "---------"]]
 
         # Retrieve all the children FinancialCodeGroup entries
         for year in budget_years:
             groups = year.financialcodegroup_set.all()
 
             for group in groups:
+                code_list = []
+
                 codes = group.financialcode_set.all()
 
                 for code in codes:
-                    code_choices.append((code.id, str(code)))
+                    code_list.append((code.id, str(code)))
+
+                financial_code_choices.append([group, code_list])
             
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
         
         # Specify the choices
         self.fields["budget_year"].choices = budget_year_choices
-        self.fields["code"].choices = code_choices
+        self.fields["code"].choices = financial_code_choices
         
-        # Update with the provided initial values (if provided)
-        #if initial_values:
-        #    self.fields["budget_year"].initial = initial_values["budget_year"]
-        #    self.fields["code"].initial = initial_values["code"]
-
 ItemFormSet = inlineformset_factory(
     Transaction,
     Item,

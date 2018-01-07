@@ -1,23 +1,55 @@
-function add_item_row(e) {
+function update_financial_code(yearSelect) {
+    const $yearSelect = $(yearSelect);
+    const $fieldset = $yearSelect.closest("fieldset");
+    const $codeSelect = $fieldset.find('[id*="-code"]');
+    const $codeGroups = $codeSelect.children();
 
-    e.preventDefault();
+    const yearID = $yearSelect.val();
 
-    // Get the current number of items
-    var count = $(".item-row").length;
+    if (yearID) {
+        // Cycle through each option group
+        $codeGroups.each(function (groupIndex, optGroup) {
+            let $optGroup = $(optGroup);
 
-    // Get the template and replace it with the proper item ID
-    var template = $("#item-form-template").html();
-    var replacedTemplate = template.replace(/__prefix__/g, count);
+            // Cycle through each option under the group
+            let $options = $optGroup.children();
+            let visible_option = false;
 
-    // Add the replaced template after the last item-row
-    $("#form_content hr").last().after(replacedTemplate);
+            $options.each(function (optionIndex, option) {
+                let $option = $(option);
 
-    // Update the form count
-    $("#id_item_set-TOTAL_FORMS").val(count + 1);
+                if ($option.attr("data-year_id") == yearID) {
+                    $option.prop("hidden", false);
+                    visible_option = true;
+                } else {
+                    $option.prop("hidden", true);
+                }
+            });
+
+            // If there is any visible option, display the optgroup
+            if (visible_option) {
+                $optGroup.prop("hidden", false);
+            } else {
+                $optGroup.prop("hidden", true);
+            }
+        });
+    }
+}
+
+function reset_financial_code(yearSelect) {
+    const $fieldset = $(yearSelect).closest("fieldset");
+    $fieldset.find('[id*="-code"]').val("");
 }
 
 $(document).ready(function () {
-    $("#add-item-row").on("click", function (e) {
-        add_item_row(e);
+    $('[id*="-budget_year"]').on("change", function () {
+        reset_financial_code(this)
+        update_financial_code(this);
+    });
+
+    // Run an initial update on all selects
+    $('[id*="-budget_year"]').each(function (index, select) {
+        console.log(select)
+        update_financial_code(select);
     });
 });

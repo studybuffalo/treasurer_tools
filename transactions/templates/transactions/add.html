@@ -75,7 +75,7 @@
 
                         {% for code_form in group.financial_code_forms %}
                             <fieldset>
-                                <legend>{{ code_form.name|title }}</legend>
+                                <legend>{{ code_form.name }}</legend>
                                 
                                 {% include 'main/errors.html' with errors=code_form.form.non_field_errors %}
                     
@@ -122,4 +122,5 @@
     {% include 'main/formset_template.html' %}
     
     <script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
+    <script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
 {% endblock %}
