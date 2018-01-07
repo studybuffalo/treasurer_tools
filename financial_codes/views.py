@@ -42,9 +42,6 @@ def dashboard(request):
             financial_code_groups = year.financialcodegroup_set.all()
 
             for group in financial_code_groups:
-                print("System Index = {}".format(system_index))
-                print("Year Index = {}".format(year_index))
-
                 data[system_index]["budget_years"][year_index]["financial_code_groups"].append({
                     "financial_code_group": group,
                     "financial_codes": group.financialcode_set.all(),
