@@ -28,7 +28,7 @@ class FinancialCodeSystem(models.Model):
                 self.title, self.date_start, self.date_end
             )
         else:
-            return_string = "{} ({} to present)".format(
+            return_string = "{} ({} to Present)".format(
                 self.title, self.date_start
             )
         
@@ -38,7 +38,7 @@ class BudgetYear(models.Model):
     """Start and end dates of the budget year"""
     financial_code_system = models.ForeignKey(
         FinancialCodeSystem,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         help_text="The financial code system that this budget year applies to",
     )
     date_start = models.DateField(
@@ -58,7 +58,7 @@ class FinancialCodeGroup(models.Model):
     """A grouping for a set of Financial Codes"""
     budget_year = models.ForeignKey(
         BudgetYear,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         help_text="The budget year that this group applies to",
     )
     title = models.CharField(

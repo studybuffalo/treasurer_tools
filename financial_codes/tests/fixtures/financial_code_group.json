@@ -3,10 +3,10 @@
     "model": "financial_codes.financialcodegroup",
     "pk": 1,
     "fields": {
-      "financial_code_system":  1,
+      "budget_year": 1,
       "title": "Awards & Grants",
-      "description": "Revenue for branch awards and grants",
-      "type": "r",
+      "description": "Expenses related to awards and grants",
+      "type": "e",
       "status": "a"
     }
   },
@@ -14,10 +14,76 @@
     "model": "financial_codes.financialcodegroup",
     "pk": 2,
     "fields": {
-      "financial_code_system": 1,
+      "budget_year": 1,
       "title": "Awards & Grants",
-      "description": "Expenses for branch awards and grants",
+      "description": "Revenue related to awards and grants",
+      "type": "r",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 3,
+    "fields": {
+      "budget_year": 2,
+      "title": "Awards & Grants",
+      "description": "Expenses related to awards and grants",
       "type": "e",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 4,
+    "fields": {
+      "budget_year": 2,
+      "title": "Awards & Grants",
+      "description": "Revenue related to awards and grants",
+      "type": "r",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 5,
+    "fields": {
+      "budget_year": 3,
+      "title": "Awards & Grants",
+      "description": "Expenses related to awards and grants",
+      "type": "e",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 6,
+    "fields": {
+      "budget_year": 4,
+      "title": "Awards & Grants",
+      "description": "Expenses related to awards and grants",
+      "type": "e",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 7,
+    "fields": {
+      "budget_year": 3,
+      "title": "Awards & Grants",
+      "description": "Revenue related to awards and grants",
+      "type": "r",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 8,
+    "fields": {
+      "budget_year": 4,
+      "title": "Awards & Grants",
+      "description": "Revenue related to awards and grants",
+      "type": "r",
       "status": "a"
     }
   }

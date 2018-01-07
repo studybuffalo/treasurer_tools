@@ -12,17 +12,15 @@ class FinancialCodeAddTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
-        "financial_codes/tests/fixtures/financial_code_group.json",
         "financial_codes/tests/fixtures/budget_year.json",
+        "financial_codes/tests/fixtures/financial_code_group.json",
     ]
     
     def setUp(self):
         self.correct_data = {
-            "code_system": 1,
-            "code_group": 1,
-            "budget_year": 1,
+            "financial_code_group": 1,
             "code": "1000",
-            "description": "Funding for Travel Grant"
+            "description": "FK Travel Grant"
         }
         
     def test_financial_code_add_redirect_if_not_logged_in(self):
@@ -62,7 +60,7 @@ class FinancialCodeAddTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
         
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/add.html")
+        self.assertTemplateUsed(response, "financial_codes/code_add.html")
 
     def test_financial_code_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -97,19 +95,17 @@ class FinancialCodeEditTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
-        "financial_codes/tests/fixtures/financial_code_group.json",
         "financial_codes/tests/fixtures/budget_year.json",
+        "financial_codes/tests/fixtures/financial_code_group.json",
         "financial_codes/tests/fixtures/financial_code.json",
     ]
 
     def setUp(self):
         # Add standard test data
         self.correct_data = {
-            "code_system": 1,
-            "code_group": 1,
-            "budget_year": 1,
+            "financial_code_group": 1,
             "code": "1000",
-            "description": "Funding for Travel Grant"
+            "description": "FK Travel Grant"
         }
 
     def test_financial_code_edit_redirect_if_not_logged_in(self):
@@ -173,7 +169,7 @@ class FinancialCodeEditTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
         
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/edit.html")
+        self.assertTemplateUsed(response, "financial_codes/code_edit.html")
         
     def test_financial_code_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -222,8 +218,8 @@ class FinancialCodeEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 2 entries
-        self.assertEqual(2, FinancialCode.objects.count())
+        # Confirm still only 8 entries
+        self.assertEqual(8, FinancialCode.objects.count())
 
         # Confirm code has been updated properly
         self.assertEqual(
@@ -238,8 +234,8 @@ class FinancialCodeDeleteTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
-        "financial_codes/tests/fixtures/financial_code_group.json",
         "financial_codes/tests/fixtures/budget_year.json",
+        "financial_codes/tests/fixtures/financial_code_group.json",
         "financial_codes/tests/fixtures/financial_code.json",
     ]
 
@@ -347,8 +343,8 @@ class FinancialCodeDeleteTest(TestCase):
             reverse("code_delete", kwargs={"code_id": 1})
         )
 
-        # Checks that only one code remains
-        self.assertEqual(1, FinancialCode.objects.count())
+        # Checks that 7 entries remain
+        self.assertEqual(7, FinancialCode.objects.count())
 
         # Checks that financial code was deleted
         self.assertEqual(0, FinancialCode.objects.filter(id=1).count())

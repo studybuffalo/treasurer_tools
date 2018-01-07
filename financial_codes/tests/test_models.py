@@ -38,62 +38,14 @@ class FinancialCodeSystemModelTest(TestCase):
         # Test entry without end date
         self.assertEqual(
             str(FinancialCodeSystem.objects.get(id=1)),
-            "CSHP National (2017-01-01 to present)"
+            "CSHP National (2014-04-01 to Present)"
         )
 
         # Test entry with end date
         self.assertEqual(
             str(FinancialCodeSystem.objects.get(id=2)),
-            "CSHP Alberta Branch (2002-01-01 to 2014-03-31)"
+            "CSHP Alberta Branch (2000-01-01 to 2018-03-31)"
         )
-
-class FinancialCodeGroupModelTest(TestCase):
-    """Test functions for the FinancialCodeGroup"""
-    # pylint: disable=no-member,protected-access
-    
-    fixtures = [
-        "financial_codes/tests/fixtures/financial_code_system.json",
-        "financial_codes/tests/fixtures/financial_code_group.json",
-    ]
-
-    def test_labels(self):
-        """tests a series of fields for proper label generation"""
-        test_list = [
-            {"field_name": "financial_code_system", "label_name": "financial code system"},
-            {"field_name": "title", "label_name": "title"},
-            {"field_name": "description", "label_name": "description"},
-            {"field_name": "type", "label_name": "type"},
-            {"field_name": "status", "label_name": "status"},
-        ]
-
-        for test_item in test_list:
-            financial_code_group = FinancialCodeGroup.objects.get(id=1)
-            field_label = financial_code_group._meta.get_field(test_item["field_name"]).verbose_name
-            self.assertEqual(field_label, test_item["label_name"])
-
-    def test_title_max_length(self):
-        """Tests the title field for proper max length"""
-        financial_code_group = FinancialCodeGroup.objects.get(id=1)
-        max_length = financial_code_group._meta.get_field("title").max_length
-        self.assertEqual(max_length, 100)
-        
-    def test_description_max_length(self):
-        """Tests a the description field for proper max length"""
-        financial_code_group = FinancialCodeGroup.objects.get(id=1)
-        max_length = financial_code_group._meta.get_field("description").max_length
-        self.assertEqual(max_length, 500)
-
-    def test_string_representation(self):
-        """Tests that the model string representaton returns as expected"""
-        financial_code_group = FinancialCodeGroup.objects.all()
-
-        for group in financial_code_group:
-            if group.type == "e":
-                test_string = "Expense - {}".format(group.title)
-            elif group.type == "r":
-                test_string = "Revenue - {}".format(group.title)
-
-            self.assertEqual(str(group), test_string)
 
 class BudgetYearModelTest(TestCase):
     """Test functions for the BudgetYear model"""
@@ -133,6 +85,55 @@ class BudgetYearModelTest(TestCase):
             str(budget_year),
             "{} to {}".format(budget_year.date_start, budget_year.date_end)
         )
+        
+class FinancialCodeGroupModelTest(TestCase):
+    """Test functions for the FinancialCodeGroup"""
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = [
+        "financial_codes/tests/fixtures/financial_code_system.json",
+        "financial_codes/tests/fixtures/budget_year.json",
+        "financial_codes/tests/fixtures/financial_code_group.json",
+    ]
+
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "budget_year", "label_name": "budget year"},
+            {"field_name": "title", "label_name": "title"},
+            {"field_name": "description", "label_name": "description"},
+            {"field_name": "type", "label_name": "type"},
+            {"field_name": "status", "label_name": "status"},
+        ]
+
+        for test_item in test_list:
+            financial_code_group = FinancialCodeGroup.objects.get(id=1)
+            field_label = financial_code_group._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
+
+    def test_title_max_length(self):
+        """Tests the title field for proper max length"""
+        financial_code_group = FinancialCodeGroup.objects.get(id=1)
+        max_length = financial_code_group._meta.get_field("title").max_length
+        self.assertEqual(max_length, 100)
+        
+    def test_description_max_length(self):
+        """Tests a the description field for proper max length"""
+        financial_code_group = FinancialCodeGroup.objects.get(id=1)
+        max_length = financial_code_group._meta.get_field("description").max_length
+        self.assertEqual(max_length, 500)
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        financial_code_group = FinancialCodeGroup.objects.all()
+
+        for group in financial_code_group:
+            if group.type == "e":
+                test_string = "Expense - {}".format(group.title)
+            elif group.type == "r":
+                test_string = "Revenue - {}".format(group.title)
+
+            self.assertEqual(str(group), test_string)
 
 class FinancialCodeModelTest(TestCase):
     """Test functions for the FinancialCode model"""
@@ -148,9 +149,7 @@ class FinancialCodeModelTest(TestCase):
     def test_labels(self):
         """tests a series of fields for proper label generation"""
         test_list = [
-            {"field_name": "code_system", "label_name": "code system"},
-            {"field_name": "code_group", "label_name": "code group"},
-            {"field_name": "budget_year", "label_name": "budget year"},
+            {"field_name": "financial_code_group", "label_name": "financial code group"},
             {"field_name": "code", "label_name": "code"},
             {"field_name": "description", "label_name": "description"},
         ]

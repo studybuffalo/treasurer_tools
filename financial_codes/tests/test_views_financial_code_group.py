@@ -12,15 +12,16 @@ class FinancialCodeGroupAddTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
+        "financial_codes/tests/fixtures/budget_year.json",
     ]
     
     def setUp(self):
         self.correct_data = {
-            "financial_code_system":  1,
+            "budget_year": 1,
             "title": "Awards & Grants",
-            "description": "Revenue for branch awards and grants",
-            "type": "r",
-            "status": "a",
+            "description": "Expenses related to awards and grants",
+            "type": "e",
+            "status": "a"
         }
         
     def test_financial_code_group_add_redirect_if_not_logged_in(self):
@@ -95,16 +96,17 @@ class FinancialCodeGroupEditTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
+        "financial_codes/tests/fixtures/budget_year.json",
         "financial_codes/tests/fixtures/financial_code_group.json",
     ]
 
     def setUp(self):
         # Add standard test data
         self.correct_data = {
-            "financial_code_system":  1,
+            "budget_year": 1,
             "title": "Awards & Grants",
-            "description": "Revenue for branch awards and grants",
-            "type": "r",
+            "description": "Expenses related to awards and grants",
+            "type": "e",
             "status": "a"
         }
 
@@ -218,8 +220,8 @@ class FinancialCodeGroupEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 2 entries
-        self.assertEqual(2, FinancialCodeGroup.objects.count())
+        # Confirm still 8 entries
+        self.assertEqual(8, FinancialCodeGroup.objects.count())
 
         # Confirm title has been updated properly
         self.assertEqual(
@@ -234,6 +236,7 @@ class FinancialCodeGroupDeleteTest(TestCase):
     fixtures = [
         "financial_codes/tests/fixtures/authentication.json",
         "financial_codes/tests/fixtures/financial_code_system.json",
+        "financial_codes/tests/fixtures/budget_year.json",
         "financial_codes/tests/fixtures/financial_code_group.json",
     ]
 

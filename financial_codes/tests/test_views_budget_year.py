@@ -217,8 +217,8 @@ class BudgetYearEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 1 entry
-        self.assertEqual(1, BudgetYear.objects.count())
+        # Confirm still only 4 entries
+        self.assertEqual(4, BudgetYear.objects.count())
 
         # Confirm date_start has been updated properly
         self.assertEqual(
