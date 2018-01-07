@@ -373,9 +373,8 @@ def code_edit(request, code_id):
 
     return render(
         request,
-        "financial_codes/edit.html",
+        "financial_codes/code_edit.html",
         {
-            "page_name": "financial code",
             "form": form,
         },
     )

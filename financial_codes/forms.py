@@ -74,6 +74,6 @@ class FinancialCodeForm(forms.ModelForm):
             "budget_year",
         ]
         widgets = {
-            "code_group": SelectWithSystemID(attrs={"disabled": "disabled"}),
-            "budget_year": SelectWithSystemID(attrs={"disabled": "disabled"}),
+            "code_group": SelectWithSystemID(),
+            "budget_year": SelectWithSystemID(),
         }
