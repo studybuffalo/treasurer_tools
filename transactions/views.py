@@ -25,7 +25,6 @@ def dashboard(request):
         },
     )
 
-
 class CompiledItemForms(object):
     """Object holding item & related financial code forms & functions"""
     def __assemble_forms(self, formsets, post_data):
@@ -97,25 +96,32 @@ class CompiledItemForms(object):
 
         return valid
             
+    def save(self, transaction_id):
+        # Cycle through & save each item + financial code matches
+        for form in self.forms:
+            saved_item = form["item_formset"].save(commit=False)
+            saved_item.transaction = Transaction.objects.get(id=transaction_id)
+            saved_item.save()
+
+            for code_form in form["financial_code_forms"]:
+                match_item = Item.objects.get(id=saved_item.id)
+                match_code = FinancialCode.objects.get(
+                    id=code_form["form"].cleaned_data["code"]
+                )
+        
+                # Saves the financial code meatch
+                match = FinancialCodeMatch(
+                    item=match_item,
+                    financial_code=match_code
+                )
+                match.save()
+                
     def __init__(self, formsets, post_data={}):
         self.forms = self.__assemble_forms(formsets, post_data)
             
 @login_required
 def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
-    def save_financial_code_match(item_id, financial_code_id):
-        """Saves an item-financial code match"""
-        # Get reference to each model
-        match_item = Item.objects.get(id=item_id)
-        match_code = FinancialCode.objects.get(id=financial_code_id)
-
-        # Saves the financial code meatch
-        match = FinancialCodeMatch(
-            item=match_item,
-            financial_code=match_code
-        )
-        match.save()
-                    
     # POST request - try and save data
     if request.method == "POST":
         # Create form with POST data
@@ -135,20 +141,10 @@ def transaction_add(request, t_type):
                 compiled_forms = CompiledItemForms(item_formsets, request.POST)
 
                 if compiled_forms.is_valid():
-                    # All forms are valid, may start saving entries
+                    # All forms are valid, save all three levels of forms
                     saved_transaction.save()
-                    
-                    # Cycle through & save each item + financial code matches
-                    for form in compiled_forms.forms:
-                        saved_item = form["item_formset"].save(commit=False)
-                        saved_item.transaction = Transaction.objects.get(id=saved_transaction.id)
-                        saved_item.save()
+                    compiled_forms.save(saved_transaction.id)
 
-                        for code_form in form["financial_code_forms"]:
-                            save_financial_code_match(
-                                saved_item.id,
-                                code_form["form"].cleaned_data["code"]
-                            )
                     # Redirect to a new URL:
                     messages.success(request, "Expense successfully added")
 

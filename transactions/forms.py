@@ -36,12 +36,12 @@ class FinancialCodeAssignmentForm(forms.Form):
     """Form to assign a financial code"""
     budget_year = forms.ChoiceField(
         choices=[],
-        label="budget year",
+        label="Budget year",
         required=False,
     )
     code = forms.ChoiceField(
         choices=[],
-        label="code",
+        label="Financial code",
         required=False,
         widget=FinancialCodeWithYearID,
     )

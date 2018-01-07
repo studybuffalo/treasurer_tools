@@ -31,7 +31,14 @@
                         <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
                         <ul>
                             {% for item in transaction.item_set.all %}
-                                <li>{{ item }}</li>
+                                <li>
+                                    {{ item }}
+                                    <ul>
+                                        {% for financial_code in item.financialcodematch_set.all %}
+                                            <li>{{ financial_code.financial_code }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
                             {% endfor %}
                         </ul>
                     </li>
