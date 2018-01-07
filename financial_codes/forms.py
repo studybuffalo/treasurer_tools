@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
 )
-
+from. widgets import SelectWithSystemID
 
 class FinancialCodeSystemForm(forms.ModelForm):
     """Form to add & edit entries in the FinancialCodeSystem model"""
@@ -73,3 +73,7 @@ class FinancialCodeForm(forms.ModelForm):
             "code_group",
             "budget_year",
         ]
+        widgets = {
+            "code_group": SelectWithSystemID(attrs={"disabled": "disabled"}),
+            "budget_year": SelectWithSystemID(attrs={"disabled": "disabled"}),
+        }

@@ -1,0 +1,103 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Add New Financial Code</h1>
+
+    {% include 'main/messages.html' %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div id="form_content">
+            {% include 'main/errors.html' with errors=form.non_field_errors %}
+
+            {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+
+                <span>
+                    {{ field }}
+                </span>
+
+                <em>
+                    {{ field.help_text }}
+                </em>
+
+                {% include 'main/errors.html' with errors=field.errors %}
+            </div>
+            {% endfor %}
+
+            {% for field in form.hidden_fields %}
+            <div>
+                {{ field }}
+            </div>
+
+            {% include 'main/errors.html' with errors=field.errors %}
+            {% endfor %}
+        </div>
+
+        <div class="right_align">
+            <button type="submit">Add new financial code</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    function update_group_and_year() {
+        const systemID = $("#id_code_system").val();
+        const $groupSelect = $("#id_code_group");
+        const $groupOptions = $groupSelect.children();
+        const $yearSelect = $("#id_budget_year");
+        const $yearOptions = $yearSelect.children();
+
+        // Reset the selects to the first option
+        $groupSelect.val("");
+        $yearSelect.val("");
+
+        if (systemID) {
+            // Show code group options with data_system_id matching systemID
+            $groupOptions.each(function (index, option) {
+                let $option = $(option);
+
+                if ($option.attr("data-system_id") == systemID) {
+                    $option.prop("hidden", false);
+                } else {
+                    $option.prop("hidden", true);
+                }
+            });
+
+            // Show budget year options with data_system_id matching systemID
+            $yearOptions.each(function (index, option) {
+                let $option = $(option);
+
+                if ($option.attr("data-system_id") == systemID) {
+                    $option.prop("hidden", false);
+                } else {
+                    $option.prop("hidden", true);
+                }
+            });
+
+            // Enable the selects
+            $groupSelect.prop("disabled", false)
+            $yearSelect.prop("disabled", false)
+        } else {
+            // No system selected - disable group and year selects
+            $groupSelect.prop("disabled", true)
+            $yearSelect.prop("disabled", true)
+        }
+    }
+
+    $(document).ready(function () {
+        $("#id_code_system").on("change", function () {
+            update_group_and_year();
+        });
+    });
+</script>
+{% endblock %}

@@ -341,11 +341,8 @@ def code_add(request):
 
     return render(
         request,
-        "financial_codes/add.html",
-        {
-            "page_name": "financial code",
-            "form": form,
-        },
+        "financial_codes/code_add.html",
+        {"form": form},
     )
 
 @login_required
