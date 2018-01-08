@@ -66,14 +66,21 @@ class ExpenseAddTest(TestCase):
     def setUp(self):
         self.correct_data = {
             "payee_payer": 1,
-            "transaction_type": "e",
             "memo": "Travel Grant award 2017",
             "date_submitted": "2017-06-01",
             "item_set-0-date_item": "2017-06-01",
             "item_set-0-description": "Taxi costs",
             "item_set-0-amount": 100.00,
             "item_set-0-gst": 5.00,
-            "item_set-TOTAL_FORMS": 6,
+            "item_set-0-id": "",
+            "item_set-0-transaction": "",
+            "item_set-0-coding_set-0-financial_code_match_id": "",
+            "item_set-0-coding_set-0-budget_year": 1,
+            "item_set-0-coding_set-0-code": 1,
+            "item_set-0-coding_set-1-financial_code_match_id": "",
+            "item_set-0-coding_set-1-budget_year": 2,
+            "item_set-0-coding_set-1-code": 3,
+            "item_set-TOTAL_FORMS": 1,
             "item_set-INITIAL_FORMS": 0,
             "item_set-MIN_NUM_FORMS": 1,
             "item_set-MAX_NUM_FORMS": 1000,
@@ -161,6 +168,8 @@ class ExpenseAddTest(TestCase):
         # Check that the item was associated with the transaction
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
         
+    # TODO: Add tests for the financial code matching
+
 class RevenueAddTest(TestCase):
     """Tests covering revenue-specific add views"""
     
@@ -237,15 +246,19 @@ class ExpenseEditTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
        
     def setUp(self):
         # Add standard test data
         self.correct_data = {
             "payee_payer": 1,
-            "transaction_type": "e",
             "memo": "Travel Grant award 2017",
             "date_submitted": "2017-06-01",
             "item_set-0-id": 1,
@@ -253,11 +266,23 @@ class ExpenseEditTest(TestCase):
             "item_set-0-description": "Taxi costs",
             "item_set-0-amount": 100.00,
             "item_set-0-gst": 5.00,
+            "item_set-0-coding_set-0-financial_code_match_id": 1,
+            "item_set-0-coding_set-0-budget_year": 1,
+            "item_set-0-coding_set-0-code": 1,
+            "item_set-0-coding_set-1-financial_code_match_id": 2,
+            "item_set-0-coding_set-1-budget_year": 2,
+            "item_set-0-coding_set-1-code": 3,
             "item_set-1-id": 2,
             "item_set-1-date_item": "2017-06-02",
             "item_set-1-description": "Hotel Costs",
             "item_set-1-amount": 205.57,
             "item_set-1-gst": 10.72,
+            "item_set-1-coding_set-0-financial_code_match_id": 3,
+            "item_set-1-coding_set-0-budget_year": 1,
+            "item_set-1-coding_set-0-code": 2,
+            "item_set-1-coding_set-1-financial_code_match_id": 4,
+            "item_set-1-coding_set-1-budget_year": 2,
+            "item_set-1-coding_set-1-code": 4,
             "item_set-TOTAL_FORMS": 2,
             "item_set-INITIAL_FORMS": 0,
             "item_set-MIN_NUM_FORMS": 1,
@@ -543,8 +568,13 @@ class RevenueEditTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
        
     def test_revenue_edit_redirect_if_not_logged_in(self):
@@ -592,8 +622,13 @@ class TransactionEditTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
        
     def test_transaction_edit_html404_on_invalid_url(self):
@@ -631,8 +666,13 @@ class ExpenseDeleteTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
 
     def test_expense_delete_redirect_if_not_logged_in(self):
@@ -778,8 +818,13 @@ class RevenueDeleteTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
        
     def test_revenue_delete_redirect_if_not_logged_in(self):
@@ -827,8 +872,13 @@ class TransactionDeleteTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
     ]
        
     def test_transaction_delete_html404_on_invalid_url(self):

@@ -12,6 +12,15 @@
     "model": "financial_codes.financialcode",
     "pk": 2,
     "fields": {
+      "financial_code_group": 2,
+      "code": "6000",
+      "description": "FK Travel Grant"
+    }
+  },
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 3,
+    "fields": {
       "financial_code_group": 3,
       "code": "1000",
       "description": "FK Travel Grant"
@@ -19,7 +28,16 @@
   },
   {
     "model": "financial_codes.financialcode",
-    "pk": 3,
+    "pk": 4,
+    "fields": {
+      "financial_code_group": 4,
+      "code": "6000",
+      "description": "FK Travel Grant"
+    }
+  },
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 5,
     "fields": {
       "financial_code_group": 5,
       "code": "2000",
@@ -28,29 +46,11 @@
   },
   {
     "model": "financial_codes.financialcode",
-    "pk": 4,
+    "pk": 6,
     "fields": {
       "financial_code_group": 6,
       "code": "2000",
       "description": "Travel Grant"
-    }
-  },
-  {
-    "model": "financial_codes.financialcode",
-    "pk": 5,
-    "fields": {
-      "financial_code_group": 2,
-      "code": "6000",
-      "description": "FK Travel Grant"
-    }
-  },
-  {
-    "model": "financial_codes.financialcode",
-    "pk": 6,
-    "fields": {
-      "financial_code_group": 4,
-      "code": "6000",
-      "description": "FK Travel Grant"
     }
   },
   {

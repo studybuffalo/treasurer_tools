@@ -1,0 +1,34 @@
+[
+  {
+    "model": "transactions.financialcodematch",
+    "pk": 1,
+    "fields": {
+      "item": 1,
+      "financial_code": 1
+    }
+  },
+  {
+    "model": "transactions.financialcodematch",
+    "pk": 2,
+    "fields": {
+      "item": 1,
+      "financial_code": 3
+    }
+  },
+  {
+    "model": "transactions.financialcodematch",
+    "pk": 3,
+    "fields": {
+      "item": 2,
+      "financial_code": 2
+    }
+  },
+  {
+    "model": "transactions.financialcodematch",
+    "pk": 4,
+    "fields": {
+      "item": 2,
+      "financial_code": 4
+    }
+  }
+]

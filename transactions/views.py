@@ -156,37 +156,45 @@ class CompiledItemForms(object):
         return valid
             
     def save(self, transaction_id):
+        
         # Cycle through & save each item + financial code matches
         for form in self.forms:
-            saved_item = form["item_formset"].save(commit=False)
-            saved_item.transaction = Transaction.objects.get(id=transaction_id)
-            saved_item.save()
+            item_formset = form["item_formset"]
 
-            for code_form in form["financial_code_forms"]:
-                # Get any ID for an exisiting match ID
-                match_id = code_form["form"].cleaned_data["financial_code_match_id"]
+            # Delete any form marked for deletion
+            if item_formset.cleaned_data["DELETE"]:
+                item_formset.cleaned_data["id"].delete()
+            else:
+                # Save the item formset
+                saved_item = item_formset.save(commit=False)
+                saved_item.transaction = Transaction.objects.get(id=transaction_id)
+                saved_item.save()
 
-                # Get the item ID from the recently saved item
-                match_item = Item.objects.get(id=saved_item.id)
+                for code_form in form["financial_code_forms"]:
+                    # Get any ID for an exisiting match ID
+                    match_id = code_form["form"].cleaned_data["financial_code_match_id"]
 
-                # If provided, get the financial code ID
-                match_code_id = code_form["form"].cleaned_data["code"]
+                    # Get the item ID from the recently saved item
+                    match_item = Item.objects.get(id=saved_item.id)
 
-                if match_code_id:
-                    match_code = FinancialCode.objects.get(id=match_code_id)
-                else:
-                    match_code = None
+                    # If provided, get the financial code ID
+                    match_code_id = code_form["form"].cleaned_data["code"]
+
+                    if match_code_id:
+                        match_code = FinancialCode.objects.get(id=match_code_id)
+                    else:
+                        match_code = None
                 
-                # If an ID is present, get the original object
-                if match_id:
-                    match = get_object_or_404(FinancialCodeMatch, id=match_id)
-                else:
-                    match = FinancialCodeMatch()
+                    # If an ID is present, get the original object
+                    if match_id:
+                        match = get_object_or_404(FinancialCodeMatch, id=match_id)
+                    else:
+                        match = FinancialCodeMatch()
 
-                # Saves the financial code match
-                match.item = match_item
-                match.financial_code = match_code
-                match.save()
+                    # Saves the financial code match
+                    match.item = match_item
+                    match.financial_code = match_code
+                    match.save()
                 
     def __init__(self, transaction_type, formsets, post_data={}):
         self.forms = self.__assemble_forms(transaction_type, formsets, post_data)
@@ -274,23 +282,19 @@ def transaction_edit(request, t_type, transaction_id):
             # Use POST data & form reference to populate formset
             item_formsets = ItemFormSet(request.POST, instance=saved_transaction)
             
-            # Check if the formsets are valid (or have not changed)
-            if item_formsets.is_valid() or not item_formsets.has_changed():
-                # Assemble a compiled item & financial code forms object
-                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
+            #if item_formsets.is_valid() or not item_formsets.has_changed()
+            # Assemble a compiled item & financial code forms object
+            compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
 
-                if compiled_forms.is_valid():
-                    # All forms are valid, save all three levels of forms
-                    saved_transaction.save()
-                    compiled_forms.save(saved_transaction.id)
+            if compiled_forms.is_valid():
+                # All forms are valid, save all three levels of forms
+                saved_transaction.save()
+                compiled_forms.save(saved_transaction.id)
 
-                    # Redirect to a new URL:
-                    messages.success(request, "Transaction successfully updated")
+                # Redirect to a new URL:
+                messages.success(request, "Transaction successfully updated")
 
-                    return HttpResponseRedirect(reverse("transactions_dashboard"))
-            else:
-                # Form is not valid, so can generate formset without instance
-                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
+                return HttpResponseRedirect(reverse("transactions_dashboard"))
         else:
             # Form is not valid, so can generate formset without instance
             item_formsets = ItemFormSet(request.POST, instance=transaction_data)
