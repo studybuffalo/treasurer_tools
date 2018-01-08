@@ -1,0 +1,43 @@
+<script type="text/html" id="formset-template">
+    <div class="formset-row">
+        {% for field in formsets.empty_form.visible_fields %}
+            {{ field.label_tag }}
+
+            <span>
+                {{ field }}
+            </span>
+            <em>
+                {{ field.help_text }}
+            </em>
+        {% endfor %}
+
+        {% for field in formsets.empty_form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+
+        {% for form in formsets_group.empty_financial_code_form %}
+            <fieldset>
+                <legend>{{ form.name }}</legend>
+                                
+                {% for field in form.form.visible_fields %}
+                    {{ field.label_tag }}
+
+                    <span>
+                        {{ field }}
+                    </span>
+
+                    <em>
+                        {{ field.help_text }}
+                    </em>
+                {% endfor %}
+                                
+                {% for field in form.form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+                <hr>
+            </fieldset>
+        {% endfor %}
+    </div>
+
+    <hr>
+</script>

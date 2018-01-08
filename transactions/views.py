@@ -6,6 +6,7 @@ from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.utils import timezone
 
 from .forms import TransactionForm, ItemFormSet, FinancialCodeAssignmentForm
 from .models import Transaction, Item, FinancialCodeMatch
@@ -107,6 +108,39 @@ class CompiledItemForms(object):
 
         return forms
 
+    def __assemble_empty_financial_code_form(self, transaction_type):
+        """Assembles empty set of financial code forms (like .empty_form())"""
+        # Set the item date as today
+        date_item = timezone.now()
+
+        # Find all the systems encompassing the provided date
+        financial_code_systems = FinancialCodeSystem.objects.filter(
+            Q(date_start__lte=date_item),
+            (Q(date_end=None) | Q(date_end__gte=date_item))
+        )
+
+        # Create a FinancialCodeAssignmentForm for each system
+        financial_code_forms = []
+        form_id = 0
+
+        for system in financial_code_systems:
+            # Setup the proper prefix for the form fields
+            prefix = "item_set-__prefix__-coding_set-{}".format(form_id)
+            
+            financial_code_forms.append({
+                "name": str(system),
+                "form": FinancialCodeAssignmentForm(
+                    {},
+                    prefix=prefix,
+                    transaction_type=transaction_type,
+                    system=system,
+                ),
+            })
+
+            form_id = form_id + 1
+
+        return financial_code_forms
+
     def is_valid(self):
         """Checks if all item formsets & financial code forms are valid"""
         valid = True
@@ -129,6 +163,7 @@ class CompiledItemForms(object):
             saved_item.save()
 
             for code_form in form["financial_code_forms"]:
+                print(code_form)
                 match_id = code_form["form"].cleaned_data["financial_code_match_id"]
                 match_item = Item.objects.get(id=saved_item.id)
                 match_code = FinancialCode.objects.get(
@@ -148,6 +183,7 @@ class CompiledItemForms(object):
                 
     def __init__(self, transaction_type, formsets, post_data={}):
         self.forms = self.__assemble_forms(transaction_type, formsets, post_data)
+        self.empty_financial_code_form = self.__assemble_empty_financial_code_form(transaction_type)
             
 @login_required
 def transaction_add(request, t_type):

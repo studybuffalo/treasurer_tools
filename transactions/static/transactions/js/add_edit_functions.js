@@ -46,7 +46,7 @@ $(document).ready(function () {
         reset_financial_code(this)
         update_financial_code(this);
     });
-
+    
     // Run an initial update on all selects
     $('[id*="-budget_year"]').each(function (index, select) {
         console.log(select)
