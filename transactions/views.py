@@ -59,7 +59,7 @@ class CompiledItemForms(object):
 
                 if not post_data and item_id:
                     match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
-                
+                    
                     if match_instances:
                         for match in match_instances:
                             budget_year = match.financial_code.financial_code_group.budget_year
@@ -163,12 +163,19 @@ class CompiledItemForms(object):
             saved_item.save()
 
             for code_form in form["financial_code_forms"]:
-                print(code_form)
+                # Get any ID for an exisiting match ID
                 match_id = code_form["form"].cleaned_data["financial_code_match_id"]
+
+                # Get the item ID from the recently saved item
                 match_item = Item.objects.get(id=saved_item.id)
-                match_code = FinancialCode.objects.get(
-                    id=code_form["form"].cleaned_data["code"]
-                )
+
+                # If provided, get the financial code ID
+                match_code_id = code_form["form"].cleaned_data["code"]
+
+                if match_code_id:
+                    match_code = FinancialCode.objects.get(id=match_code_id)
+                else:
+                    match_code = None
                 
                 # If an ID is present, get the original object
                 if match_id:

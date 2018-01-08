@@ -46,7 +46,6 @@ class FinancialCodeAssignmentForm(forms.Form):
     code = forms.ChoiceField(
         choices=[],
         label="Financial code",
-        required=False,
         widget=FinancialCodeWithYearID,
     )
     
