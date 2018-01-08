@@ -27,11 +27,11 @@ def dashboard(request):
 
 class CompiledItemForms(object):
     """Object holding item & related financial code forms & functions"""
-    def __assemble_forms(self, formsets, post_data):
+    def __assemble_forms(self, transaction_type, formsets, post_data):
         """Assemble the item formsets and financial code forms"""
         # Cycle through each item's inline formset
         forms = []
-        item_id = 0
+        item_form_id = 0
 
         for item_formset in formsets:
             # Get the date assigned to this formset
@@ -47,21 +47,46 @@ class CompiledItemForms(object):
             financial_code_forms = []
             form_id = 0
 
+            item_id = item_formset["id"].value()
+            
             for system in financial_code_systems:
                 # Setup the proper prefix for the form fields
-                prefix = "item_set-{}-coding_set-{}".format(item_id, form_id)
-                    
+                prefix = "item_set-{}-coding_set-{}".format(item_form_id, form_id)
+                
+                # Check for no post data and an item ID (i.e. an edit GET request)
+                match_instance = None
+
+                if not post_data and item_id:
+                    match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
+                
+                    if match_instances:
+                        for match in match_instances:
+                            budget_year = match.financial_code.financial_code_group.budget_year
+
+                            if budget_year.financial_code_system.id == system.id:
+                                match_instance = {
+                                    "financial_code_match": match.id,
+                                    "budget_year": budget_year.id,
+                                    "code": match.financial_code.id,
+                                }
+                               
+                    # Add the matched data into the initializing data
+                    if match_instance:
+                        data = {
+                            "{}-financial_code_match_id".format(prefix): match_instance["financial_code_match"],
+                            "{}-budget_year".format(prefix): match_instance["budget_year"],
+                            "{}-code".format(prefix): match_instance["code"],
+                        }
+                else:
+                    data = post_data
+
                 financial_code_form = FinancialCodeAssignmentForm(
-                    post_data,
+                    data,
                     prefix=prefix,
+                    transaction_type=transaction_type,
                     system=system,
                 )
-                print("Prefix = {}".format(prefix))
-                print("Data = {}".format(post_data))
-                print("Code = {}".format(financial_code_form["code"].value()))
-                print("Bound = {}".format(financial_code_form.is_bound))
-                print("Valid = {}".format(financial_code_form.is_valid()))
-                    
+
                 # Add the form and a system title to the list
                 financial_code_forms.append({
                     "name": str(system),
@@ -78,7 +103,7 @@ class CompiledItemForms(object):
             })
 
             # Increment the item_id for the prefix
-            item_id = item_id + 1
+            item_form_id = item_form_id + 1
 
         return forms
 
@@ -104,20 +129,25 @@ class CompiledItemForms(object):
             saved_item.save()
 
             for code_form in form["financial_code_forms"]:
+                match_id = code_form["form"].cleaned_data["financial_code_match_id"]
                 match_item = Item.objects.get(id=saved_item.id)
                 match_code = FinancialCode.objects.get(
                     id=code_form["form"].cleaned_data["code"]
                 )
-        
-                # Saves the financial code meatch
-                match = FinancialCodeMatch(
-                    item=match_item,
-                    financial_code=match_code
-                )
+                
+                # If an ID is present, get the original object
+                if match_id:
+                    match = get_object_or_404(FinancialCodeMatch, id=match_id)
+                else:
+                    match = FinancialCodeMatch()
+
+                # Saves the financial code match
+                match.item = match_item
+                match.financial_code = match_code
                 match.save()
                 
-    def __init__(self, formsets, post_data={}):
-        self.forms = self.__assemble_forms(formsets, post_data)
+    def __init__(self, transaction_type, formsets, post_data={}):
+        self.forms = self.__assemble_forms(transaction_type, formsets, post_data)
             
 @login_required
 def transaction_add(request, t_type):
@@ -138,7 +168,7 @@ def transaction_add(request, t_type):
             # Check if the formsets are valid
             if item_formsets.is_valid():
                 # Assemble a compiled item & financial code forms object
-                compiled_forms = CompiledItemForms(item_formsets, request.POST)
+                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
 
                 if compiled_forms.is_valid():
                     # All forms are valid, save all three levels of forms
@@ -151,12 +181,12 @@ def transaction_add(request, t_type):
                     return HttpResponseRedirect(reverse("transactions_dashboard"))
             else:
                 # Form is not valid, so can generate formset without instance
-                compiled_forms = CompiledItemForms(item_formsets, request.POST)
+                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
         else:
             # Form is not valid, so can generate formset without instance
             item_formsets = ItemFormSet(request.POST)
             item_formsets.can_delete = False
-            compiled_forms = CompiledItemForms(item_formsets, request.POST)
+            compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
 
     # GET request - generate blank form and formset
     else:
@@ -165,7 +195,7 @@ def transaction_add(request, t_type):
         item_formsets = ItemFormSet()
         item_formsets.can_delete = False
 
-        compiled_forms = CompiledItemForms(item_formsets)
+        compiled_forms = CompiledItemForms(t_type, item_formsets)
         
     return render(
         request,
@@ -181,55 +211,61 @@ def transaction_add(request, t_type):
 
 @login_required
 def transaction_edit(request, t_type, transaction_id):
-    """Generate and processes form to edit a financial system"""
-
-     # POST request - try and save data
+    """Generate and processes form to edit transactions"""
+    # POST request - try and save data
     if request.method == "POST":
         # Get the Transaction object by the provided ID
         transaction_data = get_object_or_404(Transaction, id=transaction_id)
 
         # Create form with POST data
-        form = TransactionForm(request.POST, instance=transaction_data)
+        transaction_form = TransactionForm(request.POST, instance=transaction_data)
 
         # Check if the form is valid:
-        if form.is_valid():
+        if transaction_form.is_valid():
             # Get a reference to the future saved form
-            saved_form = form.save(commit=False)
+            saved_transaction = transaction_form.save(commit=False)
 
             # Use POST data & form reference to populate formset
-            formsets = ItemFormSet(request.POST, instance=saved_form)
+            item_formsets = ItemFormSet(request.POST, instance=saved_transaction)
+            
+            # Check if the formsets are valid (or have not changed)
+            if item_formsets.is_valid() or not item_formsets.has_changed():
+                # Assemble a compiled item & financial code forms object
+                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
 
-            # If formsets are valid, save transaction and items
-            if formsets.is_valid():
-                saved_form.save()
-                formsets.save()
-                
-                # Redirect to a new URL:
-                messages.success(request, "Expense successfully added")
+                if compiled_forms.is_valid():
+                    # All forms are valid, save all three levels of forms
+                    saved_transaction.save()
+                    compiled_forms.save(saved_transaction.id)
 
-                return HttpResponseRedirect(reverse("transactions_dashboard"))
+                    # Redirect to a new URL:
+                    messages.success(request, "Transaction successfully updated")
+
+                    return HttpResponseRedirect(reverse("transactions_dashboard"))
+            else:
+                # Form is not valid, so can generate formset without instance
+                compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
         else:
             # Form is not valid, so can generate formset without instance
-            formsets = ItemFormSet(request.POST)
+            item_formsets = ItemFormSet(request.POST, instance=transaction_data)
+            compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
 
     # GET request - generate blank form and formset
     else:
-        # Get the Transaction object by the provided ID
         transaction_data = get_object_or_404(Transaction, id=transaction_id)
 
-        # Create the form and formsets with the transaction object
-        form = TransactionForm(instance=transaction_data)
-        formsets = ItemFormSet(instance=transaction_data)
+        transaction_form = TransactionForm(instance=transaction_data)
+        item_formsets = ItemFormSet(instance=transaction_data)
+        compiled_forms = CompiledItemForms(t_type, item_formsets)
 
     return render(
         request,
         "transactions/edit.html",
         {
-            "form": form,
-            "formsets": formsets,
+            "form": transaction_form,
+            "formsets": item_formsets,
+            "formsets_group": compiled_forms,
             "page_name": t_type,
-            "legend_title": "Transaction items",
-            "formset_button": "Add item",
         },
     )
 

@@ -34,6 +34,10 @@ class ItemForm(forms.ModelForm):
 
 class FinancialCodeAssignmentForm(forms.Form):
     """Form to assign a financial code"""
+    financial_code_match_id = forms.IntegerField(
+        required=False,
+        widget=forms.HiddenInput,
+    )
     budget_year = forms.ChoiceField(
         choices=[],
         label="Budget year",
@@ -49,7 +53,8 @@ class FinancialCodeAssignmentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         # Get the financial code system
         financial_code_system = kwargs.pop("system")
-        
+        transaction_type = "e" if kwargs.pop("transaction_type") == "expense" else "r"
+
         # Retrieve all the children BudgetYears entries
         budget_years = BudgetYear.objects.filter(
             financial_code_system=financial_code_system
@@ -66,7 +71,7 @@ class FinancialCodeAssignmentForm(forms.Form):
 
         # Retrieve all the children FinancialCodeGroup entries
         for year in budget_years:
-            groups = year.financialcodegroup_set.all()
+            groups = year.financialcodegroup_set.filter(type=transaction_type)
 
             for group in groups:
                 code_list = []
@@ -76,14 +81,15 @@ class FinancialCodeAssignmentForm(forms.Form):
                 for code in codes:
                     code_list.append((code.id, str(code)))
 
-                financial_code_choices.append([group, code_list])
+                financial_code_choices.append([group.title, code_list])
             
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
         
+        # Set the initial value
         # Specify the choices
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
-        
+
 ItemFormSet = inlineformset_factory(
     Transaction,
     Item,
