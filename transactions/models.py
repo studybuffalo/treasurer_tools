@@ -37,7 +37,7 @@ class Transaction(models.Model):
         default=timezone.now,
         verbose_name="submission date"
     )
-    history = HistoricalRecords
+    history = HistoricalRecords()
 
     def __str__(self):
         # pylint: disable=unsubscriptable-object
@@ -77,7 +77,7 @@ class Item(models.Model):
         help_text="The tax (GST/HST) dollar value",
         max_digits=12,
     )
-    history = HistoricalRecords
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {} - {}".format(
