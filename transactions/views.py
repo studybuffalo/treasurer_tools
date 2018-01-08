@@ -204,6 +204,9 @@ def transaction_add(request, t_type):
         if transaction_form.is_valid():
             # Get a reference to the future saved form
             saved_transaction = transaction_form.save(commit=False)
+            
+            # Update the transaction_type
+            saved_transaction.transaction_type = "e" if t_type == "expense" else "r"
 
             # Use POST data & form reference to populate formset
             item_formsets = ItemFormSet(request.POST, instance=saved_transaction)
@@ -219,7 +222,7 @@ def transaction_add(request, t_type):
                     compiled_forms.save(saved_transaction.id)
 
                     # Redirect to a new URL:
-                    messages.success(request, "Expense successfully added")
+                    messages.success(request, "Transaction successfully added")
 
                     return HttpResponseRedirect(reverse("transactions_dashboard"))
             else:

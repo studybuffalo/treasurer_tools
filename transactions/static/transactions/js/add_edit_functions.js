@@ -41,12 +41,35 @@ function reset_financial_code(yearSelect) {
     $fieldset.find('[id*="-code"]').val("");
 }
 
+function add_event_listeners_to_new_formset_row(e) {
+    e.preventDefault;
+
+    // Get the last formset row (i.e. the added row)
+    const $lastRow = $(".formset-row:last");
+
+    // Cycle through each budget year select
+    $lastRow.find('[id*="-budget_year"]').each(function (index, select) {
+        // Update the financial code select associated with this budget year
+        update_financial_code(select);
+
+        // Add required event listeners to the budget year
+        $(select).on("click", function () {
+            reset_financial_code(this);
+            update_financial_code(this);
+        })
+    });
+}
+
 $(document).ready(function () {
     $('[id*="-budget_year"]').on("change", function () {
-        reset_financial_code(this)
+        reset_financial_code(this);
         update_financial_code(this);
     });
-    
+
+    $("#add-formset-row").on("click", function (e) {
+        add_event_listeners_to_new_formset_row(e);
+    });
+
     // Run an initial update on all selects
     $('[id*="-budget_year"]').each(function (index, select) {
         console.log(select)
