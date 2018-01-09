@@ -3,10 +3,10 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from .models import Transaction, Item
-
-from financial_codes.models import BudgetYear, FinancialCodeGroup, FinancialCode
+from financial_codes.models import BudgetYear
 from financial_codes.widgets import FinancialCodeWithYearID
+
+from .models import Transaction, Item
 
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
@@ -50,6 +50,7 @@ class FinancialCodeAssignmentForm(forms.Form):
     )
     
     def __init__(self, *args, **kwargs):
+        # pylint: disable=no-member, invalid-name
         # Get the financial code system
         financial_code_system = kwargs.pop("system")
         transaction_type = "e" if kwargs.pop("transaction_type") == "expense" else "r"
@@ -89,6 +90,7 @@ class FinancialCodeAssignmentForm(forms.Form):
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
 
+# pylint: disable=invalid-name
 ItemFormSet = inlineformset_factory(
     Transaction,
     Item,

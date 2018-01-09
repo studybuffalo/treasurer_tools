@@ -8,8 +8,9 @@ from .models import (
 )
 from. widgets import SelectWithYearID
 
-def get_budget_years_with_opt_groups():
+def get_years_with_opt_groups():
     """Creates nested dictionary financial code systems & budget years"""
+    # pylint: disable=no-member
     budget_year_choices = []
 
     for system in FinancialCodeSystem.objects.all():
@@ -76,14 +77,14 @@ class FinancialCodeGroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FinancialCodeGroupForm, self).__init__(*args, **kwargs)
 
-        self.fields["budget_year"].choices = get_budget_years_with_opt_groups()
+        self.fields["budget_year"].choices = get_years_with_opt_groups()
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
     # pylint: disable=missing-docstring,too-few-public-methods
     
     budget_year = forms.ChoiceField(
-        choices=get_budget_years_with_opt_groups(),
+        choices=get_years_with_opt_groups(),
         label="Budget Year",
         required=False,
     )

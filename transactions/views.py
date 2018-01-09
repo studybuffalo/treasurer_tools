@@ -2,15 +2,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 
+from financial_codes.models import FinancialCodeSystem, FinancialCode
+
 from .forms import TransactionForm, ItemFormSet, FinancialCodeAssignmentForm
 from .models import Transaction, Item, FinancialCodeMatch
-from financial_codes.models import FinancialCodeSystem, FinancialCode
 
 @login_required
 def dashboard(request):
@@ -28,13 +28,43 @@ def dashboard(request):
 
 class CompiledItemForms(object):
     """Object holding item & related financial code forms & functions"""
-    def __assemble_forms(self, transaction_type, formsets, post_data):
+    # pylint: disable=no-member
+    @staticmethod
+    def __assemble_forms(transaction_type, formsets, post_data):
         """Assemble the item formsets and financial code forms"""
-        # Cycle through each item's inline formset
-        forms = []
-        item_form_id = 0
+        def add_code_match_to_post_data(item_id, system_id, prefix):
+            """Adds financial code data to the POST data to populate form"""
+            # Check for no post data and an item ID (i.e. an edit GET request)
+            match_instance = None
 
-        for item_formset in formsets:
+            if not post_data and item_id:
+                match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
+                    
+                if match_instances:
+                    for match in match_instances:
+                        budget_year = match.financial_code.financial_code_group.budget_year
+
+                        if budget_year.financial_code_system.id == system_id:
+                            match_instance = {
+                                "financial_code_match": match.id,
+                                "budget_year": budget_year.id,
+                                "code": match.financial_code.id,
+                            }
+                               
+                # Add the matched data into the initializing data
+                if match_instance:
+                    data = {
+                        "{}-financial_code_match_id".format(prefix): match_instance["financial_code_match"],
+                        "{}-budget_year".format(prefix): match_instance["budget_year"],
+                        "{}-code".format(prefix): match_instance["code"],
+                    }
+            else:
+                data = post_data
+
+            return data
+
+        def get_financial_code_forms(item_formset, item_form_id):
+            """Creates financial code forms required for item formset"""
             # Get the date assigned to this formset
             date_item = item_formset["date_item"].value()
         
@@ -46,41 +76,15 @@ class CompiledItemForms(object):
 
             # Create a FinancialCodeAssignmentForm for each system
             financial_code_forms = []
-            form_id = 0
 
             item_id = item_formset["id"].value()
             
-            for system in financial_code_systems:
+            for form_id, system in enumerate(financial_code_systems):
                 # Setup the proper prefix for the form fields
                 prefix = "item_set-{}-coding_set-{}".format(item_form_id, form_id)
                 
-                # Check for no post data and an item ID (i.e. an edit GET request)
-                match_instance = None
-
-                if not post_data and item_id:
-                    match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
-                    
-                    if match_instances:
-                        for match in match_instances:
-                            budget_year = match.financial_code.financial_code_group.budget_year
-
-                            if budget_year.financial_code_system.id == system.id:
-                                match_instance = {
-                                    "financial_code_match": match.id,
-                                    "budget_year": budget_year.id,
-                                    "code": match.financial_code.id,
-                                }
-                               
-                    # Add the matched data into the initializing data
-                    if match_instance:
-                        data = {
-                            "{}-financial_code_match_id".format(prefix): match_instance["financial_code_match"],
-                            "{}-budget_year".format(prefix): match_instance["budget_year"],
-                            "{}-code".format(prefix): match_instance["code"],
-                        }
-                else:
-                    data = post_data
-
+                data = add_code_match_to_post_data(item_id, system.id, prefix)
+                
                 financial_code_form = FinancialCodeAssignmentForm(
                     data,
                     prefix=prefix,
@@ -94,21 +98,22 @@ class CompiledItemForms(object):
                     "form": financial_code_form,
                 })
 
-                # Increment the form_id for the prefix
-                form_id = form_id + 1
+            return financial_code_forms
 
+        # Cycle through each item's inline formset
+        forms = []
+
+        for item_form_id, item_formset in enumerate(formsets):
             # Add item formset & associated financial code forms to list
             forms.append({
                 "item_formset": item_formset,
-                "financial_code_forms": financial_code_forms,
+                "financial_code_forms": get_financial_code_forms(item_formset, item_form_id),
             })
-
-            # Increment the item_id for the prefix
-            item_form_id = item_form_id + 1
 
         return forms
 
-    def __assemble_empty_financial_code_form(self, transaction_type):
+    @staticmethod
+    def __assemble_empty_financial_code_form(transaction_type):
         """Assembles empty set of financial code forms (like .empty_form())"""
         # Set the item date as today
         date_item = timezone.now()
@@ -148,7 +153,7 @@ class CompiledItemForms(object):
 
         for group in self.forms:
             # Check that each item formset is valid
-            if group["item_formset"].is_valid() == False:
+            if group["item_formset"].is_valid() is False:
                 valid = False
             else:
                 # Check if marked for deletion
@@ -157,7 +162,7 @@ class CompiledItemForms(object):
 
             # Check that each financial code form is valid
             for financial_code_form in group["financial_code_forms"]:
-                if financial_code_form["form"].is_valid() == False:
+                if financial_code_form["form"].is_valid() is False:
                     valid = False
 
         if item_formset_num <= 0:
@@ -166,6 +171,7 @@ class CompiledItemForms(object):
         return valid
             
     def save(self, transaction_id):
+        """Saves all item formsets and financial code matches"""
         # Cycle through & save each item + financial code matches
         for form in self.forms:
             item_formset = form["item_formset"]
@@ -205,7 +211,7 @@ class CompiledItemForms(object):
                     match.financial_code = match_code
                     match.save()
                 
-    def __init__(self, transaction_type, formsets, post_data={}):
+    def __init__(self, transaction_type, formsets, post_data=None):
         self.forms = self.__assemble_forms(transaction_type, formsets, post_data)
         self.empty_financial_code_form = self.__assemble_empty_financial_code_form(transaction_type)
             

@@ -1,5 +1,4 @@
 """View for the financial_codes app"""
-from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -18,6 +17,7 @@ from .forms import (
 @login_required
 def dashboard(request):
     """Main dashboard to manage financial codes"""
+    # pylint: disable=no-member
     data = []
     system_index = 0
 
@@ -369,7 +369,7 @@ def code_add(request):
         "financial_codes/code_add.html",
         {
             "form": form,
-         },
+        },
     )
 
 @login_required

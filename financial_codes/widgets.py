@@ -1,13 +1,16 @@
+"""Custom widgets for the Financial Codes app"""
 from django.forms.widgets import Select
 
 from .models import FinancialCodeGroup, FinancialCode
 
 class SelectWithYearID(Select):
     """Select widget that allows data-attribute addition to options"""
-    
+    # pylint: disable=too-many-arguments, no-member
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         """Modifies function to include the financial code system ID"""
-        option = super(SelectWithYearID, self).create_option(name, value, label, selected, index, subindex, attrs)
+        option = super(SelectWithYearID, self).create_option(
+            name, value, label, selected, index, subindex, attrs
+        )
         
         # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:
@@ -23,10 +26,12 @@ class SelectWithYearID(Select):
 
 class FinancialCodeWithYearID(Select):
     """Select widget that allows data-attribute addition to options"""
-    
+    # pylint: disable=too-many-arguments, no-member
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         """Modifies function to include the financial code system ID"""
-        option = super(FinancialCodeWithYearID, self).create_option(name, value, label, selected, index, subindex, attrs)
+        option = super(FinancialCodeWithYearID, self).create_option(
+            name, value, label, selected, index, subindex, attrs
+        )
         
         # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:

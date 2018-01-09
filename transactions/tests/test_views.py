@@ -62,6 +62,10 @@ class ExpenseAddTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
     ]
     
     def setUp(self):
@@ -75,12 +79,12 @@ class ExpenseAddTest(TestCase):
             "item_set-0-gst": 5.00,
             "item_set-0-id": "",
             "item_set-0-transaction": "",
-            "item_set-0-coding_set-0-financial_code_match_id": "",
+            "item_set-0-coding_set-0-financial_code_match_id": 1,
             "item_set-0-coding_set-0-budget_year": 1,
             "item_set-0-coding_set-0-code": 1,
-            "item_set-0-coding_set-1-financial_code_match_id": "",
-            "item_set-0-coding_set-1-budget_year": 2,
-            "item_set-0-coding_set-1-code": 3,
+            "item_set-0-coding_set-1-financial_code_match_id": 2,
+            "item_set-0-coding_set-1-budget_year": 3,
+            "item_set-0-coding_set-1-code": 5,
             "item_set-TOTAL_FORMS": 1,
             "item_set-INITIAL_FORMS": 0,
             "item_set-MIN_NUM_FORMS": 1,
@@ -168,6 +172,24 @@ class ExpenseAddTest(TestCase):
         
         # Check that the item was associated with the transaction
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
+
+    def test_expense_fail_on_missing_financial_code(self):
+        """Confirms expense addition fails without financial code"""
+        edited_data = self.correct_data
+        edited_data["item_set-0-coding_set-0-code"] = None
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("transaction_add", kwargs={"t_type": "expense"}),
+            edited_data,
+            follow=True,
+        )
+
+        # Check for proper error message
+        self.assertEqual(
+            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            "Select a valid choice. None is not one of the available choices."
+        )
 
 class RevenueAddTest(TestCase):
     """Tests covering revenue-specific add views"""
@@ -413,7 +435,7 @@ class ExpenseEditTest(TestCase):
         edited_data["date_submitted"] = "2017-12-01"
 
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse(
                 "transaction_edit",
                 kwargs={"t_type": "expense", "transaction_id": 1}
