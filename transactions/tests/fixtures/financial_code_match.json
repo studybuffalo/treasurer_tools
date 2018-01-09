@@ -12,7 +12,7 @@
     "pk": 2,
     "fields": {
       "item": 1,
-      "financial_code": 3
+      "financial_code": 5
     }
   },
   {
@@ -20,7 +20,7 @@
     "pk": 3,
     "fields": {
       "item": 2,
-      "financial_code": 2
+      "financial_code": 1
     }
   },
   {
@@ -28,7 +28,7 @@
     "pk": 4,
     "fields": {
       "item": 2,
-      "financial_code": 4
+      "financial_code": 5
     }
   }
 ]

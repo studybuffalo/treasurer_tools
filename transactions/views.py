@@ -144,19 +144,28 @@ class CompiledItemForms(object):
     def is_valid(self):
         """Checks if all item formsets & financial code forms are valid"""
         valid = True
+        item_formset_num = len(self.forms)
 
         for group in self.forms:
+            # Check that each item formset is valid
             if group["item_formset"].is_valid() == False:
                 valid = False
+            else:
+                # Check if marked for deletion
+                if group["item_formset"].cleaned_data["DELETE"]:
+                    item_formset_num = item_formset_num - 1
 
+            # Check that each financial code form is valid
             for financial_code_form in group["financial_code_forms"]:
                 if financial_code_form["form"].is_valid() == False:
                     valid = False
 
+        if item_formset_num <= 0:
+            valid = False
+
         return valid
             
     def save(self, transaction_id):
-        
         # Cycle through & save each item + financial code matches
         for form in self.forms:
             item_formset = form["item_formset"]
@@ -285,7 +294,7 @@ def transaction_edit(request, t_type, transaction_id):
             #if item_formsets.is_valid() or not item_formsets.has_changed()
             # Assemble a compiled item & financial code forms object
             compiled_forms = CompiledItemForms(t_type, item_formsets, request.POST)
-
+            
             if compiled_forms.is_valid():
                 # All forms are valid, save all three levels of forms
                 saved_transaction.save()

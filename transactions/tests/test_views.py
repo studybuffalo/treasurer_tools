@@ -262,6 +262,7 @@ class ExpenseEditTest(TestCase):
             "memo": "Travel Grant award 2017",
             "date_submitted": "2017-06-01",
             "item_set-0-id": 1,
+            "item_set-0-transaction": 1,
             "item_set-0-date_item": "2017-06-01",
             "item_set-0-description": "Taxi costs",
             "item_set-0-amount": 100.00,
@@ -270,21 +271,22 @@ class ExpenseEditTest(TestCase):
             "item_set-0-coding_set-0-budget_year": 1,
             "item_set-0-coding_set-0-code": 1,
             "item_set-0-coding_set-1-financial_code_match_id": 2,
-            "item_set-0-coding_set-1-budget_year": 2,
-            "item_set-0-coding_set-1-code": 3,
+            "item_set-0-coding_set-1-budget_year": 3,
+            "item_set-0-coding_set-1-code": 5,
             "item_set-1-id": 2,
+            "item_set-1-transaction": 1,
             "item_set-1-date_item": "2017-06-02",
             "item_set-1-description": "Hotel Costs",
             "item_set-1-amount": 205.57,
             "item_set-1-gst": 10.72,
             "item_set-1-coding_set-0-financial_code_match_id": 3,
             "item_set-1-coding_set-0-budget_year": 1,
-            "item_set-1-coding_set-0-code": 2,
+            "item_set-1-coding_set-0-code": 1,
             "item_set-1-coding_set-1-financial_code_match_id": 4,
-            "item_set-1-coding_set-1-budget_year": 2,
-            "item_set-1-coding_set-1-code": 4,
+            "item_set-1-coding_set-1-budget_year": 3,
+            "item_set-1-coding_set-1-code": 5,
             "item_set-TOTAL_FORMS": 2,
-            "item_set-INITIAL_FORMS": 0,
+            "item_set-INITIAL_FORMS": 2,
             "item_set-MIN_NUM_FORMS": 1,
             "item_set-MAX_NUM_FORMS": 1000,
         }
@@ -412,7 +414,7 @@ class ExpenseEditTest(TestCase):
         edited_data["date_submitted"] = "2017-12-01"
 
         self.client.login(username="user", password="abcd123456")
-        self.client.post(
+        response = self.client.post(
             reverse(
                 "transaction_edit",
                 kwargs={"t_type": "expense", "transaction_id": 1}
@@ -484,6 +486,12 @@ class ExpenseEditTest(TestCase):
         added_data["item_set-2-description"] = "Fancy dinner"
         added_data["item_set-2-amount"] = 50.00
         added_data["item_set-2-gst"] = 2.50
+        added_data["item_set-2-coding_set-0-financial_code_match_id"] = ""
+        added_data["item_set-2-coding_set-0-budget_year"] = 1
+        added_data["item_set-2-coding_set-0-code"] = 1
+        added_data["item_set-2-coding_set-1-financial_code_match_id"] = ""
+        added_data["item_set-2-coding_set-1-budget_year"] = 3
+        added_data["item_set-2-coding_set-1-code"] = 5
         added_data["item_set-TOTAL_FORMS"] = 3
 
         self.client.login(username="user", password="abcd123456")
