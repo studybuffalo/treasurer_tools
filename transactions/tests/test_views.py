@@ -4,8 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
-from transactions.models import Transaction, Item
-# TODO: Add tests for the financial code matching
+from transactions.models import Transaction, Item, FinancialCodeMatch
 
 class TransactionsDashboard(TestCase):
     """Tests for the transactions dashboard view"""
@@ -170,8 +169,14 @@ class ExpenseAddTest(TestCase):
         # Check that one item was added
         self.assertEqual(1, Item.objects.count())
         
-        # Check that the item was associated with the transaction
-        self.assertEqual(1, Transaction.objects.all().first().item_set.count())
+        # Check that item was associated with the transaction
+        self.assertEqual(1, Transaction.objects.first().item_set.count())
+
+        # Check that financial code matches were added
+        self.assertEqual(2, FinancialCodeMatch.objects.count())
+
+        # Check that financial code match entries are associated with item
+        self.assertEqual(2, Item.objects.first().financialcodematch_set.count())
 
     def test_expense_fail_on_missing_financial_code(self):
         """Confirms expense addition fails without financial code"""
@@ -182,7 +187,6 @@ class ExpenseAddTest(TestCase):
         response = self.client.post(
             reverse("transaction_add", kwargs={"t_type": "expense"}),
             edited_data,
-            follow=True,
         )
 
         # Check for proper error message
@@ -190,6 +194,41 @@ class ExpenseAddTest(TestCase):
             response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
             "Select a valid choice. None is not one of the available choices."
         )
+
+        # Check that no transaction was added
+        self.assertEqual(0, Transaction.objects.count())
+
+        # Check that no items were added
+        self.assertEqual(0, Item.objects.count())
+        
+        # Check that no financial code matching was added
+        self.assertEqual(0, FinancialCodeMatch.objects.count())
+        
+    def test_expense_fail_on_incorrect_financial_code(self):
+        """Confirms expense addition fails without financial code"""
+        edited_data = self.correct_data
+        edited_data["item_set-0-coding_set-0-code"] = 999999999
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("transaction_add", kwargs={"t_type": "expense"}),
+            edited_data,
+        )
+
+        # Check for proper error message
+        self.assertEqual(
+            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            "Select a valid choice. 999999999 is not one of the available choices."
+        )
+
+        # Check that no transaction was added
+        self.assertEqual(0, Transaction.objects.count())
+
+        # Check that no items were added
+        self.assertEqual(0, Item.objects.count())
+        
+        # Check that no financial code matching was added
+        self.assertEqual(0, FinancialCodeMatch.objects.count())
 
 class RevenueAddTest(TestCase):
     """Tests covering revenue-specific add views"""
@@ -589,6 +628,70 @@ class ExpenseEditTest(TestCase):
             response.context["formsets"].non_form_errors()[0],
             "Please submit 1 or more forms."
         )
+        
+    def test_expense_edit_fails_on_missing_financial_code(self):
+        """Confirms expense edit fails without financial code"""
+        edited_data = self.correct_data
+        edited_data["item_set-0-coding_set-0-code"] = None
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit", 
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data,
+        )
+
+        # Check for proper error message
+        self.assertEqual(
+            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            "Select a valid choice. None is not one of the available choices."
+        )
+
+        # Check that no transaction was added/deleted
+        self.assertEqual(2, Transaction.objects.count())
+
+        # Check that no items were added/deleted
+        self.assertEqual(3, Item.objects.count())
+        
+        # Check that no financial code matching was added/deleted
+        self.assertEqual(6, FinancialCodeMatch.objects.count())
+
+        # Check that the original financial code match code is unchanged
+        self.assertEqual(1, FinancialCodeMatch.objects.get(id=1).financial_code.id)
+        
+    def test_expense_edit_fails_on_incorrect_financial_code(self):
+        """Confirms expense edit fails with incorrect financial code"""
+        edited_data = self.correct_data
+        edited_data["item_set-0-coding_set-0-code"] = 999999999
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit", 
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            edited_data,
+        )
+
+        # Check for proper error message
+        self.assertEqual(
+            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            "Select a valid choice. 999999999 is not one of the available choices."
+        )
+        
+        # Check that no transaction was added/deleted
+        self.assertEqual(2, Transaction.objects.count())
+
+        # Check that no items were added/deleted
+        self.assertEqual(3, Item.objects.count())
+        
+        # Check that no financial code matching was added/deleted
+        self.assertEqual(6, FinancialCodeMatch.objects.count())
+
+        # Check that the original financial code match code is unchanged
+        self.assertEqual(1, FinancialCodeMatch.objects.get(id=1).financial_code.id)
 
 class RevenueEditTest(TestCase):
     """Tests covering revenue-specific edit views"""
