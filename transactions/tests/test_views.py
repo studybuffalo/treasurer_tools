@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
 from transactions.models import Transaction, Item
+# TODO: Add tests for the financial code matching
 
 class TransactionsDashboard(TestCase):
     """Tests for the transactions dashboard view"""
@@ -167,8 +168,6 @@ class ExpenseAddTest(TestCase):
         
         # Check that the item was associated with the transaction
         self.assertEqual(1, Transaction.objects.all().first().item_set.count())
-        
-    # TODO: Add tests for the financial code matching
 
 class RevenueAddTest(TestCase):
     """Tests covering revenue-specific add views"""
