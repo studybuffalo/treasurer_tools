@@ -85,7 +85,6 @@ class FinancialCodeAssignmentForm(forms.Form):
             
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
         
-        # Set the initial value
         # Specify the choices
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
