@@ -637,7 +637,7 @@ class ExpenseEditTest(TestCase):
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse(
-                "transaction_edit", 
+                "transaction_edit",
                 kwargs={"t_type": "expense", "transaction_id": 1}
             ),
             edited_data,
@@ -669,7 +669,7 @@ class ExpenseEditTest(TestCase):
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse(
-                "transaction_edit", 
+                "transaction_edit",
                 kwargs={"t_type": "expense", "transaction_id": 1}
             ),
             edited_data,
