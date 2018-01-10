@@ -243,7 +243,7 @@ class ExpenseEditTest(TestCase):
 
         # Check for the expected ValidationError
         self.assertEqual(
-            response.context["formsets"][0].errors["id"][0],
+            response.context["forms"].forms.item_formsets[0].item_formset.errors["id"][0],
             "Select a valid choice. That choice is not one of the available choices."
         )
         
@@ -334,7 +334,7 @@ class ExpenseEditTest(TestCase):
         )
 
         self.assertEqual(
-            response.context["formsets"].non_form_errors()[0],
+            response.context["forms"].forms.item_formset.non_form_errors()[0],
             "Please submit 1 or more forms."
         )
         
@@ -354,7 +354,7 @@ class ExpenseEditTest(TestCase):
 
         # Check for proper error message
         self.assertEqual(
-            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            response.context["forms"].forms.item_formsets[0].financial_code_forms[0].form.errors["code"][0],
             "Select a valid choice. None is not one of the available choices."
         )
 
@@ -386,7 +386,7 @@ class ExpenseEditTest(TestCase):
 
         # Check for proper error message
         self.assertEqual(
-            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            response.context["forms"].forms.item_formsets[0].financial_code_forms[0].form.errors["code"][0],
             "Select a valid choice. 999999999 is not one of the available choices."
         )
         

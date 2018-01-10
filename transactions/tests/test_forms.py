@@ -34,7 +34,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
 
     def test_expense_code_select(self):
         """Tests that code select generates properly for expense transactions"""
-        form = FinancialCodeAssignmentForm(transaction_type="expense", system="1")
+        form = FinancialCodeAssignmentForm(transaction_type="e", system="1")
         code_select = form.fields["code"]
         
         # Confirm proper number of codes were collected (2 + 1 placeholder)
@@ -51,7 +51,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
 
     def test_revenue_code_select(self):
         """Tests that code select generates properly for expense transactions"""
-        form = FinancialCodeAssignmentForm(transaction_type="revenue", system="1")
+        form = FinancialCodeAssignmentForm(transaction_type="r", system="1")
         code_select = form.fields["code"]
         
         # Confirm proper number of codes were collected (2 + 1 placeholder)

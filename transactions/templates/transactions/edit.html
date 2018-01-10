@@ -14,72 +14,47 @@
     <form action="" method="post">
         {% csrf_token %}
 
-        <div id="form_content">
-            {% include 'main/errors.html' with errors=form.non_field_errors %}
+        {% with forms.forms as form %}
+            <div id="form_content">
+                {% include 'main/errors.html' with errors=form.transaction_form.non_field_errors %}
 
-            {% for field in form.visible_fields %}
-                <div>
-                    {{ field.label_tag }}
+                {% for field in form.transaction_form.visible_fields %}
+                    <div>
+                        {{ field.label_tag }}
 
-                    <span>
-                        {{ field }}
-                    </span>
-
-                    <em>
-                        {{ field.help_text }}
-                    </em>
-
-                    {% include 'main/errors.html' with errors=field.errors %}
-                </div>
-            {% endfor %}
-
-            {% for field in form.hidden_fields %}
-                <div>
-                    {{ field }}
-                </div>
-            
-                {% include 'main/errors.html' with errors=field.errors %}
-            {% endfor %}
-
-            <fieldset>
-                <legend>Transaction Items</legend>
-
-                {{ formsets.management_form }}
-            
-                {% include 'main/errors.html' with errors=formsets.non_form_errors %}
-
-                {% for group in formsets_group.forms %}
-                    
-                    {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
-                    
-                    <div class="formset-row">
-                        {% for field in group.item_formset.visible_fields %}
-                            {{ field.label_tag }}
-
-                            <span>
-                                {{ field }}
-                            </span>
-
-                            <em>
-                                {{ field.help_text }}
-                            </em>
-                    
-                            {% include 'main/errors.html' with errors=field.errors %}
-                        {% endfor %}
-
-                        {% for field in group.item_formset.hidden_fields %}
+                        <span>
                             {{ field }}
-                        
-                            {% include 'main/errors.html' with errors=field.errors %}
-                        {% endfor %}
+                        </span>
 
-                        {% for code_form in group.financial_code_forms %}
-                            <fieldset>
-                                <legend>{{ code_form.name }}</legend>
-                                
-                                {% include 'main/errors.html' with errors=code_form.form.non_field_errors %}
+                        <em>
+                            {{ field.help_text }}
+                        </em>
+
+                        {% include 'main/errors.html' with errors=field.errors %}
+                    </div>
+                {% endfor %}
+
+                {% for field in form.transaction_form.hidden_fields %}
+                    <div>
+                        {{ field }}
+                    </div>
+            
+                    {% include 'main/errors.html' with errors=field.errors %}
+                {% endfor %}
+
+                <fieldset>
+                    <legend>Transaction Items</legend>
+
+                    {{ form.item_formset.management_form }}
+            
+                    {% with form.item_formsets as formsets %}
+                        {% include 'main/errors.html' with errors=form.item_formset.non_form_errors %}
+
+                        {% for group in formsets %}
+                            {% include 'main/errors.html' with errors=group.item_formset.non_field_errors %}
                     
-                                {% for field in code_form.form.visible_fields %}
+                            <div class="formset-row">
+                                {% for field in group.item_formset.visible_fields %}
                                     {{ field.label_tag }}
 
                                     <span>
@@ -92,29 +67,57 @@
                     
                                     {% include 'main/errors.html' with errors=field.errors %}
                                 {% endfor %}
-                                
-                                {% for field in code_form.form.hidden_fields %}
+
+                                {% for field in group.item_formset.hidden_fields %}
                                     {{ field }}
                         
                                     {% include 'main/errors.html' with errors=field.errors %}
                                 {% endfor %}
-                                <hr>
-                            </fieldset>
+
+                                {% for financial_code_form in group.financial_code_forms %}
+                                    <fieldset>
+                                        <legend>{{ financial_code_form.system }}</legend>
+                                
+                                        {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
+                    
+                                        {% for field in financial_code_form.form.visible_fields %}
+                                            {{ field.label_tag }}
+
+                                            <span>
+                                                {{ field }}
+                                            </span>
+
+                                            <em>
+                                                {{ field.help_text }}
+                                            </em>
+                    
+                                            {% include 'main/errors.html' with errors=field.errors %}
+                                        {% endfor %}
+                                
+                                        {% for field in financial_code_form.form.hidden_fields %}
+                                            {{ field }}
+                        
+                                            {% include 'main/errors.html' with errors=field.errors %}
+                                        {% endfor %}
+                                        <hr>
+                                    </fieldset>
+                                {% endfor %}
+                            </div>
+
+                            <hr>
                         {% endfor %}
+                    {% endwith %}
+
+                    <div>
+                        <button id="add-formset-row">Add item</button>
                     </div>
+                </fieldset>
+            </div>
 
-                    <hr>
-                {% endfor %}
-
-                <div>
-                    <button id="add-formset-row">Add item</button>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="right_align">
-            <button type="submit">Save changes to {{ page_name|lower }}</button>
-        </div>
+            <div class="right_align">
+                <button type="submit">Edit {{ page_name|lower }}</button>
+            </div>
+        {% endwith %}
     </form>
 {% endblock %}
 

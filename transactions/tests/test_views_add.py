@@ -144,7 +144,7 @@ class ExpenseAddTest(TestCase):
 
         # Check for proper error message
         self.assertEqual(
-            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            response.context["forms"].forms.item_formsets[0].financial_code_forms[0].form.errors["code"][0],
             "Select a valid choice. None is not one of the available choices."
         )
 
@@ -170,7 +170,7 @@ class ExpenseAddTest(TestCase):
 
         # Check for proper error message
         self.assertEqual(
-            response.context["formsets_group"].forms[0]["financial_code_forms"][0]["form"].errors["code"][0],
+            response.context["forms"].forms.item_formsets[0].financial_code_forms[0].form.errors["code"][0],
             "Select a valid choice. 999999999 is not one of the available choices."
         )
 
