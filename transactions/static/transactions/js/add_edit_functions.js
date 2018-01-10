@@ -18,7 +18,7 @@ function update_financial_code(yearSelect) {
             $options.each(function (optionIndex, option) {
                 let $option = $(option);
 
-                if ($option.attr("data-year_id") == yearID) {
+                if ($option.attr("data-year_id") === yearID) {
                     $option.prop("hidden", false);
                     visible_option = true;
                 } else {
@@ -56,7 +56,7 @@ function add_event_listeners_to_new_formset_row(e) {
         $(select).on("click", function () {
             reset_financial_code(this);
             update_financial_code(this);
-        })
+        });
     });
 }
 
@@ -72,7 +72,6 @@ $(document).ready(function () {
 
     // Run an initial update on all selects
     $('[id*="-budget_year"]').each(function (index, select) {
-        console.log(select)
         update_financial_code(select);
     });
 });
