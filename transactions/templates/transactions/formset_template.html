@@ -1,6 +1,6 @@
 <script type="text/html" id="formset-template">
     <div class="formset-row">
-        {% for field in formsets.empty_form.visible_fields %}
+        {% for field in forms.forms.item_formset.empty_form.visible_fields %}
             {{ field.label_tag }}
 
             <span>
@@ -11,11 +11,11 @@
             </em>
         {% endfor %}
 
-        {% for field in formsets.empty_form.hidden_fields %}
+        {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
             {{ field }}
         {% endfor %}
 
-        {% for form in formsets_group.empty_financial_code_form %}
+        {% for form in forms.empty_financial_code_form %}
             <fieldset>
                 <legend>{{ form.name }}</legend>
                                 
