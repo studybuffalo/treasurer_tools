@@ -204,11 +204,12 @@ class CompiledForms(object):
     def assemble_forms(self, kwargs):
         """Assembles all levels of the required forms"""
         if self.request_type == "POST":
-            return self.__create_post_forms(kwargs)
-        elif self.request_type == "GET":
-            return self.__create_get_forms(kwargs)
-        
-        return None
+            compiled_forms = self.__create_post_forms(kwargs)
+        else:
+            # Assumed to be a GET request (as per view)
+            compiled_forms = self.__create_get_forms(kwargs)
+
+        return compiled_forms
         
     def assemble_empty_financial_code_form(self):
         """Assembles empty set of financial code forms (like .empty_form())"""
