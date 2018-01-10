@@ -27,7 +27,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
 
         # Check that these budget years belong to this financial code system
         for budget_year in budget_select.choices:
-            self.assertEquals(
+            self.assertEqual(
                 BudgetYear.objects.get(id=budget_year[0]).financial_code_system.id,
                 1
             )
@@ -44,7 +44,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
         for option_grouping in code_select.choices:
             if option_grouping[0]:
                 for code in option_grouping[1]:
-                    self.assertEquals(
+                    self.assertEqual(
                         FinancialCode.objects.get(id=code[0]).financial_code_group.type,
                         "e"
                     )
@@ -61,7 +61,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
         for option_grouping in code_select.choices:
             if option_grouping[0]:
                 for code in option_grouping[1]:
-                    self.assertEquals(
+                    self.assertEqual(
                         FinancialCode.objects.get(id=code[0]).financial_code_group.type,
                         "r"
                     )
