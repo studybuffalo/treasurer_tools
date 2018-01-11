@@ -40,6 +40,15 @@
                                     </ul>
                                 </li>
                             {% endfor %}
+                            
+                                <li>
+                                    Attachments
+                                    <ul>
+                                        {% for attachment in transaction.attachmentmatch_set.all %}
+                                            <li>{{ attachment.attachment.location }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
                         </ul>
                     </li>
                 {% elif transaction.transaction_type == "r" %}
