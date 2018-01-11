@@ -45,7 +45,7 @@
                                     Attachments
                                     <ul>
                                         {% for attachment in transaction.attachmentmatch_set.all %}
-                                            <li>{{ attachment.attachment.location }}</li>
+                                            <li><a href="{{ attachment.attachment.location.url }}">{{ attachment.attachment.location }}</a></li>
                                         {% endfor %}
                                     </ul>
                                 </li>
