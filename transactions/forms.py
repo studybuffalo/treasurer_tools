@@ -5,11 +5,13 @@ from django.db.models import Q
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from multiupload.fields import MultiFileField
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
 from financial_codes.widgets import FinancialCodeWithYearID
 
-from .models import Transaction, Item, FinancialCodeMatch
+from .models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
+from documents.models import Attachment
 
 class CompiledForms(object):
     """Forms and functions for the add/edit transaction/item/code views"""
@@ -21,6 +23,7 @@ class CompiledForms(object):
             self.transaction_form = None
             self.item_formset = None
             self.item_formsets = []
+            self.attachment_form = None
 
     class ItemLevel(object):
         # pylint: disable=too-few-public-methods
@@ -125,6 +128,13 @@ class CompiledForms(object):
                 self.data,
                 instance=transaction_instance
             )
+            
+            # Add attachment form
+            compiled_forms.attachment_form = AttachmentForm(
+                self.data,
+                self.files,
+                initial={"transaction_id": transaction_id},
+            )
 
         # No database values - create blank form
         else:
@@ -136,6 +146,20 @@ class CompiledForms(object):
 
             # Create the item formset
             compiled_forms.item_formset = ItemFormSet(self.data)
+            
+            # Add attachment form
+            compiled_forms.attachment_form = AttachmentForm(
+                self.data,
+                self.files,
+                initial={"transaction_id": transaction_id},
+            )
+
+            # Add attachment form
+            compiled_forms.attachment_form = AttachmentForm(
+                self.data,
+                self.files,
+                initial={"transaction_id": transaction_id},
+            )
 
         # Break item formsets into individual forms & group with code forms
         for item_form_id, item_formset in enumerate(compiled_forms.item_formset):
@@ -171,8 +195,11 @@ class CompiledForms(object):
                 instance=transaction_instance,
             )
 
-            # Create the item formset with the Transaction instance
+            # Create item formset with Transaction instance
             compiled_forms.item_formset = ItemFormSet(instance=transaction_instance)
+
+            # Add attachment form
+            compiled_forms.attachment_form = AttachmentForm(self.data, self.files)
 
         # No database values - create blank form
         else:
@@ -186,6 +213,9 @@ class CompiledForms(object):
 
             # Disable formset delete field
             compiled_forms.item_formset.can_delete = False
+
+            # Add attachment form
+            compiled_forms.attachment_form = AttachmentForm()
 
         # Break item formsets into individual forms & group with code forms
         for item_form_id, item_formset in enumerate(compiled_forms.item_formset):
@@ -274,6 +304,10 @@ class CompiledForms(object):
         if item_formset_num <= 0:
             valid = False
                 
+        # Check if attachment form is valid
+        if self.forms.attachment_form.is_valid() is False:
+            valid = False
+
         return valid
             
     def save(self):
@@ -281,8 +315,9 @@ class CompiledForms(object):
         # Save the transaction form
         saved_transaction = self.forms.transaction_form.save()
         
-        # Get the new transaction ID
+        # Get the new transaction object
         transaction_id = saved_transaction.id
+        transaction_instance = Transaction.objects.get(id=transaction_id)
 
         # Cycle through each item formset
         for item_formset_group in self.forms.item_formsets:
@@ -294,7 +329,7 @@ class CompiledForms(object):
                 saved_item = item_formset_group.item_formset.save(commit=False)
 
                 # Set transaction ID for item item instance
-                saved_item.transaction = Transaction.objects.get(id=transaction_id)
+                saved_item.transaction = transaction_instance
 
                 # Save the item formset
                 saved_item.save()
@@ -321,14 +356,30 @@ class CompiledForms(object):
                     )
                     match.save()
         
-    def __init__(self, transaction_type, request_type, data=None, **kwargs):
+        # Save attachment form
+        for file in self.forms.attachment_form.cleaned_data["attachment_files"]:
+            print(file)
+            # Save the file to an attachment instance
+            attachment_instance = Attachment.objects.create(
+                location=file
+            )
+
+            # Create record in attachment matching model
+            attachment_match = AttachmentMatch(
+                transaction=Transaction.objects.get(id=transaction_id),
+                attachment=attachment_instance,
+            )
+            attachment_match.save()
+
+
+    def __init__(self, transaction_type, request_type, data=None, files=None, **kwargs):
         self.transaction_type = "e" if transaction_type.upper() == "EXPENSE" else "r"
         self.request_type = request_type.upper()
         self.data = data
+        self.files = files
         self.forms = self.assemble_forms(kwargs)
         self.empty_financial_code_form = self.assemble_empty_financial_code_form()
-          
-
+       
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -352,6 +403,17 @@ class ItemForm(forms.ModelForm):
             "amount",
             "gst",
         ]
+
+# pylint: disable=invalid-name
+ItemFormSet = inlineformset_factory(
+    Transaction,
+    Item,
+    form=ItemForm,
+    extra=0,
+    min_num=1,
+    validate_min=True,
+    can_delete=True,
+)
 
 class FinancialCodeAssignmentForm(forms.Form):
     """Form to assign a financial code"""
@@ -410,13 +472,14 @@ class FinancialCodeAssignmentForm(forms.Form):
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
 
-# pylint: disable=invalid-name
-ItemFormSet = inlineformset_factory(
-    Transaction,
-    Item,
-    form=ItemForm,
-    extra=0,
-    min_num=1,
-    validate_min=True,
-    can_delete=True,
-)
+class AttachmentForm(forms.Form):
+    """Form to handle file attachments to transaction"""
+    transaction_id = forms.IntegerField(
+        required=False,
+        widget=forms.HiddenInput,
+    )
+    attachment_files = MultiFileField(
+        help_text="Documentation/files for this transaction",
+        label="Transaction attachments",
+        max_file_size=1024*1024*10,
+    )

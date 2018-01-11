@@ -27,7 +27,7 @@ def transaction_add(request, t_type):
     """Generates and processes form to add a transaction"""
     # POST request - try and save data
     if request.method == "POST":
-        compiled_forms = CompiledForms(t_type, "POST", request.POST)
+        compiled_forms = CompiledForms(t_type, "POST", request.POST, request.FILES)
 
         if compiled_forms.is_valid():
             compiled_forms.save()
@@ -39,7 +39,7 @@ def transaction_add(request, t_type):
     # GET request - generate blank form and formset
     else:
         compiled_forms = CompiledForms(
-            t_type, "GET", request.POST,
+            t_type, "GET", request.POST, request.FILES,
         )
 
     return render(
@@ -57,7 +57,10 @@ def transaction_edit(request, t_type, transaction_id):
     """Generate and processes form to edit transactions"""
     # POST request - try and save data
     if request.method == "POST":
-        compiled_forms = CompiledForms(t_type, "POST", request.POST, transaction_id=transaction_id)
+        compiled_forms = CompiledForms(
+            t_type, "POST", request.POST, request.FILES, transaction_id=transaction_id
+        )
+
         if compiled_forms.is_valid():
             compiled_forms.save()
         
@@ -68,7 +71,7 @@ def transaction_edit(request, t_type, transaction_id):
     # GET request - generate blank form and formset
     else:
         compiled_forms = CompiledForms(
-            t_type, "GET", request.POST, transaction_id=transaction_id,
+            t_type, "GET", request.POST, request.FILES, transaction_id=transaction_id,
         )
 
     return render(
