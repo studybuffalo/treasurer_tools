@@ -103,7 +103,7 @@
                                     </fieldset>
                                 {% endfor %}
                             </div>
-
+                            
                             <hr>
                         {% endfor %}
                     {% endwith %}
@@ -114,25 +114,47 @@
                 </fieldset>
 
                 <fieldset>
-                    {% for field in form.attachment_form.visible_fields %}
-                        {{ field.label_tag }}
+                    <legend>Attachments</legend>
 
-                        <span>
-                            {{ field }}
-                        </span>
+                    <div>
+                        {% for field in form.new_attachment_form.visible_fields %}
+                            {{ field.label_tag }}
 
-                        <em>
-                            {{ field.help_text }}
-                        </em>
+                            <span>
+                                {{ field }}
+                            </span>
+
+                            <em>
+                                {{ field.help_text }}
+                            </em>
                     
-                        {% include 'main/errors.html' with errors=field.errors %}
-                    {% endfor %}
+                            {% include 'main/errors.html' with errors=field.errors %}
+                        {% endfor %}
 
-                    {% for field in form.attachment_form.hidden_fields %}
-                        {{ field }}
+                        {% for field in form.attachment_form.hidden_fields %}
+                            {{ field }}
                         
-                        {% include 'main/errors.html' with errors=field.errors %}
-                    {% endfor %}
+                            {% include 'main/errors.html' with errors=field.errors %}
+                        {% endfor %}
+                    </div>
+                    
+                    <ul>
+                        {{ form.old_attachment_formset.management_form }}
+                        {% for attachment_form in form.old_attachment_formset %}
+                            <li>
+                                <a href="{{ attachment_form.instance.attachment.location.url }}" target="_blank">
+                                    {{ attachment_form.instance.attachment }}
+                                </a> 
+                                - Delete? {{ attachment_form.DELETE }}
+
+                                {% for field in attachment_form.hidden_fields %}
+                                    {{ field }}
+                            
+                                    {% include 'main/errors.html' with errors=field.errors %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                        </ul>
                 </fieldset>
             </div>
 

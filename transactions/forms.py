@@ -23,7 +23,8 @@ class CompiledForms(object):
             self.transaction_form = None
             self.item_formset = None
             self.item_formsets = []
-            self.attachment_form = None
+            self.new_attachment_form = None
+            self.old_attachment_formset = None
 
     class ItemLevel(object):
         # pylint: disable=too-few-public-methods
@@ -111,7 +112,7 @@ class CompiledForms(object):
 
         # Get any transaction ID (if provided)
         transaction_id = kwargs.pop("transaction_id", None)
-
+        
         # If transaction ID present, retrieve database values
         if transaction_id:
             # Get the transaction object for this ID
@@ -128,12 +129,17 @@ class CompiledForms(object):
                 self.data,
                 instance=transaction_instance
             )
-            
+            print(self.files)
             # Add attachment form
-            compiled_forms.attachment_form = AttachmentForm(
+            compiled_forms.new_attachment_form = NewAttachmentForm(
                 self.data,
                 self.files,
-                initial={"transaction_id": transaction_id},
+            )
+
+            # Add attachment formset
+            compiled_forms.old_attachment_formset = AttachmentFormSet(
+                self.data,
+                instance=transaction_instance
             )
 
         # No database values - create blank form
@@ -148,18 +154,13 @@ class CompiledForms(object):
             compiled_forms.item_formset = ItemFormSet(self.data)
             
             # Add attachment form
-            compiled_forms.attachment_form = AttachmentForm(
+            compiled_forms.new_attachment_form = NewAttachmentForm(
                 self.data,
                 self.files,
-                initial={"transaction_id": transaction_id},
             )
 
-            # Add attachment form
-            compiled_forms.attachment_form = AttachmentForm(
-                self.data,
-                self.files,
-                initial={"transaction_id": transaction_id},
-            )
+            # Add attachment formset
+            compiled_forms.old_attachment_formset = AttachmentFormSet(self.data)
 
         # Break item formsets into individual forms & group with code forms
         for item_form_id, item_formset in enumerate(compiled_forms.item_formset):
@@ -199,7 +200,12 @@ class CompiledForms(object):
             compiled_forms.item_formset = ItemFormSet(instance=transaction_instance)
 
             # Add attachment form
-            compiled_forms.attachment_form = AttachmentForm(self.data, self.files)
+            compiled_forms.new_attachment_form = NewAttachmentForm()
+            
+            # Add attachment formset
+            compiled_forms.old_attachment_formset = AttachmentFormSet(
+                instance=transaction_instance
+            )
 
         # No database values - create blank form
         else:
@@ -215,7 +221,10 @@ class CompiledForms(object):
             compiled_forms.item_formset.can_delete = False
 
             # Add attachment form
-            compiled_forms.attachment_form = AttachmentForm()
+            compiled_forms.new_attachment_form = NewAttachmentForm()
+            
+            # Add attachment formset
+            compiled_forms.old_attachment_formset = AttachmentFormSet()
 
         # Break item formsets into individual forms & group with code forms
         for item_form_id, item_formset in enumerate(compiled_forms.item_formset):
@@ -228,7 +237,7 @@ class CompiledForms(object):
                     item_form_id, item_instance_id,
                 )
             ))
-
+            
         return compiled_forms
 
     def assemble_forms(self, kwargs):
@@ -305,7 +314,11 @@ class CompiledForms(object):
             valid = False
                 
         # Check if attachment form is valid
-        if self.forms.attachment_form.is_valid() is False:
+        if self.forms.new_attachment_form.is_valid() is False:
+            valid = False
+
+        # Check if the old attachment form is valid
+        if self.forms.old_attachment_formset.is_valid() is False:
             valid = False
 
         return valid
@@ -357,8 +370,9 @@ class CompiledForms(object):
                     match.save()
         
         # Save attachment form
-        for file in self.forms.attachment_form.cleaned_data["attachment_files"]:
-            print(file)
+        print(self.forms.new_attachment_form.cleaned_data["attachment_files"])
+        for file in self.forms.new_attachment_form.cleaned_data["attachment_files"]:
+            print("test")
             # Save the file to an attachment instance
             attachment_instance = Attachment.objects.create(
                 location=file
@@ -371,6 +385,10 @@ class CompiledForms(object):
             )
             attachment_match.save()
 
+        # Delete any old attachments
+        for attachment_form in self.forms.old_attachment_formset:
+            if attachment_form.cleaned_data["DELETE"]:
+                attachment_form.cleaned_data["id"].delete()
 
     def __init__(self, transaction_type, request_type, data=None, files=None, **kwargs):
         self.transaction_type = "e" if transaction_type.upper() == "EXPENSE" else "r"
@@ -472,7 +490,7 @@ class FinancialCodeAssignmentForm(forms.Form):
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
 
-class AttachmentForm(forms.Form):
+class NewAttachmentForm(forms.Form):
     """Form to handle file attachments to transaction"""
     transaction_id = forms.IntegerField(
         required=False,
@@ -482,4 +500,29 @@ class AttachmentForm(forms.Form):
         help_text="Documentation/files for this transaction",
         label="Transaction attachments",
         max_file_size=1024*1024*10,
+        required=False,
     )
+
+    prefix = "newattachment"
+
+class OldAttachmentForm(forms.ModelForm):
+    """Form to view and delete attachments"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+    class Meta:
+        model = AttachmentMatch
+        fields = [
+            "attachment",
+        ]
+        widgets = {
+            "attachment": forms.HiddenInput(),
+        }
+
+AttachmentFormSet = inlineformset_factory(
+    Transaction,
+    AttachmentMatch,
+    form=OldAttachmentForm,
+    extra=0,
+    min_num=0,
+    max_num=20,
+    can_delete=True,
+)

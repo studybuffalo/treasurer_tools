@@ -11,7 +11,7 @@
 
     {% include 'main/messages.html' %}
 
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {% with forms.forms as form %}
@@ -111,6 +111,49 @@
                     <div>
                         <button id="add-formset-row">Add item</button>
                     </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Attachments</legend>
+                    <div>
+                        {% for field in form.new_attachment_form.visible_fields %}
+                            {{ field.label_tag }}
+
+                            <span>
+                                {{ field }}
+                            </span>
+
+                            <em>
+                                {{ field.help_text }}
+                            </em>
+                    
+                            {% include 'main/errors.html' with errors=field.errors %}
+                        {% endfor %}
+
+                        {% for field in form.new_attachment_form.hidden_fields %}
+                            {{ field }}
+                            
+                            {% include 'main/errors.html' with errors=field.errors %}
+                        {% endfor %}
+                    </div>
+                    
+                    <ul>
+                        {{ form.old_attachment_formset.management_form }}
+                        {% for attachment_form in form.old_attachment_formset %}
+                            <li>
+                                <a href="{{ attachment_form.instance.attachment.location.url }}" target="_blank">
+                                    {{ attachment_form.instance.attachment }}
+                                </a> 
+                                - Delete? {{ attachment_form.DELETE }}
+
+                                {% for field in attachment_form.hidden_fields %}
+                                    {{ field }}
+                            
+                                    {% include 'main/errors.html' with errors=field.errors %}
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                        </ul>
                 </fieldset>
             </div>
 
