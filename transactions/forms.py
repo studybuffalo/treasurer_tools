@@ -129,7 +129,7 @@ class CompiledForms(object):
                 self.data,
                 instance=transaction_instance
             )
-            print(self.files)
+
             # Add attachment form
             compiled_forms.new_attachment_form = NewAttachmentForm(
                 self.data,
@@ -370,9 +370,7 @@ class CompiledForms(object):
                     match.save()
         
         # Save attachment form
-        print(self.forms.new_attachment_form.cleaned_data["attachment_files"])
         for file in self.forms.new_attachment_form.cleaned_data["attachment_files"]:
-            print("test")
             # Save the file to an attachment instance
             attachment_instance = Attachment.objects.create(
                 location=file
@@ -492,10 +490,6 @@ class FinancialCodeAssignmentForm(forms.Form):
 
 class NewAttachmentForm(forms.Form):
     """Form to handle file attachments to transaction"""
-    transaction_id = forms.IntegerField(
-        required=False,
-        widget=forms.HiddenInput,
-    )
     attachment_files = MultiFileField(
         help_text="Documentation/files for this transaction",
         label="Transaction attachments",

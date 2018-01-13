@@ -1,10 +1,14 @@
 """Test cases for the transactions app views"""
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
-from transactions.models import Transaction, Item, FinancialCodeMatch
+from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
+from documents.models import Attachment
+
+from unipath import Path
 
 class ExpenseAddTest(TestCase):
     """Tests for the add expense view"""
@@ -41,8 +45,15 @@ class ExpenseAddTest(TestCase):
             "item_set-INITIAL_FORMS": 0,
             "item_set-MIN_NUM_FORMS": 1,
             "item_set-MAX_NUM_FORMS": 1000,
+            "attachmentmatch_set-TOTAL_FORMS": 0,
+            "attachmentmatch_set-INITIAL_FORMS": 0,
+            "attachmentmatch_set-MIN_NUM_FORMS": 0,
+            "attachmentmatch_set-MAX_NUM_FORMS": 20,
         }
-            
+
+        self.cwd = Path().cwd()
+        self.test_file_dir = self.cwd.child("transactions", "tools", "files")
+        self.media_file_dir = self.cwd.child("media")
 
     def test_expense_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -182,6 +193,56 @@ class ExpenseAddTest(TestCase):
         
         # Check that no financial code matching was added
         self.assertEqual(0, FinancialCodeMatch.objects.count())
+
+    
+    def test_expense_add_attachment(self):
+        """Confirms data & files added to database on successful submission"""
+        with open("transactions/tests/files/test.pdf", "rb") as test_file:
+            correct_data = self.correct_data
+            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(test_file, None, "test.pdf", "application/pdf", None, None)
+
+            self.client.login(username="user", password="abcd123456")
+            response = self.client.post(
+                reverse("transaction_add", kwargs={"t_type": "expense"}),
+                correct_data,
+                format="multipart/form-data",
+                follow=True,
+            )
+
+            # Get reference to the new attachment
+            attachment_instance = Attachment.objects.first()
+
+            # Check that user logged in
+            self.assertEqual(str(response.context['user']), 'user')
+        
+            # Check that one transaction was added
+            self.assertEqual(1, Transaction.objects.count())
+
+            # Check that one attachment match was added
+            self.assertEqual(1, AttachmentMatch.objects.count())
+
+            # Check that one attachment was added
+            self.assertEqual(1, Attachment.objects.count())
+
+            # Check that the attachment match used the right transaction
+            self.assertEqual(
+                AttachmentMatch.objects.first().transaction.id,
+                Transaction.objects.first().id
+            )
+
+            self.assertEqual(
+                AttachmentMatch.objects.first().attachment.id,
+                attachment_instance.id
+            )
+
+            # Get the path to the new file
+            attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
+
+            # Check that the file exists in the new directory
+            self.assertTrue(attachment_path.exists())
+
+            # Remove the new test file
+            attachment_path.remove()
 
 class RevenueAddTest(TestCase):
     """Tests covering revenue-specific add views"""

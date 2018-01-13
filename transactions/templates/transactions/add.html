@@ -140,6 +140,7 @@
                     
                     <ul>
                         {{ form.old_attachment_formset.management_form }}
+
                         {% for attachment_form in form.old_attachment_formset %}
                             <li>
                                 <a href="{{ attachment_form.instance.attachment.location.url }}" target="_blank">
