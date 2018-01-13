@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from transactions.models import Transaction, Item
+from transactions.models import Transaction, Item, AttachmentMatch
 
 class TransactionModelTest(TestCase):
     """Test functions for the Transaction model"""
@@ -111,3 +111,37 @@ class ItemModelTest(TestCase):
             str(item),
             "{} - {} - {}".format(item.date_item, item.description, item.total)
         )
+
+class AttachmentMatchModelTest(TestCase):
+    """Test functions for the Attachment match model"""
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = [
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/attachment.json",
+        "transactions/tests/fixtures/attachment_match.json",
+    ]
+
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "transaction", "label_name": "transaction"},
+            {"field_name": "attachment", "label_name": "attachment"},
+        ]
+
+        for test_item in test_list:
+            attachment_match = AttachmentMatch.objects.get(id=1)
+            field_label = attachment_match._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        attachment_match = AttachmentMatch.objects.get(id=1)
+
+        self.assertEqual(
+            str(attachment_match),
+            "2017-06-01 - Expense - Joshua Torrance - Travel Grant award 2017 - test.pdf"
+        )
+
