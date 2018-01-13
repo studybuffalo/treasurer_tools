@@ -8,6 +8,8 @@ from django.urls.exceptions import NoReverseMatch
 from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
 from documents.models import Attachment
 
+from unipath import Path
+
 EDIT_FIXTURES = [
     "transactions/tests/fixtures/authentication.json",
     "transactions/tests/fixtures/country.json",
@@ -71,6 +73,9 @@ class ExpenseEditTest(TestCase):
             "attachmentmatch_set-MIN_NUM_FORMS": 0,
             "attachmentmatch_set-MAX_NUM_FORMS": 20,
         }
+        self.cwd = Path().cwd()
+        self.test_file_dir = self.cwd.child("transactions", "tests", "files")
+        self.media_file_dir = self.cwd.child("media")
 
     def test_expense_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -185,11 +190,14 @@ class ExpenseEditTest(TestCase):
             follow=True,
         )
 
-        # Check that page is accessible
+        # Check that page is not accessible (404 error)
         self.assertEqual(response.status_code, 404)
         
     def test_expense_edit_confirm_transaction_edit(self):
         """Confirms transaction is properly edited via the expense edit form"""
+        # Get original count of Transactions
+        transaction_total = Transaction.objects.count()
+
         # Setup edited data
         edited_data = self.correct_data
         edited_data["date_submitted"] = "2017-12-01"
@@ -203,8 +211,8 @@ class ExpenseEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 2 transaction items
-        self.assertEqual(2, Transaction.objects.count())
+        # Confirm no transactions were added
+        self.assertEqual(Transaction.objects.count(), transaction_total)
 
         # Confirm name has been updated properly
         self.assertEqual(
@@ -214,9 +222,15 @@ class ExpenseEditTest(TestCase):
 
     def test_expense_edit_confirm_item_edit(self):
         """Confirms that item can be edited in edit expense form"""
+        # Get original count of Transactions, Items
+        transaction_total = Transaction.objects.count()
+        item_total = Item.objects.count()
+
+        # Setup edited data
         edited_data = self.correct_data
         edited_data["item_set-0-description"] = "Fancy dinner"
 
+        # Access the edit page
         self.client.login(username="user", password="abcd123456")
         self.client.post(
             reverse(
@@ -226,11 +240,11 @@ class ExpenseEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 2 transaction entries
-        self.assertEqual(2, Transaction.objects.count())
+        # Confirm no transactions were added
+        self.assertEqual(Transaction.objects.count(), transaction_total)
 
-        # Confirm still only 3 item entries
-        self.assertEqual(3, Item.objects.count())
+        # Confirm no items were added
+        self.assertEqual(Item.objects.count(), item_total)
 
         # Confirm item description has been updated properly
         self.assertEqual(
@@ -261,6 +275,10 @@ class ExpenseEditTest(TestCase):
         
     def test_expense_edit_add_item(self):
         """Checks that a new item is added via the edit expense form"""
+        # Get original count of Items
+        item_total = Item.objects.count()
+
+        # Setup data for a new item
         added_data = self.correct_data
         added_data["item_set-2-id"] = ""
         added_data["item_set-2-date_item"] = "2017-06-03"
@@ -285,10 +303,7 @@ class ExpenseEditTest(TestCase):
         )
 
         # Check that the number of items has increased
-        self.assertEqual(
-            Item.objects.count(),
-            4
-        )
+        self.assertEqual(Item.objects.count(), item_total + 1)
 
         # Check that original items still exist
         self.assertEqual(
@@ -304,6 +319,9 @@ class ExpenseEditTest(TestCase):
 
     def test_expense_edit_delete_item(self):
         """Checks that item is deleted via the edit expense form"""
+        # Get current count of Items
+        item_total = Item.objects.count()
+
         # Setup the delete data
         delete_data = self.correct_data
         delete_data["item_set-0-DELETE"] = "on"
@@ -318,10 +336,7 @@ class ExpenseEditTest(TestCase):
         )
         
         # Check that the number of items has decreased
-        self.assertEqual(
-            Item.objects.count(),
-            2
-        )
+        self.assertEqual(Item.objects.count(), item_total - 1)
 
         # Check that the proper ID has been removed
         self.assertEqual(
@@ -352,6 +367,12 @@ class ExpenseEditTest(TestCase):
         
     def test_expense_edit_fails_on_missing_financial_code(self):
         """Confirms expense edit fails without financial code"""
+        # Count current Transactions, Items, and Financial Code Matches
+        transaction_total = Transaction.objects.count()
+        item_total = Item.objects.count()
+        financial_code_match_total = FinancialCodeMatch.objects.count()
+
+        # Setup edited data
         edited_data = self.correct_data
         edited_data["item_set-0-coding_set-0-code"] = None
         
@@ -371,19 +392,28 @@ class ExpenseEditTest(TestCase):
         )
 
         # Check that no transaction was added/deleted
-        self.assertEqual(2, Transaction.objects.count())
+        self.assertEqual(Transaction.objects.count(), transaction_total)
 
         # Check that no items were added/deleted
-        self.assertEqual(3, Item.objects.count())
+        self.assertEqual(Item.objects.count(), item_total)
         
         # Check that no financial code matching was added/deleted
-        self.assertEqual(6, FinancialCodeMatch.objects.count())
+        self.assertEqual(
+            FinancialCodeMatch.objects.count(),
+            financial_code_match_total
+        )
 
         # Check that the original financial code match code is unchanged
         self.assertEqual(1, FinancialCodeMatch.objects.get(id=1).financial_code.id)
         
     def test_expense_edit_fails_on_incorrect_financial_code(self):
         """Confirms expense edit fails with incorrect financial code"""
+        # Count current Transactions, Items, and Financial Code Matches
+        transaction_total = Transaction.objects.count()
+        item_total = Item.objects.count()
+        financial_code_match_total = FinancialCodeMatch.objects.count()
+        
+        # Setup incorrect data
         edited_data = self.correct_data
         edited_data["item_set-0-coding_set-0-code"] = 999999999
         
@@ -403,26 +433,33 @@ class ExpenseEditTest(TestCase):
         )
         
         # Check that no transaction was added/deleted
-        self.assertEqual(2, Transaction.objects.count())
+        self.assertEqual(Transaction.objects.count(), transaction_total)
 
         # Check that no items were added/deleted
-        self.assertEqual(3, Item.objects.count())
+        self.assertEqual(Item.objects.count(), item_total)
         
         # Check that no financial code matching was added/deleted
-        self.assertEqual(6, FinancialCodeMatch.objects.count())
+        self.assertEqual(
+            FinancialCodeMatch.objects.count(),
+            financial_code_match_total
+        )
 
         # Check that the original financial code match code is unchanged
         self.assertEqual(1, FinancialCodeMatch.objects.get(id=1).financial_code.id)
 
     def test_expense_edit_add_attachment(self):
         """Confirms data & files added to database on successful submission"""
-        # Get starting numbers for database objects
-        transaction_total = Transaction.objects.count()
+        # Get number of Attachments and AttachmentMatches
+        attachment_total = Attachment.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
 
-        with open("transactions/tests/files/test.pdf", "rb") as test_file:
+        # Open reference file for upload
+        with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
+            # Setup POST data
             correct_data = self.correct_data
             correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(test_file, None, "test.pdf", "application/pdf", None, None)
 
+            # Make POST request
             self.client.login(username="user", password="abcd123456")
             response = self.client.post(
                 reverse(
@@ -434,40 +471,76 @@ class ExpenseEditTest(TestCase):
                 follow=True,
             )
 
-            # Get reference to the new attachment
-            attachment_instance = Attachment.objects.first()
+        # Get reference to the new attachment
+        attachment_instance = Attachment.objects.first()
 
-            # Check that user logged in
-            self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
         
-            # Check that number of transactions is the same
-            self.assertEqual(Transaction.objects.count(), transaction_total)
+        # Check that one attachment match was added
+        self.assertEqual(
+            AttachmentMatch.objects.count(),
+            attachment_match_total + 1
+        )
 
-            # Check that one attachment match was added
-            self.assertEqual(1, AttachmentMatch.objects.count())
+        # Check that one attachment was added
+        self.assertEqual(Attachment.objects.count(), attachment_total + 1)
 
-            # Check that one attachment was added
-            self.assertEqual(1, Attachment.objects.count())
+        # Check that the attachment match used the right transaction
+        self.assertEqual(
+            AttachmentMatch.objects.first().transaction.id,
+            Transaction.objects.first().id
+        )
 
-            # Check that the attachment match used the right transaction
-            self.assertEqual(
-                AttachmentMatch.objects.first().transaction.id,
-                Transaction.objects.first().id
-            )
+        self.assertEqual(
+            AttachmentMatch.objects.first().attachment.id,
+            attachment_instance.id
+        )
 
-            self.assertEqual(
-                AttachmentMatch.objects.first().attachment.id,
-                attachment_instance.id
-            )
+        # Get the path to the new file
+        attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
 
-            # Get the path to the new file
-            attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
+        # Check that the file exists in the new directory
+        self.assertTrue(attachment_path.exists())
 
-            # Check that the file exists in the new directory
-            self.assertTrue(attachment_path.exists())
+        # Remove the new test file
+        attachment_path.remove()
 
-            # Remove the new test file
-            attachment_path.remove()
+    def test_expense_edit_delete_attachment(self):
+        """Confirms data & files added to database on successful submission"""
+        # Get number of Attachments and AttachmentMatches
+        attachment_total = Attachment.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
+        # Setup POST data
+        delete_data = self.correct_data
+        delete_data["attachmentmatch_set-0-DELETE"] = "on"
+
+        # Make POST request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse(
+                "transaction_edit", 
+                kwargs={"t_type": "expense", "transaction_id": 1}
+            ),
+            delete_data,
+            format="multipart/form-data",
+            follow=True,
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that one attachment match was removed
+        self.assertEqual(
+            AttachmentMatch.objects.count(),
+            attachment_match_total - 1
+        )
+
+        # Check that attachment refrence was not removed
+        # (want to keep it for easier auditing purposes)
+        self.assertEqual(Attachment.objects.count(), attachment_total)
+
 class RevenueEditTest(TestCase):
     """Tests covering revenue-specific edit views"""
     # pylint: disable=no-member,protected-access,duplicate-code

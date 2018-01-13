@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
-from transactions.models import Transaction, Item, FinancialCodeMatch
+from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
 
 DELETE_FIXTURES = [
     "transactions/tests/fixtures/authentication.json",
@@ -14,9 +14,11 @@ DELETE_FIXTURES = [
     "transactions/tests/fixtures/financial_code_group.json",
     "transactions/tests/fixtures/budget_year.json",
     "transactions/tests/fixtures/financial_code.json",
+    "transactions/tests/fixtures/attachment.json",
     "transactions/tests/fixtures/transaction.json",
     "transactions/tests/fixtures/item.json",
     "transactions/tests/fixtures/financial_code_match.json",
+    "transactions/tests/fixtures/attachment_match.json",
 ]
 
 class ExpenseDeleteTest(TestCase):
@@ -139,6 +141,12 @@ class ExpenseDeleteTest(TestCase):
 
     def test_expense_delete_confirm_deletion(self):
         """Confirms deletion form works properly"""
+        # Get original model counts
+        transaction_total = Transaction.objects.count()
+        item_total = Item.objects.count()
+        financial_code_match_total = FinancialCodeMatch.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
         # Login
         self.client.login(username="user", password="abcd123456")
 
@@ -151,18 +159,23 @@ class ExpenseDeleteTest(TestCase):
         )
 
         # Checks that Transaction was deleted
-        self.assertEqual(0, Transaction.objects.filter(id=1).count())
+        self.assertEqual(Transaction.objects.filter(id=1).count(), 0)
 
         # Checks that Items were deleted
-        self.assertEqual(0, Item.objects.filter(id=1).count())
-        self.assertEqual(0, Item.objects.filter(id=2).count())
+        self.assertEqual(Item.objects.filter(id=1).count(), 0)
+        self.assertEqual(Item.objects.filter(id=2).count(), 0)
         
         # Checks that financial code matches were deleted
-        self.assertEqual(0, FinancialCodeMatch.objects.filter(item_id=1).count())
+        self.assertEqual(FinancialCodeMatch.objects.filter(item_id=1).count(), 0)
 
-        # Check that other expeneses and items not deleted
-        self.assertNotEqual(0, Transaction.objects.count())
-        self.assertNotEqual(0, Item.objects.count())
+        # Checks that the attachment match was deleted
+        self.assertEqual(AttachmentMatch.objects.filter(transaction_id=1).count(), 0)
+
+        # Check that final model counts are corrects
+        self.assertEqual(Transaction.objects.count(), transaction_total - 1)
+        self.assertEqual(Item.objects.count(), item_total - 2)
+        self.assertEqual(FinancialCodeMatch.objects.count(), financial_code_match_total - 4)
+        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)
  
 class RevenueDeleteTest(TestCase):
     """Tests covering revenue-specific delete views"""
