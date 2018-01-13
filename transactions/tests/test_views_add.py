@@ -49,6 +49,7 @@ class ExpenseAddTest(TestCase):
             "attachmentmatch_set-INITIAL_FORMS": 0,
             "attachmentmatch_set-MIN_NUM_FORMS": 0,
             "attachmentmatch_set-MAX_NUM_FORMS": 20,
+            
         }
 
         self.cwd = Path().cwd()
@@ -194,7 +195,6 @@ class ExpenseAddTest(TestCase):
         # Check that no financial code matching was added
         self.assertEqual(0, FinancialCodeMatch.objects.count())
 
-    
     def test_expense_add_attachment(self):
         """Confirms data & files added to database on successful submission"""
         with open("transactions/tests/files/test.pdf", "rb") as test_file:

@@ -1,10 +1,12 @@
 """Test cases for the transactions app views"""
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
-from transactions.models import Transaction, Item, FinancialCodeMatch
+from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
+from documents.models import Attachment
 
 EDIT_FIXTURES = [
     "transactions/tests/fixtures/authentication.json",
@@ -14,9 +16,11 @@ EDIT_FIXTURES = [
     "transactions/tests/fixtures/budget_year.json",
     "transactions/tests/fixtures/financial_code_group.json",
     "transactions/tests/fixtures/financial_code.json",
+    "transactions/tests/fixtures/attachment.json",
     "transactions/tests/fixtures/transaction.json",
     "transactions/tests/fixtures/item.json",
     "transactions/tests/fixtures/financial_code_match.json",
+    "transactions/tests/fixtures/attachment_match.json",
 ]
 
 class ExpenseEditTest(TestCase):
@@ -58,6 +62,14 @@ class ExpenseEditTest(TestCase):
             "item_set-INITIAL_FORMS": 2,
             "item_set-MIN_NUM_FORMS": 1,
             "item_set-MAX_NUM_FORMS": 1000,
+            "attachmentmatch_set-0-transaction": 1,
+            "attachmentmatch_set-0-id": 1,
+            "attachmentmatch_set-0-attachment": 1,
+            "attachmentmatch_set-0-DELETE": "",
+            "attachmentmatch_set-TOTAL_FORMS": 1,
+            "attachmentmatch_set-INITIAL_FORMS": 1,
+            "attachmentmatch_set-MIN_NUM_FORMS": 0,
+            "attachmentmatch_set-MAX_NUM_FORMS": 20,
         }
 
     def test_expense_edit_redirect_if_not_logged_in(self):
@@ -402,6 +414,60 @@ class ExpenseEditTest(TestCase):
         # Check that the original financial code match code is unchanged
         self.assertEqual(1, FinancialCodeMatch.objects.get(id=1).financial_code.id)
 
+    def test_expense_edit_add_attachment(self):
+        """Confirms data & files added to database on successful submission"""
+        # Get starting numbers for database objects
+        transaction_total = Transaction.objects.count()
+
+        with open("transactions/tests/files/test.pdf", "rb") as test_file:
+            correct_data = self.correct_data
+            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(test_file, None, "test.pdf", "application/pdf", None, None)
+
+            self.client.login(username="user", password="abcd123456")
+            response = self.client.post(
+                reverse(
+                    "transaction_edit", 
+                    kwargs={"t_type": "expense", "transaction_id": 1}
+                ),
+                correct_data,
+                format="multipart/form-data",
+                follow=True,
+            )
+
+            # Get reference to the new attachment
+            attachment_instance = Attachment.objects.first()
+
+            # Check that user logged in
+            self.assertEqual(str(response.context['user']), 'user')
+        
+            # Check that number of transactions is the same
+            self.assertEqual(Transaction.objects.count(), transaction_total)
+
+            # Check that one attachment match was added
+            self.assertEqual(1, AttachmentMatch.objects.count())
+
+            # Check that one attachment was added
+            self.assertEqual(1, Attachment.objects.count())
+
+            # Check that the attachment match used the right transaction
+            self.assertEqual(
+                AttachmentMatch.objects.first().transaction.id,
+                Transaction.objects.first().id
+            )
+
+            self.assertEqual(
+                AttachmentMatch.objects.first().attachment.id,
+                attachment_instance.id
+            )
+
+            # Get the path to the new file
+            attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
+
+            # Check that the file exists in the new directory
+            self.assertTrue(attachment_path.exists())
+
+            # Remove the new test file
+            attachment_path.remove()
 class RevenueEditTest(TestCase):
     """Tests covering revenue-specific edit views"""
     # pylint: disable=no-member,protected-access,duplicate-code
