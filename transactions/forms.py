@@ -2,7 +2,7 @@
 
 from django import forms
 from django.db.models import Q
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from multiupload.fields import MultiFileField
@@ -76,10 +76,13 @@ class CompiledForms(object):
         transaction_date = kwargs.pop("transaction_date", timezone.now())
 
         # Find all the systems encompassing the provided date
-        financial_code_systems = FinancialCodeSystem.objects.filter(
-            Q(date_start__lte=transaction_date),
-            (Q(date_end=None) | Q(date_end__gte=transaction_date))
-        )
+        try:
+            financial_code_systems = FinancialCodeSystem.objects.filter(
+                Q(date_start__lte=transaction_date),
+                (Q(date_end=None) | Q(date_end__gte=transaction_date))
+            )
+        except ValidationError:
+            financial_code_systems = []
 
         # Create a FinancialCodeAssignmentForm for each system
         financial_code_forms = []

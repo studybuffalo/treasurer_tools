@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from financial_codes.models import BudgetYear, FinancialCode
-from transactions.forms import FinancialCodeAssignmentForm
+from transactions.forms import FinancialCodeAssignmentForm, CompiledForms
 
 
 class FinancialCodeAssignmentFormTest(TestCase):
@@ -65,3 +65,69 @@ class FinancialCodeAssignmentFormTest(TestCase):
                         FinancialCode.objects.get(id=code[0]).financial_code_group.type,
                         "r"
                     )
+
+class CompiledFormsTest(TestCase):
+    """Additional tests for object not covered elsewhere"""
+
+    fixtures = [
+        "transactions/tests/fixtures/authentication.json",
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
+    ]
+
+    def setUp(self):
+        self.correct_data = {
+            "payee_payer": 1,
+            "memo": "Travel Grant award 2017",
+            "date_submitted": "2017-06-01",
+            "item_set-0-date_item": "2017-06-01",
+            "item_set-0-description": "Taxi costs",
+            "item_set-0-amount": 100.00,
+            "item_set-0-gst": 5.00,
+            "item_set-0-id": "",
+            "item_set-0-transaction": "",
+            "item_set-0-coding_set-0-financial_code_match_id": "",
+            "item_set-0-coding_set-0-budget_year": 1,
+            "item_set-0-coding_set-0-code": 1,
+            "item_set-0-coding_set-1-financial_code_match_id": "",
+            "item_set-0-coding_set-1-budget_year": 3,
+            "item_set-0-coding_set-1-code": 5,
+            "item_set-TOTAL_FORMS": 1,
+            "item_set-INITIAL_FORMS": 0,
+            "item_set-MIN_NUM_FORMS": 1,
+            "item_set-MAX_NUM_FORMS": 1000,
+            "attachmentmatch_set-TOTAL_FORMS": 0,
+            "attachmentmatch_set-INITIAL_FORMS": 0,
+            "attachmentmatch_set-MIN_NUM_FORMS": 0,
+            "attachmentmatch_set-MAX_NUM_FORMS": 20,
+        }
+
+    def test_is_valid_is_true(self):
+        """Confirms setup data returns true for is_valid"""
+        forms = CompiledForms("expense", "POST", self.correct_data)
+
+        self.assertTrue(forms.is_valid())
+
+    def test_invalid_transaction_memo(self):
+        """Confirms is_valid() returns false with invalid transaction form"""
+        edited_data = self.correct_data
+        edited_data["memo"] = ""
+        
+        forms = CompiledForms("expense", "POST", edited_data)
+
+        # Check that CompiledForm is invalid
+        self.assertFalse(forms.is_valid())
+
+    def test_invalid_transaction_date(self):
+        """Confirms is_valid() returns false with invalid transaction form"""
+        edited_data = self.correct_data
+        edited_data["date_submitted"] = ""
+        
+        forms = CompiledForms("expense", "POST", edited_data)
+
+        # Check that CompiledForm is invalid
+        self.assertFalse(forms.is_valid())

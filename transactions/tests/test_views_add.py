@@ -49,7 +49,6 @@ class ExpenseAddTest(TestCase):
             "attachmentmatch_set-INITIAL_FORMS": 0,
             "attachmentmatch_set-MIN_NUM_FORMS": 0,
             "attachmentmatch_set-MAX_NUM_FORMS": 20,
-            
         }
 
         self.cwd = Path().cwd()
