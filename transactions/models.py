@@ -105,7 +105,7 @@ class FinancialCodeMatch(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{} -{}".format(str(item), str(financial_code))
+        return "{} - {}".format(str(self.item), str(self.financial_code))
 
 class AttachmentMatch(models.Model):
     """Links a transaction to one or more attachments"""

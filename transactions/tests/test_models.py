@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from transactions.models import Transaction, Item, AttachmentMatch
+from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
 
 class TransactionModelTest(TestCase):
     """Test functions for the Transaction model"""
@@ -112,6 +112,31 @@ class ItemModelTest(TestCase):
             "{} - {} - {}".format(item.date_item, item.description, item.total)
         )
 
+class FinancialCodeMatchModelTest(TestCase):
+    """Tests for the FinancialCodeMatch model"""
+    
+    fixtures = [
+        "transactions/tests/fixtures/country.json",
+        "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/financial_code_system.json",
+        "transactions/tests/fixtures/budget_year.json",
+        "transactions/tests/fixtures/financial_code_group.json",
+        "transactions/tests/fixtures/financial_code.json",
+        "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
+        "transactions/tests/fixtures/financial_code_match.json",
+    ]
+
+    
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        financial_code_match = FinancialCodeMatch.objects.get(id=1)
+
+        self.assertEqual(
+            str(financial_code_match),
+            "2017-06-01 - Taxi costs - $105.00 - 1000 - FK Travel Grant"
+        )
+
 class AttachmentMatchModelTest(TestCase):
     """Test functions for the Attachment match model"""
     # pylint: disable=no-member,protected-access
@@ -144,4 +169,3 @@ class AttachmentMatchModelTest(TestCase):
             str(attachment_match),
             "2017-06-01 - Expense - Joshua Torrance - Travel Grant award 2017 - test.pdf"
         )
-
