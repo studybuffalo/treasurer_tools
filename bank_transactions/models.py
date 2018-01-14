@@ -57,7 +57,7 @@ class Account(models.Model):
 
     def __str__(self):
         return "{} {} ({})".format(
-            self.institution, self.account_number, self.account_number
+            self.institution, self.name, self.account_number
         )
 
 class Statement(models.Model):

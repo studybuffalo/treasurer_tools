@@ -86,9 +86,7 @@ class AccountModelTest(TestCase):
         account = Account.objects.get(id=1)
         self.assertEqual(
             str(account),
-            "{} {} ({})".format(
-                account.institution, account.account_number, account.account_number
-            )
+            "Test Institution Chequing Account (123456789)"
         )
         
 class StatementModelTest(TestCase):
