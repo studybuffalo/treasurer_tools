@@ -146,7 +146,7 @@ class AttachmentMatch(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{} - {}".format(self.transaction, self.attachment)
+        return "{} - {}".format(self.statement, self.attachment)
 
 class ReconciliationMatch(models.Model):
     """Links bank transaction to one or more financial transactions"""

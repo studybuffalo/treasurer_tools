@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from bank_transactions.models import BankTransaction, Account, Institution, Statement
+from bank_transactions.models import BankTransaction, Account, Institution, Statement, AttachmentMatch
 
 class InstitutionModelTest(TestCase):
     """Test functions for the Institution model"""
@@ -188,3 +188,35 @@ class BankTransactionModelTest(TestCase):
                 )
 
             self.assertEqual(str(bank_transaction), test_string)
+
+class AttachmentMatchModelTest(TestCase):
+    """Test functions for the AttachmentMatch model"""
+    
+    fixtures = [
+        "bank_transactions/tests/fixtures/attachment.json",
+        "bank_transactions/tests/fixtures/institution.json",
+        "bank_transactions/tests/fixtures/account.json",
+        "bank_transactions/tests/fixtures/statement.json",
+        "bank_transactions/tests/fixtures/attachment_match.json",
+    ]
+    
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "statement", "label_name": "statement"},
+            {"field_name": "attachment", "label_name": "attachment"},
+        ]
+
+        for test_item in test_list:
+            attachment_match = AttachmentMatch.objects.get(id=1)
+            field_label = attachment_match._meta.get_field(test_item["field_name"]).verbose_name
+            self.assertEqual(field_label, test_item["label_name"])
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        attachment_match = AttachmentMatch.objects.get(id=1)
+
+        self.assertEqual(
+            str(attachment_match),
+            "2017-01-01 to 2017-01-31 statement - test.pdf"
+        )

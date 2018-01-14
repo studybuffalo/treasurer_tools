@@ -3,7 +3,7 @@
     "model": "bank_transactions.attachmentmatch",
     "pk": 1,
     "fields": {
-      "transaction": 1,
+      "statement": 1,
       "attachment": 1
     }
   }
