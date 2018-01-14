@@ -3,7 +3,6 @@
 import tempfile
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.files import temp
 from django.http import QueryDict
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
@@ -41,7 +40,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
         """Tests that code select generates properly for expense transactions"""
         form = FinancialCodeAssignmentForm(transaction_type="e", system="1")
         code_select = form.fields["code"]
-        
+
         # Confirm proper number of codes were collected (2 + 1 placeholder)
         self.assertEqual(3, len(code_select.choices))
 
@@ -58,7 +57,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
         """Tests that code select generates properly for expense transactions"""
         form = FinancialCodeAssignmentForm(transaction_type="r", system="1")
         code_select = form.fields["code"]
-        
+
         # Confirm proper number of codes were collected (2 + 1 placeholder)
         self.assertEqual(3, len(code_select.choices))
 
@@ -124,7 +123,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid payee-payer"""
         edited_data = self.correct_data
         edited_data["payee_payer"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -179,7 +178,7 @@ class CompiledFormsTest(TestCase):
 
         # Check that CompiledForm is invalid
         self.assertFalse(forms.is_valid())
-        
+
     def test_invalid_item_gst(self):
         """Confirms is_valid() returns false with invalid item date"""
         edited_data = self.correct_data
@@ -221,12 +220,12 @@ class CompiledFormsTest(TestCase):
 
             # Create the compiled forms
             forms = CompiledForms(
-                "expense", 
-                "POST", 
+                "expense",
+                "POST",
                 data,
                 files
             )
-            
+
             # Check that CompiledForm is valid
             self.assertTrue(forms.is_valid())
 
@@ -242,13 +241,13 @@ class CompiledFormsTest(TestCase):
                     InMemoryUploadedFile(test_file, None, "test.txt", "text/plain", (1024 * 1024 * 10) + 1, None),
                 ]
             })
-            
+
             # Create the compiled forms
             forms = CompiledForms("expense", "POST", self.correct_data, files)
-            
+
             # Check that CompiledForm is invalid
             self.assertFalse(forms.is_valid())
-        
+            
     def test_invalid_old_attachment(self):
         """Confirms is_valid() returns false with invalid old attachment"""
         # Control test
@@ -260,14 +259,14 @@ class CompiledFormsTest(TestCase):
 
         # Create the compiled forms
         valid_forms = CompiledForms(
-            "expense", 
-            "POST", 
+            "expense",
+            "POST",
             edited_data,
         )
-            
+
         # Check that CompiledForm is valid
         self.assertTrue(valid_forms.is_valid())
-    
+        
         # Test that invalid attachment returns false
         edited_data["attachmentmatch_set-0-attachment"] = ""
 

@@ -28,7 +28,7 @@ class ExpenseEditTest(TestCase):
     """Tests for the edit expense view"""
     # pylint: disable=no-member,protected-access,duplicate-code
     fixtures = EDIT_FIXTURES
-       
+    
     def setUp(self):
         # Add standard test data
         self.correct_data = {
@@ -169,7 +169,7 @@ class ExpenseEditTest(TestCase):
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check that redirection was successful
         self.assertRedirects(response, reverse("transactions_dashboard"))
 
@@ -456,7 +456,9 @@ class ExpenseEditTest(TestCase):
         with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
             # Setup POST data
             correct_data = self.correct_data
-            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(test_file, None, "test.pdf", "application/pdf", None, None)
+            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(
+                test_file, None, "test.pdf", "application/pdf", None, None
+            )
 
             # Make POST request
             self.client.login(username="user", password="abcd123456")

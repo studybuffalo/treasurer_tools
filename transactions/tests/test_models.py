@@ -6,8 +6,7 @@ from transactions.models import Transaction, Item, FinancialCodeMatch, Attachmen
 
 class TransactionModelTest(TestCase):
     """Test functions for the Transaction model"""
-    # pylint: disable=no-member,protected-access
-    
+    # pylint: disable=no-member,protected-access    
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
@@ -60,7 +59,6 @@ class TransactionModelTest(TestCase):
 class ItemModelTest(TestCase):
     """Test functions for the Item model"""
     # pylint: disable=no-member,protected-access
-    
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
@@ -113,8 +111,7 @@ class ItemModelTest(TestCase):
         )
 
 class FinancialCodeMatchModelTest(TestCase):
-    """Tests for the FinancialCodeMatch model"""
-    
+    """Tests for the FinancialCodeMatch model"""    
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
@@ -127,7 +124,6 @@ class FinancialCodeMatchModelTest(TestCase):
         "transactions/tests/fixtures/financial_code_match.json",
     ]
 
-    
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
         # pylint: disable=no-member
@@ -141,7 +137,6 @@ class FinancialCodeMatchModelTest(TestCase):
 class AttachmentMatchModelTest(TestCase):
     """Test functions for the Attachment match model"""
     # pylint: disable=no-member,protected-access
-    
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",

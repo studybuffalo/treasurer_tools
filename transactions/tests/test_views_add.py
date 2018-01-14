@@ -22,7 +22,7 @@ class ExpenseAddTest(TestCase):
         "transactions/tests/fixtures/financial_code_group.json",
         "transactions/tests/fixtures/financial_code.json",
     ]
-    
+
     def setUp(self):
         self.correct_data = {
             "payee_payer": 1,
@@ -66,7 +66,7 @@ class ExpenseAddTest(TestCase):
         """Checks that the add expense page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/transactions/expense/add/")
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
@@ -79,7 +79,7 @@ class ExpenseAddTest(TestCase):
         response = self.client.get(
             reverse("transaction_add", kwargs={"t_type": "expense"})
         )
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
@@ -92,7 +92,7 @@ class ExpenseAddTest(TestCase):
         response = self.client.get(
             reverse("transaction_add", kwargs={"t_type": "expense"})
         )
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
         
@@ -214,7 +214,7 @@ class ExpenseAddTest(TestCase):
 
             # Check that user logged in
             self.assertEqual(str(response.context['user']), 'user')
-        
+            
             # Check that one transaction was added
             self.assertEqual(1, Transaction.objects.count())
 
@@ -245,8 +245,7 @@ class ExpenseAddTest(TestCase):
             attachment_path.remove()
 
 class RevenueAddTest(TestCase):
-    """Tests covering revenue-specific add views"""
-    
+    """Tests covering revenue-specific add views"""    
     fixtures = [
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",

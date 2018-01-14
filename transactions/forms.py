@@ -40,7 +40,7 @@ class CompiledForms(object):
         def __init__(self, **kwargs):
             self.system = kwargs.pop("financial_code_system", None)
             self.form = kwargs.pop("financial_code_form", None)
-    
+
     def __set_financial_code_data(self, item_id, system_id, prefix):
         """Adds financial code data to the POST data to populate form"""
         if self.request_type == "GET":
@@ -91,9 +91,9 @@ class CompiledForms(object):
         for form_id, system in enumerate(financial_code_systems):
             # Setup the proper prefix for the form fields
             prefix = "item_set-{}-coding_set-{}".format(item_form_id, form_id)
-            
+
             data = self.__set_financial_code_data(item_id, system.id, prefix)
-            
+
             financial_code_form = FinancialCodeAssignmentForm(
                 data,
                 prefix=prefix,
@@ -116,7 +116,7 @@ class CompiledForms(object):
 
         # Get any transaction ID (if provided)
         transaction_id = kwargs.pop("transaction_id", None)
-        
+
         # If transaction ID present, retrieve database values
         if transaction_id:
             # Get the transaction object for this ID
@@ -156,13 +156,13 @@ class CompiledForms(object):
 
             # Create the item formset
             compiled_forms.item_formset = ItemFormSet(self.data)
-            
+
             # Add attachment form
             compiled_forms.new_attachment_form = NewAttachmentForm(
                 self.data,
                 self.files,
             )
-            
+
             # Add attachment formset
             compiled_forms.old_attachment_formset = AttachmentFormSet(self.data)
 
@@ -205,7 +205,7 @@ class CompiledForms(object):
 
             # Add attachment form
             compiled_forms.new_attachment_form = NewAttachmentForm()
-            
+
             # Add attachment formset
             compiled_forms.old_attachment_formset = AttachmentFormSet(
                 instance=transaction_instance
@@ -226,7 +226,7 @@ class CompiledForms(object):
 
             # Add attachment form
             compiled_forms.new_attachment_form = NewAttachmentForm()
-            
+
             # Add attachment formset
             compiled_forms.old_attachment_formset = AttachmentFormSet()
 
@@ -241,7 +241,7 @@ class CompiledForms(object):
                     item_form_id, item_instance_id,
                 )
             ))
-            
+
         return compiled_forms
 
     def assemble_forms(self, kwargs):
@@ -253,7 +253,7 @@ class CompiledForms(object):
             compiled_forms = self.__create_get_forms(kwargs)
 
         return compiled_forms
-         
+
     def assemble_empty_financial_code_form(self):
         """Assembles empty set of financial code forms (like .empty_form())"""
         # Set the item date as today
@@ -272,7 +272,7 @@ class CompiledForms(object):
         for system in financial_code_systems:
             # Setup the proper prefix for the form fields
             prefix = "item_set-__prefix__-coding_set-{}".format(form_id)
-            
+
             financial_code_forms.append({
                 "name": str(system),
                 "form": FinancialCodeAssignmentForm(
@@ -290,7 +290,7 @@ class CompiledForms(object):
     def is_valid(self):
         """Checks if all forms are valid"""
         valid = True
-        
+
         # Check if transaction form is valid
         if self.forms.transaction_form.is_valid() is False:
             valid = False
@@ -316,7 +316,7 @@ class CompiledForms(object):
         # Check that there is at least one item formset to be submitted
         if item_formset_num <= 0:
             valid = False
-                
+
         # Check if attachment form is valid
         if self.forms.new_attachment_form.is_valid() is False:
             valid = False
@@ -326,12 +326,12 @@ class CompiledForms(object):
             valid = False
 
         return valid
-            
+
     def save(self):
         """Saves all item formsets and financial code matches"""
         # Save the transaction form
         saved_transaction = self.forms.transaction_form.save()
-        
+
         # Get the new transaction object
         transaction_id = saved_transaction.id
         transaction_instance = Transaction.objects.get(id=transaction_id)
@@ -372,7 +372,7 @@ class CompiledForms(object):
                         id=financial_code_form.form.cleaned_data["code"]
                     )
                     match.save()
-        
+
         # Save attachment form
         for file in self.forms.new_attachment_form.cleaned_data["attachment_files"]:
             # Save the file to an attachment instance
@@ -451,7 +451,7 @@ class FinancialCodeAssignmentForm(forms.Form):
         label="Financial code",
         widget=FinancialCodeWithYearID,
     )
-    
+
     def __init__(self, *args, **kwargs):
         # pylint: disable=no-member, invalid-name
         # Get the financial code system
@@ -468,7 +468,7 @@ class FinancialCodeAssignmentForm(forms.Form):
 
         for year in budget_years:
             budget_year_choices.append((year.id, str(year)))
-            
+
         # Create a choice list with the budget_years
         financial_code_choices = [["", "---------"]]
 
@@ -485,9 +485,9 @@ class FinancialCodeAssignmentForm(forms.Form):
                     code_list.append((code.id, str(code)))
 
                 financial_code_choices.append([group.title, code_list])
-            
+
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
-        
+
         # Specify the choices
         self.fields["budget_year"].choices = budget_year_choices
         self.fields["code"].choices = financial_code_choices
