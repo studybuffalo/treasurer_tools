@@ -14,7 +14,7 @@
         <h2>Bank Statements</h2>
         <ul>
             {% for statement in statements %}
-                <li class="expense">
+                <li>
                     {{ statement }} - 
                     <a href="{% url 'statement_edit' statement.id %}">Edit</a> -
                     <a href="{% url 'statement_delete' statement.id %}">Delete</a>
@@ -26,6 +26,15 @@
                                 ${{ transaction.amount_credit }}
                             </li>
                         {% endfor %}
+                        
+                        <li>
+                            Attachments
+                            <ul>
+                                {% for attachment_match in statement.am_bank_transaction.all %}
+                                    <li><a href="{{ attachment_match.attachment.location.url }}">{{ attachment_match.attachment.location }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             {% endfor %}

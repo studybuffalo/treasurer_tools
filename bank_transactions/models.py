@@ -105,12 +105,14 @@ class BankTransaction(models.Model):
     )
     amount_debit = models.DecimalField(
         decimal_places=2,
+        default=0,
         help_text="The debit (withdrawal) amount of the transaction",
         max_digits=12,
         verbose_name="debit amount",
     )
     amount_credit = models.DecimalField(
         decimal_places=2,
+        default=0,
         help_text="The credit (deposit) amount of the transaction",
         max_digits=12,
         verbose_name="credit amount",
@@ -130,13 +132,13 @@ class BankTransaction(models.Model):
         return return_str
 
 class AttachmentMatch(models.Model):
-    """Links a transaction to one or more attachments"""
-    transaction = models.OneToOneField(
-        BankTransaction,
+    """Links bank statement to one or more attachments"""
+    statement = models.ForeignKey(
+        Statement,
         on_delete=models.CASCADE,
         related_name="am_bank_transaction",
     )
-    attachment = models.OneToOneField(
+    attachment = models.ForeignKey(
         Attachment,
         on_delete=models.CASCADE,
         related_name="am_attachment",
