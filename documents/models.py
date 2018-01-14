@@ -21,4 +21,4 @@ class Attachment(models.Model):
         else:
             return_string = file_name
 
-        return file_name
+        return return_string

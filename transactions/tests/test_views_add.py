@@ -224,15 +224,15 @@ class ExpenseAddTest(TestCase):
             # Check that one attachment was added
             self.assertEqual(1, Attachment.objects.count())
 
-            # Check that the attachment match used the right transaction
-            self.assertEqual(
-                AttachmentMatch.objects.first().transaction.id,
-                Transaction.objects.first().id
-            )
-
+            # Check that attachment match used right transaction & attachment
             self.assertEqual(
                 AttachmentMatch.objects.first().attachment.id,
                 attachment_instance.id
+            )
+
+            self.assertEqual(
+                AttachmentMatch.objects.first().transaction.id,
+                Transaction.objects.first().id
             )
 
             # Get the path to the new file
@@ -245,7 +245,7 @@ class ExpenseAddTest(TestCase):
             attachment_path.remove()
 
 class RevenueAddTest(TestCase):
-    """Tests covering revenue-specific add views"""    
+    """Tests covering revenue-specific add views"""
     fixtures = [
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",

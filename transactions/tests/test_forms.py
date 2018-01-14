@@ -77,11 +77,11 @@ class CompiledFormsTest(TestCase):
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
+        "transactions/tests/fixtures/attachment.json",
         "transactions/tests/fixtures/financial_code_system.json",
         "transactions/tests/fixtures/budget_year.json",
         "transactions/tests/fixtures/financial_code_group.json",
         "transactions/tests/fixtures/financial_code.json",
-        "transactions/tests/fixtures/attachment.json",
         "transactions/tests/fixtures/transaction.json",
         "transactions/tests/fixtures/attachment_match.json",
     ]

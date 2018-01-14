@@ -6,7 +6,7 @@ from transactions.models import Transaction, Item, FinancialCodeMatch, Attachmen
 
 class TransactionModelTest(TestCase):
     """Test functions for the Transaction model"""
-    # pylint: disable=no-member,protected-access    
+    # pylint: disable=no-member,protected-access
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
@@ -111,7 +111,7 @@ class ItemModelTest(TestCase):
         )
 
 class FinancialCodeMatchModelTest(TestCase):
-    """Tests for the FinancialCodeMatch model"""    
+    """Tests for the FinancialCodeMatch model"""
     fixtures = [
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
