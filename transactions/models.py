@@ -69,11 +69,13 @@ class Item(models.Model):
     )
     amount = models.DecimalField(
         decimal_places=2,
+        default=0,
         help_text="The pre-tax dollar value",
         max_digits=12,
     )
     gst = models.DecimalField(
         decimal_places=2,
+        default=0,
         help_text="The tax (GST/HST) dollar value",
         max_digits=12,
     )

@@ -1,4 +1,5 @@
 """Test cases for the transactions app views"""
+from unipath import Path
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
@@ -7,8 +8,6 @@ from django.urls.exceptions import NoReverseMatch
 
 from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
 from documents.models import Attachment
-
-from unipath import Path
 
 EDIT_FIXTURES = [
     "transactions/tests/fixtures/authentication.json",

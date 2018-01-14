@@ -1,4 +1,5 @@
 """Test cases for the transactions app views"""
+from unipath import Path
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
@@ -7,8 +8,6 @@ from django.urls.exceptions import NoReverseMatch
 
 from transactions.models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
 from documents.models import Attachment
-
-from unipath import Path
 
 class ExpenseAddTest(TestCase):
     """Tests for the add expense view"""
@@ -198,7 +197,9 @@ class ExpenseAddTest(TestCase):
         """Confirms data & files added to database on successful submission"""
         with open("transactions/tests/files/test.pdf", "rb") as test_file:
             correct_data = self.correct_data
-            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(test_file, None, "test.pdf", "application/pdf", None, None)
+            correct_data["newattachment-attachment_files"] = InMemoryUploadedFile(
+                test_file, None, "test.pdf", "application/pdf", None, None
+            )
 
             self.client.login(username="user", password="abcd123456")
             response = self.client.post(

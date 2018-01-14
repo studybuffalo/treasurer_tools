@@ -130,6 +130,7 @@ class FinancialCodeMatchModelTest(TestCase):
     
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
+        # pylint: disable=no-member
         financial_code_match = FinancialCodeMatch.objects.get(id=1)
 
         self.assertEqual(

@@ -9,9 +9,10 @@ from multiupload.fields import MultiFileField
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
 from financial_codes.widgets import FinancialCodeWithYearID
+from documents.models import Attachment
 
 from .models import Transaction, Item, FinancialCodeMatch, AttachmentMatch
-from documents.models import Attachment
+
 
 class CompiledForms(object):
     """Forms and functions for the add/edit transaction/item/code views"""
@@ -161,7 +162,7 @@ class CompiledForms(object):
                 self.data,
                 self.files,
             )
-
+            
             # Add attachment formset
             compiled_forms.old_attachment_formset = AttachmentFormSet(self.data)
 
@@ -252,7 +253,7 @@ class CompiledForms(object):
             compiled_forms = self.__create_get_forms(kwargs)
 
         return compiled_forms
-        
+         
     def assemble_empty_financial_code_form(self):
         """Assembles empty set of financial code forms (like .empty_form())"""
         # Set the item date as today
@@ -398,7 +399,7 @@ class CompiledForms(object):
         self.files = files
         self.forms = self.assemble_forms(kwargs)
         self.empty_financial_code_form = self.assemble_empty_financial_code_form()
-       
+
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -497,6 +498,7 @@ class NewAttachmentForm(forms.Form):
         help_text="Documentation/files for this transaction",
         label="Transaction attachments",
         max_file_size=1024*1024*10,
+        max_num=20,
         required=False,
     )
 
