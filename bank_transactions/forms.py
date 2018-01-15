@@ -34,12 +34,12 @@ class StatementForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data
-        
+
         # Check that dates are available
         try:
             date_start = form_data["date_start"]
             date_end = form_data["date_end"]
-        except:
+        except KeyError:
             date_start = None
             date_end = None
         
@@ -64,7 +64,7 @@ class BankTransactionForm(forms.ModelForm):
             "amount_debit",
             "amount_credit",
         ]
-        labels={
+        labels = {
             "date_transaction": "Transaction date",
             "description_bank": "Bank description",
             "description_user": "Custom description",
@@ -74,16 +74,16 @@ class BankTransactionForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data
-
+        amount_debit = form_data["amount_debit"]
         # Check that the amounts are available
         try:
-            amount_debit =  form_data["amount_debit"]
-        except:
+            amount_debit = form_data["amount_debit"]
+        except KeyError:
             amount_debit = 0
 
         try:
             amount_credit = form_data["amount_credit"]
-        except:
+        except KeyError:
             amount_credit = 0
 
         # If amounts are available, ensure one is 0
