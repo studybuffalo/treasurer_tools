@@ -47,7 +47,7 @@ class StatementForm(forms.ModelForm):
         if date_start and date_end:
             if date_start > date_end:
                 raise ValidationError({
-                    "date_end": "The end date must occur after the start date"
+                    "date_end": "The end date must occur after the start date."
                 })
 
         return form_data
@@ -89,7 +89,7 @@ class BankTransactionForm(forms.ModelForm):
         # If amounts are available, ensure one is 0
         if amount_debit != 0 and amount_credit != 0:
             raise ValidationError({
-                "amount_credit": "A single transaction cannot have both debit and credit amounts entered"
+                "amount_credit": "A single transaction cannot have both debit and credit amounts entered."
             })
 
         return form_data
