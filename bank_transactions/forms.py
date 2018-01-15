@@ -74,7 +74,7 @@ class BankTransactionForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data
-        amount_debit = form_data["amount_debit"]
+
         # Check that the amounts are available
         try:
             amount_debit = form_data["amount_debit"]
