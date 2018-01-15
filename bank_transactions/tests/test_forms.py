@@ -98,7 +98,7 @@ class BankTransactionFormTest(TestCase):
             "Please enter a debit or credit value."
         )
 
-    def test_custom_amount_validation_handles_no_value(self):
+    def test_custom_amount_validation_handles_invalid_value(self):
         """Tests that custom validation handles invalid debit/credit values"""
         # Generate the form
         bank_transaction_form = BankTransactionForm({
