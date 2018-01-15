@@ -17,7 +17,7 @@
     "fields": {
       "statement": 1,
       "date_transaction": "2017-01-02",
-      "description_bank": "",
+      "description_bank": "CHQ#0002",
       "description_user": "Cheque #0002",
       "amount_debit": 200.00,
       "amount_credit": 0.00
@@ -31,8 +31,8 @@
       "date_transaction": "2017-01-03",
       "description_bank": "DEP3333",
       "description_user": "",
-      "amount_debit": 30.00,
-      "amount_credit": 0.00
+      "amount_debit": 0.00,
+      "amount_credit": 30.00
     }
   },
   {
@@ -43,8 +43,8 @@
       "date_transaction": "2017-01-04",
       "description_bank": "DEP4444",
       "description_user": "Deposit from account #4444",
-      "amount_debit": 40.00,
-      "amount_credit": 0.00
+      "amount_debit": 0.00,
+      "amount_credit": 40.00
     }
   }
 ]

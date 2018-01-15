@@ -1,9 +1,12 @@
 """Test cases for the bank_transactions app views"""
+from unipath import Path
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from bank_transactions.models import Statement, BankTransaction
+from bank_transactions.models import Statement, BankTransaction, AttachmentMatch
+from documents.models import Attachment
 
 class BankDashboardTest(TestCase):
     """Tests for the bank dashboard view"""
@@ -86,7 +89,9 @@ class StatementAddTest(TestCase):
             "banktransaction_set-MIN_NUM_FORMS": 0,
             "banktransaction_set-MAX_NUM_FORMS": 1000,
         }
-            
+        self.cwd = Path().cwd()
+        self.test_file_dir = self.cwd.child("bank_transactions", "tests", "files")
+        self.media_file_dir = self.cwd.child("media")
 
     def test_statement_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -168,6 +173,61 @@ class StatementAddTest(TestCase):
         # Check that one statement was added
         self.assertEqual(1, BankTransaction.objects.count())
     
+    def test_statement_add_attachment(self):
+        """Confirms data & files successfully added"""
+        # Get current counts of DB entries
+        statement_total = Statement.objects.count()
+        attachment_total = Attachment.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
+        with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
+            correct_data = self.correct_statement_data
+            correct_data["newattachment-files"] = InMemoryUploadedFile(
+                test_file, None, "test.pdf", "application/pdf", None, None
+            )
+
+            self.client.login(username="user", password="abcd123456")
+            response = self.client.post(
+                reverse("statement_add"),
+                correct_data,
+                format="multipart/form-data",
+                follow=True,
+            )
+            
+            # Get reference to the new attachment
+            attachment_instance = Attachment.objects.first()
+
+            # Get the path to the new file
+            attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+            
+        # Check that one statement was added
+        self.assertEqual(Statement.objects.count(), statement_total + 1)
+
+        # Check that one attachment match was added
+        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total + 1)
+
+        # Check that one attachment was added
+        self.assertEqual(Attachment.objects.count(), attachment_total + 1)
+
+        # Check that attachment match used right statement & attachment
+        self.assertEqual(
+            AttachmentMatch.objects.first().attachment.id,
+            attachment_instance.id
+        )
+
+        self.assertEqual(
+            AttachmentMatch.objects.first().statement.id,
+            Statement.objects.first().id
+        )
+
+        # Check that the file exists in the new directory
+        self.assertTrue(attachment_path.exists())
+
+        # Remove the new test file
+        attachment_path.remove()
 
 class StatementEditTest(TestCase):
     """Tests for the edit statement view"""
@@ -175,10 +235,12 @@ class StatementEditTest(TestCase):
 
     fixtures = [
         "bank_transactions/tests/fixtures/authentication.json",
+        "bank_transactions/tests/fixtures/attachment.json",
         "bank_transactions/tests/fixtures/institution.json",
         "bank_transactions/tests/fixtures/account.json",
         "bank_transactions/tests/fixtures/statement.json",
         "bank_transactions/tests/fixtures/bank_transaction.json",
+        "bank_transactions/tests/fixtures/attachment_match.json",
     ]
        
     def setUp(self):
@@ -187,17 +249,51 @@ class StatementEditTest(TestCase):
             "account": 1,
             "date_start": "2017-01-01",
             "date_end": "2017-01-31",
-            "banktransaction_set-0-id": 1,
+            "banktransaction_set-TOTAL_FORMS": 4,
+            "banktransaction_set-INITIAL_FORMS": 4,
+            "banktransaction_set-MIN_NUM_FORMS": 0,
+            "banktransaction_set-MAX_NUM_FORMS": 1000,
             "banktransaction_set-0-date_transaction": "2017-01-01",
             "banktransaction_set-0-description_bank": "CHQ#0001",
             "banktransaction_set-0-description_user": "Cheque #0001",
             "banktransaction_set-0-amount_debit": 100.00,
             "banktransaction_set-0-amount_credit": 0.00,
-            "banktransaction_set-TOTAL_FORMS": 1,
-            "banktransaction_set-INITIAL_FORMS": 0,
-            "banktransaction_set-MIN_NUM_FORMS": 0,
-            "banktransaction_set-MAX_NUM_FORMS": 1000,
+            "banktransaction_set-0-id": 1,
+            "banktransaction_set-0-statement": 1,
+            "banktransaction_set-1-date_transaction": "2017-01-02",
+            "banktransaction_set-1-description_bank": "CHQ#0002",
+            "banktransaction_set-1-description_user": "Cheque #0002",
+            "banktransaction_set-1-amount_debit": 200.00,
+            "banktransaction_set-1-amount_credit": 0.00,
+            "banktransaction_set-1-id": 2,
+            "banktransaction_set-1-statement": 1,
+            "banktransaction_set-2-date_transaction": "2017-01-03",
+            "banktransaction_set-2-description_bank": "DEP3333",
+            "banktransaction_set-2-description_user": "",
+            "banktransaction_set-2-amount_debit": 0.00,
+            "banktransaction_set-2-amount_credit": 30.00,
+            "banktransaction_set-2-id": 3,
+            "banktransaction_set-2-statement": 1,
+            "banktransaction_set-3-date_transaction": "2017-01-04",
+            "banktransaction_set-3-description_bank": "DEP4444",
+            "banktransaction_set-3-description_user": "Deposit from account #4444",
+            "banktransaction_set-3-amount_debit": 0.00,
+            "banktransaction_set-3-amount_credit": 40.00,
+            "banktransaction_set-3-id": 4,
+            "banktransaction_set-3-statement": 1,
+            "am_bank_transaction-TOTAL_FORMS": 1,
+            "am_bank_transaction-INITIAL_FORMS": 1,
+            "am_bank_transaction-MIN_NUM_FORMS": 0,
+            "am_bank_transaction-MAX_NUM_FORMS": 10,
+            "am_bank_transaction-0-DELETE": "",
+            "am_bank_transaction-0-attachment": 1,
+            "am_bank_transaction-0-id": 1,
+            "am_bank_transaction-0-statement": 1,
+            "newattachment-files": "",
         }
+        self.cwd = Path().cwd()
+        self.test_file_dir = self.cwd.child("bank_transactions", "tests", "files")
+        self.media_file_dir = self.cwd.child("media")
 
     def test_statement_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -320,6 +416,10 @@ class StatementEditTest(TestCase):
 
     def test_statement_edit_post_confirm_bank_transaction_edit(self):
         """Confirms that transaction can be edited in edit statement form"""
+        # Get current count of banktransactions
+        bank_transaction_total = BankTransaction.objects.count()
+
+        # Setup modified data
         edited_data = self.correct_data
         edited_data["banktransaction_set-0-description_bank"] = "4"
         edited_data["banktransaction_set-0-description_user"] = "5"
@@ -330,8 +430,8 @@ class StatementEditTest(TestCase):
             edited_data
         )
 
-        # Confirm still only 4 entrries
-        self.assertEqual(4, BankTransaction.objects.count())
+        # Confirm no bank transactions were added
+        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total)
 
         # Confirm banktransaction number has been updated properly
         self.assertEqual(
@@ -359,20 +459,25 @@ class StatementEditTest(TestCase):
 
         # Check for the expected ValidationError
         self.assertEqual(
-            response.context["formsets"][0].errors["id"][0],
+            response.context["bank_transaction_formsets"][0].errors["id"][0],
             "Select a valid choice. That choice is not one of the available choices."
         )
         
     def test_statement_edit_post_add_bank_transaction(self):
         """Checks that a new banktransaction is added via the edit statement form"""
+        # Get current number of bank transactions
+        bank_transaction_total = BankTransaction.objects.count()
+
+        # Setup the new data
         added_data = self.correct_data
-        added_data["banktransaction_set-1-id"] = ""
-        added_data["banktransaction_set-1-date_transaction"] = "2017-01-05"
-        added_data["banktransaction_set-1-description_bank"] = "DEP"
-        added_data["banktransaction_set-1-description_user"] = "Deposit"
-        added_data["banktransaction_set-1-amount_debit"] = 0.00
-        added_data["banktransaction_set-1-amount_credit"] = 200.00
-        added_data["banktransaction_set-TOTAL_FORMS"] = 2
+        added_data["banktransaction_set-4-id"] = ""
+        added_data["banktransaction_set-4-statement"] = 1
+        added_data["banktransaction_set-4-date_transaction"] = "2017-01-05"
+        added_data["banktransaction_set-4-description_bank"] = "DEP"
+        added_data["banktransaction_set-4-description_user"] = "Deposit"
+        added_data["banktransaction_set-4-amount_debit"] = 0.00
+        added_data["banktransaction_set-4-amount_credit"] = 200.00
+        added_data["banktransaction_set-TOTAL_FORMS"] = 5
 
         self.client.login(username="user", password="abcd123456")
         self.client.post(
@@ -381,10 +486,7 @@ class StatementEditTest(TestCase):
         )
 
         # Check that the number of banktransactions has increased
-        self.assertEqual(
-            BankTransaction.objects.count(),
-            5
-        )
+        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total + 1)
 
         # Check that original banktransactions still exist
         self.assertEqual(
@@ -436,16 +538,132 @@ class StatementEditTest(TestCase):
             BankTransaction.objects.filter(id=1).count(),
             0
         )
+
+    def test_statement_edit_fail_on_changed_statement_id(self):
+        """Confirms fail when statement ID changed for transaction"""
         
+        # Setup modified data
+        edited_data = self.correct_data
+        edited_data["banktransaction_set-0-statement"] = "2"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("statement_edit", kwargs={"statement_id": 1}),
+            edited_data
+        )
+        
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check for the expected error
+        self.assertEqual(
+            response.context["bank_transaction_formsets"][0].errors["statement"][0],
+            "The inline foreign key did not match the parent instance primary key."
+        )
+        
+    def test_statement_edit_add_attachment(self):
+        """Confirms data & files added to database on successful submission"""
+        # Get number of Attachments and AttachmentMatches
+        attachment_total = Attachment.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
+        # Open reference file for upload
+        with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
+            # Setup POST data
+            correct_data = self.correct_data
+            correct_data["newattachment-files"] = InMemoryUploadedFile(
+                test_file, None, "test.pdf", "application/pdf", None, None
+            )
+
+            # Make POST request
+            self.client.login(username="user", password="abcd123456")
+            response = self.client.post(
+                reverse("statement_edit", kwargs={"statement_id": 1}),
+                correct_data,
+                format="multipart/form-data",
+                follow=True,
+            )
+
+        # Get reference to the new attachment
+        attachment_instance = Attachment.objects.last()
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that one attachment match was added
+        self.assertEqual(
+            AttachmentMatch.objects.count(),
+            attachment_match_total + 1
+        )
+
+        # Check that one attachment was added
+        self.assertEqual(Attachment.objects.count(), attachment_total + 1)
+
+        # Check that the attachment match used the right transaction
+        self.assertEqual(
+            AttachmentMatch.objects.last().statement.id,
+            Statement.objects.last().id
+        )
+
+        self.assertEqual(
+            AttachmentMatch.objects.last().attachment.id,
+            attachment_instance.id
+        )
+
+        # Get the path to the new file
+        attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
+
+        # Check that the file exists in the new directory
+        self.assertTrue(attachment_path.exists())
+
+        # Remove the new test file
+        attachment_path.remove()
+
+    def test_statement_edit_delete_attachment(self):
+        """Confirms attachment match successfully deleted"""
+        # Get number of Attachments and AttachmentMatches
+        attachment_total = Attachment.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
+        # Setup POST data
+        delete_data = self.correct_data
+        delete_data["am_bank_transaction-0-DELETE"] = "on"
+
+        # Make POST request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("statement_edit", kwargs={"statement_id": 1}),
+            delete_data,
+            format="multipart/form-data",
+            follow=True,
+        )
+
+        # Checks that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+        
+        # Check that attachment refrence was not removed
+        # (want to keep it for easier auditing purposes)
+        self.assertEqual(Attachment.objects.count(), attachment_total)
+
+        # Check that one attachment match was removed
+        self.assertEqual(
+            AttachmentMatch.objects.count(),
+            attachment_match_total - 1
+        )
+
 class StatementDeleteTest(TestCase):
     """Tests for the delete statement view"""
     # pylint: disable=no-member,protected-access
     
     fixtures = [
         "bank_transactions/tests/fixtures/authentication.json",
+        "bank_transactions/tests/fixtures/attachment.json",
         "bank_transactions/tests/fixtures/institution.json",
         "bank_transactions/tests/fixtures/account.json",
         "bank_transactions/tests/fixtures/statement.json",
+        "bank_transactions/tests/fixtures/bank_transaction.json",
+        "bank_transactions/tests/fixtures/attachment_match.json",
+
     ]
 
     def test_statement_delete_redirect_if_not_logged_in(self):
@@ -544,6 +762,11 @@ class StatementDeleteTest(TestCase):
 
     def test_statement_delete_confirm_deletion(self):
         """Confirms deletion form works properly"""
+        # Get original database counts
+        statement_total = Statement.objects.count()
+        bank_transaction_total = BankTransaction.objects.count()
+        attachment_match_total = AttachmentMatch.objects.count()
+
         # Login
         self.client.login(username="user", password="abcd123456")
 
@@ -553,7 +776,11 @@ class StatementDeleteTest(TestCase):
         )
 
         # Checks that statement was deleted
-        self.assertEqual(0, Statement.objects.filter(id=1).count())
+        self.assertEqual(Statement.objects.filter(id=1).count(), 0)
+        self.assertEqual(Statement.objects.count(), statement_total - 1)
 
         # Checks that BankTransactions were deleted
-        self.assertEqual(0, BankTransaction.objects.count())
+        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total - 4)
+
+        # Checks that the attachment match was deleted
+        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)

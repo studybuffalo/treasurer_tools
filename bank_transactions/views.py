@@ -8,7 +8,7 @@ from django.urls import reverse
 from documents.models import Attachment
 
 from .forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
-from .models import Statement, BankTransaction, AttachmentMatch
+from .models import Statement, AttachmentMatch
 
 @login_required
 def dashboard(request):
@@ -27,6 +27,7 @@ def dashboard(request):
 @login_required
 def statement_add(request):
     """Generates and processes form to add new bank statement"""
+    # pylint: disable=no-member
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Create statement form
@@ -64,7 +65,7 @@ def statement_add(request):
                 )
 
                 # Create the attachment match
-                attachment_match = AttachmentMatch.objects.create(
+                AttachmentMatch.objects.create(
                     statement=saved_statement,
                     attachment=saved_attachment,
                 )
@@ -93,7 +94,7 @@ def statement_add(request):
 @login_required
 def statement_edit(request, statement_id):
     """Generate and processes form to edit a financial system"""
-
+    # pylint: disable=no-member
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Get this statement instance
@@ -119,8 +120,8 @@ def statement_edit(request, statement_id):
 
         # Check if forms are valid
         if (
-            statement_form.is_valid() and bank_transaction_formsets.is_valid() 
-            and attachment_match_formsets.is_valid() and new_attachment_form.is_valid()
+                statement_form.is_valid() and bank_transaction_formsets.is_valid()
+                and attachment_match_formsets.is_valid() and new_attachment_form.is_valid()
         ):
             # Save new statement instance
             saved_statement = statement_form.save()
@@ -141,7 +142,7 @@ def statement_edit(request, statement_id):
 
                         # Save the transaction with new reference
                         saved_transaction.save()
-
+            
             # Delete any old attachments
             for attachment_match_formset in attachment_match_formsets:
                 if attachment_match_formset.cleaned_data["DELETE"]:
@@ -155,7 +156,7 @@ def statement_edit(request, statement_id):
                 )
 
                 # Create the attachment match
-                attachment_match = AttachmentMatch.objects.create(
+                AttachmentMatch.objects.create(
                     statement=saved_statement,
                     attachment=saved_attachment,
                 )
@@ -163,7 +164,6 @@ def statement_edit(request, statement_id):
             messages.success(request, "Statement successfully updated")
 
             return HttpResponseRedirect(reverse("bank_dashboard"))
-
     # If this is a GET (or any other method) create populated forms
     else:
         statement_instance = get_object_or_404(Statement, id=statement_id)

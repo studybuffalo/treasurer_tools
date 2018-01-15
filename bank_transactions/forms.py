@@ -27,8 +27,8 @@ class InstitutionForm(forms.ModelForm):
         widgets = {
             "address": Textarea(),
         }
-        
-BankTransactionFormset = inlineformset_factory(
+       
+BankTransactionFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
     BankTransaction,
     fields=(
@@ -61,7 +61,7 @@ class AttachmentMatchForm(forms.ModelForm):
             "attachment": forms.HiddenInput(),
         }
         
-AttachmentMatchFormset = inlineformset_factory(
+AttachmentMatchFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
     AttachmentMatch,
     form=AttachmentMatchForm,

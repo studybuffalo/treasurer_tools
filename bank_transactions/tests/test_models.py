@@ -191,7 +191,7 @@ class BankTransactionModelTest(TestCase):
 
 class AttachmentMatchModelTest(TestCase):
     """Test functions for the AttachmentMatch model"""
-    
+    # pylint: disable=no-member,protected-access
     fixtures = [
         "bank_transactions/tests/fixtures/attachment.json",
         "bank_transactions/tests/fixtures/institution.json",
@@ -203,17 +203,17 @@ class AttachmentMatchModelTest(TestCase):
     def test_labels(self):
         """tests a series of fields for proper label generation"""
         test_list = [
-            {"field_name": "statement", "label_name": "statement"},
             {"field_name": "attachment", "label_name": "attachment"},
+            {"field_name": "statement", "label_name": "statement"},
         ]
 
         for test_item in test_list:
-            attachment_match = AttachmentMatch.objects.get(id=1)
-            field_label = attachment_match._meta.get_field(test_item["field_name"]).verbose_name
+            bank_attachment_match = AttachmentMatch.objects.get(id=1)
+            field_label = bank_attachment_match._meta.get_field(test_item["field_name"]).verbose_name
             self.assertEqual(field_label, test_item["label_name"])
 
     def test_string_representation(self):
-        """Tests that the model string representaton returns as expected"""
+        """Tests AttachmentMatch string representation"""
         attachment_match = AttachmentMatch.objects.get(id=1)
 
         self.assertEqual(
