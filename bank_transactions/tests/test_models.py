@@ -2,7 +2,9 @@
 
 from django.test import TestCase
 
-from bank_transactions.models import BankTransaction, Account, Institution, Statement, AttachmentMatch, ReconciliationMatch
+from bank_transactions.models import (
+    BankTransaction, Account, Institution, Statement, AttachmentMatch, ReconciliationMatch
+)
 
 class InstitutionModelTest(TestCase):
     """Test functions for the Institution model"""
@@ -237,6 +239,7 @@ class ReconciliationMatchModelTest(TestCase):
     
     def test_string_representation(self):
         """Tests ReconciliationMatch string representation"""
+        # pylint: disable=no-member
         reconciliation_match = ReconciliationMatch.objects.get(id=1)
 
         self.assertEqual(
