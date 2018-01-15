@@ -1,0 +1,131 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Banking Reconciliation</h1>
+
+    {% include 'main/messages.html' %}
+    
+    <div>
+        <span>
+            <label>Start Date</label>
+            <input type="date" id="start-date">
+        </span>
+        <span>
+            <label>End Date</label>
+            <input type="date" id="end-date">
+        </span>
+    </div>
+
+    <div>
+        <ul id="financial-transactions">
+
+        </ul>
+
+        <ul id="bank-transactions">
+
+        </ul>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function set_initial_dates() {
+            const today = new Date()
+            year = today.getFullYear()
+            month = today.getMonth() < 9 ? "0" + (today.getMonth() + 1) : today.getMonth() + 1;
+
+            day = today.getDate()
+
+            start_date = (year - 1) + "-" + month + "-" + day;
+            $("#start-date").val(start_date);
+
+            end_date = year + "-" + month + "-" + day;
+            $("#end-date").val(end_date);
+        }
+
+        function retrieve_transactions(transaction_type) {
+            const startDate = $("#start-date").val();
+            const endDate = $("#end-date").val();
+
+            $.ajax({
+                url: "retrieve-transactions/",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    "transaction_type": transaction_type,
+                    "date_start": startDate,
+                    "date_end": endDate,
+                },
+                success: function (response_data) {
+                    add_transactions(response_data);
+                },
+                error: function (jqXHR, status, error) {
+                    console.error(status + " " + error);
+                }
+            });
+        }
+
+        function retrieve_bank_transactions() {
+            
+        }
+
+        function add_transactions(data) {
+            if (data.type === "financial") {
+                $.each(data.data, function (index, transaction) {
+                    const $titleSpan = $("<span></span>");
+                    $titleSpan.text(transaction.transaction);
+
+                    const $totalSpan = $("<span></span>");
+                    $totalSpan.text(transaction.total);
+
+                    const $viewSpan = $("<span></span>");
+                    const $viewLink = $("<a></a>");
+                    $viewLink
+                        .attr("href", transaction.id)
+                        .text("View")
+                        .appendTo($viewSpan);
+
+                    const $li = $("<li></li>");
+                    $li
+                        .append($titleSpan)
+                        .append($totalSpan)
+                        .append($viewSpan)
+                        .appendTo($("#financial-transactions"));
+                });
+            } else if (data.type === "bank") {
+                $.each(data.data, function (index, transaction) {
+                    const $titleSpan = $("<span></span>");
+                    $titleSpan.text(transaction.transaction);
+
+                    const $debitSpan = $("<span></span>");
+                    $debitSpan.text(transaction.debit);
+
+                    const $creditSpan = $("<span></span>");
+                    $creditSpan.text(transaction.credit);
+
+                    const $viewSpan = $("<span></span>");
+                    const $viewLink = $("<a></a>");
+                    $viewLink
+                        .attr("href", transaction.id)
+                        .text("View")
+                        .appendTo($viewSpan);
+
+                    const $li = $("<li></li>");
+                    $li
+                        .append($titleSpan)
+                        .append($debitSpan)
+                        .append($creditSpan)
+                        .append($viewSpan)
+                        .appendTo($("#bank-transactions"));
+                })
+            }
+        }
+
+        $(document).ready(function () {
+            set_initial_dates();
+
+            retrieve_transactions("financial");
+            retrieve_transactions("bank");
+        });
+    </script>
+{% endblock %}

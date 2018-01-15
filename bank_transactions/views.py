@@ -1,12 +1,15 @@
 """View for the bank_transaction app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from documents.models import Attachment
 
+from bank_transactions.models import BankTransaction
+from transactions.models import Transaction
 from .forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
 from .models import Statement, AttachmentMatch
 
@@ -210,3 +213,63 @@ def statement_delete(request, statement_id):
             "item_to_delete": str(statement_data),
         },
     )
+
+@login_required
+def reconciliation(request):
+    """Page to handle bank reconciliation"""
+    # pylint: disable=no-member
+
+    return render(
+        request,
+        "reconciliation/index.html",
+        context={},
+    )
+
+@login_required
+def retrieve_transactions(request):
+    transaction_type = request.GET.get("transaction_type", None)
+    date_start = request.GET.get("date_start", None)
+    date_end = request.GET.get("date_end", None)
+
+    if transaction_type == "financial":
+        transactions = Transaction.objects.filter(
+            Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
+        )
+
+        transaction_list = []
+        
+        for transaction in transactions:
+            transaction_list.append({
+                "transaction": str(transaction),
+                "id": transaction.id,
+                "total": transaction.total
+            })
+
+        json_data = {
+            "data": transaction_list,
+            "type": "financial"
+        }
+
+    elif transaction_type == "bank":
+        transactions = BankTransaction.objects.filter(
+            Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
+        )
+
+        transaction_list = []
+        
+        for transaction in transactions:
+            transaction_list.append({
+                "transaction": str(transaction),
+                "id": transaction.id,
+                "debit": transaction.amount_debit,
+                "credit": transaction.amount_credit
+            })
+
+        json_data = {
+            "data": transaction_list,
+            "type": "bank"
+        }
+    else:
+        json_data = {}
+    
+    return JsonResponse(json_data);

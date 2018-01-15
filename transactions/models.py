@@ -52,6 +52,19 @@ class Transaction(models.Model):
 
         return return_string
 
+    @property
+    def total(self):
+        """Calculates the total of all children items"""
+        items = self.item_set.all()
+
+        total = 0
+
+        for item in items:
+            total = total + item.amount + item.gst
+
+        # Return total as a proper dollar currency
+        return "${0:.2f}".format(total)
+
 class Item(models.Model):
     """Holds data on an individual transaction item"""
     transaction = models.ForeignKey(
