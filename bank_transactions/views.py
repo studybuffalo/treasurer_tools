@@ -35,6 +35,7 @@ def statement_add(request):
 
         # Create brank transaction formsets
         bank_transaction_formsets = BankTransactionFormset(request.POST)
+        bank_transaction_formsets.can_delete = False
 
         # Create new attachment form
         new_attachment_form = NewAttachmentForm(request.POST, request.FILES)
