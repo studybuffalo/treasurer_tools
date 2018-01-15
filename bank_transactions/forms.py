@@ -8,15 +8,6 @@ from multiupload.fields import MultiFileField
 from .models import Statement, Institution, BankTransaction, AttachmentMatch
 
 
-class StatementForm(forms.ModelForm):
-    """Form to add and edit transactions"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-
-    class Meta:
-        model = Statement
-
-        fields = ("account", "date_start", "date_end")
-
 class InstitutionForm(forms.ModelForm):
     """Form to add and edit transactions"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -29,6 +20,38 @@ class InstitutionForm(forms.ModelForm):
             "address": Textarea(),
         }
        
+class StatementForm(forms.ModelForm):
+    """Form to add and edit transactions"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+
+    class Meta:
+        model = Statement
+        fields = [
+            "account",
+            "date_start",
+            "date_end"
+        ]
+
+    def clean(self):
+        form_data = self.cleaned_data
+        
+        # Check that dates are available
+        try:
+            date_start = form_data["date_start"]
+            date_end = form_data["date_end"]
+        except:
+            date_start = None
+            date_end = None
+        
+        # If dates are available, check if start is after end
+        if date_start and date_end:
+            if date_start > date_end:
+                raise ValidationError({
+                    "date_end": "The end date must occur after the start date"
+                })
+
+        return form_data
+
 class BankTransactionForm(forms.ModelForm):
     """Form for adding and editing bank transactions"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -51,11 +74,23 @@ class BankTransactionForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data
-        amount_debit =  form_data["amount_debit"] if form_data["amount_debit"] else 0
-        amount_credit = form_data["amount_credit"] if form_data["amount_credit"] else 0
 
+        # Check that the amounts are available
+        try:
+            amount_debit =  form_data["amount_debit"]
+        except:
+            amount_debit = 0
+
+        try:
+            amount_credit = form_data["amount_credit"]
+        except:
+            amount_credit = 0
+
+        # If amounts are available, ensure one is 0
         if amount_debit != 0 and amount_credit != 0:
-            raise ValidationError({"amount_credit": "A single transaction cannot have both debit and credit amounts entered"})
+            raise ValidationError({
+                "amount_credit": "A single transaction cannot have both debit and credit amounts entered"
+            })
 
         return form_data
         
