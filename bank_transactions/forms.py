@@ -1,6 +1,7 @@
 """Forms for the financial_codes app"""
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import Textarea, inlineformset_factory
 from multiupload.fields import MultiFileField
 
@@ -28,23 +29,40 @@ class InstitutionForm(forms.ModelForm):
             "address": Textarea(),
         }
        
+class BankTransactionForm(forms.ModelForm):
+    """Form for adding and editing bank transactions"""
+    # pylint: disable=missing-docstring,too-few-public-methods
+    class Meta:
+        model = BankTransaction
+        fields = [
+            "date_transaction",
+            "description_bank",
+            "description_user",
+            "amount_debit",
+            "amount_credit",
+        ]
+        labels={
+            "date_transaction": "Transaction date",
+            "description_bank": "Bank description",
+            "description_user": "Custom description",
+            "amount_debit": "Debit amount",
+            "amount_credit": "Credit amount",
+        },
+
+    def clean(self):
+        form_data = self.cleaned_data
+        amount_debit =  form_data["amount_debit"] if form_data["amount_debit"] else 0
+        amount_credit = form_data["amount_credit"] if form_data["amount_credit"] else 0
+
+        if amount_debit != 0 and amount_credit != 0:
+            raise ValidationError({"amount_credit": "A single transaction cannot have both debit and credit amounts entered"})
+
+        return form_data
+        
 BankTransactionFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
     BankTransaction,
-    fields=(
-        "date_transaction",
-        "description_bank",
-        "description_user",
-        "amount_debit",
-        "amount_credit",
-    ),
-    labels={
-        "date_transaction": "Transaction date",
-        "description_bank": "Bank description",
-        "description_user": "Custom description",
-        "amount_debit": "Debit amount",
-        "amount_credit": "Credit amount",
-    },
+    form=BankTransactionForm,
     extra=1,
     can_delete=True,
 )
