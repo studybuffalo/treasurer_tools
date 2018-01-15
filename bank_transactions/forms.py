@@ -87,7 +87,11 @@ class BankTransactionForm(forms.ModelForm):
             amount_credit = 0
 
         # If amounts are available, ensure one is 0
-        if amount_debit != 0 and amount_credit != 0:
+        if amount_debit == 0 and amount_credit == 0:
+            raise ValidationError({
+                "amount_debit": "Please enter a debit or credit value."
+            })
+        elif amount_debit != 0 and amount_credit != 0:
             raise ValidationError({
                 "amount_credit": "A single transaction cannot have both debit and credit amounts entered."
             })
