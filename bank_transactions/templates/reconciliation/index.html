@@ -1,5 +1,33 @@
 {% extends 'main/base.html' %}
 
+{% block styles %}
+    <style>
+        #financial-reconciled-filter li.selected, #bank-reconciled-filter li.selected {
+            background-color: rgb(86, 239, 159);
+        }
+
+        #financial-transactions.unreconciled li.reconciled,
+        #bank-transactions.unreconciled li.reconciled {
+            display: none;
+        }
+
+        #financial-transactions.reconciled li,
+        #bank-transactions.reconciled li {
+            display: none;
+        }
+
+        #financial-transactions.reconciled li.reconciled,
+        #bank-transactions.reconciled li.reconciled {
+            display: block;
+        }
+
+        #financial-transactions li.selected,
+        #bank-transactions li.selected {
+            background-color: rgb(86, 239, 159);
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <h1>Banking Reconciliation</h1>
 
@@ -8,23 +36,52 @@
     <div>
         <span>
             <label>Start Date</label>
-            <input type="date" id="start-date">
+            <input type="date" id="financial-start-date">
         </span>
         <span>
             <label>End Date</label>
-            <input type="date" id="end-date">
+            <input type="date" id="financial-end-date">
         </span>
+        <span>
+            <button id="financial-update">Update</button>
+        </span>
+
+        <ul id="financial-reconciled-filter">
+            <li class="selected">Unreconciled</li>
+            <li>Reconciled</li>
+            <li>All transactions</li>
+        </ul>
+
+        <ul id="financial-transactions" class="unreconciled"></ul>
     </div>
 
     <div>
-        <ul id="financial-transactions">
+        <span>
+            <label>Start Date</label>
+            <input type="date" id="bank-start-date">
+        </span>
+        <span>
+            <label>End Date</label>
+            <input type="date" id="bank-end-date">
+        </span>
+        <span>
+            <button id="bank-update">Update</button>
+        </span>
 
+        <ul id="bank-reconciled-filter">
+            <li class="selected">Unreconciled</li>
+            <li>Reconciled</li>
+            <li>All transactions</li>
         </ul>
 
-        <ul id="bank-transactions">
-
-        </ul>
+        <ul id="bank-transactions" class="unreconciled"></ul>
     </div>
+
+    <div>
+        <button id="match">Match transactions</button>
+    </div>
+
+	{% csrf_token %}
 {% endblock %}
 
 {% block js %}
@@ -37,38 +94,34 @@
             day = today.getDate()
 
             start_date = (year - 1) + "-" + month + "-" + day;
-            $("#start-date").val(start_date);
+            $("#financial-start-date").val(start_date);
+            $("#bank-start-date").val(start_date);
 
             end_date = year + "-" + month + "-" + day;
-            $("#end-date").val(end_date);
+            $("#financial-end-date").val(end_date);
+            $("#bank-end-date").val(end_date);
         }
 
-        function retrieve_transactions(transaction_type) {
-            const startDate = $("#start-date").val();
-            const endDate = $("#end-date").val();
-
+        function retrieve_transactions(transactionType, startDate, endDate) {
             $.ajax({
                 url: "retrieve-transactions/",
                 method: "GET",
+                contentType: "application/json",
                 dataType: "json",
                 data: {
-                    "transaction_type": transaction_type,
-                    "date_start": startDate,
-                    "date_end": endDate,
+                    transaction_type: transactionType,
+                    date_start: startDate,
+                    date_end: endDate,
                 },
-                success: function (response_data) {
-                    add_transactions(response_data);
+                success: function (responseData) {
+                    add_transactions(responseData);
                 },
                 error: function (jqXHR, status, error) {
                     console.error(status + " " + error);
                 }
             });
         }
-
-        function retrieve_bank_transactions() {
-            
-        }
-
+        
         function add_transactions(data) {
             if (data.type === "financial") {
                 $.each(data.data, function (index, transaction) {
@@ -87,10 +140,16 @@
 
                     const $li = $("<li></li>");
                     $li
+                        .attr("data-id", transaction.id)
+                        .on("click", function () { toggle_transaction_selection(this) })
                         .append($titleSpan)
                         .append($totalSpan)
                         .append($viewSpan)
                         .appendTo($("#financial-transactions"));
+
+                    if (transaction.reconciled) {
+                        $li.addClass("reconciled");
+                    }
                 });
             } else if (data.type === "bank") {
                 $.each(data.data, function (index, transaction) {
@@ -112,20 +171,142 @@
 
                     const $li = $("<li></li>");
                     $li
+                        .attr("data-id", transaction.id)
+                        .on("click", function () { toggle_transaction_selection(this) })
                         .append($titleSpan)
                         .append($debitSpan)
                         .append($creditSpan)
                         .append($viewSpan)
                         .appendTo($("#bank-transactions"));
+
+                    if (transaction.reconciled) {
+                        $li.addClass("reconciled");
+                    }
                 })
             }
         }
 
+        function clear_transactions(transactionType) {
+            if (transactionType === "financial") {
+                $("#financial-transactions").empty();
+            } else if (transactionType === "bank") {
+                $("#bank-transactions").empty();
+            }
+        }
+
+        function update_reconciled_filter(li) {
+            const $li = $(li)
+            const $parentList = $li.closest("ul");
+            const $allLi = $parentList.find("li");
+
+            $allLi.removeClass("selected");
+            $li.addClass("selected");
+
+            let newClass = "";
+
+            if ($li.text() === "Unreconciled") {
+                newClass = "unreconciled";
+            } else if ($li.text() === "Reconciled") {
+                newClass = "reconciled";
+            }
+
+            const $transactionList = $parentList.next()
+            $transactionList
+                .removeClass()
+                .addClass(newClass);
+        }
+
+        function toggle_transaction_selection(li) {
+            $(li).toggleClass("selected");
+        }
+
+        function match_transactions() {
+            // Get the selected financial transactions
+            const $selectedFinancialTransactions = $("#financial-transactions li.selected");
+            let financialIDs = [];
+
+            $selectedFinancialTransactions.each(function (index, transaction) {
+                console.log("test")
+                financialIDs.push($(transaction).attr("data-id"));
+            });
+
+            // Get the selected bank transactions
+            const $selectedBankTransactions = $("#bank-transactions li.selected");
+            let bankIDs = [];
+
+            $selectedBankTransactions.each(function (index, transaction) {
+                bankIDs.push($(transaction).attr("data-id"));
+            });
+
+            // Setup post data
+            postData = {
+                financial_ids: financialIDs,
+                bank_ids: bankIDs
+            }
+
+            // Setup CSRF token for POST
+            const CSRF = $("[name=csrfmiddlewaretoken]").val();
+            
+            $.ajax({
+                url: "match-transactions/",
+                method: "POST",
+                dataType: "json",
+                data: JSON.stringify(postData),
+                beforeSend: function (xhr, settings) {
+                    if (!this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", CSRF);
+                    }
+                },
+                success: function (results) {
+                    console.log("Success");
+                    console.log(results);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log("Error");
+                }
+            });
+        }
+
         $(document).ready(function () {
             set_initial_dates();
+            
+            $("#financial-update").on("click", function () {
+                clear_transactions("financial");
+                retrieve_transactions(
+                    "financial",
+                    $("#financial-start-date").val(),
+                    $("#financial-end-date").val()
+                );
+            });
 
-            retrieve_transactions("financial");
-            retrieve_transactions("bank");
+            $("#bank-update").on("click", function () {
+                clear_transactions("bank");
+                retrieve_transactions(
+                    "bank",
+                    $("#bank-start-date").val(),
+                    $("#bank-end-date").val()
+                );
+            });
+
+            $("#financial-reconciled-filter li").on("click", function () {
+                update_reconciled_filter(this);
+            });
+            
+            $("#match").on("click", function () {
+                match_transactions();
+            });
+
+            retrieve_transactions(
+                "financial",
+                $("#financial-start-date").val(),
+                $("#financial-end-date").val()
+            );
+
+            retrieve_transactions(
+                "bank",
+                $("#bank-start-date").val(),
+                $("#bank-end-date").val()
+            );
         });
     </script>
 {% endblock %}

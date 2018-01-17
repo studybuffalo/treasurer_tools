@@ -1,4 +1,6 @@
 """View for the bank_transaction app"""
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -6,12 +8,12 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
+from bank_transactions.models import Statement, BankTransaction, AttachmentMatch, ReconciliationMatch
+from bank_transactions.forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
 from documents.models import Attachment
-
-from bank_transactions.models import BankTransaction
 from transactions.models import Transaction
-from .forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
-from .models import Statement, AttachmentMatch
+from transactions.services import BankReconciliation
+
 
 @login_required
 def dashboard(request):
@@ -231,7 +233,7 @@ def retrieve_transactions(request):
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
 
-    if transaction_type == "financial":
+    if date_start and date_end and transaction_type == "financial":
         transactions = Transaction.objects.filter(
             Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
         )
@@ -242,7 +244,8 @@ def retrieve_transactions(request):
             transaction_list.append({
                 "transaction": str(transaction),
                 "id": transaction.id,
-                "total": transaction.total
+                "total": transaction.total,
+                "reconciled": transaction.rm_financial_transaction.all().exists()
             })
 
         json_data = {
@@ -250,7 +253,7 @@ def retrieve_transactions(request):
             "type": "financial"
         }
 
-    elif transaction_type == "bank":
+    elif date_start and date_end and transaction_type == "bank":
         transactions = BankTransaction.objects.filter(
             Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
         )
@@ -262,7 +265,8 @@ def retrieve_transactions(request):
                 "transaction": str(transaction),
                 "id": transaction.id,
                 "debit": transaction.amount_debit,
-                "credit": transaction.amount_credit
+                "credit": transaction.amount_credit,
+                "reconciled": transaction.rm_bank_transaction.all().exists()
             })
 
         json_data = {
@@ -272,4 +276,28 @@ def retrieve_transactions(request):
     else:
         json_data = {}
     
+    return JsonResponse(json_data);
+
+@login_required
+def match_transactions(request):
+    reconciliation = BankReconciliation(request.body)
+
+    # Check if provided data is valid
+    if reconciliation.is_valid():
+        # Make reconcilation matches
+        reconciliation.create_matches()
+
+    return JsonResponse({
+        "success": reconciliation.success,
+        "errors": reconciliation.errors,
+    })
+
+@login_required
+def unmatch_transactions(request):
+    print(request.POST)
+    
+    json_data = {
+        "data": "unmatch test"
+    }
+
     return JsonResponse(json_data);
