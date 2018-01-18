@@ -15,7 +15,7 @@ class BankReconciliation(object):
 
         return json_data
 
-    def is_valid(self):
+    def is_valid(self):     
         valid = True
 
         # Check for financial_ids data
@@ -41,15 +41,24 @@ class BankReconciliation(object):
             for financial_id in financial_ids:
                 # Checks that financial ID exists
                 if Transaction.objects.filter(id=financial_id).exists():
-                   # Check that this transaction is not already matched
-                   if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists():
-                       valid = False
-                       self.errors["financial_id"].append(
-                           (
-                               "{} is already reconciled. "
-                               "Unmatch the transaction before reassigning it."
-                            ).format(str(Transaction.objects.get(id=financial_id)))
-                        )
+                    # Performs additional testing for match/unmatch
+                    if self.function_type == "match":
+                        if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists():
+                            valid = False
+                            self.errors["financial_id"].append(
+                                (
+                                    "{} is already reconciled. "
+                                    "Unmatch the transaction before reassigning it."
+                                ).format(str(Transaction.objects.get(id=financial_id)))
+                            )
+                    elif self.function_type == "unmatch":
+                        if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists() is False:
+                            valid = False
+                            self.errors["financial_id"].append(
+                                "{} is not a matched transaction.".format(
+                                    str(Transaction.objects.get(id=financial_id))
+                                )
+                            )
                 else:
                     valid = False
                     self.errors["financial_id"].append(
@@ -64,14 +73,23 @@ class BankReconciliation(object):
             for bank_id in bank_ids:
                 # Check that the bank ID exists
                 if BankTransaction.objects.filter(id__in=bank_ids).exists():
-                    if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists():
-                       valid = False
-                       self.errors["bank_id"].append(
-                           (
-                               "{} is already reconciled. "
-                               "Unmatch the transaction before reassigning it."
-                            ).format(str(BankTransaction.objects.get(id=bank_id)))
-                        )
+                    if self.function_type == "match":
+                        if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists():
+                           valid = False
+                           self.errors["bank_id"].append(
+                               (
+                                   "{} is already reconciled. "
+                                   "Unmatch the transaction before reassigning it."
+                                ).format(str(BankTransaction.objects.get(id=bank_id)))
+                            )
+                    elif self.function_type == "unmatch":
+                        if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists() is False:
+                            valid = False
+                            self.errors["bank_id"].append(
+                                "{} is not a matched transaction.".format(
+                                    str(BankTransaction.objects.get(id=bank_id))
+                                )
+                            )
                 else:
                     valid = False
                     self.errors["bank_id"].append(
@@ -94,11 +112,27 @@ class BankReconciliation(object):
                     bank_transaction=BankTransaction.objects.get(id=bank_id)
                 )
 
-        # Return the ids that were successfully matched
+    
+    def delete_matches(self):
+        print(self.json_data["financial_ids"])
+        # Remove any matches with the provided financial ids
+        financial_matches = ReconciliationMatch.objects.filter(
+            financial_transaction_id__in=self.json_data["financial_ids"]
+        )
+        financial_matches.delete()
+
+        # Remove any matches with the provided bank ids
+        bank_matches = ReconciliationMatch.objects.filter(
+            bank_transaction_id__in=self.json_data["bank_ids"]
+        )
+        bank_matches.delete()  
+
+        # Return the ids that were successfully deleted
         self.success["financial_id"] = self.json_data["financial_ids"]
         self.success["bank_id"] = self.json_data["bank_ids"]
 
-    def __init__(self, raw_data):
+    def __init__(self, raw_data, function_type):
+        self.function_type = function_type
         self.success = {"financial_id": [], "bank_id": [],}
         self.errors = {"post_data": [], "financial_id": [], "bank_id": [],}
         self.json_data = self.create_json_data(raw_data)

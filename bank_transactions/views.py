@@ -280,7 +280,7 @@ def retrieve_transactions(request):
 
 @login_required
 def match_transactions(request):
-    reconciliation = BankReconciliation(request.body)
+    reconciliation = BankReconciliation(request.body, "match")
 
     # Check if provided data is valid
     if reconciliation.is_valid():
@@ -294,10 +294,14 @@ def match_transactions(request):
 
 @login_required
 def unmatch_transactions(request):
-    print(request.POST)
-    
-    json_data = {
-        "data": "unmatch test"
-    }
+    reconciliation = BankReconciliation(request.body, "unmatch")
 
-    return JsonResponse(json_data);
+    # Check if provided data is valid
+    if reconciliation.is_valid():
+        # Make reconcilation matches
+        reconciliation.delete_matches()
+
+    return JsonResponse({
+        "success": reconciliation.success,
+        "errors": reconciliation.errors,
+    })

@@ -81,6 +81,10 @@
         <button id="match">Match transactions</button>
     </div>
 
+    <div>
+        <button id="unmatch">Unmatch transactions</button>
+    </div>
+
 	{% csrf_token %}
 {% endblock %}
 
@@ -267,6 +271,53 @@
             });
         }
 
+        function unmatch_transactions() {
+            // Get the selected financial transactions
+            const $selectedFinancialTransactions = $("#financial-transactions li.selected");
+            let financialIDs = [];
+
+            $selectedFinancialTransactions.each(function (index, transaction) {
+                console.log("test")
+                financialIDs.push($(transaction).attr("data-id"));
+            });
+
+            // Get the selected bank transactions
+            const $selectedBankTransactions = $("#bank-transactions li.selected");
+            let bankIDs = [];
+
+            $selectedBankTransactions.each(function (index, transaction) {
+                bankIDs.push($(transaction).attr("data-id"));
+            });
+
+            // Setup post data
+            postData = {
+                financial_ids: financialIDs,
+                bank_ids: bankIDs
+            }
+
+            // Setup CSRF token for POST
+            const CSRF = $("[name=csrfmiddlewaretoken]").val();
+
+            $.ajax({
+                url: "unmatch-transactions/",
+                method: "POST",
+                dataType: "json",
+                data: JSON.stringify(postData),
+                beforeSend: function (xhr, settings) {
+                    if (!this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", CSRF);
+                    }
+                },
+                success: function (results) {
+                    console.log("Success");
+                    console.log(results);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log("Error");
+                }
+            });
+        }
+
         $(document).ready(function () {
             set_initial_dates();
             
@@ -288,12 +339,16 @@
                 );
             });
 
-            $("#financial-reconciled-filter li").on("click", function () {
+            $("#financial-reconciled-filter li, #bank-reconciled-filter li").on("click", function () {
                 update_reconciled_filter(this);
             });
             
             $("#match").on("click", function () {
                 match_transactions();
+            });
+
+            $("#unmatch").on("click", function () {
+                unmatch_transactions();
             });
 
             retrieve_transactions(
