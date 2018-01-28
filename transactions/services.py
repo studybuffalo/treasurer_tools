@@ -1,3 +1,4 @@
+"""Objects and functions supporting bank_transactions app"""
 import json
 
 from bank_transactions.models import BankTransaction, ReconciliationMatch
@@ -5,7 +6,9 @@ from transactions.models import Transaction
 
 class BankReconciliation(object):
     """Object to process bank transaction reconciliation"""
+    # pylint: disable=no-member
     def create_json_data(self, raw_data):
+        """Converts raw json data to dictionary"""
         # Check for proper JSON data
         try:
             json_data = json.loads(raw_data)
@@ -15,7 +18,9 @@ class BankReconciliation(object):
 
         return json_data
 
-    def is_valid(self):     
+    def is_valid(self):
+        """Checks that provided transaction & banking data is valid"""
+        # pylint: disable=too-many-branches
         valid = True
 
         # Check for financial_ids data
@@ -75,11 +80,11 @@ class BankReconciliation(object):
                 if BankTransaction.objects.filter(id__in=bank_ids).exists():
                     if self.function_type == "match":
                         if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists():
-                           valid = False
-                           self.errors["bank_id"].append(
-                               (
-                                   "{} is already reconciled. "
-                                   "Unmatch the transaction before reassigning it."
+                            valid = False
+                            self.errors["bank_id"].append(
+                                (
+                                    "{} is already reconciled. "
+                                    "Unmatch the transaction before reassigning it."
                                 ).format(str(BankTransaction.objects.get(id=bank_id)))
                             )
                     elif self.function_type == "unmatch":
@@ -102,6 +107,7 @@ class BankReconciliation(object):
         return valid
         
     def create_matches(self):
+        """Matches provided financial and bank transactions"""
         # Cycle through each financial transaction
         for financial_id in self.json_data["financial_ids"]:
             # Cycle through each bank transaction
@@ -112,9 +118,9 @@ class BankReconciliation(object):
                     bank_transaction=BankTransaction.objects.get(id=bank_id)
                 )
 
-    
     def delete_matches(self):
-        print(self.json_data["financial_ids"])
+        """Removes matches between provided financial and bank transactions"""
+        
         # Remove any matches with the provided financial ids
         financial_matches = ReconciliationMatch.objects.filter(
             financial_transaction_id__in=self.json_data["financial_ids"]
@@ -125,7 +131,7 @@ class BankReconciliation(object):
         bank_matches = ReconciliationMatch.objects.filter(
             bank_transaction_id__in=self.json_data["bank_ids"]
         )
-        bank_matches.delete()  
+        bank_matches.delete()
 
         # Return the ids that were successfully deleted
         self.success["financial_id"] = self.json_data["financial_ids"]
