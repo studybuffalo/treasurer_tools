@@ -1,8 +1,10 @@
 """Objects and functions supporting bank_transactions app"""
 import json
 
-from bank_transactions.models import BankTransaction, ReconciliationMatch
+from bank_transactions.models import BankTransaction
 from transactions.models import Transaction
+
+from .models import ReconciliationMatch
 
 class BankReconciliation(object):
     """Object to process bank transaction reconciliation"""

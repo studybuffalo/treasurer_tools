@@ -1,0 +1,23 @@
+[
+  {
+    "model": "transactions.transaction",
+    "pk": 1,
+    "fields": {
+      "payee_payer": 1,
+      "transaction_type": "e",
+      "memo": "Travel Grant award 2017",
+      "date_submitted": "2017-06-01"
+    }
+  },
+  {
+    "model": "transactions.transaction",
+    "pk": 2,
+    "fields": {
+      "payee_payer": 1,
+      "transaction_type": "r",
+      "memo": "Travel Grant sponsorship 2017",
+      "date_submitted": "2017-01-01"
+    }
+  }
+
+]

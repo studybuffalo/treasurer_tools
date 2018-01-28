@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "simple_history",
+    "bank_reconciliation.apps.BankReconciliationConfig",
     "bank_transactions.apps.BankTransactionsConfig",
     "documents.apps.DocumentsConfig",
     "financial_codes.apps.FinancialCodesConfig",
