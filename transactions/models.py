@@ -55,6 +55,7 @@ class Transaction(models.Model):
     @property
     def total(self):
         """Calculates the total of all children items"""
+        # pylint: disable=no-member
         items = self.item_set.all()
 
         total = 0
