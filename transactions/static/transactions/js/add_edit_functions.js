@@ -81,10 +81,10 @@ function update_financial_code_systems(dateInput) {
         "retrieve-financial-code-systems/", getString, function () {
             $formsetRow.find('[id*="-budget_year"]').each(function (index, yearSelect) {
                 $(yearSelect).on("change", function () {
-                    update_financial_code(yearSelect)
+                    update_financial_code(yearSelect);
                 });
 
-                update_financial_code(yearSelect)
+                update_financial_code(yearSelect);
             });
         }
     );
