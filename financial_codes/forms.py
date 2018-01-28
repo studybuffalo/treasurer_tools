@@ -15,7 +15,7 @@ def get_years_with_opt_groups():
 
     for system in FinancialCodeSystem.objects.all():
         budget_years = []
-            
+        
         for budget_year in system.budgetyear_set.all():
             budget_years.append([budget_year.id, budget_year])
 
@@ -82,7 +82,7 @@ class FinancialCodeGroupForm(forms.ModelForm):
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
     # pylint: disable=missing-docstring,too-few-public-methods
-    
+    # TOFIX: Choices only updates on server reset, not database changes
     budget_year = forms.ChoiceField(
         choices=get_years_with_opt_groups(),
         label="Budget Year",

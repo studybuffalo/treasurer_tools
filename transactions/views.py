@@ -1,7 +1,7 @@
 """Views for the transactions app"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
@@ -108,3 +108,22 @@ def transaction_delete(request, t_type, transaction_id):
             "item_to_delete": transaction,
         },
     )
+
+@login_required
+def retrieve_financial_code_systems(request, *args, **kwargs):
+    """Retrieves all financial code systems active on provided date"""
+    form_object = CompiledForms()
+    transaction_date = request.GET.get("item_date", None)
+    item_form_id = request.GET.get("item_form_id", None)
+
+    # TODO: Need to pass proper item_form_id
+    return render(
+        request,
+        "transactions/financial_code_systems.html",
+        context={
+            "financial_code_forms" : form_object.create_financial_code_forms(
+                item_form_id, None, transaction_date=transaction_date
+            ),
+        },
+    )
+    

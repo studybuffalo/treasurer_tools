@@ -15,28 +15,30 @@
             {{ field }}
         {% endfor %}
 
-        {% for form in forms.empty_financial_code_form %}
-            <fieldset>
-                <legend>{{ form.name }}</legend>
+        <div class="financial-code-systems">
+            {% for form in forms.empty_financial_code_form %}
+                <fieldset>
+                    <legend>{{ form.name }}</legend>
                                 
-                {% for field in form.form.visible_fields %}
-                    {{ field.label_tag }}
+                    {% for field in form.form.visible_fields %}
+                        {{ field.label_tag }}
 
-                    <span>
+                        <span>
+                            {{ field }}
+                        </span>
+
+                        <em>
+                            {{ field.help_text }}
+                        </em>
+                    {% endfor %}
+                                
+                    {% for field in form.form.hidden_fields %}
                         {{ field }}
-                    </span>
-
-                    <em>
-                        {{ field.help_text }}
-                    </em>
-                {% endfor %}
-                                
-                {% for field in form.form.hidden_fields %}
-                    {{ field }}
-                {% endfor %}
-                <hr>
-            </fieldset>
-        {% endfor %}
+                    {% endfor %}
+                    <hr>
+                </fieldset>
+            {% endfor %}
+        </div>
     </div>
 
     <hr>

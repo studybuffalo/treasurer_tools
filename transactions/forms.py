@@ -1,6 +1,7 @@
 """Forms for the financial_codes app"""
 
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.forms import inlineformset_factory, ValidationError
 from django.shortcuts import get_object_or_404
@@ -47,13 +48,19 @@ class CompiledForms(object):
             # If item ID, this is the initial edit form generation
             if item_id:
                 # Retrieve all financial code match entries for this item ID
-                match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
+                try:
+                    match_instances = FinancialCodeMatch.objects.filter(item=Item.objects.get(id=item_id))
+                except ObjectDoesNotExist:
+                    match_instances = []
+                    data = None
 
                 # Cycle through each match instance
                 for match in match_instances:
+                    data = None
+
                     # Get the budget year for this match instance
                     budget_year = match.financial_code.financial_code_group.budget_year
-
+                    
                     # Update data to the match instance matching provided ID
                     if budget_year.financial_code_system.id == system_id:
                         data = {
@@ -71,7 +78,7 @@ class CompiledForms(object):
 
         return data
 
-    def __create_financial_code_forms(self, item_form_id, item_id, **kwargs):
+    def create_financial_code_forms(self, item_form_id, item_id, **kwargs):
         """Creates financial code forms required for item formset"""
         # Setup any of the option arguments
         transaction_date = kwargs.pop("transaction_date", timezone.now())
@@ -173,10 +180,10 @@ class CompiledForms(object):
 
             compiled_forms.item_formsets.append(self.ItemLevel(
                 item_formset=item_formset,
-                financial_code_forms=self.__create_financial_code_forms(
+                financial_code_forms=self.create_financial_code_forms(
                     item_form_id,
                     item_instance_id,
-                    transaction_date=compiled_forms.transaction_form["date_submitted"].value(),
+                    transaction_date=item_formset["date_item"].value(),
                 )
             ))
 
@@ -237,8 +244,10 @@ class CompiledForms(object):
 
             compiled_forms.item_formsets.append(self.ItemLevel(
                 item_formset=item_formset,
-                financial_code_forms=self.__create_financial_code_forms(
-                    item_form_id, item_instance_id,
+                financial_code_forms=self.create_financial_code_forms(
+                    item_form_id,
+                    item_instance_id,
+                    transaction_date=item_formset["date_item"].value(),
                 )
             ))
 
@@ -392,7 +401,7 @@ class CompiledForms(object):
             if attachment_form.cleaned_data["DELETE"]:
                 attachment_form.cleaned_data["id"].delete()
 
-    def __init__(self, transaction_type, request_type, data=None, files=None, **kwargs):
+    def __init__(self, transaction_type="EXPENSE", request_type="GET", data=None, files=None, **kwargs):
         self.transaction_type = "e" if transaction_type.upper() == "EXPENSE" else "r"
         self.request_type = request_type.upper()
         self.data = data

@@ -1,0 +1,28 @@
+{% for financial_code_form in financial_code_forms %}
+    <fieldset>
+        <legend>{{ financial_code_form.system }}</legend>
+                                
+        {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
+                    
+        {% for field in financial_code_form.form.visible_fields %}
+            {{ field.label_tag }}
+
+            <span>
+                {{ field }}
+            </span>
+
+            <em>
+                {{ field.help_text }}
+            </em>
+                    
+            {% include 'main/errors.html' with errors=field.errors %}
+        {% endfor %}
+                                
+        {% for field in financial_code_form.form.hidden_fields %}
+            {{ field }}
+                        
+            {% include 'main/errors.html' with errors=field.errors %}
+        {% endfor %}
+        <hr>
+    </fieldset>
+{% endfor %}
