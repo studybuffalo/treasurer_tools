@@ -82,9 +82,9 @@ class FinancialCodeGroupForm(forms.ModelForm):
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
     # pylint: disable=missing-docstring,too-few-public-methods
-    # TOFIX: Choices only updates on server reset, not database changes
+
     budget_year = forms.ChoiceField(
-        choices=get_years_with_opt_groups(),
+        choices=[],
         label="Budget Year",
         required=False,
     )
@@ -102,3 +102,7 @@ class FinancialCodeForm(forms.ModelForm):
         widgets = {
             "financial_code_group": SelectWithYearID(),
         }
+
+    def __init(self, *args, **kwargs):
+        super(FinancialCodeForm, self).__init__(*args, **kwargs)
+        self.fields["budget_year"].choices = get_years_with_opt_groups()
