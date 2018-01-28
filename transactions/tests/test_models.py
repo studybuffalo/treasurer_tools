@@ -11,6 +11,7 @@ class TransactionModelTest(TestCase):
         "transactions/tests/fixtures/country.json",
         "transactions/tests/fixtures/demographics.json",
         "transactions/tests/fixtures/transaction.json",
+        "transactions/tests/fixtures/item.json",
     ]
 
     def test_labels(self):
@@ -55,6 +56,12 @@ class TransactionModelTest(TestCase):
                 str(transaction),
                 test_string
             )
+
+    def test_total_property(self):
+        """Tests that total property returns proper value"""
+        transaction = Transaction.objects.get(id=1)
+
+        self.assertEqual(transaction.total, "$321.29")
 
 class ItemModelTest(TestCase):
     """Test functions for the Item model"""

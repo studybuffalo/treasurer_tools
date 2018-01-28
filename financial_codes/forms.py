@@ -37,20 +37,19 @@ class FinancialCodeSystemForm(forms.ModelForm):
 
     def clean_date_end(self):
         """Checks that a valid date is provided"""
+        # Get date_start (if provided)
         try:
             date_start = self.cleaned_data["date_start"]
         except KeyError:
             date_start = None
 
-        # Get date_end (if provided)
-        try:
-            date_end = self.cleaned_data["date_end"]
-        except KeyError:
-            date_end = None
+        # Get date_end
+        date_end = self.cleaned_data["date_end"]
 
         # Check that the end date is greater than the start date
-        if date_start and date_end and date_end < date_start:
-            raise ValidationError("The end date must occur after the start date.")
+        if date_end:
+            if date_start and date_end < date_start:
+                raise ValidationError("The end date must occur after the start date.")
 
         return date_end
     
@@ -74,15 +73,12 @@ class BudgetYearForm(forms.ModelForm):
         except KeyError:
             date_start = None
 
-        # Get date_end (if provided)
-        try:
-            date_end = self.cleaned_data["date_end"]
-        except KeyError:
-            date_end = None
+        # Get date_end
+        date_end = self.cleaned_data["date_end"]
 
         # Check that the start date occurs before the end date
         if date_start and date_end and date_start > date_end:
-            raise ValidationError("The end date must occur after the start date")
+            raise ValidationError("The end date must occur after the start date.")
 
         return date_end
 
@@ -100,7 +96,7 @@ class BudgetYearForm(forms.ModelForm):
             system = None
 
         # Check that dates occur within financial code system dates
-        if date_start_year and date_end_year:
+        if date_start_year and date_end_year and system:
             date_start_system = system.date_start
             date_end_system = system.date_end
 
@@ -161,6 +157,6 @@ class FinancialCodeForm(forms.ModelForm):
             "financial_code_group": SelectWithYearID(),
         }
 
-    def __init(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(FinancialCodeForm, self).__init__(*args, **kwargs)
         self.fields["budget_year"].choices = get_years_with_opt_groups()
