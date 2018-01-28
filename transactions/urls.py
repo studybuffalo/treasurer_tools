@@ -13,7 +13,9 @@ urlpatterns = [
         transaction_delete,
         name="transaction_delete",
     ),
-    url(r"^(expense|revenue)/(add|edit)/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
+    url(r"^expense/add/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
+    url(r"^expense/edit/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
+    url(r"^revenue/add/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
+    url(r"^revenue/edit/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
     url(r"^$", dashboard, name="transactions_dashboard"),
-
 ]
