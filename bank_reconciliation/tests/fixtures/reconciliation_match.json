@@ -1,6 +1,6 @@
 [
   {
-    "model": "bank_transactions.reconciliationmatch",
+    "model": "bank_reconciliation.reconciliationmatch",
     "pk": 1,
     "fields": {
       "bank_transaction": 1,

@@ -7,15 +7,15 @@ from ..models import ReconciliationMatch
 class ReconciliationMatchModelTest(TestCase):
     """Tests for the ReconciliationMatch model"""
     fixtures = [
-        "bank_transactions/tests/fixtures/account.json",
-        "bank_transactions/tests/fixtures/bank_transaction.json",
-        "bank_transactions/tests/fixtures/country.json",
-        "bank_transactions/tests/fixtures/demographics.json",
-        "bank_transactions/tests/fixtures/institution.json",
-        "bank_transactions/tests/fixtures/item.json",
-        "bank_transactions/tests/fixtures/reconciliation_match.json",
-        "bank_transactions/tests/fixtures/statement.json",
-        "bank_transactions/tests/fixtures/transaction.json",
+        "bank_reconciliation/tests/fixtures/account.json",
+        "bank_reconciliation/tests/fixtures/bank_transaction.json",
+        "bank_reconciliation/tests/fixtures/country.json",
+        "bank_reconciliation/tests/fixtures/demographics.json",
+        "bank_reconciliation/tests/fixtures/institution.json",
+        "bank_reconciliation/tests/fixtures/item.json",
+        "bank_reconciliation/tests/fixtures/reconciliation_match.json",
+        "bank_reconciliation/tests/fixtures/statement.json",
+        "bank_reconciliation/tests/fixtures/transaction.json",
     ]
     
     def test_string_representation(self):
