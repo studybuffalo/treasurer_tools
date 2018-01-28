@@ -1,5 +1,4 @@
 """View for the bank_transaction app"""
-import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,7 +7,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from bank_transactions.models import Statement, BankTransaction, AttachmentMatch, ReconciliationMatch
+from bank_transactions.models import Statement, BankTransaction, AttachmentMatch
 from bank_transactions.forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
 from documents.models import Attachment
 from transactions.models import Transaction
@@ -217,7 +216,7 @@ def statement_delete(request, statement_id):
     )
 
 @login_required
-def reconciliation(request):
+def reconciliation_dashboard(request):
     """Page to handle bank reconciliation"""
     # pylint: disable=no-member
 
@@ -229,6 +228,8 @@ def reconciliation(request):
 
 @login_required
 def retrieve_transactions(request):
+    """Retrieves and returns all transactions in provided date range"""
+    # pylint: disable=no-member
     transaction_type = request.GET.get("transaction_type", None)
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
@@ -276,10 +277,11 @@ def retrieve_transactions(request):
     else:
         json_data = {}
     
-    return JsonResponse(json_data);
+    return JsonResponse(json_data)
 
 @login_required
 def match_transactions(request):
+    """Matches financial and banking transactions (if valid)"""
     reconciliation = BankReconciliation(request.body, "match")
 
     # Check if provided data is valid
@@ -294,6 +296,7 @@ def match_transactions(request):
 
 @login_required
 def unmatch_transactions(request):
+    """Unmatches financial and banking transactions (if valid)"""
     reconciliation = BankReconciliation(request.body, "unmatch")
 
     # Check if provided data is valid

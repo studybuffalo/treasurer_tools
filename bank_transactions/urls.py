@@ -2,7 +2,7 @@
 from django.conf.urls import url
 
 from .views import (
-    dashboard, statement_add, statement_edit, statement_delete, reconciliation,
+    dashboard, statement_add, statement_edit, statement_delete, reconciliation_dashboard,
     retrieve_transactions, match_transactions, unmatch_transactions
 )
 
@@ -15,5 +15,5 @@ urlpatterns = [
     url(r"^reconciliation/retrieve-transactions/", retrieve_transactions),
     url(r"^reconciliation/match-transactions/", match_transactions),
     url(r"^reconciliation/unmatch-transactions/", unmatch_transactions),
-    url(r"^reconciliation/$", reconciliation, name="banking_reconciliation"),
+    url(r"^reconciliation/$", reconciliation_dashboard, name="banking_reconciliation"),
 ]
