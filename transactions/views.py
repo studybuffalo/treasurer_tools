@@ -1,7 +1,9 @@
 """Views for the transactions app"""
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
@@ -115,6 +117,22 @@ def retrieve_financial_code_systems(request):
     form_object = CompiledForms()
     transaction_date = request.GET.get("item_date", None)
     item_form_id = request.GET.get("item_form_id", None)
+
+    # Basic data validation before carrying on processing
+    if transaction_date and item_form_id:
+        # Validates the date string as a proper date
+        try:
+            datetime.strptime(transaction_date, "%Y-%m-%d")
+        except ValueError:
+            return HttpResponse(status=404)
+
+        # Validates the item_form_id as a proper integer
+        try:
+            int(item_form_id)
+        except ValueError:
+            return HttpResponse(status=404)
+    else:
+        return HttpResponse(status=404)
 
     return render(
         request,
