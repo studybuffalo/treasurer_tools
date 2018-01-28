@@ -37,12 +37,20 @@ class FinancialCodeSystemForm(forms.ModelForm):
 
     def clean_date_end(self):
         """Checks that a valid date is provided"""
-        date_start = self.cleaned_data["date_start"]
-        date_end = self.cleaned_data["date_end"]
+        try:
+            date_start = self.cleaned_data["date_start"]
+        except KeyError:
+            date_start = None
+
+        # Get date_end (if provided)
+        try:
+            date_end = self.cleaned_data["date_end"]
+        except KeyError:
+            date_end = None
 
         # Check that the end date is greater than the start date
-        if date_end and date_end < date_start:
-            raise ValidationError("End date must occur after the start date.")
+        if date_start and date_end and date_end < date_start:
+            raise ValidationError("The end date must occur after the start date.")
 
         return date_end
     
@@ -58,6 +66,56 @@ class BudgetYearForm(forms.ModelForm):
             "date_start",
             "date_end",
         ]
+
+    def clean_date_end(self):
+        # Get date_start (if provided)
+        try:
+            date_start = self.cleaned_data["date_start"]
+        except KeyError:
+            date_start = None
+
+        # Get date_end (if provided)
+        try:
+            date_end = self.cleaned_data["date_end"]
+        except KeyError:
+            date_end = None
+
+        # Check that the start date occurs before the end date
+        if date_start and date_end and date_start > date_end:
+            raise ValidationError("The end date must occur after the start date")
+
+        return date_end
+
+    def clean(self):
+        form_data = self.cleaned_data
+
+        # Collect all required data for validation
+        try:
+            date_start_year = form_data["date_start"]
+            date_end_year = form_data["date_end"]
+            system = form_data["financial_code_system"]
+        except KeyError:
+            date_start_year = None
+            date_end_year = None
+            system = None
+
+        # Check that dates occur within financial code system dates
+        if date_start_year and date_end_year:
+            date_start_system = system.date_start
+            date_end_system = system.date_end
+
+            # Check that start date occurs after financial code system start date
+            if date_start_year < date_start_system:
+                raise ValidationError({
+                    "date_start": "The start date must occur after the start of the Financial Code System."
+                })
+
+            if date_end_system and date_end_year > date_end_system:
+                raise ValidationError({
+                    "date_end": "The end date must occur before the end of the Financial Code System."
+                })
+
+        return form_data
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""

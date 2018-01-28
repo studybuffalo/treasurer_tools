@@ -27,5 +27,5 @@ class FinancialCodeSystemFormTest(TestCase):
         # Check that it is the end date causing the invalid form
         self.assertEqual(
             form["date_end"].errors[0],
-            "End date must occur after the start date."
+            "The end date must occur after the start date."
         )
