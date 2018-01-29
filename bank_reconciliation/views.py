@@ -1,6 +1,7 @@
 """View for the bank_transaction app"""
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -8,7 +9,7 @@ from django.shortcuts import render
 from bank_transactions.models import BankTransaction
 from transactions.models import Transaction
 
-from .services import BankReconciliation
+from .helpers import BankReconciliation
 
 
 @login_required
@@ -31,45 +32,51 @@ def retrieve_transactions(request):
     date_end = request.GET.get("date_end", None)
 
     if date_start and date_end and transaction_type == "financial":
-        transactions = Transaction.objects.filter(
-            Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
-        )
+        try:
+            transactions = Transaction.objects.filter(
+                Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
+            )
 
-        transaction_list = []
+            transaction_list = []
         
-        for transaction in transactions:
-            transaction_list.append({
-                "transaction": str(transaction),
-                "id": transaction.id,
-                "total": transaction.total,
-                "reconciled": transaction.rm_financial_transaction.all().exists()
-            })
+            for transaction in transactions:
+                transaction_list.append({
+                    "transaction": str(transaction),
+                    "id": transaction.id,
+                    "total": transaction.total,
+                    "reconciled": transaction.rm_financial_transaction.all().exists()
+                })
 
-        json_data = {
-            "data": transaction_list,
-            "type": "financial"
-        }
+            json_data = {
+                "data": transaction_list,
+                "type": "financial"
+            }
+        except ValidationError:
+            json_data = {}
 
     elif date_start and date_end and transaction_type == "bank":
-        transactions = BankTransaction.objects.filter(
-            Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
-        )
+        try:
+            transactions = BankTransaction.objects.filter(
+                Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
+            )
 
-        transaction_list = []
+            transaction_list = []
         
-        for transaction in transactions:
-            transaction_list.append({
-                "transaction": str(transaction),
-                "id": transaction.id,
-                "debit": transaction.amount_debit,
-                "credit": transaction.amount_credit,
-                "reconciled": transaction.rm_bank_transaction.all().exists()
-            })
+            for transaction in transactions:
+                transaction_list.append({
+                    "transaction": str(transaction),
+                    "id": transaction.id,
+                    "debit": transaction.amount_debit,
+                    "credit": transaction.amount_credit,
+                    "reconciled": transaction.rm_bank_transaction.all().exists()
+                })
 
-        json_data = {
-            "data": transaction_list,
-            "type": "bank"
-        }
+            json_data = {
+                "data": transaction_list,
+                "type": "bank"
+            }
+        except ValidationError:
+            json_data = {}
     else:
         json_data = {}
     

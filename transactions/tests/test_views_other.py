@@ -86,11 +86,33 @@ class RetrieveFinancialCodeSystemTest(TestCase):
             )
         )
 
-    def test_404_on_invalid_date(self):
+    def test_404_on_missing_date(self):
         """Checks that a 404 returns on invalid date"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_parameters
         incorrect_parameters["item_date"] = ""
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.correct_url, incorrect_parameters)
+
+        self.assertEqual(response.status_code, 404)
+        
+    def test_404_on_missing_item_form_id(self):
+        """Checks that a 404 returns on invalid date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["item_form_id"] = ""
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.correct_url, incorrect_parameters)
+
+        self.assertEqual(response.status_code, 404)
+        
+    def test_404_on_invalid_date(self):
+        """Checks that a 404 returns on invalid date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["item_date"] = "a"
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(self.correct_url, incorrect_parameters)

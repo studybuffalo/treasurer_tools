@@ -278,3 +278,17 @@ class CompiledFormsTest(TestCase):
 
         # Check that CompiledForm is invalid
         self.assertFalse(invalid_forms.is_valid())
+
+    def test_corrupt_financial_code_match_when_setting_initial_data(self):
+        """
+            Tests handling when a financial code match is not
+            available for an item ID
+        """
+        form = CompiledForms(
+            "expense"
+            "GET"
+        )
+
+        self.assertIsNone(
+            form._CompiledForms__set_financial_code_data(999999999, 1, "")
+        )

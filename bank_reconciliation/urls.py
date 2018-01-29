@@ -10,5 +10,5 @@ urlpatterns = [
     url(r"^retrieve-transactions/", retrieve_transactions),
     url(r"^match-transactions/", match_transactions),
     url(r"^unmatch-transactions/", unmatch_transactions),
-    url(r"^$", dashboard, name="banking_reconciliation"),
+    url(r"^$", dashboard, name="bank_reconciliation"),
 ]

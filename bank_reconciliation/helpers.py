@@ -19,7 +19,6 @@ class BankReconciliation(object):
             self.errors["post_data"].append("Invalid data submitted to server.")
 
         return json_data
-
     
     def __is_valid_financial_ids(self, financial_ids):
         """Checks that provided financial_ids are valid"""
