@@ -101,6 +101,7 @@ class ReconciliationRetrieveTest(TestCase):
         )
 
     def test_empty_response_on_missing_transaction_type(self):
+        """Test confirms no data returned on missing transaction_type"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
         incorrect_parameters["transaction_type"] = ""
@@ -112,6 +113,7 @@ class ReconciliationRetrieveTest(TestCase):
         self.assertFalse(json.loads(response.content))
         
     def test_empty_response_on_invalid_transaction_type(self):
+        """Test confirms no data returned on invalid transaction_type"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
         incorrect_parameters["transaction_type"] = "a"
@@ -123,6 +125,7 @@ class ReconciliationRetrieveTest(TestCase):
         self.assertFalse(json.loads(response.content))
         
     def test_empty_response_on_missing_date_start(self):
+        """Test confirms no data returned on missing date_start"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
         incorrect_parameters["date_start"] = ""
@@ -133,18 +136,8 @@ class ReconciliationRetrieveTest(TestCase):
         # Check for blank json response
         self.assertFalse(json.loads(response.content))
         
-    def test_empty_response_on_invalid_date_start(self):
-        # Generate incorrect parameters
-        incorrect_parameters = self.correct_financial_parameters
-        incorrect_parameters["date_start"] = "a"
-
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.correct_url, incorrect_parameters)
-        
-        # Check for blank json response
-        self.assertFalse(json.loads(response.content))
-        
     def test_empty_response_on_missing_date_end(self):
+        """Test confirms no data returned on missing date_end"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
         incorrect_parameters["date_end"] = ""
@@ -155,7 +148,32 @@ class ReconciliationRetrieveTest(TestCase):
         # Check for blank json response
         self.assertFalse(json.loads(response.content))
         
+    def test_empty_response_on_invalid_financial_date_start(self):
+        """Test confirms no data returned on invalid financial date_start"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_start"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.correct_url, incorrect_parameters)
+        
+        # Check for blank json response
+        self.assertFalse(json.loads(response.content))
+        
+    def test_empty_response_on_invalid_bank_date_start(self):
+        """Test confirms no data returned on invalid bank date_start"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["date_start"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.correct_url, incorrect_parameters)
+        
+        # Check for blank json response
+        self.assertFalse(json.loads(response.content))
+
     def test_empty_response_on_invalid_financial_date_end(self):
+        """Test confirms no data returned on invalid financial date_end"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
         incorrect_parameters["date_end"] = "a"
@@ -167,6 +185,7 @@ class ReconciliationRetrieveTest(TestCase):
         self.assertFalse(json.loads(response.content))
         
     def test_empty_response_on_invalid_bank_date_end(self):
+        """Test confirms no data returned on invalid bank date_end"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_bank_parameters
         incorrect_parameters["date_end"] = "a"

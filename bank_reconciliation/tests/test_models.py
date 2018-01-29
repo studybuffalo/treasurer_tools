@@ -12,10 +12,10 @@ class ReconciliationMatchModelTest(TestCase):
         "bank_reconciliation/tests/fixtures/country.json",
         "bank_reconciliation/tests/fixtures/demographics.json",
         "bank_reconciliation/tests/fixtures/institution.json",
-        "bank_reconciliation/tests/fixtures/item.json",
         "bank_reconciliation/tests/fixtures/reconciliation_match.json",
         "bank_reconciliation/tests/fixtures/statement.json",
         "bank_reconciliation/tests/fixtures/transaction.json",
+        "bank_reconciliation/tests/fixtures/item.json",
     ]
     
     def test_string_representation(self):

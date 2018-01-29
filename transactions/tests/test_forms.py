@@ -72,7 +72,7 @@ class FinancialCodeAssignmentFormTest(TestCase):
 
 class CompiledFormsTest(TestCase):
     """Additional tests for object not covered elsewhere"""
-
+    # pylint: disable=no-member,protected-access
     fixtures = [
         "transactions/tests/fixtures/authentication.json",
         "transactions/tests/fixtures/country.json",
@@ -289,6 +289,7 @@ class CompiledFormsTest(TestCase):
             "GET"
         )
 
+        
         self.assertIsNone(
             form._CompiledForms__set_financial_code_data(999999999, 1, "")
         )

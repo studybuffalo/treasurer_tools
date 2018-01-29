@@ -1,8 +1,5 @@
 """Test cases for the bank_reconciliation app views"""
 
-import json
-
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from ..helpers import BankReconciliation
@@ -12,15 +9,15 @@ class ReconciliationDashboardTest(TestCase):
     # pylint: disable=no-member,protected-access
     
     fixtures = [
+        "bank_reconciliation/tests/fixtures/transaction.json",
+        "bank_reconciliation/tests/fixtures/item.json",
         "bank_reconciliation/tests/fixtures/account.json",
         "bank_reconciliation/tests/fixtures/bank_transaction.json",
         "bank_reconciliation/tests/fixtures/country.json",
         "bank_reconciliation/tests/fixtures/demographics.json",
         "bank_reconciliation/tests/fixtures/institution.json",
-        "bank_reconciliation/tests/fixtures/item.json",
         "bank_reconciliation/tests/fixtures/reconciliation_match.json",
         "bank_reconciliation/tests/fixtures/statement.json",
-        "bank_reconciliation/tests/fixtures/transaction.json",
     ]
 
     def setUp(self):
