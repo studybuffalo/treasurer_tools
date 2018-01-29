@@ -11,6 +11,7 @@ class BankReconciliation(object):
     # pylint: disable=no-member
     def create_json_data(self, raw_data):
         """Converts raw json data to dictionary"""
+        
         # Check for proper JSON data
         try:
             json_data = json.loads(raw_data)
@@ -26,7 +27,12 @@ class BankReconciliation(object):
 
         for financial_id in financial_ids:
             # Checks that financial ID exists
-            if Transaction.objects.filter(id=financial_id).exists():
+            try:
+                entry_exists = Transaction.objects.filter(id=financial_id).exists()
+            except ValueError:
+                entry_exists = False
+
+            if entry_exists:
                 # Performs additional testing for match/unmatch
                 if self.function_type == "match":
                     if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists():
@@ -54,6 +60,7 @@ class BankReconciliation(object):
                     ).format(financial_id)
                 )
 
+
         return valid
 
     def __is_valid_bank_ids(self, bank_ids):
@@ -61,8 +68,14 @@ class BankReconciliation(object):
         valid = True
 
         for bank_id in bank_ids:
+            # Checks that financial ID exists
+            try:
+                entry_exists = BankTransaction.objects.filter(id__in=bank_ids).exists()
+            except ValueError:
+                entry_exists = False
+
             # Check that the bank ID exists
-            if BankTransaction.objects.filter(id__in=bank_ids).exists():
+            if entry_exists:
                 if self.function_type == "match":
                     if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists():
                         valid = False
@@ -99,6 +112,11 @@ class BankReconciliation(object):
         # Check for financial_ids data
         try:
             financial_ids = self.json_data["financial_ids"]
+            
+            if len(financial_ids) is 0:
+                valid = False
+                self.errors["financial_id"].append("Please select at least one financial transaction.")
+
         except KeyError:
             financial_ids = []
 
@@ -108,6 +126,11 @@ class BankReconciliation(object):
         # Check for bank_ids data
         try:
             bank_ids = self.json_data["bank_ids"]
+
+            if len(bank_ids) is 0:
+                valid = False
+                self.errors["bank_id"].append("Please select at least one bank transaction.")
+
         except KeyError:
             bank_ids = []
 

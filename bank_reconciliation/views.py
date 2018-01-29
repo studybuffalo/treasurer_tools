@@ -86,7 +86,7 @@ def retrieve_transactions(request):
 def match_transactions(request):
     """Matches financial and banking transactions (if valid)"""
     reconciliation = BankReconciliation(request.body, "match")
-
+    
     # Check if provided data is valid
     if reconciliation.is_valid():
         # Make reconcilation matches

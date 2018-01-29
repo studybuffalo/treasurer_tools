@@ -5,6 +5,8 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from ..models import ReconciliationMatch
+
 FIXTURES = [
     "bank_reconciliation/tests/fixtures/account.json",
     "bank_reconciliation/tests/fixtures/authentication.json",
@@ -67,7 +69,7 @@ class ReconciliationDashboardTest(TestCase):
 
 class ReconciliationRetrieveTest(TestCase):
     """Tests the retrieve transaction view"""
-     # pylint: disable=no-member,protected-access
+    # pylint: disable=no-member,protected-access
 
     fixtures = FIXTURES
     
@@ -153,9 +155,20 @@ class ReconciliationRetrieveTest(TestCase):
         # Check for blank json response
         self.assertFalse(json.loads(response.content))
         
-    def test_empty_response_on_invalid_date_end(self):
+    def test_empty_response_on_invalid_financial_date_end(self):
         # Generate incorrect parameters
         incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_end"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.correct_url, incorrect_parameters)
+        
+        # Check for blank json response
+        self.assertFalse(json.loads(response.content))
+        
+    def test_empty_response_on_invalid_bank_date_end(self):
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
         incorrect_parameters["date_end"] = "a"
 
         self.client.login(username="user", password="abcd123456")
@@ -202,8 +215,452 @@ class ReconciliationRetrieveTest(TestCase):
 
 class ReconciliationMatchTest(TestCase):
     """Tests the match transaction view"""
-     # pylint: disable=no-member,protected-access
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = FIXTURES
+    
+    def setUp(self):
+        self.correct_url = "/banking/reconciliation/match-transactions/"
+        self.correct_parameters = {
+            "financial_ids": [2],
+            "bank_ids": [2],
+        }
+
+    def test_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.post(self.correct_url, self.correct_parameters)
+
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/banking/reconciliation/match-transactions/"
+        )
+        
+    def test_error_response_on_invalid_data_format(self):
+        """Checks for proper error message on invalid data formatting"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(self.correct_url, "A1", content_type="text")
+
+        json_data = json.loads(response.content)
+
+        self.assertEqual(
+            json_data["errors"]["post_data"][0],
+            "Invalid data submitted to server."
+        )
+
+    def test_error_response_on_invalid_financial_ids(self):
+        """Checks for proper error message on invalid financial ID format"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "a is not a valid financial transaction ID. Please make a valid selection."
+        )
+
+    def test_error_response_on_nonexistent_financial_ids(self):
+        """Checks for proper error message on nonexistent financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = [999999999]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "999999999 is not a valid financial transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_already_reconciled_financial_ids(self):
+        """Checks for proper error message on reconciled financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = [1]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            (
+                "2017-06-01 - Expense - Joshua Torrance - Travel Grant award "
+                "2017 is already reconciled. Unmatch the transaction before "
+                "reassigning it."
+            )
+        )
+        
+    def test_error_response_on_missing_financial_ids(self):
+        """Checks for proper error message on missing financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = []
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "Please select at least one financial transaction."
+        )
+
+    def test_error_response_on_invalid_bank_ids(self):
+        """Checks for proper error message on invalid bank ID format"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "a is not a valid bank transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_nonexistent_bank_ids(self):
+        """Checks for proper error message on nonexistent bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = [999999999]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "999999999 is not a valid bank transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_already_reconciled_bank_ids(self):
+        """Checks for proper error message on reconciled bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = [1]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            (
+                "2017-01-01 - Cheque #0001 is already reconciled. Unmatch "
+                "the transaction before reassigning it."
+            )
+        )
+        
+    def test_error_response_on_missing_bank_ids(self):
+        """Checks for proper error message on missing bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = []
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "Please select at least one bank transaction."
+        )
+
+    def test_success_on_valid_data(self):
+        """Checks for proper matching on valid data"""
+        # Count number of matches there are currently
+        total_matches = ReconciliationMatch.objects.count()
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(self.correct_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        # Check for valid success responses
+        self.assertEqual(len(json_data["success"]["financial_id"]), 1)
+        self.assertEqual(json_data["success"]["financial_id"][0], 2)
+        self.assertEqual(len(json_data["success"]["bank_id"]), 1)
+        self.assertEqual(json_data["success"]["bank_id"][0], 2)
+
+        # Check for proper number of matches
+        self.assertEqual(total_matches + 1, 2)
+
+        # Check that proper IDs were matched
+        last_match = ReconciliationMatch.objects.last()
+        self.assertEqual(last_match.bank_transaction.id, 2)
+        self.assertEqual(last_match.financial_transaction.id, 2)
 
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
-     # pylint: disable=no-member,protected-access
+    # pylint: disable=no-member,protected-access
+    
+    fixtures = FIXTURES
+    
+    def setUp(self):
+        self.correct_url = "/banking/reconciliation/unmatch-transactions/"
+        self.correct_parameters = {
+            "financial_ids": [1],
+            "bank_ids": [1],
+        }
+
+    def test_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.post(self.correct_url, self.correct_parameters)
+
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/banking/reconciliation/unmatch-transactions/"
+        )
+        
+    def test_error_response_on_invalid_data_format(self):
+        """Checks for proper error message on invalid data formatting"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(self.correct_url, "A1", content_type="text")
+
+        json_data = json.loads(response.content)
+
+        self.assertEqual(
+            json_data["errors"]["post_data"][0],
+            "Invalid data submitted to server."
+        )
+
+    def test_error_response_on_invalid_financial_ids(self):
+        """Checks for proper error message on invalid financial ID format"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "a is not a valid financial transaction ID. Please make a valid selection."
+        )
+
+    def test_error_response_on_nonexistent_financial_ids(self):
+        """Checks for proper error message on nonexistent financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = [999999999]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "999999999 is not a valid financial transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_unreconciled_financial_ids(self):
+        """Checks for proper error message on reconciled financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = [2]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            (
+                "2017-01-01 - Revenue - Joshua Torrance - Travel Grant "
+                "sponsorship 2017 is not a matched transaction."
+            )
+        )
+        
+    def test_error_response_on_missing_financial_ids(self):
+        """Checks for proper error message on missing financial ID"""
+        # Setup incorrect financial id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["financial_ids"] = []
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["financial_id"][0],
+            "Please select at least one financial transaction."
+        )
+
+    def test_error_response_on_invalid_bank_ids(self):
+        """Checks for proper error message on invalid bank ID format"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = "a"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "a is not a valid bank transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_nonexistent_bank_ids(self):
+        """Checks for proper error message on nonexistent bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = [999999999]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "999999999 is not a valid bank transaction ID. Please make a valid selection."
+        )
+        
+    def test_error_response_on_unreconciled_bank_ids(self):
+        """Checks for proper error message on reconciled bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = [2]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "2017-01-02 - Cheque #0002 is not a matched transaction."
+        )
+        
+    def test_error_response_on_missing_bank_ids(self):
+        """Checks for proper error message on missing bank ID"""
+        # Setup incorrect bank id data
+        incorrect_parameters = self.correct_parameters
+        incorrect_parameters["bank_ids"] = []
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(incorrect_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        self.assertEqual(
+            json_data["errors"]["bank_id"][0],
+            "Please select at least one bank transaction."
+        )
+
+    def test_success_on_valid_data(self):
+        """Checks for proper unmatching on valid data"""
+        # Count number of matches there are currently
+        total_matches = ReconciliationMatch.objects.count()
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            json.dumps(self.correct_parameters),
+            content_type="application/json"
+        )
+
+        json_data = json.loads(response.content)
+        
+        # Check for valid success responses
+        self.assertEqual(len(json_data["success"]["financial_id"]), 1)
+        self.assertEqual(json_data["success"]["financial_id"][0], 1)
+        self.assertEqual(len(json_data["success"]["bank_id"]), 1)
+        self.assertEqual(json_data["success"]["bank_id"][0], 1)
+
+        # Check that number of matches has decreased
+        self.assertEqual(total_matches - 1, 0)
+
+        # Check that this match no long exists
+        self.assertFalse(ReconciliationMatch.objects.filter(id=1).exists())
