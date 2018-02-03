@@ -3,25 +3,23 @@
 from django.test import TestCase
 
 from ..helpers import BankReconciliation
+from utils.utils_tests import create_bank_transactions, create_financial_transactions_and_items
 
 class ReconciliationDashboardTest(TestCase):
     """Tests for the BankReconciliation object"""
     # pylint: disable=no-member,protected-access
     
-    fixtures = [
-        "bank_reconciliation/tests/fixtures/transaction.json",
-        "bank_reconciliation/tests/fixtures/item.json",
-        "bank_reconciliation/tests/fixtures/account.json",
-        "bank_reconciliation/tests/fixtures/bank_transaction.json",
-        "bank_reconciliation/tests/fixtures/country.json",
-        "bank_reconciliation/tests/fixtures/demographics.json",
-        "bank_reconciliation/tests/fixtures/institution.json",
-        "bank_reconciliation/tests/fixtures/reconciliation_match.json",
-        "bank_reconciliation/tests/fixtures/statement.json",
-    ]
-
     def setUp(self):
-        self.valid_json_data = {"financial_ids": [2], "bank_ids": [2]}
+        bank_transactions = create_bank_transactions()
+        financial_transactions = create_financial_transactions_and_items()
+        self.valid_json_data = {
+            "financial_ids": [
+                financial_transactions[0].id,
+            ],
+            "bank_ids": [
+                bank_transactions[0].id
+            ]
+        }
 
     def test_invalid_financial_ids_key(self):
         """Checks for proper handling of a missing financial_ids key"""

@@ -186,10 +186,6 @@ def create_financial_transactions_and_items():
         transaction_reference_4,
     ]
 
-def create_financial_transactions():
-
-    return None
-
 def create_reconciliation_matches():
     bank_transactions = create_bank_transactions()
     financial_transactions = create_financial_transactions_and_items()
@@ -226,5 +222,5 @@ def create_reconciliation_matches():
         reconciliation_match_reference_2,
         reconciliation_match_reference_3,
         reconciliation_match_reference_4,
-        reconciliation_match_reference_5
+        reconciliation_match_reference_5,
     ]

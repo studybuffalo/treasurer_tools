@@ -6,27 +6,14 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from ..models import ReconciliationMatch
-
-FIXTURES = [
-    "bank_reconciliation/tests/fixtures/account.json",
-    "bank_reconciliation/tests/fixtures/authentication.json",
-    "bank_reconciliation/tests/fixtures/bank_transaction.json",
-    "bank_reconciliation/tests/fixtures/country.json",
-    "bank_reconciliation/tests/fixtures/demographics.json",
-    "bank_reconciliation/tests/fixtures/institution.json",
-    "bank_reconciliation/tests/fixtures/item.json",
-    "bank_reconciliation/tests/fixtures/reconciliation_match.json",
-    "bank_reconciliation/tests/fixtures/statement.json",
-    "bank_reconciliation/tests/fixtures/transaction.json",
-]
+from utils.utils_tests import create_reconciliation_matches
 
 class ReconciliationDashboardTest(TestCase):
     """Tests for the banking reconciliation view"""
     # pylint: disable=no-member,protected-access
     
-    fixtures = [
-        "bank_reconciliation/tests/fixtures/authentication.json",
-    ]
+    def setUp(self):
+        create_reconciliation_matches()
 
     def test_dashboard_redirect_if_not_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
@@ -70,10 +57,10 @@ class ReconciliationDashboardTest(TestCase):
 class ReconciliationRetrieveTest(TestCase):
     """Tests the retrieve transaction view"""
     # pylint: disable=no-member,protected-access
-
-    fixtures = FIXTURES
     
     def setUp(self):
+        create_reconciliation_matches()
+
         self.correct_url = "/banking/reconciliation/retrieve-transactions/"
         self.correct_financial_parameters = {
             "transaction_type": "financial",
@@ -236,9 +223,9 @@ class ReconciliationMatchTest(TestCase):
     """Tests the match transaction view"""
     # pylint: disable=no-member,protected-access
     
-    fixtures = FIXTURES
-    
     def setUp(self):
+        create_reconciliation_matches()
+
         self.correct_url = "/banking/reconciliation/match-transactions/"
         self.correct_parameters = {
             "financial_ids": [2],
@@ -465,9 +452,9 @@ class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
     # pylint: disable=no-member,protected-access
     
-    fixtures = FIXTURES
-    
     def setUp(self):
+        create_reconciliation_matches()
+
         self.correct_url = "/banking/reconciliation/unmatch-transactions/"
         self.correct_parameters = {
             "financial_ids": [1],
