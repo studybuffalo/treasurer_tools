@@ -3,18 +3,22 @@
 from django.test import TestCase
 
 from ..models import ReconciliationMatch
-from utils.utils_tests import create_reconciliation_matches
+from .utils import create_bank_transactions, create_financial_transactions
 
 class ReconciliationMatchModelTest(TestCase):
     """Tests for the ReconciliationMatch model"""
 
     def setUp(self):
-        create_reconciliation_matches()
+        self.bank_transactions = create_bank_transactions()
+        self.financial_transactions = create_financial_transactions()
         
     def test_string_representation(self):
         """Tests ReconciliationMatch string representation"""
         # pylint: disable=no-member
-        reconciliation_match = ReconciliationMatch.objects.first()
+        reconciliation_match = ReconciliationMatch.objects.create(
+            bank_transaction=self.bank_transactions[0],
+            financial_transaction=self.financial_transactions[0]
+        )
 
         self.assertEqual(
             str(reconciliation_match),

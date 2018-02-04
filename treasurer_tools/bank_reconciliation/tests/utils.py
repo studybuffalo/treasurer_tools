@@ -6,29 +6,7 @@ from bank_transactions.models import Institution, Account, Statement, BankTransa
 from payee_payer.models import Country, Demographics
 from transactions.models import Transaction, Item
 
-def create_authentication_entries():
-    # Create superuser
-    superuser = User.objects.create(
-        username="superuser",
-        email="superuser@email.com"
-    )
-    superuser.set_password("abcd123456")
-    superuser.is_superuser = True
-    superuser.is_staff = True
-    superuser.is_active = True
-    superuser.save()
-
-    # Create staff
-    staff = User.objects.create(
-        username="staff",
-        email="staff@email.com"
-    )
-    staff.set_password("abcd123456")
-    staff.is_superuser = False
-    staff.is_staff = True
-    staff.is_active = True
-    staff.save()
-
+def create_user():
     # Create regular user
     regular_user = User.objects.create(
         username="user",
@@ -108,28 +86,16 @@ def create_bank_transactions():
         bank_transaction_reference_4,
     ]
 
-def create_countries():
-    country_reference_1 = Country.objects.create(
+def create_country():
+    country_reference = Country.objects.create(
         country_code="CA",
         country_name="Canada",
     )
-    country_reference_2 = Country.objects.create(
-        country_code="US",
-        country_name="United States",
-    )
-    country_reference_3 = Country.objects.create(
-        country_code="AU",
-        country_name="Australia",
-    )
 
-    return [
-        country_reference_1,
-        country_reference_2,
-        country_reference_3,
-    ]
+    return country_reference
 
 def create_demographics():
-    country_references = create_countries()
+    country_reference = create_country()
 
     demographic_reference = Demographics.objects.create(
         user=None,
@@ -137,7 +103,7 @@ def create_demographics():
         address="111-222 Fake Street",
         city="Edmonton",
         province="Alberta",
-        country=country_references[0],
+        country=country_reference,
         postal_code="T1T 1T1",
         phone="111-222-3333",
         fax="444-555-6666",
@@ -147,7 +113,7 @@ def create_demographics():
 
     return demographic_reference
 
-def create_financial_transactions_and_items():
+def create_financial_transactions():
     demographic_reference = create_demographics()
 
     transaction_reference_1 = Transaction.objects.create(
@@ -219,43 +185,4 @@ def create_financial_transactions_and_items():
         transaction_reference_2,
         transaction_reference_3,
         transaction_reference_4,
-    ]
-
-def create_reconciliation_matches():
-    bank_transactions = create_bank_transactions()
-    financial_transactions = create_financial_transactions_and_items()
-
-    # create 1:1 match
-    reconciliation_match_reference_1 = ReconciliationMatch.objects.create(
-        bank_transaction=bank_transactions[0],
-        financial_transaction=financial_transactions[0]
-    )
-
-    # create 2:1 match
-    reconciliation_match_reference_2 = ReconciliationMatch.objects.create(
-        bank_transaction=bank_transactions[1],
-        financial_transaction=financial_transactions[1],
-    )
-    reconciliation_match_reference_3 = ReconciliationMatch.objects.create(
-        bank_transaction=bank_transactions[2],
-        financial_transaction=financial_transactions[1],
-    )
-
-    # create 1:2 match
-    reconciliation_match_reference_4 = ReconciliationMatch.objects.create(
-        bank_transaction=bank_transactions[3],
-        financial_transaction=financial_transactions[2],
-    )
-
-    reconciliation_match_reference_5 = ReconciliationMatch.objects.create(
-        bank_transaction=bank_transactions[3],
-        financial_transaction=financial_transactions[3],
-    )
-
-    return [
-        reconciliation_match_reference_1,
-        reconciliation_match_reference_2,
-        reconciliation_match_reference_3,
-        reconciliation_match_reference_4,
-        reconciliation_match_reference_5,
     ]
