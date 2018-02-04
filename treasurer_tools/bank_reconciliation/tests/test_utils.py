@@ -1,11 +1,194 @@
 """Test cases for the bank_reconciliation app views"""
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
+
+from bank_transactions.models import BankTransaction
+from transactions.models import Transaction
 
 from ..models import ReconciliationMatch
-from ..utils import BankReconciliation
+from ..utils import return_transactions_as_json, BankReconciliation
 
 from .utils import create_bank_transactions, create_financial_transactions
+
+class ReturnTransactionsAsJSONTest(TestCase):
+    """Tests the return_transaction_as_json function"""
+
+    def setUp(self):
+        # Populate database with entries
+        create_bank_transactions()
+        create_financial_transactions()
+
+        # Create a request factory for testing function
+        self.request = RequestFactory()
+
+        # Proper parameters for testing
+        self.correct_url = "banking/reconciliation/retrieve-transactions/"
+        self.correct_financial_parameters = {
+            "transaction_type": "financial",
+            "date_start": "2000-01-01",
+            "date_end": "2018-12-31",
+        }
+        self.correct_bank_parameters = {
+            "transaction_type": "bank",
+            "date_start": "2000-01-01",
+            "date_end": "2018-12-31",
+        }
+        
+    def test_proper_json_response_on_valid_bank_data(self):
+        """Checks for a proper json response with valid financial data"""
+        # Get current count of the financial transactions
+        total_bank_transactions = Transaction.objects.count()
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=self.correct_bank_parameters
+        )
+
+        response = return_transactions_as_json(valid_request)
+
+        # Checks that data was returned
+        self.assertTrue(response)
+        
+        # Checks for the proper keys
+        self.assertTrue("data" in response)
+        self.assertTrue("type" in response)
+
+        # Check that values were returned
+        self.assertEqual(len(response["data"]), total_bank_transactions)
+        self.assertEqual(response["type"], "bank")
+        
+    def test_proper_json_response_on_valid_financial_data(self):
+        """Checks for a proper json response with valid financial data"""
+        # Get current count of the financial transactions
+        total_financial_transactions = Transaction.objects.count()
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=self.correct_financial_parameters
+        )
+
+        response = return_transactions_as_json(valid_request)
+
+        # Checks that data was returned
+        self.assertTrue(response)
+        
+        # Checks for the proper keys
+        self.assertTrue("data" in response)
+        self.assertTrue("type" in response)
+
+        # Check that values were returned
+        self.assertEqual(len(response["data"]), total_financial_transactions)
+        self.assertEqual(response["type"], "financial")
+        
+    def test_empty_response_on_missing_transaction_type(self):
+        """Test confirms no data returned on missing transaction_type"""        
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["transaction_type"] = ""
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
+
+        # Generate the response 
+        response = return_transactions_as_json(valid_request)
+
+        # Check for blank json response
+        self.assertFalse(response)
+        
+    def test_empty_response_on_invalid_transaction_type(self):
+        """Test confirms no data returned on invalid transaction_type"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["transaction_type"] = "a"
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
+
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
+
+        # Check for blank json response
+        self.assertFalse(response)
+        
+    #def test_empty_response_on_missing_date_start(self):
+    #    """Test confirms no data returned on missing date_start"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_financial_parameters
+    #    incorrect_parameters["date_start"] = ""
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
+        
+    #def test_empty_response_on_missing_date_end(self):
+    #    """Test confirms no data returned on missing date_end"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_financial_parameters
+    #    incorrect_parameters["date_end"] = ""
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
+        
+    #def test_empty_response_on_invalid_financial_date_start(self):
+    #    """Test confirms no data returned on invalid financial date_start"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_financial_parameters
+    #    incorrect_parameters["date_start"] = "a"
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
+        
+    #def test_empty_response_on_invalid_bank_date_start(self):
+    #    """Test confirms no data returned on invalid bank date_start"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_bank_parameters
+    #    incorrect_parameters["date_start"] = "a"
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
+
+    #def test_empty_response_on_invalid_financial_date_end(self):
+    #    """Test confirms no data returned on invalid financial date_end"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_financial_parameters
+    #    incorrect_parameters["date_end"] = "a"
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
+        
+    #def test_empty_response_on_invalid_bank_date_end(self):
+    #    """Test confirms no data returned on invalid bank date_end"""
+    #    # Generate incorrect parameters
+    #    incorrect_parameters = self.correct_bank_parameters
+    #    incorrect_parameters["date_end"] = "a"
+
+    #    self.client.login(username="user", password="abcd123456")
+    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        
+    #    # Check for blank json response
+    #    self.assertFalse(json.loads(response.content))
 
 class BankReconciliationObjectTest(TestCase):
     """Tests for the BankReconciliation object"""
