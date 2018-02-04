@@ -1,15 +1,13 @@
 """View for the bank_transaction app"""
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 
 from bank_transactions.models import BankTransaction
 from transactions.models import Transaction
 
-from .utils import BankReconciliation
+from .utils import return_transactions_as_json, BankReconciliation
 
 
 @login_required
@@ -27,59 +25,8 @@ def dashboard(request):
 def retrieve_transactions(request):
     """Retrieves and returns all transactions in provided date range"""
     # pylint: disable=no-member
-    transaction_type = request.GET.get("transaction_type", None)
-    date_start = request.GET.get("date_start", None)
-    date_end = request.GET.get("date_end", None)
+    json_data = return_transactions_as_json(request)
 
-    if date_start and date_end and transaction_type == "financial":
-        try:
-            transactions = Transaction.objects.filter(
-                Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
-            )
-
-            transaction_list = []
-        
-            for transaction in transactions:
-                transaction_list.append({
-                    "transaction": str(transaction),
-                    "id": transaction.id,
-                    "total": transaction.total,
-                    "reconciled": transaction.rm_financial_transaction.all().exists()
-                })
-
-            json_data = {
-                "data": transaction_list,
-                "type": "financial"
-            }
-        except ValidationError:
-            json_data = {}
-
-    elif date_start and date_end and transaction_type == "bank":
-        try:
-            transactions = BankTransaction.objects.filter(
-                Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
-            )
-
-            transaction_list = []
-        
-            for transaction in transactions:
-                transaction_list.append({
-                    "transaction": str(transaction),
-                    "id": transaction.id,
-                    "debit": transaction.amount_debit,
-                    "credit": transaction.amount_credit,
-                    "reconciled": transaction.rm_bank_transaction.all().exists()
-                })
-
-            json_data = {
-                "data": transaction_list,
-                "type": "bank"
-            }
-        except ValidationError:
-            json_data = {}
-    else:
-        json_data = {}
-    
     return JsonResponse(json_data)
 
 @login_required
