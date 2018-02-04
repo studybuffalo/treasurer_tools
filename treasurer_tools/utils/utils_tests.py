@@ -1,9 +1,44 @@
 """Functions to assist with unit and integration testing"""
 
+from django.contrib.auth.models import User
 from bank_reconciliation.models import ReconciliationMatch
 from bank_transactions.models import Institution, Account, Statement, BankTransaction
 from payee_payer.models import Country, Demographics
 from transactions.models import Transaction, Item
+
+def create_authentication_entries():
+    # Create superuser
+    superuser = User.objects.create(
+        username="superuser",
+        email="superuser@email.com"
+    )
+    superuser.set_password("abcd123456")
+    superuser.is_superuser = True
+    superuser.is_staff = True
+    superuser.is_active = True
+    superuser.save()
+
+    # Create staff
+    staff = User.objects.create(
+        username="staff",
+        email="staff@email.com"
+    )
+    staff.set_password("abcd123456")
+    staff.is_superuser = False
+    staff.is_staff = True
+    staff.is_active = True
+    staff.save()
+
+    # Create regular user
+    regular_user = User.objects.create(
+        username="user",
+        email="user@email.com"
+    )
+    regular_user.set_password("abcd123456")
+    regular_user.is_superuser = False
+    regular_user.is_staff = False
+    regular_user.is_active = True
+    regular_user.save()
 
 def create_bank_institution():
     institution_reference = Institution.objects.create(

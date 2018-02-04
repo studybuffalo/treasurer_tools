@@ -6,13 +6,21 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from ..models import ReconciliationMatch
-from utils.utils_tests import create_reconciliation_matches
+from ..utils import ReconciliationMatch
+from bank_transactions.models import Statement, BankTransaction
+from payee_payer.models import Demographics
+from transactions.models import Transaction
+from utils.utils_tests import (
+    create_authentication_entries, create_reconciliation_matches, create_financial_transactions_and_items, 
+    create_bank_transactions,
+)
 
 class ReconciliationDashboardTest(TestCase):
     """Tests for the banking reconciliation view"""
     # pylint: disable=no-member,protected-access
     
     def setUp(self):
+        create_authentication_entries()
         create_reconciliation_matches()
 
     def test_dashboard_redirect_if_not_logged_in(self):
@@ -59,6 +67,7 @@ class ReconciliationRetrieveTest(TestCase):
     # pylint: disable=no-member,protected-access
     
     def setUp(self):
+        create_authentication_entries()
         create_reconciliation_matches()
 
         self.correct_url = "/banking/reconciliation/retrieve-transactions/"
@@ -185,6 +194,10 @@ class ReconciliationRetrieveTest(TestCase):
 
     def test_proper_json_response_on_valid_financial_data(self):
         """Checks for a proper json response with valid financial data"""
+        # Get current count of the financial transactions
+        total_financial_transactions = Transaction.objects.count()
+
+        # Retrieve the data
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(self.correct_url, self.correct_financial_parameters)
         
@@ -198,7 +211,7 @@ class ReconciliationRetrieveTest(TestCase):
         self.assertTrue("type" in json_data)
 
         # Check that values were retruned
-        self.assertEqual(len(json_data["data"]), 2)
+        self.assertEqual(len(json_data["data"]), total_financial_transactions)
         self.assertEqual(json_data["type"], "financial")
         
     def test_proper_json_response_on_valid_bank_data(self):
@@ -224,12 +237,14 @@ class ReconciliationMatchTest(TestCase):
     # pylint: disable=no-member,protected-access
     
     def setUp(self):
-        create_reconciliation_matches()
+        create_authentication_entries()
+        financial_transactions = create_financial_transactions_and_items()
+        bank_transactions = create_bank_transactions()
 
         self.correct_url = "/banking/reconciliation/match-transactions/"
         self.correct_parameters = {
-            "financial_ids": [2],
-            "bank_ids": [2],
+            "financial_ids": [financial_transactions[0].id],
+            "bank_ids": [bank_transactions[0].id],
         }
 
     def test_redirect_if_not_logged_in(self):
@@ -295,14 +310,16 @@ class ReconciliationMatchTest(TestCase):
         
     def test_error_response_on_already_reconciled_financial_ids(self):
         """Checks for proper error message on reconciled financial ID"""
-        # Setup incorrect financial id data
-        incorrect_parameters = self.correct_parameters
-        incorrect_parameters["financial_ids"] = [1]
+        # Reconcile the correct transactions
+        ReconciliationMatch.objects.create(
+            financial_transaction=Transaction.objects.get(id=self.correct_parameters["financial_ids"][0]),
+            bank_transaction=BankTransaction.objects.get(id=self.correct_parameters["bank_ids"][0]),
+        )
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             self.correct_url,
-            json.dumps(incorrect_parameters),
+            json.dumps(self.correct_parameters),
             content_type="application/json"
         )
 
@@ -311,9 +328,8 @@ class ReconciliationMatchTest(TestCase):
         self.assertEqual(
             json_data["errors"]["financial_id"][0],
             (
-                "2017-06-01 - Expense - Joshua Torrance - Travel Grant award "
-                "2017 is already reconciled. Unmatch the transaction before "
-                "reassigning it."
+                "2017-06-01 - Expense - Test User - Test Expense Transaction 1 is already "
+                "reconciled. Unmatch the transaction before reassigning it."
             )
         )
         
@@ -379,14 +395,16 @@ class ReconciliationMatchTest(TestCase):
         
     def test_error_response_on_already_reconciled_bank_ids(self):
         """Checks for proper error message on reconciled bank ID"""
-        # Setup incorrect bank id data
-        incorrect_parameters = self.correct_parameters
-        incorrect_parameters["bank_ids"] = [1]
+        # Reconcile the correct transactions
+        ReconciliationMatch.objects.create(
+            financial_transaction=Transaction.objects.get(id=self.correct_parameters["financial_ids"][0]),
+            bank_transaction=BankTransaction.objects.get(id=self.correct_parameters["bank_ids"][0]),
+        )
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             self.correct_url,
-            json.dumps(incorrect_parameters),
+            json.dumps(self.correct_parameters),
             content_type="application/json"
         )
 
@@ -424,7 +442,7 @@ class ReconciliationMatchTest(TestCase):
         """Checks for proper matching on valid data"""
         # Count number of matches there are currently
         total_matches = ReconciliationMatch.objects.count()
-
+        
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             self.correct_url,
@@ -436,29 +454,45 @@ class ReconciliationMatchTest(TestCase):
         
         # Check for valid success responses
         self.assertEqual(len(json_data["success"]["financial_id"]), 1)
-        self.assertEqual(json_data["success"]["financial_id"][0], 2)
+        self.assertEqual(
+            json_data["success"]["financial_id"][0],
+            self.correct_parameters["financial_ids"][0]
+        )
         self.assertEqual(len(json_data["success"]["bank_id"]), 1)
-        self.assertEqual(json_data["success"]["bank_id"][0], 2)
+        self.assertEqual(
+            json_data["success"]["bank_id"][0],
+            self.correct_parameters["bank_ids"][0]
+        )
 
         # Check for proper number of matches
-        self.assertEqual(total_matches + 1, 2)
+        self.assertEqual(
+            ReconciliationMatch.objects.count(),
+            total_matches + 1,
+        )
 
         # Check that proper IDs were matched
         last_match = ReconciliationMatch.objects.last()
-        self.assertEqual(last_match.bank_transaction.id, 2)
-        self.assertEqual(last_match.financial_transaction.id, 2)
+        self.assertEqual(
+            last_match.bank_transaction.id,
+            self.correct_parameters["financial_ids"][0]
+        )
+        self.assertEqual(
+            last_match.financial_transaction.id,
+            self.correct_parameters["bank_ids"][0]
+        )
 
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
     # pylint: disable=no-member,protected-access
     
     def setUp(self):
-        create_reconciliation_matches()
-
+        create_authentication_entries()
+        reconciliation_matches = create_reconciliation_matches()
+        
         self.correct_url = "/banking/reconciliation/unmatch-transactions/"
         self.correct_parameters = {
-            "financial_ids": [1],
-            "bank_ids": [1],
+            "financial_ids": [reconciliation_matches[0].financial_transaction.id],
+            "bank_ids": [reconciliation_matches[0].bank_transaction.id],
         }
 
     def test_redirect_if_not_logged_in(self):
@@ -524,9 +558,17 @@ class ReconciliationUnmatchTest(TestCase):
         
     def test_error_response_on_unreconciled_financial_ids(self):
         """Checks for proper error message on reconciled financial ID"""
-        # Setup incorrect financial id data
+        # Create an invalid financial transaction
+        new_transaction = Transaction.objects.create(
+            payee_payer=Demographics.objects.first(),
+            transaction_type="e",
+            memo="Unreconciled Transaction Test",
+            date_submitted = "2017-01-01",
+        )
+
+        # Replace the financial transaction with the new one
         incorrect_parameters = self.correct_parameters
-        incorrect_parameters["financial_ids"] = [2]
+        incorrect_parameters["financial_ids"] = [new_transaction.id]
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -540,8 +582,8 @@ class ReconciliationUnmatchTest(TestCase):
         self.assertEqual(
             json_data["errors"]["financial_id"][0],
             (
-                "2017-01-01 - Revenue - Joshua Torrance - Travel Grant "
-                "sponsorship 2017 is not a matched transaction."
+                "2017-01-01 - Expense - Test User - Unreconciled Transaction "
+                "Test is not a matched transaction."
             )
         )
         
@@ -607,9 +649,16 @@ class ReconciliationUnmatchTest(TestCase):
         
     def test_error_response_on_unreconciled_bank_ids(self):
         """Checks for proper error message on reconciled bank ID"""
+        # Create an invalid bank transaction
+        new_transaction = BankTransaction.objects.create(
+            statement=Statement.objects.first(),
+            date_transaction="2017-01-01",
+            description_bank="Unreconciled Bank Transaction",
+        )
+
         # Setup incorrect bank id data
         incorrect_parameters = self.correct_parameters
-        incorrect_parameters["bank_ids"] = [2]
+        incorrect_parameters["bank_ids"] = [new_transaction.id]
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -622,7 +671,7 @@ class ReconciliationUnmatchTest(TestCase):
         
         self.assertEqual(
             json_data["errors"]["bank_id"][0],
-            "2017-01-02 - Cheque #0002 is not a matched transaction."
+            "2017-01-01 - Unreconciled Bank Transaction is not a matched transaction."
         )
         
     def test_error_response_on_missing_bank_ids(self):
@@ -658,15 +707,24 @@ class ReconciliationUnmatchTest(TestCase):
         )
 
         json_data = json.loads(response.content)
-        
+
         # Check for valid success responses
         self.assertEqual(len(json_data["success"]["financial_id"]), 1)
-        self.assertEqual(json_data["success"]["financial_id"][0], 1)
+        self.assertEqual(
+            json_data["success"]["financial_id"][0],
+            self.correct_parameters["financial_ids"][0]
+        )
         self.assertEqual(len(json_data["success"]["bank_id"]), 1)
-        self.assertEqual(json_data["success"]["bank_id"][0], 1)
+        self.assertEqual(
+            json_data["success"]["bank_id"][0],
+            self.correct_parameters["bank_ids"][0]
+        )
 
         # Check that number of matches has decreased
-        self.assertEqual(total_matches - 1, 0)
+        self.assertEqual(
+            ReconciliationMatch.objects.count(),
+            total_matches - 1
+        )
 
         # Check that this match no long exists
         self.assertFalse(ReconciliationMatch.objects.filter(id=1).exists())

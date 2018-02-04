@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from ..helpers import BankReconciliation
+from ..utils import BankReconciliation
 from utils.utils_tests import create_bank_transactions, create_financial_transactions_and_items
 
 class ReconciliationDashboardTest(TestCase):

@@ -1,5 +1,6 @@
 """Objects and functions supporting bank_transactions app"""
 import json
+from allauth.account import models
 
 from bank_transactions.models import BankTransaction
 from transactions.models import Transaction

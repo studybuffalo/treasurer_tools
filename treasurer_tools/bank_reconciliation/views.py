@@ -9,7 +9,7 @@ from django.shortcuts import render
 from bank_transactions.models import BankTransaction
 from transactions.models import Transaction
 
-from .helpers import BankReconciliation
+from .utils import BankReconciliation
 
 
 @login_required
