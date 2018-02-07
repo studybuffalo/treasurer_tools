@@ -5,10 +5,11 @@ pipeline {
       steps {
         echo 'This is the Build Stage'
 		script {
-		    def installed = fileExists 'bin/activate'
-            if (!installed) {
-		      echo 'Test'
-		    }
+		  def installed = fileExists 'bin/activate'
+          if (!installed) {
+		    echo 'Creating virtual environment'
+			sh 'virtualenv --no-site-packages .'
+		  }
         }
 	  }
     }
