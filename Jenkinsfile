@@ -4,8 +4,9 @@ pipeline {
     stage('Build') {
       steps {
         echo 'This is the Build Stage'
-        fileExists 'bin/activate'
-        echo 'Test'
+         if (!fileExists 'bin/activate') {
+			echo 'Test'
+		 }
       }
     }
     stage('Test') {
