@@ -8,7 +8,7 @@ pipeline {
 		  def installed = fileExists 'bin/activate'
           if (!installed) {
 		    echo 'Creating virtual environment'
-			sh 'virtualenv --no-site-packages .'
+			sh 'mkvirtualenv treasurer_tools'
 		  }
         }
 	  }
