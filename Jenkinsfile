@@ -4,9 +4,10 @@ pipeline {
     stage('Build') {
       steps {
         echo 'This is the Build Stage'
-         if (!fileExists 'bin/activate') {
-			echo 'Test'
-		 }
+		def installed = fileExists 'bin/activate'
+        if (!installed) {
+		  echo 'Test'
+		}
       }
     }
     stage('Test') {
