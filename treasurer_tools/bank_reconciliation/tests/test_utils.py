@@ -12,7 +12,7 @@ from .utils import create_bank_transactions, create_financial_transactions
 
 class ReturnTransactionsAsJSONTest(TestCase):
     """Tests the return_transaction_as_json function"""
-
+    # TODO: work on better validation for the valid data tests
     def setUp(self):
         # Populate database with entries
         create_bank_transactions()
@@ -23,13 +23,13 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
         # Proper parameters for testing
         self.correct_url = "banking/reconciliation/retrieve-transactions/"
-        self.correct_financial_parameters = {
-            "transaction_type": "financial",
+        self.correct_bank_parameters = {
+            "transaction_type": "bank",
             "date_start": "2000-01-01",
             "date_end": "2018-12-31",
         }
-        self.correct_bank_parameters = {
-            "transaction_type": "bank",
+        self.correct_financial_parameters = {
+            "transaction_type": "financial",
             "date_start": "2000-01-01",
             "date_end": "2018-12-31",
         }
@@ -50,10 +50,6 @@ class ReturnTransactionsAsJSONTest(TestCase):
         # Checks that data was returned
         self.assertTrue(response)
         
-        # Checks for the proper keys
-        self.assertTrue("data" in response)
-        self.assertTrue("type" in response)
-
         # Check that values were returned
         self.assertEqual(len(response["data"]), total_bank_transactions)
         self.assertEqual(response["type"], "bank")
@@ -74,16 +70,12 @@ class ReturnTransactionsAsJSONTest(TestCase):
         # Checks that data was returned
         self.assertTrue(response)
         
-        # Checks for the proper keys
-        self.assertTrue("data" in response)
-        self.assertTrue("type" in response)
-
         # Check that values were returned
         self.assertEqual(len(response["data"]), total_financial_transactions)
         self.assertEqual(response["type"], "financial")
         
-    def test_empty_response_on_missing_transaction_type(self):
-        """Test confirms no data returned on missing transaction_type"""        
+    def test_error_on_missing_transaction_type(self):
+        """Checks error response when transaction_type is missing"""        
         # Generate incorrect parameters
         incorrect_parameters = self.correct_bank_parameters
         incorrect_parameters["transaction_type"] = ""
@@ -97,10 +89,13 @@ class ReturnTransactionsAsJSONTest(TestCase):
         # Generate the response 
         response = return_transactions_as_json(valid_request)
 
-        # Check for blank json response
-        self.assertFalse(response)
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["transaction_type"],
+            "Invalid transaction type provided."
+        )
         
-    def test_empty_response_on_invalid_transaction_type(self):
+    def test_error_response_on_invalid_transaction_type(self):
         """Test confirms no data returned on invalid transaction_type"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_bank_parameters
@@ -114,9 +109,12 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
         # Generate the response
         response = return_transactions_as_json(valid_request)
-
-        # Check for blank json response
-        self.assertFalse(response)
+        
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["transaction_type"],
+            "Invalid transaction type provided."
+        )
         
     #def test_empty_response_on_missing_date_start(self):
     #    """Test confirms no data returned on missing date_start"""

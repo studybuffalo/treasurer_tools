@@ -12,30 +12,48 @@ from .models import ReconciliationMatch
 
 def return_transactions_as_json(request):
     """Returns bank and financial transactions as JSON data"""
+    # The blank json_data variable to return
+    json_data = {
+        "type": None,
+        "data": None,
+        "errors": None
+    }
 
+    # Collect the variables from the GET request
     transaction_type = request.GET.get("transaction_type", None)
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
+    
+    # Checks that a valid transaction type was provided
+    if not (transaction_type == "financial" or transaction_type == "bank"):
+        json_data["errors"] = {"transaction_type": "Invalid transaction type provided."}
+
+        return json_data
+    else:
+        json_data["type"] = transaction_type
 
     # Checks that start date was provided
     if not date_start:
-        return {}
+        json_data["errors"] = {"date_start": "Must specify start date."}
 
+        return json_data
+       
     # Checks that end date was provided
     if not date_end:
-        return {}
+        json_data["errors"] = {"date_end": "Must specify end date."}
 
-    # CHecks that a valid transaction type was provided
-    if not transaction_type == "financial" or not transaction_type=="bank":
-        return {}
+        return json_data
 
+    # Retrieves all financial transactions between the specified dates
     if transaction_type == "financial":
         try:
             transactions = Transaction.objects.filter(
                 Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
             )
         except ValidationError:
-            json_data = {}
+            json_data["errors"] = "Provided date(s) not in valid format ('yyyy-mm-dd')."
+
+            return json_data
 
         transaction_list = []
         
@@ -47,18 +65,18 @@ def return_transactions_as_json(request):
                 "reconciled": transaction.rm_financial_transaction.all().exists()
             })
 
-        json_data = {
-            "data": transaction_list,
-            "type": "financial"
-        }
+        json_data["data"] = transaction_list
 
+    # Retrieve all bank transactions between the specified dates
     elif transaction_type == "bank":
         try:
             transactions = BankTransaction.objects.filter(
                 Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
             )
         except ValidationError:
-            json_data = {}
+            json_data["errors"] = "Provided date(s) not in valid format ('yyyy-mm-dd')."
+
+            return json_data
 
         transaction_list = []
         
@@ -71,13 +89,8 @@ def return_transactions_as_json(request):
                 "reconciled": transaction.rm_bank_transaction.all().exists()
             })
 
-        json_data = {
-            "data": transaction_list,
-            "type": "bank"
-        }
-    else:
-        json_data = {}
-    
+        json_data["data"] = transaction_list
+        
     return json_data
 
 class BankReconciliation(object):
