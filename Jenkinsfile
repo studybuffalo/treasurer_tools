@@ -7,6 +7,7 @@ pipeline {
 		script {
 		  def installed = fileExists 'bin/activate'
           if (!installed) {
+			sh 'echo $PWD'
 		    echo 'Creating virtual environment'
 			sh 'mkvirtualenv treasurer_tools'
 		  }
