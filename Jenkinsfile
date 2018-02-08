@@ -11,7 +11,7 @@ pipeline {
           virtualenv venv
           fi
           . venv/bin/activate
-          pip install -r requirements.txt --download-cache=/tmp/$JOB_NAME
+          pip install -r requirements.txt
           """
         }
         
@@ -19,11 +19,6 @@ pipeline {
         sh '''""" sh
 . venv/bin/activate
 python test_app.py
-"""'''
-        echo 'Collect static files'
-        sh '''sh """
-    . venv/bin/activate
-    python3.6 manage.py collectstatic --noinput
 """'''
       }
     }
