@@ -17,6 +17,7 @@ pipeline {
         
         echo 'Collect static'
         sh '''""" sh
+#!/bin/bash
 echo "Location is ${PWD}"
 . venv/bin/activate
 """'''
