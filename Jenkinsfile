@@ -15,6 +15,7 @@ pipeline {
         
         echo 'Install requirements.txt'
         sh '''""" sh
+    PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
     . venv/bin/activate
     pip3.6 install -r requirements.txt
 """'''
