@@ -12,14 +12,14 @@ pipeline {
           fi
           . venv/bin/activate
           pip install -r requirements.txt
-		  python manage.py migrate --noinput
-          python manage.py collectstatic --noinput
           """
 		}
         script {
           sh """
           PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
           . venv/bin/activate
+		  python manage.py migrate --noinput
+          python manage.py collectstatic --noinput
 		  """
 	    }
       }
