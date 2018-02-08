@@ -16,8 +16,10 @@ pipeline {
 		}
 		echo 'Install requirements.txt'
 		script {
+		  sh """
 		  . venv/bin/activate
 		  pip install -r requirements.txt
+		  """
 		}
         script {
           sh """
