@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Setup virtual environment and install requirements.txt'
+        echo 'Setup virtual environment'
         script {
           sh """
           PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
@@ -13,6 +13,11 @@ pipeline {
           . venv/bin/activate
           pip install -r requirements.txt
           """
+		}
+		echo 'Install requirements.txt'
+		script {
+		  . venv/bin/activate
+		  pip install -r requirements.txt
 		}
         script {
           sh """
