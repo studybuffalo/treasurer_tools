@@ -59,3 +59,9 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
         'django.template.loaders.app_directories.Loader',
     ], ],
 ]
+
+# CONTINUOUS INTEGRATION
+# ------------------------------------------------------------------------------
+INSTALLED_APPS += [
+    "django_jenkins",
+]
