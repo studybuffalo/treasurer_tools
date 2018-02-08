@@ -17,9 +17,6 @@ pipeline {
 
 			# Initialize new venv
 			virtualenv "$VENV"
-
-			# Update pip
-			PS1="${PS1:-}" source "$VENV/bin/activate"
 			"""
 		  }
         }
