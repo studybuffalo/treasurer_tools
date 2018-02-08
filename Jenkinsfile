@@ -37,6 +37,11 @@ pipeline {
 	    }
       }
     }
+	stage('Linting') {
+	  steps {
+	    echo 'Running linting'
+	  }
+	}
     stage('Test') {
       steps {
         echo 'This is the Testing Stage'
