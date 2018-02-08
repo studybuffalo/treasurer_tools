@@ -11,7 +11,7 @@ pipeline {
           virtualenv venv
           fi
           . venv/bin/activate
-          pip install -r requirements.txt
+          pip3.6 install -r requirements.txt
           """
         }
         
