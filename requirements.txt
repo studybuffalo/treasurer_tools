@@ -1,5 +1,6 @@
 django>=1.11,<2.0
 django-allauth>=0.34.0
 django-environ>=0.4.4
+django-multiupload>=0.5.2
 django-simple-history>=1.9.0
 psycopg2>=2.7.3
