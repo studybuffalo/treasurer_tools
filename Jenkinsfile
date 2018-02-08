@@ -19,7 +19,6 @@ pipeline {
         sh '''""" sh
 echo "Location is ${PWD}"
 . venv/bin/activate
-python manage.py collectstatic --noinput
 """'''
       }
     }
