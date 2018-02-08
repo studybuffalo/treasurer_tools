@@ -5,19 +5,13 @@ pipeline {
       steps {
         echo 'This is the Build Stage'
         script {
-          def installed = fileExists 'bin/activate'
-          if (!installed) {
-            echo 'Creating virtual environment'
-            sh """
-            set -euox pipefail
-            
-            # Get an unique venv folder to using *inside* workspace
-            VENV=".venv-$BUILD_NUMBER"
-            
-            # Initialize new venv
-            virtualenv "$VENV"
-            """
-          }
+          sh """
+          PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
+          if [ ! -d "venv" ]; then
+          virtualenv venv
+          fi
+          . venv/bin/activate
+          """
         }
         
       }
