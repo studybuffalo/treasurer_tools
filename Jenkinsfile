@@ -15,9 +15,10 @@ pipeline {
           python manage.py collectstatic --noinput
           """
        script {
-        sh """
-          PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
-          . venv/bin/activate
+         sh """
+           PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
+           . venv/bin/activate
+		 """
 	   }
 """'''
       }
