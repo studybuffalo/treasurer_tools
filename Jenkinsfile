@@ -48,7 +48,7 @@ pipeline {
 		script {
 		  sh """
 		  . venv/bin/activate
-		  python coverage manage.py test
+		  python manage.py jenkins --settings=treasurer_tools.settings.test
 		  """
 		}
       }
