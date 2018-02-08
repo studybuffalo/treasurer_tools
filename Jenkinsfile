@@ -18,7 +18,7 @@ pipeline {
         echo 'Collect static'
         sh '''""" sh
 . venv/bin/activate
-python test_app.py
+python manage.py collectstatic --noinput
 """'''
       }
     }
