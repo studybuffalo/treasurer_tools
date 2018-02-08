@@ -21,10 +21,17 @@ pipeline {
 		  pip install -r requirements.txt
 		  """
 		}
+		echo 'Migrate database'
         script {
           sh """
           . venv/bin/activate
 		  python manage.py migrate --noinput
+		  """
+	    }
+		echo 'Collect static'
+        script {
+          sh """
+          . venv/bin/activate
           python manage.py collectstatic --noinput
 		  """
 	    }
