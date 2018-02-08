@@ -16,6 +16,10 @@ pipeline {
           """
         }
         
+        sh '''sh """
+PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
+. venv/bin/activate
+"""'''
       }
     }
     stage('Test') {
