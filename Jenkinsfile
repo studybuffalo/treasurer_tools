@@ -45,6 +45,12 @@ pipeline {
     stage('Test') {
       steps {
         echo 'This is the Testing Stage'
+		script {
+		  sh """
+		  . venv/bin/activate
+		  python coverage manage.py test
+		  """
+		}
       }
     }
     stage('Deploy') {
