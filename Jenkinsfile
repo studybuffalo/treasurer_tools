@@ -9,8 +9,17 @@ pipeline {
           if (!installed) {
 		    echo 'Creating virtual environment'
 			sh """
-			/usr/local/bin/virtualenvwrapper.sh
-			mkvirtualenv treasurer_tools
+			#/bin/bash
+			set -euox pipefail
+
+			# Get an unique venv folder to using *inside* workspace
+			VENV=".venv-$BUILD_NUMBER"
+
+			# Initialize new venv
+			virtualenv "$VENV"
+
+			# Update pip
+			PS1="${PS1:-}" source "$VENV/bin/activate"
 			"""
 		  }
         }
