@@ -12,14 +12,10 @@ pipeline {
           fi
           . venv/bin/activate
           pip install -r requirements.txt
+          python manage.py collectstatic --noinput
           """
         }
         
-        echo 'Collect static'
-        sh '''""" sh
-echo "Location is ${PWD}"
-./venv/bin/activate
-"""'''
       }
     }
     stage('Test') {
