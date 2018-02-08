@@ -14,11 +14,11 @@ pipeline {
           pip install -r requirements.txt
           python manage.py collectstatic --noinput
           """
-        }
-        
-        sh '''sh """
-PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
-. venv/bin/activate
+       script {
+        sh """
+          PATH=$WORKSPACE/venv/bin:/usr/local/bin:$PATH
+          . venv/bin/activate
+	   }
 """'''
       }
     }
