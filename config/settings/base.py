@@ -31,18 +31,17 @@ DJANGO_APPS = [
     # 'django.contrib.humanize',
 
     # Admin
-    'django.contrib.admin',
+    #'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
+    #"allauth",
+    #"allauth.account",
+    #"allauth.socialaccount",
     "simple_history",
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    # custom users app
     "treasurer_tools.users.apps.UsersConfig",
     "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
     "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
