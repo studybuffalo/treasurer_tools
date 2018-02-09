@@ -1,6 +1,5 @@
 """Objects and functions supporting bank_transactions app"""
 import json
-from allauth.account import models
 
 from django.core.exceptions import ValidationError
 from django.db.models import Q

@@ -31,7 +31,7 @@ DJANGO_APPS = [
     # 'django.contrib.humanize',
 
     # Admin
-    #'django.contrib.admin',
+    'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
     "allauth",
@@ -247,7 +247,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    #'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # Some really nice defaults
