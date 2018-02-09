@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('financial_transactions', '0001_initial'),
-        ('bank_reconciliation', '0002_reconciliationmatch_bank_transaction'),
         ('bank_transactions', '0001_initial'),
     ]
 
