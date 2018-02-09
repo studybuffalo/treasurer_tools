@@ -1,14 +1,15 @@
 """Functions to assist with unit and integration testing"""
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
 from bank_reconciliation.models import ReconciliationMatch
 from bank_transactions.models import Institution, Account, Statement, BankTransaction
-from payee_payer.models import Country, Demographics
-from transactions.models import Transaction, Item
+from payee_payers.models import Country, PayeePayer
+from financial_transactions.models import FinancialTransaction, Item
 
 def create_user():
     # Create regular user
-    regular_user = User.objects.create(
+    regular_user = get_user_model().objects.create(
         username="user",
         email="user@email.com"
     )
@@ -97,7 +98,7 @@ def create_country():
 def create_demographics():
     country_reference = create_country()
 
-    demographic_reference = Demographics.objects.create(
+    demographic_reference = PayeePayer.objects.create(
         user=None,
         name="Test User",
         address="111-222 Fake Street",
@@ -116,7 +117,7 @@ def create_demographics():
 def create_financial_transactions():
     demographic_reference = create_demographics()
 
-    transaction_reference_1 = Transaction.objects.create(
+    transaction_reference_1 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="e",
         memo="Test Expense Transaction 1",
@@ -132,7 +133,7 @@ def create_financial_transactions():
         gst=5.00,
     )
 
-    transaction_reference_2 = Transaction.objects.create(
+    transaction_reference_2 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="r",
         memo="Test Revenue Transaction 1",
@@ -148,7 +149,7 @@ def create_financial_transactions():
         gst=50.00,
     )
 
-    transaction_reference_3 = Transaction.objects.create(
+    transaction_reference_3 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="r",
         memo="Test Revenue Transaction 2",
@@ -164,7 +165,7 @@ def create_financial_transactions():
         gst=0.00,
     )
 
-    transaction_reference_4 = Transaction.objects.create(
+    transaction_reference_4 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="e",
         memo="Test Expense Transaction 2",

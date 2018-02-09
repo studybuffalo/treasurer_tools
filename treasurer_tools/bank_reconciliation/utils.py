@@ -6,9 +6,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from bank_transactions.models import BankTransaction
-from transactions.models import Transaction
+from financial_transactions.models import FinancialTransaction
 
-from .models import ReconciliationMatch
+from bank_reconciliation.models import ReconciliationMatch
 
 def return_transactions_as_json(request):
     """Returns bank and financial transactions as JSON data"""
@@ -47,7 +47,7 @@ def return_transactions_as_json(request):
     # Retrieves all financial transactions between the specified dates
     if transaction_type == "financial":
         try:
-            transactions = Transaction.objects.filter(
+            transactions = FinancialTransaction.objects.filter(
                 Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
             )
         except ValidationError:
@@ -115,7 +115,7 @@ class BankReconciliation(object):
         for financial_id in financial_ids:
             # Checks that financial ID exists
             try:
-                entry_exists = Transaction.objects.filter(id=financial_id).exists()
+                entry_exists = FinancialTransaction.objects.filter(id=financial_id).exists()
             except ValueError:
                 entry_exists = False
 
@@ -128,14 +128,14 @@ class BankReconciliation(object):
                             (
                                 "{} is already reconciled. "
                                 "Unmatch the transaction before reassigning it."
-                            ).format(str(Transaction.objects.get(id=financial_id)))
+                            ).format(str(FinancialTransaction.objects.get(id=financial_id)))
                         )
                 elif self.function_type == "unmatch":
                     if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists() is False:
                         valid = False
                         self.errors["financial_id"].append(
                             "{} is not a matched transaction.".format(
-                                str(Transaction.objects.get(id=financial_id))
+                                str(FinancialTransaction.objects.get(id=financial_id))
                             )
                         )
             else:
@@ -248,7 +248,7 @@ class BankReconciliation(object):
             for bank_id in self.json_data["bank_ids"]:
                 # Create the match
                 ReconciliationMatch.objects.create(
-                    financial_transaction=Transaction.objects.get(id=financial_id),
+                    financial_transaction=FinancialTransaction.objects.get(id=financial_id),
                     bank_transaction=BankTransaction.objects.get(id=bank_id)
                 )
 

@@ -5,12 +5,11 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from bank_reconciliation.models import ReconciliationMatch
+from bank_reconciliation.utils import BankReconciliation
 from bank_transactions.models import Statement, BankTransaction
-from payee_payer.models import Demographics
-from transactions.models import Transaction
-
-from ..models import ReconciliationMatch
-from ..utils import ReconciliationMatch
+from financial_transactions.models import FinancialTransaction
+from payee_payers.models import PayeePayer
 
 from .utils import create_user, create_bank_transactions, create_financial_transactions
 

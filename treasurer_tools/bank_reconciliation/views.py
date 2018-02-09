@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from bank_transactions.models import BankTransaction
-from transactions.models import Transaction
+from financial_transactions.models import FinancialTransaction
 
 from .utils import return_transactions_as_json, BankReconciliation
 

@@ -2,7 +2,8 @@
 
 from django.test import TestCase
 
-from ..models import ReconciliationMatch
+from bank_reconciliation.models import ReconciliationMatch
+
 from .utils import create_bank_transactions, create_financial_transactions
 
 class ReconciliationMatchModelTest(TestCase):

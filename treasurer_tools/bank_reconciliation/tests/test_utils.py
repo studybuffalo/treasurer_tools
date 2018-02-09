@@ -2,11 +2,10 @@
 
 from django.test import RequestFactory, TestCase
 
+from bank_reconciliation.models import ReconciliationMatch
+from bank_reconciliation.utils import return_transactions_as_json, BankReconciliation
 from bank_transactions.models import BankTransaction
-from transactions.models import Transaction
-
-from ..models import ReconciliationMatch
-from ..utils import return_transactions_as_json, BankReconciliation
+from financial_transactions.models import FinancialTransaction
 
 from .utils import create_bank_transactions, create_financial_transactions
 
@@ -37,7 +36,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
     def test_proper_json_response_on_valid_bank_data(self):
         """Checks for a proper json response with valid financial data"""
         # Get current count of the financial transactions
-        total_bank_transactions = Transaction.objects.count()
+        total_bank_transactions = FinancialTransaction.objects.count()
 
         # Create a test request object
         valid_request = self.request.get(
@@ -57,7 +56,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
     def test_proper_json_response_on_valid_financial_data(self):
         """Checks for a proper json response with valid financial data"""
         # Get current count of the financial transactions
-        total_financial_transactions = Transaction.objects.count()
+        total_financial_transactions = FinancialTransaction.objects.count()
 
         # Create a test request object
         valid_request = self.request.get(

@@ -1,12 +1,11 @@
 """
-Local settings for Treasurer Tools project.
+Test settings for Treasurer Tools project.
 
-- Runs in debug mode
-- Uses console backend for emails
+- Used to run tests fast on the continuous integration server and locally
 """
 
-from .base import *
-# pylint: skip-file
+from .base import *  # noqa
+
 
 # DEBUG
 # ------------------------------------------------------------------------------
@@ -18,7 +17,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = False
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = env("SECRET_KEY", default='S>}{t(v|~SNz|uS%o:?8oMqJjmnR^q~00BYjc#wBr99,W.V*u;')
+SECRET_KEY = env('SECRET_KEY', default='TTyNJLOEPCI80ejrFeamDtJwETlTQYgVEmUgVG3igumhqO7uVy')
 
 # Mail settings
 # ------------------------------------------------------------------------------
@@ -42,6 +41,7 @@ CACHES = {
 # TESTING
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 
 # PASSWORD HASHING
 # ------------------------------------------------------------------------------

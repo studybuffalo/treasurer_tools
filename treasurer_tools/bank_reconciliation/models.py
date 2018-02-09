@@ -4,7 +4,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from bank_transactions.models import BankTransaction
-from transactions.models import Transaction
+from financial_transactions.models import FinancialTransaction
 
 class ReconciliationMatch(models.Model):
     """Links bank transaction to one or more financial transactions"""
@@ -14,7 +14,7 @@ class ReconciliationMatch(models.Model):
         related_name="rm_bank_transaction",
     )
     financial_transaction = models.ForeignKey(
-        Transaction,
+        FinancialTransaction,
         on_delete=models.CASCADE,
         related_name="rm_financial_transaction",
     )
