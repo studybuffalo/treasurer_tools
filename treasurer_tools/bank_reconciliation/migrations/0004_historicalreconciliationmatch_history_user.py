@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('investments', '0001_initial'),
+        ('bank_reconciliation', '0003_auto_20180208_2222'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicalinvestment',
+            model_name='historicalreconciliationmatch',
             name='history_user',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL),
         ),
