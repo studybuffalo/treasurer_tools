@@ -19,7 +19,7 @@ class InstitutionForm(forms.ModelForm):
         widgets = {
             "address": Textarea(),
         }
-       
+
 class StatementForm(forms.ModelForm):
     """Form to add and edit transactions"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -42,7 +42,7 @@ class StatementForm(forms.ModelForm):
         except KeyError:
             date_start = None
             date_end = None
-        
+
         # If dates are available, check if start is after end
         if date_start and date_end:
             if date_start > date_end:
@@ -97,7 +97,7 @@ class BankTransactionForm(forms.ModelForm):
             })
 
         return form_data
-        
+
 BankTransactionFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
     BankTransaction,
@@ -117,7 +117,7 @@ class AttachmentMatchForm(forms.ModelForm):
         widgets = {
             "attachment": forms.HiddenInput(),
         }
-        
+
 AttachmentMatchFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
     AttachmentMatch,

@@ -144,13 +144,13 @@ def institution_edit(request, institution_id):
         if formset.cleaned_data:
              # Check if this item is marked for deletion
             can_delete = formset.cleaned_data["DELETE"]
-            
+
             if can_delete:
                 # Retrieve the account for deletion
                 # pylint: disable=no-member
                 account_id = formset.cleaned_data["id"].id
                 account_data = Account.objects.get(id=account_id)
-                
+
                 # Delete the retrieved account
                 account_data.delete()
             else:
@@ -201,9 +201,8 @@ def institution_edit(request, institution_id):
             formsets = account_formset(
                 request.POST, instance=institution_data
             )
-            
+
             if formsets.is_valid():
-                
                 update_transaction_form(form)
 
                 # Cycle through each item_formset and save model data

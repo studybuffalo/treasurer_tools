@@ -30,7 +30,7 @@ def dashboard(request):
             "system": system,
             "budget_years": [],
         })
-        
+
         year_index = 0
         budget_years = system.budgetyear_set.all()
 

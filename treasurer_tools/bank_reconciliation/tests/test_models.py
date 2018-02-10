@@ -12,7 +12,7 @@ class ReconciliationMatchModelTest(TestCase):
     def setUp(self):
         self.bank_transactions = create_bank_transactions()
         self.financial_transactions = create_financial_transactions()
-        
+
     def test_string_representation(self):
         """Tests ReconciliationMatch string representation"""
         # pylint: disable=no-member

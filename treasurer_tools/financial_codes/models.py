@@ -31,9 +31,9 @@ class FinancialCodeSystem(models.Model):
             return_string = "{} ({} to Present)".format(
                 self.title, self.date_start
             )
-        
+
         return return_string
-    
+
 class BudgetYear(models.Model):
     """Start and end dates of the budget year"""
     financial_code_system = models.ForeignKey(

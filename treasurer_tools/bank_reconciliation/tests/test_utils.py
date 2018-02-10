@@ -9,6 +9,7 @@ from financial_transactions.models import FinancialTransaction
 
 from .utils import create_bank_transactions, create_financial_transactions
 
+
 class ReturnTransactionsAsJSONTest(TestCase):
     """Tests the return_transaction_as_json function"""
     # TODO: work on better validation for the valid data tests
@@ -74,7 +75,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
         self.assertEqual(response["type"], "financial")
 
     def test_error_on_missing_transaction_type(self):
-        """Checks error response when transaction_type is missing"""        
+        """Checks error response when transaction_type is missing"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_bank_parameters
         incorrect_parameters["transaction_type"] = ""
@@ -85,7 +86,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             data=incorrect_parameters
         )
 
-        # Generate the response 
+        # Generate the response
         response = return_transactions_as_json(valid_request)
 
         # Check for proper error message
@@ -123,10 +124,10 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
-        
+
     #def test_empty_response_on_missing_date_end(self):
     #    """Test confirms no data returned on missing date_end"""
     #    # Generate incorrect parameters
@@ -135,10 +136,10 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
-        
+
     #def test_empty_response_on_invalid_financial_date_start(self):
     #    """Test confirms no data returned on invalid financial date_start"""
     #    # Generate incorrect parameters
@@ -147,10 +148,10 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
-        
+
     #def test_empty_response_on_invalid_bank_date_start(self):
     #    """Test confirms no data returned on invalid bank date_start"""
     #    # Generate incorrect parameters
@@ -159,7 +160,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
 
@@ -171,10 +172,10 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
-        
+
     #def test_empty_response_on_invalid_bank_date_end(self):
     #    """Test confirms no data returned on invalid bank date_end"""
     #    # Generate incorrect parameters
@@ -183,7 +184,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
     #    self.client.login(username="user", password="abcd123456")
     #    response = self.client.get(self.correct_url, incorrect_parameters)
-        
+
     #    # Check for blank json response
     #    self.assertFalse(json.loads(response.content))
 
@@ -269,7 +270,7 @@ class BankReconciliationObjectTest(TestCase):
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "unmatch")
         reconciliation.json_data = self.valid_data
-        
+
         # Match the transactions
         reconciliation.delete_matches()
 
@@ -296,7 +297,7 @@ class BankReconciliationObjectTest(TestCase):
         )
 
         # Count number of matches there are currently
-        total_matches = ReconciliationMatch.objects.count()        
+        total_matches = ReconciliationMatch.objects.count()
 
         # Setup the reconciliation object and match the IDs
         reconciliation = BankReconciliation("", "unmatch")
@@ -375,7 +376,7 @@ class BankReconciliationObjectTest(TestCase):
         invalid_data["bank_ids"] = "a"
 
         reconciliation.json_data = invalid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -436,7 +437,7 @@ class BankReconciliationObjectTest(TestCase):
         # Setup reconciliation object
         reconciliation = BankReconciliation("", "unmatch")
         reconciliation.json_data = self.valid_data
-        
+
         # Check for proper error handling
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -470,7 +471,7 @@ class BankReconciliationObjectTest(TestCase):
         # Setup up invalid data
         invalid_data = self.valid_data
         invalid_data["financial_ids"] = []
-        
+
         reconciliation.json_data = invalid_data
 
         self.assertFalse(reconciliation.is_valid())
@@ -507,7 +508,7 @@ class BankReconciliationObjectTest(TestCase):
         invalid_data["financial_ids"] = [999999999]
 
         reconciliation.json_data = invalid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(

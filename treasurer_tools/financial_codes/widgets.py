@@ -11,7 +11,7 @@ class SelectWithYearID(Select):
         option = super(SelectWithYearID, self).create_option(
             name, value, label, selected, index, subindex, attrs
         )
-        
+
         # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:
             year_id = FinancialCodeGroup.objects.get(id=option["value"]).budget_year.id
@@ -20,7 +20,7 @@ class SelectWithYearID(Select):
 
         # Add the data attribute
         option["attrs"]["data-year_id"] = year_id
-        
+
         # Return the modified option
         return option
 
@@ -32,7 +32,7 @@ class FinancialCodeWithYearID(Select):
         option = super(FinancialCodeWithYearID, self).create_option(
             name, value, label, selected, index, subindex, attrs
         )
-        
+
         # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:
             year_id = FinancialCode.objects.get(id=option["value"]).financial_code_group.budget_year.id
@@ -41,6 +41,6 @@ class FinancialCodeWithYearID(Select):
 
         # Add the data attribute
         option["attrs"]["data-year_id"] = year_id
-        
+
         # Return the modified option
         return option

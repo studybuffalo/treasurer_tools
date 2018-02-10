@@ -15,7 +15,7 @@ def get_years_with_opt_groups():
 
     for system in FinancialCodeSystem.objects.all():
         budget_years = []
-        
+
         for budget_year in system.budgetyear_set.all():
             budget_years.append([budget_year.id, budget_year])
 
@@ -52,7 +52,7 @@ class FinancialCodeSystemForm(forms.ModelForm):
                 raise ValidationError("The end date must occur after the start date.")
 
         return date_end
-    
+
 class BudgetYearForm(forms.ModelForm):
     """Form to add and edit budget years"""
     # pylint: disable=missing-docstring,too-few-public-methods
@@ -116,7 +116,7 @@ class BudgetYearForm(forms.ModelForm):
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
     # pylint: disable=missing-docstring,too-few-public-methods
-    
+
     class Meta:
         model = FinancialCodeGroup
 

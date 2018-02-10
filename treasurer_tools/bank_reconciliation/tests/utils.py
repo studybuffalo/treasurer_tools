@@ -43,7 +43,7 @@ def create_bank_account():
 
 def create_bank_statement():
     account_reference = create_bank_account()
-    
+
     statement_reference = Statement.objects.create(
         account=account_reference,
         date_start="2017-01-01",

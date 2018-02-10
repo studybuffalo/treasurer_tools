@@ -145,7 +145,7 @@ def statement_edit(request, statement_id):
 
                         # Save the transaction with new reference
                         saved_transaction.save()
-            
+
             # Delete any old attachments
             for attachment_match_formset in attachment_match_formsets:
                 if attachment_match_formset.cleaned_data["DELETE"]:

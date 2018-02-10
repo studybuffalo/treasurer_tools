@@ -14,7 +14,6 @@ pipeline {
           pip install -r requirements.txt
           """
         }
-        
         echo 'Install requirements.txt'
         script {
           sh """
@@ -22,7 +21,6 @@ pipeline {
           pip install -r requirements.txt
           """
         }
-        
         echo 'Migrate database'
         script {
           sh """
@@ -30,7 +28,6 @@ pipeline {
           python manage.py migrate --noinput
           """
         }
-        
         echo 'Collect static'
         script {
           sh """
@@ -38,7 +35,6 @@ pipeline {
           python manage.py collectstatic --noinput
           """
         }
-        
       }
     }
     stage('Test') {
@@ -50,25 +46,23 @@ pipeline {
           python manage.py jenkins --enable-coverage --settings=config.settings.test
           """
         }
-        
         script {
           sh """
           . venv/bin/activate
           pylint --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
           """
         }
-        
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
         junit 'reports/junit.xml'
-		step([
-			$class: "WarningsPublisher",
-			parserConfigurations: [[
-				parserName: "PyLint",
-				pattern: "reports/pylint.txt"
-			]],
-			unstaableTotalAll: "0",
-			usePreviousBuildAsReference: true
-		])
+        step([
+            $class: "WarningsPublisher",
+            parserConfigurations: [[
+                parserName: "PyLint",
+                pattern: "reports/pylint.txt"
+            ]],
+            unstaableTotalAll: "0",
+            usePreviousBuildAsReference: true
+        ])
       }
     }
     stage('Deploy') {

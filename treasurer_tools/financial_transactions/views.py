@@ -33,7 +33,7 @@ def transaction_add(request, t_type):
 
         if compiled_forms.is_valid():
             compiled_forms.save()
-            
+
             # Redirect to a new URL:
             messages.success(request, "Transaction successfully added")
 
@@ -65,7 +65,7 @@ def transaction_edit(request, t_type, transaction_id):
 
         if compiled_forms.is_valid():
             compiled_forms.save()
-            
+
             # Redirect to a new URL:
             messages.success(request, "Transaction successfully edited")
 

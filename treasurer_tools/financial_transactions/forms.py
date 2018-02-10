@@ -60,7 +60,7 @@ class CompiledForms(object):
 
                     # Get the budget year for this match instance
                     budget_year = match.financial_code.financial_code_group.budget_year
-                    
+
                     # Update data to the match instance matching provided ID
                     if budget_year.financial_code_system.id == system_id:
                         data = {
