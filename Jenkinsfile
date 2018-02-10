@@ -47,7 +47,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          python manage.py jenkins --settings=config.settings.test
+          python manage.py jenkins --enable-coverage --settings=config.settings.test
           """
         }
         
