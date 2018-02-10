@@ -55,6 +55,7 @@ pipeline {
           sh """
           . venv/bin/activate
           pylint treasurer_tools > reports/pylint.txt
+		  sys.exit(0)
           """
         }
         
