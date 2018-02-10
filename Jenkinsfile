@@ -47,7 +47,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          python manage.py test --settings=config.settings.test
+          python manage.py jenkins --settings=config.settings.test
           """
         }
         
@@ -57,6 +57,9 @@ pipeline {
           
           """
         }
+        
+        cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
+        junit 'reports/junit.xml'
       }
     }
     stage('Deploy') {
