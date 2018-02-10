@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
                 ('financial_transaction', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rm_financial_transaction', to='financial_transactions.FinancialTransaction')),
             ],
         ),
+        """
         migrations.CreateModel(
             name='HistoricalReconciliationMatch',
             fields=[
@@ -42,4 +43,5 @@ class Migration(migrations.Migration):
                 'get_latest_by': 'history_date',
             },
         ),
+        """
     ]
