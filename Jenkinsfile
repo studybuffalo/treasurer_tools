@@ -54,8 +54,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          pylint treasurer_tools > reports/pylint.txt
-		  sys.exit(0)
+          pylint treasurer_tools > reports/pylint.txt || exit 0
           """
         }
         
