@@ -13,44 +13,50 @@ pipeline {
           . venv/bin/activate
           pip install -r requirements.txt
           """
-		}
-		echo 'Install requirements.txt'
-		script {
-		  sh """
-		  . venv/bin/activate
-		  pip install -r requirements.txt
-		  """
-		}
-		echo 'Migrate database'
+        }
+        
+        echo 'Install requirements.txt'
         script {
           sh """
           . venv/bin/activate
-		  python manage.py migrate --noinput
-		  """
-	    }
-		echo 'Collect static'
+          pip install -r requirements.txt
+          """
+        }
+        
+        echo 'Migrate database'
+        script {
+          sh """
+          . venv/bin/activate
+          python manage.py migrate --noinput
+          """
+        }
+        
+        echo 'Collect static'
         script {
           sh """
           . venv/bin/activate
           python manage.py collectstatic --noinput
-		  """
-	    }
+          """
+        }
+        
       }
     }
-	stage('Linting') {
-	  steps {
-	    echo 'Running linting'
-	  }
-	}
+    stage('Linting') {
+      steps {
+        echo 'Running linting'
+      }
+    }
     stage('Test') {
       steps {
         echo 'This is the Testing Stage'
-		script {
-		  sh """
-		  . venv/bin/activate
-		  python manage.py jenkins --enable-coverage --settings=config.settings.test
-		  """
-		}
+        script {
+          sh """
+          . venv/bin/activate
+          python manage.py jenkins --enable-coverage --settings=config.settings.test
+          """
+        }
+        
+        cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
       }
     }
     stage('Deploy') {
