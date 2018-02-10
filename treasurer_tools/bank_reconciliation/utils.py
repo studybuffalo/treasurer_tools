@@ -9,6 +9,7 @@ from financial_transactions.models import FinancialTransaction
 
 from bank_reconciliation.models import ReconciliationMatch
 
+
 def return_transactions_as_json(request):
     """Returns bank and financial transactions as JSON data"""
     # The blank json_data variable to return
@@ -22,7 +23,7 @@ def return_transactions_as_json(request):
     transaction_type = request.GET.get("transaction_type", None)
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
-    
+
     # Checks that a valid transaction type was provided
     if not (transaction_type == "financial" or transaction_type == "bank"):
         json_data["errors"] = {"transaction_type": "Invalid transaction type provided."}
@@ -36,7 +37,7 @@ def return_transactions_as_json(request):
         json_data["errors"] = {"date_start": "Must specify start date."}
 
         return json_data
-       
+
     # Checks that end date was provided
     if not date_end:
         json_data["errors"] = {"date_end": "Must specify end date."}
@@ -55,7 +56,7 @@ def return_transactions_as_json(request):
             return json_data
 
         transaction_list = []
-        
+
         for transaction in transactions:
             transaction_list.append({
                 "transaction": str(transaction),
@@ -78,7 +79,7 @@ def return_transactions_as_json(request):
             return json_data
 
         transaction_list = []
-        
+
         for transaction in transactions:
             transaction_list.append({
                 "transaction": str(transaction),
@@ -89,7 +90,7 @@ def return_transactions_as_json(request):
             })
 
         json_data["data"] = transaction_list
-        
+
     return json_data
 
 class BankReconciliation(object):
@@ -97,7 +98,7 @@ class BankReconciliation(object):
     # pylint: disable=no-member
     def create_json_data(self, raw_data):
         """Converts raw json data to dictionary"""
-        
+
         # Check for proper JSON data
         try:
             json_data = json.loads(raw_data)
@@ -106,7 +107,7 @@ class BankReconciliation(object):
             self.errors["post_data"].append("Invalid data submitted to server.")
 
         return json_data
-    
+
     def __is_valid_financial_ids(self, financial_ids):
         """Checks that provided financial_ids are valid"""
         valid = True
@@ -198,7 +199,7 @@ class BankReconciliation(object):
         # Check for financial_ids data
         try:
             financial_ids = self.json_data["financial_ids"]
-            
+
             if len(financial_ids) is 0:
                 valid = False
                 self.errors["financial_id"].append("Please select at least one financial transaction.")
@@ -208,7 +209,7 @@ class BankReconciliation(object):
 
             valid = False
             self.errors["financial_id"].append("Please select at least one financial transaction.")
-        
+
         # Check for bank_ids data
         try:
             bank_ids = self.json_data["bank_ids"]
@@ -238,7 +239,7 @@ class BankReconciliation(object):
                 valid = False
 
         return valid
-        
+
     def create_matches(self):
         """Matches provided financial and bank transactions"""
         # Cycle through each financial transaction
@@ -257,7 +258,7 @@ class BankReconciliation(object):
 
     def delete_matches(self):
         """Removes matches between provided financial and bank transactions"""
-        
+
         # Remove any matches with the provided financial ids
         financial_matches = ReconciliationMatch.objects.filter(
             financial_transaction_id__in=self.json_data["financial_ids"]

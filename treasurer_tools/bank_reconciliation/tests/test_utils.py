@@ -32,7 +32,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             "date_start": "2000-01-01",
             "date_end": "2018-12-31",
         }
-        
+
     def test_proper_json_response_on_valid_bank_data(self):
         """Checks for a proper json response with valid financial data"""
         # Get current count of the financial transactions
@@ -48,11 +48,11 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
         # Checks that data was returned
         self.assertTrue(response)
-        
+
         # Check that values were returned
         self.assertEqual(len(response["data"]), total_bank_transactions)
         self.assertEqual(response["type"], "bank")
-        
+
     def test_proper_json_response_on_valid_financial_data(self):
         """Checks for a proper json response with valid financial data"""
         # Get current count of the financial transactions
@@ -68,11 +68,11 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
         # Checks that data was returned
         self.assertTrue(response)
-        
+
         # Check that values were returned
         self.assertEqual(len(response["data"]), total_financial_transactions)
         self.assertEqual(response["type"], "financial")
-        
+
     def test_error_on_missing_transaction_type(self):
         """Checks error response when transaction_type is missing"""        
         # Generate incorrect parameters
@@ -93,7 +93,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             response["errors"]["transaction_type"],
             "Invalid transaction type provided."
         )
-        
+
     def test_error_response_on_invalid_transaction_type(self):
         """Test confirms no data returned on invalid transaction_type"""
         # Generate incorrect parameters
@@ -108,13 +108,13 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
         # Generate the response
         response = return_transactions_as_json(valid_request)
-        
+
         # Check for proper error message
         self.assertEqual(
             response["errors"]["transaction_type"],
             "Invalid transaction type provided."
         )
-        
+
     #def test_empty_response_on_missing_date_start(self):
     #    """Test confirms no data returned on missing date_start"""
     #    # Generate incorrect parameters
@@ -190,7 +190,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
 class BankReconciliationObjectTest(TestCase):
     """Tests for the BankReconciliation object"""
     # pylint: disable=no-member,protected-access
-    
+
     def setUp(self):
         self.bank_transactions = create_bank_transactions()
         self.financial_transactions = create_financial_transactions()
@@ -213,7 +213,7 @@ class BankReconciliationObjectTest(TestCase):
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
         reconciliation.json_data = self.valid_data
-        
+
         # Match the transactions
         reconciliation.create_matches()
 
@@ -235,7 +235,7 @@ class BankReconciliationObjectTest(TestCase):
         """Checks for correct changes to database on successful match"""
         # Count number of matches there are currently
         total_matches = ReconciliationMatch.objects.count()
-        
+
         # Setup the reconciliation object and match the IDs
         reconciliation = BankReconciliation("", "match")
         reconciliation.json_data = self.valid_data
@@ -330,7 +330,7 @@ class BankReconciliationObjectTest(TestCase):
             reconciliation.errors["post_data"][0],
             "Invalid data submitted to server."
         )
-        
+
     def test_error_on_missing_bank_id_key(self):
         """Checks error handling on json_data missing bank_id key"""
         # Setup the reconciliation object
@@ -347,7 +347,7 @@ class BankReconciliationObjectTest(TestCase):
             reconciliation.errors["bank_id"][0],
             "Please select at least one bank transaction."
         )
-        
+
     def test_error_on_missing_bank_ids(self):
         """Checks for proper handling of a missing bank_ids"""
         # Setup the reconciliation object
@@ -369,7 +369,7 @@ class BankReconciliationObjectTest(TestCase):
         """Checks error responses for a string bank ID"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Setup up invalid data (change financial_id to string)
         invalid_data = self.valid_data
         invalid_data["bank_ids"] = "a"
@@ -387,13 +387,13 @@ class BankReconciliationObjectTest(TestCase):
         """Checks error responses for a non-existent bank ID"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Setup up invalid data (change financial_id to string)
         invalid_data = self.valid_data
         invalid_data["bank_ids"] = [999999999]
 
         reconciliation.json_data = invalid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -405,7 +405,7 @@ class BankReconciliationObjectTest(TestCase):
         """Checks error responses for matching already matched financial"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Reconcile the test bank ID
         ReconciliationMatch.objects.create(
             bank_transaction=self.bank_transactions[0],
@@ -414,7 +414,7 @@ class BankReconciliationObjectTest(TestCase):
 
         # Pass the now invalid data to the object
         reconciliation.json_data = self.valid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -478,18 +478,18 @@ class BankReconciliationObjectTest(TestCase):
             reconciliation.errors["financial_id"][0],
             "Please select at least one financial transaction."
         )
-        
+
     def test_error_on_invalid_financial_id_format(self):
         """Checks error responses for a string financial ID"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Setup up invalid data (change financial_id to string)
         invalid_data = self.valid_data
         invalid_data["financial_ids"] = "a"
 
         reconciliation.json_data = invalid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -501,7 +501,7 @@ class BankReconciliationObjectTest(TestCase):
         """Checks error responses for a non-existent financial ID"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Setup up invalid data (change financial_id to string)
         invalid_data = self.valid_data
         invalid_data["financial_ids"] = [999999999]
@@ -519,7 +519,7 @@ class BankReconciliationObjectTest(TestCase):
         """Checks error responses for already matched financial"""
         # Setup the reconciliation object
         reconciliation = BankReconciliation("", "match")
-        
+
         # Reconcile the test financial ID
         ReconciliationMatch.objects.create(
             bank_transaction=self.bank_transactions[1],
@@ -528,7 +528,7 @@ class BankReconciliationObjectTest(TestCase):
 
         # Pass the now invalid data to the object
         reconciliation.json_data = self.valid_data
-        
+
         # Check for proper error responses
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
@@ -539,7 +539,6 @@ class BankReconciliationObjectTest(TestCase):
             )
         )
 
-    
     def test_error_on_unmatched_financial_id(self):
         """Checks error response for unmatching an unmatched financial ID"""
         # Create a test match
@@ -551,7 +550,7 @@ class BankReconciliationObjectTest(TestCase):
         # Setup reconciliation object
         reconciliation = BankReconciliation("", "unmatch")
         reconciliation.json_data = self.valid_data
-        
+
         # Check for proper error handling
         self.assertFalse(reconciliation.is_valid())
         self.assertEqual(
