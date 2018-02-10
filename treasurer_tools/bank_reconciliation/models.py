@@ -18,7 +18,7 @@ class ReconciliationMatch(models.Model):
         on_delete=models.CASCADE,
         related_name="rm_financial_transaction",
     )
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {}".format(
