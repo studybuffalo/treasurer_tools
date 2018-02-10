@@ -8,16 +8,16 @@ from financial_transactions.models import FinancialTransaction
 
 class ReconciliationMatch(models.Model):
     """Links bank transaction to one or more financial transactions"""
-    bank_transaction = models.ForeignKey(
-        BankTransaction,
-        on_delete=models.CASCADE,
-        related_name="rm_bank_transaction",
-    )
-    financial_transaction = models.ForeignKey(
-        FinancialTransaction,
-        on_delete=models.CASCADE,
-        related_name="rm_financial_transaction",
-    )
+    #bank_transaction = models.ForeignKey(
+    #    BankTransaction,
+    #    on_delete=models.CASCADE,
+    #    related_name="rm_bank_transaction",
+    #)
+    #financial_transaction = models.ForeignKey(
+    #    FinancialTransaction,
+    #    on_delete=models.CASCADE,
+    #    related_name="rm_financial_transaction",
+    #)
     # history = HistoricalRecords()
 
     def __str__(self):
