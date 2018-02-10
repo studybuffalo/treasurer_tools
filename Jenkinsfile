@@ -57,9 +57,6 @@ pipeline {
           
           """
         }
-        
-        cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
-        junit 'reports/junit.xml'
       }
     }
     stage('Deploy') {
