@@ -54,7 +54,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          pylint treasurer_tools > reports/pylint.txt || exit 0
+          pylint --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
           """
         }
         
