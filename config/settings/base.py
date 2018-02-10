@@ -42,7 +42,6 @@ THIRD_PARTY_APPS = [
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    "treasurer_tools.users.apps.UsersConfig",
     "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
     "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
     "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
@@ -50,6 +49,7 @@ LOCAL_APPS = [
     "treasurer_tools.investments.apps.InvestmentsConfig",
     "treasurer_tools.payee_payers.apps.PayeePayersConfig",
     "treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig",
+    "treasurer_tools.users.apps.UsersConfig",
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -262,7 +262,6 @@ SOCIALACCOUNT_ADAPTER = 'treasurer_tools.users.adapters.SocialAccountAdapter'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'users:redirect'
 LOGIN_URL = 'account_login'
 
 # SLUGLIFIER

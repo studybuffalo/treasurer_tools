@@ -1,5 +1,4 @@
 """Test cases for the bank_reconciliation app views"""
-
 from django.test import RequestFactory, TestCase
 
 from bank_reconciliation.models import ReconciliationMatch
@@ -96,7 +95,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
         )
 
     def test_error_response_on_invalid_transaction_type(self):
-        """Test confirms no data returned on invalid transaction_type"""
+        """Confirms error response returned on invalid transaction_type"""
         # Generate incorrect parameters
         incorrect_parameters = self.correct_bank_parameters
         incorrect_parameters["transaction_type"] = "a"
@@ -116,77 +115,173 @@ class ReturnTransactionsAsJSONTest(TestCase):
             "Invalid transaction type provided."
         )
 
-    #def test_empty_response_on_missing_date_start(self):
-    #    """Test confirms no data returned on missing date_start"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_financial_parameters
-    #    incorrect_parameters["date_start"] = ""
+    def test_error_on_missing_bank_date_start(self):
+        """Tests error response on missing bank start date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["date_start"] = ""
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
 
-    #def test_empty_response_on_missing_date_end(self):
-    #    """Test confirms no data returned on missing date_end"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_financial_parameters
-    #    incorrect_parameters["date_end"] = ""
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_start"],
+            "Must specify start date."
+        )
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+    def test_error_on_missing_bank_date_end(self):
+        """Tests error response on missing bank end date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["date_end"] = ""
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
 
-    #def test_empty_response_on_invalid_financial_date_start(self):
-    #    """Test confirms no data returned on invalid financial date_start"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_financial_parameters
-    #    incorrect_parameters["date_start"] = "a"
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_end"],
+            "Must specify end date."
+        )
+    
+    def test_error_on_invalid_bank_start_date(self):
+        """Tests error response on improperly formatted bank start date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["date_start"] = "01-01-2017"
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
 
-    #def test_empty_response_on_invalid_bank_date_start(self):
-    #    """Test confirms no data returned on invalid bank date_start"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_bank_parameters
-    #    incorrect_parameters["date_start"] = "a"
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_start"],
+            "Provided date(s) not in valid format ('yyyy-mm-dd')."
+        )
+        
+    def test_error_on_invalid_bank_end_date(self):
+        """Tests error response on improperly formatted bank end date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_bank_parameters
+        incorrect_parameters["date_end"] = "31-12-2017"
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
 
-    #def test_empty_response_on_invalid_financial_date_end(self):
-    #    """Test confirms no data returned on invalid financial date_end"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_financial_parameters
-    #    incorrect_parameters["date_end"] = "a"
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_end"],
+            "Provided date(s) not in valid format ('yyyy-mm-dd')."
+        )
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+    def test_error_on_missing_financial_date_start(self):
+        """Tests error response on missing financial start date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_start"] = ""
 
-    #def test_empty_response_on_invalid_bank_date_end(self):
-    #    """Test confirms no data returned on invalid bank date_end"""
-    #    # Generate incorrect parameters
-    #    incorrect_parameters = self.correct_bank_parameters
-    #    incorrect_parameters["date_end"] = "a"
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
 
-    #    self.client.login(username="user", password="abcd123456")
-    #    response = self.client.get(self.correct_url, incorrect_parameters)
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
 
-    #    # Check for blank json response
-    #    self.assertFalse(json.loads(response.content))
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_start"],
+            "Must specify start date."
+        )
+
+    def test_error_on_missing_financial_date_end(self):
+        """Tests error response on missing financial end date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_end"] = ""
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
+
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
+
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_end"],
+            "Must specify end date."
+        )
+    
+    def test_error_on_invalid_financial_start_date(self):
+        """Tests error response on improperly formatted financial start date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_start"] = "01-01-2017"
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
+
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
+
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_start"],
+            "Provided date(s) not in valid format ('yyyy-mm-dd')."
+        )
+
+    def test_error_on_invalid_financial_end_date(self):
+        """Tests error response on improperly formatted financial end date"""
+        # Generate incorrect parameters
+        incorrect_parameters = self.correct_financial_parameters
+        incorrect_parameters["date_end"] = "31-12-2017"
+
+        # Create a test request object
+        valid_request = self.request.get(
+            self.correct_url,
+            data=incorrect_parameters
+        )
+
+        # Generate the response
+        response = return_transactions_as_json(valid_request)
+
+        # Check for proper error message
+        self.assertEqual(
+            response["errors"]["date_end"],
+            "Provided date(s) not in valid format ('yyyy-mm-dd')."
+        )
 
 class BankReconciliationObjectTest(TestCase):
     """Tests for the BankReconciliation object"""

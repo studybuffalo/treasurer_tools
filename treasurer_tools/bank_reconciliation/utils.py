@@ -51,7 +51,10 @@ def return_transactions_as_json(request):
                 Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
             )
         except ValidationError:
-            json_data["errors"] = "Provided date(s) not in valid format ('yyyy-mm-dd')."
+            json_data["errors"] = {
+                "date_start": "Provided date(s) not in valid format ('yyyy-mm-dd').",
+                "date_end": "Provided date(s) not in valid format ('yyyy-mm-dd').",
+            }
 
             return json_data
 
@@ -74,8 +77,10 @@ def return_transactions_as_json(request):
                 Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
             )
         except ValidationError:
-            json_data["errors"] = "Provided date(s) not in valid format ('yyyy-mm-dd')."
-
+            json_data["errors"] = {
+                "date_start": "Provided date(s) not in valid format ('yyyy-mm-dd').",
+                "date_end": "Provided date(s) not in valid format ('yyyy-mm-dd').",
+            }
             return json_data
 
         transaction_list = []
@@ -98,7 +103,7 @@ class BankReconciliation(object):
     # pylint: disable=no-member
     def create_json_data(self, raw_data):
         """Converts raw json data to dictionary"""
-
+        print(raw_data)
         # Check for proper JSON data
         try:
             json_data = json.loads(raw_data)
