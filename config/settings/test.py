@@ -65,3 +65,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 INSTALLED_APPS += [
     "django_jenkins",
 ]
+
+JENKINS_TASKS = [
+    django_jenkins.tasks.pylint
+]
