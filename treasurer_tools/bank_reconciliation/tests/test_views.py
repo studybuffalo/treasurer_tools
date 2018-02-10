@@ -161,7 +161,7 @@ class ReconciliationMatchTest(TestCase):
         """Checks that there is no redirect on logged in user"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(self.correct_url)
-        
+
         self.assertEqual(
             response.status_code,
             200
@@ -169,45 +169,46 @@ class ReconciliationMatchTest(TestCase):
 
     def test_for_response_on_valid_data(self):
         """Checks that a JSON response is received on valid data"""
-        print("Valid Data Test")
+
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             self.correct_url,
             data=json.dumps(self.valid_data),
+            content_type="application/json",
         )
-        
+
         json_response = str(response.content, encoding="UTF-8")
-        
+
         self.assertJSONEqual(
             json_response,
-            {"type": "bank", "data": [], "errors": None}
+            {
+                'errors': {'bank_id': [], 'financial_id': [], 'post_data': []},
+                'success': {'bank_id': [129], 'financial_id': [129]}
+            }
         )
 
     def test_for_response_on_invalid_data(self):
         """Checks that a JSON response is received on invalid data"""
         # Setup invalid data
-        invalid_data = {
-            "transaction_type": "a",
-            "date_start": "2000-01-01",
-            "date_end": "2018-12-31",
-        }
+        invalid_data = self.valid_data
+        invalid_data["bank_ids"] = [""]
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             self.correct_url,
-            invalid_data,
+            data=json.dumps(invalid_data),
+            content_type="application/json",
         )
+
         json_response = str(response.content, encoding="UTF-8")
-        """
+
         self.assertJSONEqual(
             json_response,
             {
-                "type": None,
-                "data": None,
-                "errors": {"transaction_type": "Invalid transaction type provided."}
+                'errors': {'bank_id': [], 'financial_id': [], 'post_data': []},
+                'success': {'bank_id': [129], 'financial_id': [129]}
             }
         )
-        """
 
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""

@@ -103,7 +103,6 @@ class BankReconciliation(object):
     # pylint: disable=no-member
     def create_json_data(self, raw_data):
         """Converts raw json data to dictionary"""
-        print(raw_data)
         # Check for proper JSON data
         try:
             json_data = json.loads(raw_data)
