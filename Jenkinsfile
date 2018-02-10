@@ -54,7 +54,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          pylint -rcfile=.pylintrc
+          
           """
         }
         
