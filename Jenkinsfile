@@ -60,6 +60,15 @@ pipeline {
         
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
         junit 'reports/junit.xml'
+		step([
+			$class: "WarningsPublisher",
+			parserConfigurations: [[
+				parserName: "PyLint",
+				pattern: "pylint.txt"
+			]],
+			unstaableTotalAll: "0",
+			usePreviousBuildAsReference: true
+		])
       }
     }
     stage('Deploy') {
