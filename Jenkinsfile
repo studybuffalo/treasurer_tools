@@ -64,7 +64,7 @@ pipeline {
 			$class: "WarningsPublisher",
 			parserConfigurations: [[
 				parserName: "PyLint",
-				pattern: "pylint.txt"
+				pattern: "reports/pylint.txt"
 			]],
 			unstaableTotalAll: "0",
 			usePreviousBuildAsReference: true
