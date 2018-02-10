@@ -23,7 +23,7 @@ class Institution(models.Model):
         max_length=30,
         verbose_name="fax number",
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return self.name
@@ -53,7 +53,7 @@ class Account(models.Model):
         help_text="The account status",
         max_length=1,
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} {} ({})".format(
@@ -75,7 +75,7 @@ class Statement(models.Model):
         help_text="The last date the statement applies to",
         verbose_name="end date",
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} to {} statement".format(self.date_start, self.date_end)
@@ -117,7 +117,7 @@ class BankTransaction(models.Model):
         max_digits=12,
         verbose_name="credit amount",
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         if self.description_user:
@@ -143,7 +143,7 @@ class AttachmentMatch(models.Model):
         on_delete=models.CASCADE,
         related_name="am_attachment",
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {}".format(self.statement, self.attachment)

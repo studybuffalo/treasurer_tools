@@ -37,7 +37,7 @@ class FinancialTransaction(models.Model):
         default=timezone.now,
         verbose_name="submission date"
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         # pylint: disable=unsubscriptable-object
@@ -93,7 +93,7 @@ class Item(models.Model):
         help_text="The tax (GST/HST) dollar value",
         max_digits=12,
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {} - {}".format(
@@ -133,7 +133,7 @@ class AttachmentMatch(models.Model):
         Attachment,
         on_delete=models.CASCADE,
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {}".format(self.transaction, self.attachment)

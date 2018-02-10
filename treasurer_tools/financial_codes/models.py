@@ -20,7 +20,7 @@ class FinancialCodeSystem(models.Model):
         null=True,
         verbose_name="end date"
     )
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __str__(self):
         if self.date_end:
@@ -49,7 +49,7 @@ class BudgetYear(models.Model):
         help_text="Last day of the budget year",
         verbose_name="end date",
     )
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __str__(self):
         return "{} to {}".format(self.date_start, self.date_end)
@@ -86,7 +86,7 @@ class FinancialCodeGroup(models.Model):
         help_text="Current status of this code system",
         max_length=1,
     )
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __str__(self):
         if self.type == "e":
@@ -110,7 +110,7 @@ class FinancialCode(models.Model):
         help_text="Description of this financial code",
         max_length=100,
     )
-    history = HistoricalRecords()
+    #history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {}".format(self.code, self.description)

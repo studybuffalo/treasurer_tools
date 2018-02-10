@@ -86,7 +86,7 @@ class PayeePayer(models.Model):
         ),
         max_length=2,
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     class Meta:
         verbose_name_plural = "Payee/Payers"
