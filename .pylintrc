@@ -1,5 +1,6 @@
 [MASTER]
 load-plugins=pylint_common, pylint_django
+init-hook="from pylint.config import find_pylintrc; sys.path.append(os.path.join(os.path.dirname(find_pylintrc()), 'treasurer_tools'))"
 
 [FORMAT]
 max-line-length=120
