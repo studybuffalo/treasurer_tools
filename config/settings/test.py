@@ -62,9 +62,3 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 
 # CONTINUOUS INTEGRATION
 # ------------------------------------------------------------------------------
-INSTALLED_APPS += [
-    "django_jenkins",
-]
-
-JENKINS_TASKS = [
-]
