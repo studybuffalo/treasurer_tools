@@ -10,7 +10,7 @@ from .forms import InstitutionForm, AccountFormSet
 from .models import Institution, Account
 
 @login_required
-def settings(request):
+def dashboard(request):
     """Page to modify bank and account settings"""
 
     institutions = Institution.objects.all()
@@ -24,7 +24,7 @@ def settings(request):
     )
 
 @login_required
-def institution_add(request):
+def add(request):
     """Generates & processes form to add new bank institutions and accounts"""
 
     def save_institution_form(form, institution_data):
@@ -108,7 +108,7 @@ def institution_add(request):
     )
 
 @login_required
-def institution_edit(request, institution_id):
+def edit(request, institution_id):
     """Generate and processes form to edit a financial system"""
 
     def update_transaction_form(form):
@@ -238,7 +238,7 @@ def institution_edit(request, institution_id):
     )
 
 @login_required
-def institution_delete(request, institution_id):
+def delete(request, institution_id):
     """Generates and handles delete requests of a transaction"""
 
     # Get the Transaction instance

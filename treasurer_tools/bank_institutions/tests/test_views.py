@@ -1,18 +1,18 @@
 """Test cases for the bank_institution app views"""
 
-#from django.core.urlresolvers import reverse
-#from django.test import TestCase
+from django.core.urlresolvers import reverse
+from django.test import TestCase
 
-#from bank_transactions.models import Institution, Account
+from bank_institutions.models import Institution, Account
 
-#class BankSettingsTest(TestCase):
-#    """Test functions for the BankSettings dashboard"""
+class BankDashboardTest(TestCase):
+    """Test functions for the BankSettings dashboard"""
 
-#    def test_dashboard_redirect_if_not_logged_in(self):
-#        """Checks redirect to login page if user is not logged in"""
-#        response = self.client.get("/settings/banking/")
+    def test_dashboard_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.get("/settings/banking/")
 
-#        self.assertRedirects(response, "/accounts/login/?next=/settings/banking/")
+        self.assertRedirects(response, "/accounts/login/?next=/settings/banking/")
 
 #    def test_dashboard_url_exists_at_desired_location(self):
 #        """Checks that the dashboard uses the correct URL"""
