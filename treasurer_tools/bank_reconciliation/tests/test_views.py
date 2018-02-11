@@ -7,7 +7,7 @@ from django.test import RequestFactory, TestCase
 
 from bank_reconciliation.models import ReconciliationMatch
 from bank_reconciliation.utils import BankReconciliation
-from bank_transactions.models import Statement, BankTransaction
+from bank_transactions.models import BankTransaction
 from financial_transactions.models import FinancialTransaction
 from payee_payers.models import PayeePayer
 
@@ -203,6 +203,17 @@ class ReconciliationMatchTest(TestCase):
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
     # pylint: disable=no-member,protected-access
+    
+    def setUp(self):
+        create_user()
+
+        self.correct_url = "/banking/reconciliation/unmatch-transactions/"
+        self.bank_transactions = create_bank_transactions()
+        self.financial_transactions = create_financial_transactions()
+        self.valid_data = {
+            "bank_ids": [self.bank_transactions[0].id],
+            "financial_ids": [self.financial_transactions[0].id],
+        }
 
     def test_redirect_if_not_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
@@ -212,5 +223,57 @@ class ReconciliationUnmatchTest(TestCase):
             response,
             "/accounts/login/?next=/banking/reconciliation/unmatch-transactions/"
         )
+        
+    def test_no_redirect_on_logged_in(self):
+        """Checks that there is no redirect on logged in user"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(self.correct_url)
 
-# TODO: Add test to views to ensure proper responses are returned (note: majority of testing is done in test_utils
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    def test_for_response_on_valid_data(self):
+        """Checks that a JSON response is received on valid data"""
+        # Match transactions for test
+        ReconciliationMatch.objects.create(
+            bank_transaction=BankTransaction.objects.get(id=self.valid_data["bank_ids"][0]),
+            financial_transaction=FinancialTransaction.objects.get(id=self.valid_data["financial_ids"][0])
+        )
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            data=json.dumps(self.valid_data),
+            content_type="application/json",
+        )
+
+        json_response = str(response.content, encoding="UTF-8")
+
+        self.assertTrue("success" in json_response)
+        self.assertTrue("errors" in json_response)
+
+    def test_for_response_on_invalid_data(self):
+        """Checks that a JSON response is received on invalid data"""
+        # Match transactions for test
+        ReconciliationMatch.objects.create(
+            bank_transaction=BankTransaction.objects.get(id=self.valid_data["bank_ids"][0]),
+            financial_transaction=FinancialTransaction.objects.get(id=self.valid_data["financial_ids"][0])
+        )
+
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["bank_ids"] = [""]
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            self.correct_url,
+            data=json.dumps(invalid_data),
+            content_type="application/json",
+        )
+
+        json_response = str(response.content, encoding="UTF-8")
+
+        self.assertTrue("success" in json_response)
+        self.assertTrue("errors" in json_response)
