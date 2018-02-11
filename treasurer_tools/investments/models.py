@@ -22,7 +22,7 @@ class Investment(models.Model):
         help_text="Details on rate, term duration, etc.",
         max_length=256,
     )
-   # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __str__(self):
         return "{} - {}".format(self.date_invested, self.name)
