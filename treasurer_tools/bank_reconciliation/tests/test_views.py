@@ -277,6 +277,3 @@ class ReconciliationUnmatchTest(TestCase):
 
         self.assertTrue("success" in json_response)
         self.assertTrue("errors" in json_response)
-
-    def test_jenkins(self):
-        self.assertTrue(False)
