@@ -1,111 +1,93 @@
-"""Test cases for the bank_transaction app forms"""
+"""Test cases for the bank_institution app forms"""
 
-#from django.test import TestCase
+from django.test import TestCase
 
-#from bank_transactions.forms import StatementForm, BankTransactionForm
+from bank_institutions.forms import InstitutionForm, AccountFormSet
+from bank_institutions.models import Institution, Account
 
-#class StatementFormTest(TestCase):
-#    """Test functions for the Statement Form"""
+from .utils import create_bank_institution
 
-#    def test_custom_date_validation(self):
-#        """Tests that start date must be before end date"""
-#        # Generate the form
-#        statement_form = StatementForm({
-#            "account": 1,
-#            "date_start": "2018-01-01",
-#            "date_end": "2017-01-01"
-#        })
 
-#        # Check that the form is invalid
-#        self.assertFalse(statement_form.is_valid())
+class InstitutionFormTest(TestCase):
+    """Tests for the Institution Form"""
 
-#        # Check for proper error message
-#        self.assertEqual(
-#            statement_form["date_end"].errors[0],
-#            "The end date must occur after the start date."
-#        )
+    def setUp(self):
+        self.valid_data = {
+            "name": "Another Financial Institution",
+            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+            "phone": "111-222-1234",
+            "fax": "222-111-1111",
+        }
 
-#    def test_custom_date_validation_handles_invalid_dates(self):
-#        """Tests that the custom validation can handle invalid dates"""
-#        # Generate the form
-#        statement_form = StatementForm({
-#            "account": 1,
-#            "date_start": "1",
-#            "date_end": "2"
-#        })
+    def test_is_valid_with_valid_data(self):
+        """Tests that a is_valid is true when provided valid data"""
+        form = InstitutionForm(data=self.valid_data)
 
-#        # Check that the form is invalid
-#        self.assertFalse(statement_form.is_valid())
+        self.assertTrue(form.is_valid())
 
-#        # Check for proper error messages
-#        self.assertEqual(
-#            statement_form["date_end"].errors[0],
-#            "Enter a valid date."
-#        )
+    def test_is_valid_with_invalid_data(self):
+        """Tests that a is_valid is true when provided valid data"""
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["name"] = None
 
-#class BankTransactionFormTest(TestCase):
-#    """Test functions for the Bank Transaction Form"""
+        form = InstitutionForm(data=invalid_data)
 
-#    def test_custom_amount_validation(self):
-#        """Tests that only debit OR credit has a proper value"""
-#        # Generate the form
-#        bank_transaction_form = BankTransactionForm({
-#            "date_transaction": "2018-01-01",
-#            "description_bank": "CHQ",
-#            "description_user": "Cheque",
-#            "amount_debit": 1.00,
-#            "amount_credit": 1.00
-#        })
+        self.assertFalse(form.is_valid())
 
-#        # Check that the form is invalid
-#        self.assertFalse(bank_transaction_form.is_valid())
+class AccountFormsetTest(TestCase):
+    """Tests for the account formset"""
+    
+    def setUp(self):
+        self.valid_data = {
+            "account_set-0-account_number": "777888999",
+            "account_set-0-name": "Savings Account",
+            "account_set-0-status": "a",
+            "account_set-TOTAL_FORMS": 1,
+            "account_set-INITIAL_FORMS": 0,
+            "account_set-MIN_NUM_FORMS": 1,
+            "account_set-MAX_NUM_FORMS": 1000,
+        }
+        self.institution = create_bank_institution()
 
-#        # Check for proper error message
-#        self.assertEqual(
-#            bank_transaction_form["amount_credit"].errors[0],
-#            "A single transaction cannot have both debit and credit amounts entered."
-#        )
+    def test_is_valid_with_valid_data(self):
+        """Tests that a is_valid is true when provided valid data"""
+        form = AccountFormSet(self.valid_data, instance=self.institution)
 
-#    def test_custom_amount_validation_handles_no_value(self):
-#        """Tests that only debit OR credit has a proper value"""
-#        # Generate the form
-#        bank_transaction_form = BankTransactionForm({
-#            "date_transaction": "2018-01-01",
-#            "description_bank": "CHQ",
-#            "description_user": "Cheque",
-#            "amount_debit": 0,
-#            "amount_credit": 0
-#        })
+        self.assertTrue(form.is_valid())
 
-#        # Check that the form is invalid
-#        self.assertFalse(bank_transaction_form.is_valid())
+    def test_is_valid_with_invalid_data(self):
+        """Tests that a is_valid is true when provided valid data"""
+        # Create invalid data
+        invalid_data = self.valid_data
+        invalid_data["account_set-0-name"] = None
 
-#        # Check for proper error message
-#        self.assertEqual(
-#            bank_transaction_form["amount_debit"].errors[0],
-#            "Please enter a debit or credit value."
-#        )
+        form = AccountFormSet(invalid_data, instance=self.institution)
 
-#    def test_custom_amount_validation_handles_invalid_value(self):
-#        """Tests that custom validation handles invalid debit/credit values"""
-#        # Generate the form
-#        bank_transaction_form = BankTransactionForm({
-#            "date_transaction": "2018-01-01",
-#            "description_bank": "CHQ",
-#            "description_user": "Cheque",
-#            "amount_debit": "a",
-#            "amount_credit": "a"
-#        })
+        self.assertFalse(form.is_valid())
 
-#        # Check that the form is invalid
-#        self.assertFalse(bank_transaction_form.is_valid())
+    def test_is_valid_with_nodata(self):
+        """Tests that at least one form must be submitted"""
+        form = AccountFormSet(
+            {
+                "account_set-TOTAL_FORMS": 0,
+                "account_set-INITIAL_FORMS": 0,
+                "account_set-MIN_NUM_FORMS": 1,
+                "account_set-MAX_NUM_FORMS": 1000
+            },
+            instance=self.institution
+        )
 
-#        # Check for proper error messages
-#        self.assertEqual(
-#            bank_transaction_form["amount_debit"].errors[0],
-#            "Enter a number."
-#        )
-#        self.assertEqual(
-#            bank_transaction_form["amount_credit"].errors[0],
-#            "Enter a number."
-#        )
+        self.assertFalse(form.is_valid())
+
+    def test_account_is_added_on_save(self):
+        """Tests that a new account entry is added when form is saved"""
+        account_total = Account.objects.count()
+
+        form = AccountFormSet(self.valid_data, instance=self.institution)
+        form.save()
+
+        self.assertEqual(
+            Account.objects.count(),
+            account_total + 1
+        )

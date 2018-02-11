@@ -1,191 +1,143 @@
-"""Test cases for the bank_transaction app"""
+"""Test cases for the bank_institutions app"""
 
-#from django.test import TestCase
+from django.test import TestCase
 
-#from bank_transactions.models import (
-#    BankTransaction, Account, Institution, Statement, AttachmentMatch
-#)
+from bank_institutions.models import Institution, Account
 
-#class InstitutionModelTest(TestCase):
-#    """Test functions for the Institution model"""
+from .utils import create_bank_institution, create_bank_account
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "name", "label_name": "name"},
-#            {"field_name": "address", "label_name": "address"},
-#            {"field_name": "phone", "label_name": "phone number"},
-#            {"field_name": "fax", "label_name": "fax number"},
-#        ]
+class InstitutionModelTest(TestCase):
+    """Test functions for the Institution model"""
 
-#        for test_item in test_list:
-#            institution = Institution.objects.get(id=1)
-#            field_label = institution._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+    def setUp(self):
+        create_bank_institution()
 
-#    def test_max_length(self):
-#        """Tests a series of fields for proper max length"""
-#        test_list = [
-#            {"field_name": "name", "max_length": 250},
-#            {"field_name": "address", "max_length": 1000},
-#            {"field_name": "phone", "max_length": 30},
-#            {"field_name": "fax", "max_length": 30},
-#        ]
+    def test_labels(self):
+        """Tests a series of fields for proper label generation"""
+        # Get an institution reference
+        institution = Institution.objects.first()
 
-#        for test_item in test_list:
-#            institution = Institution.objects.get(id=1)
-#            max_length = institution._meta.get_field(test_item["field_name"]).max_length
-#            self.assertEqual(max_length, test_item["max_length"])
+        # Test name label
+        self.assertEqual(
+            institution._meta.get_field("name").verbose_name,
+            "name",
+        )
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        institution = Institution.objects.get(id=1)
-#        self.assertEqual(str(institution), institution.name)
+        # Test address label
+        self.assertEqual(
+            institution._meta.get_field("address").verbose_name,
+            "address"
+        )
 
-#class AccountModelTest(TestCase):
-#    """Test functions for the Account model"""
+        # Test phone label
+        self.assertEqual(
+            institution._meta.get_field("phone").verbose_name,
+            "phone number"
+        )
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "institution", "label_name": "institution"},
-#            {"field_name": "account_number", "label_name": "account number"},
-#            {"field_name": "name", "label_name": "name"},
-#            {"field_name": "status", "label_name": "status"},
-#        ]
+        # Test fax label
+        self.assertEqual(
+            institution._meta.get_field("fax").verbose_name,
+            "fax number"
+        )
 
-#        for test_item in test_list:
-#            account = Account.objects.get(id=1)
-#            field_label = account._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+    def test_max_length(self):
+        """Tests a series of fields for proper max length"""
+        # Get an institution reference
+        institution = Institution.objects.first()
 
-#    def test_max_length(self):
-#        """Tests a series of fields for proper max length"""
-#        test_list = [
-#            {"field_name": "account_number", "max_length": 100},
-#            {"field_name": "name", "max_length": 100},
-#            {"field_name": "status", "max_length": 1},
-#        ]
+        # Test name field
+        self.assertEqual(
+            institution._meta.get_field("name").max_length,
+            250
+        )
 
-#        for test_item in test_list:
-#            account = Account.objects.get(id=1)
-#            max_length = account._meta.get_field(test_item["field_name"]).max_length
-#            self.assertEqual(max_length, test_item["max_length"])
+        # Test address field
+        self.assertEqual(
+            institution._meta.get_field("address").max_length,
+            1000
+        )
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        account = Account.objects.get(id=1)
-#        self.assertEqual(
-#            str(account),
-#            "Test Institution Chequing Account (123456789)"
-#        )
+        # Test phone field
+        self.assertEqual(
+            institution._meta.get_field("phone").max_length,
+            30
+        )
 
-#class StatementModelTest(TestCase):
-#    """Test functions for the Statement model"""
+        # Test fax field
+        self.assertEqual(
+            institution._meta.get_field("fax").max_length,
+            30
+        )
 
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        # Get an institution reference
+        institution = Institution.objects.first()
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "account", "label_name": "account"},
-#            {"field_name": "date_start", "label_name": "start date"},
-#            {"field_name": "date_end", "label_name": "end date"},
-#        ]
+        self.assertEqual(
+            str(institution),
+            "Test Institution"
+        )
 
-#        for test_item in test_list:
-#            statement = Statement.objects.get(id=1)
-#            field_label = statement._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+class AccountModelTest(TestCase):
+    """Test functions for the Account model"""
+    
+    def setUp(self):
+        create_bank_account()
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        statement = Statement.objects.get(id=1)
-#        self.assertEqual(
-#            str(statement),
-#            "{} to {} statement".format(statement.date_start, statement.date_end)
-#        )
+    def test_labels(self):
+        """Tests a series of fields for proper label generation"""
+        # Get an institution reference
+        account = Account.objects.first()
 
-#class BankTransactionModelTest(TestCase):
-#    """Test functions for the BankTransaction model"""
+        # Test institution label
+        self.assertEqual(
+            account._meta.get_field("institution").verbose_name,
+            "institution",
+        )
 
-#    def test_labels(self):
-#        """Tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "statement", "label_name": "statement"},
-#            {"field_name": "date_transaction", "label_name": "transaction date"},
-#            {"field_name": "description_bank", "label_name": "bank description"},
-#            {"field_name": "description_user", "label_name": "user description"},
-#            {"field_name": "amount_debit", "label_name": "debit amount"},
-#            {"field_name": "amount_credit", "label_name": "credit amount"},
-#        ]
+        # Test account_number label
+        self.assertEqual(
+            account._meta.get_field("account_number").verbose_name,
+            "account number"
+        )
 
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            field_label = bank_transaction._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+        # Test name label
+        self.assertEqual(
+            account._meta.get_field("name").verbose_name,
+            "name"
+        )
 
-#    def test_max_length(self):
-#        """Tests a series of fields for proper max length"""
-#        test_list = [
-#            {"field_name": "description_bank", "max_length": 100},
-#            {"field_name": "description_user", "max_length": 100},
-#        ]
+        # Test status label
+        self.assertEqual(
+            account._meta.get_field("status").verbose_name,
+            "status"
+        )
 
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            max_length = bank_transaction._meta.get_field(test_item["field_name"]).max_length
-#            self.assertEqual(max_length, test_item["max_length"])
+    def test_max_length(self):
+        """Tests a series of fields for proper max length"""
+        # Get an institution reference
+        account = Account.objects.first()
 
-#    def test_max_digits(self):
-#        """Tests a series of fields for proper max digits"""
-#        test_list = [
-#            {"field_name": "amount_debit", "max_digits": 12},
-#            {"field_name": "amount_credit", "max_digits": 12},
-#        ]
+        # Test account_number field
+        self.assertEqual(
+            account._meta.get_field("account_number").max_length,
+            100
+        )
 
-#        for test_item in test_list:
-#            bank_transaction = BankTransaction.objects.get(id=1)
-#            max_digits = bank_transaction._meta.get_field(test_item["field_name"]).max_digits
-#            self.assertEqual(max_digits, test_item["max_digits"])
+        # Test name field
+        self.assertEqual(
+            account._meta.get_field("name").max_length,
+            100
+        )
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        bank_transactions = BankTransaction.objects.all()
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+        # Get an institution reference
+        account = Account.objects.first()
 
-#        for bank_transaction in bank_transactions:
-#            if bank_transaction.description_user:
-#                test_string = "{} - {}".format(
-#                    bank_transaction.date_transaction,
-#                    bank_transaction.description_user
-#                )
-#            else:
-#                test_string = "{} - {}".format(
-#                    bank_transaction.date_transaction,
-#                    bank_transaction.description_bank
-#                )
-
-#            self.assertEqual(str(bank_transaction), test_string)
-
-#class AttachmentMatchModelTest(TestCase):
-#    """Test functions for the AttachmentMatch model"""
-
-#    def test_labels(self):
-#        """tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "attachment", "label_name": "attachment"},
-#            {"field_name": "statement", "label_name": "statement"},
-#        ]
-
-#        for test_item in test_list:
-#            bank_attachment_match = AttachmentMatch.objects.get(id=1)
-#            field_label = bank_attachment_match._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
-
-#    def test_string_representation(self):
-#        """Tests AttachmentMatch string representation"""
-#        attachment_match = AttachmentMatch.objects.get(id=1)
-
-#        self.assertEqual(
-#            str(attachment_match),
-#            "2017-01-01 to 2017-01-31 statement - test.pdf"
-#        )
+        self.assertEqual(
+            str(account),
+            "Test Institution Chequing Account (123456789)"
+        )

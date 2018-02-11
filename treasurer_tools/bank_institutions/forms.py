@@ -1,9 +1,9 @@
 """Forms for the financial_codes app"""
 
 from django import forms
-from django.forms import Textarea
+from django.forms import Textarea, inlineformset_factory
 
-from .models import Institution
+from .models import Institution, Account
 
 
 class InstitutionForm(forms.ModelForm):
@@ -16,3 +16,14 @@ class InstitutionForm(forms.ModelForm):
         widgets = {
             "address": Textarea(),
         }
+
+# Setup the inline formset for the Item model
+AccountFormSet = inlineformset_factory(
+    Institution,
+    Account,
+    fields=("account_number", "name", "status",),
+    min_num=1,
+    validate_min=True,
+    extra=0,
+    can_delete=False,
+)

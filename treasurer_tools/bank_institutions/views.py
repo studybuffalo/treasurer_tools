@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .forms import InstitutionForm
+from .forms import InstitutionForm, AccountFormSet
 from .models import Institution, Account
 
 @login_required
@@ -63,17 +63,6 @@ def institution_add(request):
 
             account_data.save()
 
-    # Setup the inline formset for the Item model
-    account_formset = inlineformset_factory(
-        Institution,
-        Account,
-        fields=("account_number", "name", "status",),
-        min_num=1,
-        validate_min=True,
-        extra=0,
-        can_delete=False,
-    )
-
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Create a Statement object
@@ -85,7 +74,7 @@ def institution_add(request):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the institution object
-            formsets = account_formset(
+            formsets = AccountFormSet(
                 request.POST, instance=institution_data
             )
 
@@ -177,16 +166,6 @@ def institution_edit(request, institution_id):
 
                 account_data.save()
 
-    # Setup the inline formset for the Item model
-    account_formset = inlineformset_factory(
-        Institution,
-        Account,
-        fields=("account_number", "name", "status",),
-        min_num=1,
-        validate_min=True,
-        can_delete=True,
-    )
-
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Get the transaction object
@@ -198,9 +177,10 @@ def institution_edit(request, institution_id):
         # Check if the form is valid:
         if form.is_valid():
             # Create a item form instance and provide it the institution object
-            formsets = account_formset(
+            formsets = AccountFormSet(
                 request.POST, instance=institution_data
             )
+            formset.can_delete = True
 
             if formsets.is_valid():
                 update_transaction_form(form)
@@ -241,8 +221,9 @@ def institution_edit(request, institution_id):
             })
 
         # Populate the initial formset with the item data
-        account_formset.extra = len(accounts) - 1
-        formsets = account_formset(initial=initial_account_data)
+        formsets = AccountFormSet(initial=initial_account_data)
+        formsets.extra = len(accounts) - 1
+        formsets.can_delete = True
 
     return render(
         request,
