@@ -4,9 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from bank_transactions.models import BankTransaction
-from financial_transactions.models import FinancialTransaction
-
 from .utils import return_transactions_as_json, BankReconciliation
 
 

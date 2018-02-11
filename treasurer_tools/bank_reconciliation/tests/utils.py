@@ -2,7 +2,6 @@
 
 from django.contrib.auth import get_user_model
 
-from bank_reconciliation.models import ReconciliationMatch
 from bank_transactions.models import Institution, Account, Statement, BankTransaction
 from payee_payers.models import Country, PayeePayer
 from financial_transactions.models import FinancialTransaction, Item

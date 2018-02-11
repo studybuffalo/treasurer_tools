@@ -3,7 +3,6 @@ from django.test import RequestFactory, TestCase
 
 from bank_reconciliation.models import ReconciliationMatch
 from bank_reconciliation.utils import return_transactions_as_json, BankReconciliation
-from bank_transactions.models import BankTransaction
 from financial_transactions.models import FinancialTransaction
 
 from .utils import create_bank_transactions, create_financial_transactions
@@ -11,6 +10,7 @@ from .utils import create_bank_transactions, create_financial_transactions
 
 class ReturnTransactionsAsJSONTest(TestCase):
     """Tests the return_transaction_as_json function"""
+    # pylint: disable=unsubscriptable-object
     # TODO: work on better validation for the valid data tests
     def setUp(self):
         # Populate database with entries
@@ -156,7 +156,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             response["errors"]["date_end"],
             "Must specify end date."
         )
-    
+
     def test_error_on_invalid_bank_start_date(self):
         """Tests error response on improperly formatted bank start date"""
         # Generate incorrect parameters
@@ -177,7 +177,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             response["errors"]["date_start"],
             "Provided date(s) not in valid format ('yyyy-mm-dd')."
         )
-        
+
     def test_error_on_invalid_bank_end_date(self):
         """Tests error response on improperly formatted bank end date"""
         # Generate incorrect parameters
@@ -240,7 +240,7 @@ class ReturnTransactionsAsJSONTest(TestCase):
             response["errors"]["date_end"],
             "Must specify end date."
         )
-    
+
     def test_error_on_invalid_financial_start_date(self):
         """Tests error response on improperly formatted financial start date"""
         # Generate incorrect parameters
@@ -406,7 +406,6 @@ class BankReconciliationObjectTest(TestCase):
         )
 
         # Check that proper IDs were unmatched
-        last_match = ReconciliationMatch.objects.last()
         self.assertEqual(
             ReconciliationMatch.objects.filter(bank_transaction=self.bank_transactions[0]).count(),
             0

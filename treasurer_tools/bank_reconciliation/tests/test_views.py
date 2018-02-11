@@ -3,15 +3,14 @@
 import json
 
 from django.core.urlresolvers import reverse
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
 from bank_reconciliation.models import ReconciliationMatch
-from bank_reconciliation.utils import BankReconciliation
 from bank_transactions.models import BankTransaction
 from financial_transactions.models import FinancialTransaction
-from payee_payers.models import PayeePayer
 
 from .utils import create_user, create_bank_transactions, create_financial_transactions
+
 
 class ReconciliationDashboardTest(TestCase):
     """Tests for the banking reconciliation view"""
@@ -81,7 +80,7 @@ class ReconciliationRetrieveTest(TestCase):
         """Checks that there is no redirect on logged in user"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(self.correct_url)
-        
+
         self.assertEqual(
             response.status_code,
             200
@@ -203,7 +202,7 @@ class ReconciliationMatchTest(TestCase):
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
     # pylint: disable=no-member,protected-access
-    
+
     def setUp(self):
         create_user()
 
@@ -223,7 +222,7 @@ class ReconciliationUnmatchTest(TestCase):
             response,
             "/accounts/login/?next=/banking/reconciliation/unmatch-transactions/"
         )
-        
+
     def test_no_redirect_on_logged_in(self):
         """Checks that there is no redirect on logged in user"""
         self.client.login(username="user", password="abcd123456")
