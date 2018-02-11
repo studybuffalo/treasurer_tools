@@ -7,7 +7,7 @@
     
     <div>
         <ul>
-            <li><a href="{% url 'institution_add' %}">Add new institution</a></li>
+            <li><a href="{% url 'bank_institutions:add' %}">Add new institution</a></li>
         </ul>
     </div>
     <div>
@@ -16,8 +16,8 @@
             {% for institution in institutions %}
                 <li class="expense">
                     {{ institution }} - 
-                    <a href="{% url 'institution_edit' institution.id %}">Edit</a> - 
-                    <a href="{% url 'institution_delete' institution.id %}">Delete</a>
+                    <a href="{% url 'bank_institutions:edit' institution.id %}">Edit</a> - 
+                    <a href="{% url 'bank_institutions:delete' institution.id %}">Delete</a>
                 </li>
             {% endfor %}
         </ul>

@@ -13,13 +13,11 @@ from .models import Institution, Account
 def dashboard(request):
     """Page to modify bank and account settings"""
 
-    institutions = Institution.objects.all()
-
     return render(
         request,
         "bank_institutions/index.html",
         context={
-            "institutions": institutions,
+            "institutions": Institution.objects.all(),
         },
     )
 
@@ -27,80 +25,44 @@ def dashboard(request):
 def add(request):
     """Generates & processes form to add new bank institutions and accounts"""
 
-    def save_institution_form(form, institution_data):
-        """Saves Institution instance based on provided form data"""
-        # Collect the cleaned form fields
-        name = form.cleaned_data["name"]
-        address = form.cleaned_data["address"]
-        phone = form.cleaned_data["phone"]
-        fax = form.cleaned_data["fax"]
-
-        # Set the model data and save the instance
-        institution_data.name = name
-        institution_data.address = address
-        institution_data.phone = phone
-        institution_data.fax = fax
-
-        institution_data.save()
-
-    def save_account_formset(formset, institution_data):
-        """Saves BankTransaction based on provided formset data"""
-        # Only save non-empty forms
-        if formset.cleaned_data:
-            # Create an BankTransaction object
-            account_data = Account()
-
-            # Collect the cleaned formset data
-            account_number = formset.cleaned_data["account_number"]
-            name = formset.cleaned_data["name"]
-            status = formset.cleaned_data["status"]
-
-            # Set the model data and save the instance
-            account_data.institution = institution_data
-            account_data.account_number = account_number
-            account_data.name = name
-            account_data.status = status
-
-            account_data.save()
-
-    # If this is a POST request then process the Form data
+    # POST request - attempt to save data
     if request.method == "POST":
-        # Create a Statement object
-        institution_data = Institution()
-
-        # Create a form instance and populate it with data from the request (binding):
-        form = InstitutionForm(request.POST, instance=institution_data)
+        # Create the institution form
+        institution_form = InstitutionForm(request.POST)
 
         # Check if the form is valid:
-        if form.is_valid():
-            # Create a item form instance and provide it the institution object
-            formsets = AccountFormSet(
-                request.POST, instance=institution_data
-            )
+        if institution_form.is_valid():
+            # Get an institution instance to create the account formset
+            institution_instance = institution_form.save(commit=False)
 
-            if formsets.is_valid():
-                save_institution_form(form, institution_data)
+            # Create the account formset
+            account_formsets = AccountFormSet(request.POST, instance=institution_instance)
 
-                # Cycle through each item_formset and save model data
-                for formset in formsets:
-                    save_account_formset(formset, institution_data)
+            if account_formsets.is_valid():
+                # All forms are valid, save the data
+                institution_instance.save()
+                account_formsets.save()
 
-                # redirect to a new URL:
-                messages.success(request, "Banking institution added")
+                # redirect back to the dashboard
+                messages.success(request, "Banking institution and accounts added")
+                return HttpResponseRedirect(reverse("bank_institutions:dashboard"))
 
-                return HttpResponseRedirect(reverse("bank_settings"))
+        # Institution form is invalid, create a unbound account_formsets
+        else:
+            # Create an account formset to return 
+            account_formsets = AccountFormSet(request.POST)
 
-    # If this is a GET (or any other method) create the default form.
+    # GET request - create blank forms and formsets
     else:
-        form = InstitutionForm(initial={})
-        formsets = account_formset()
+        institution_form = InstitutionForm()
+        account_formsets = AccountFormSet()
 
     return render(
         request,
         "bank_institutions/add.html",
         {
-            "form": form,
-            "formsets": formsets,
+            "form": institution_form,
+            "formsets": account_formsets,
             "page_name": "banking institution & accounts",
             "legend_title": "Accounts",
             "formset_button": "Add account",

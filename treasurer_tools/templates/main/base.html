@@ -151,16 +151,16 @@
                 {% endif %}
             </li>
             <li>
-                <a href="{% url 'payee_payer_dashboard' %}">Manage payees and payers</a>
+                <a href="{% url 'payee_payers:dashboard' %}">Manage payees and payers</a>
             </li>
             <li>
-                <a href="{% url 'transactions_dashboard' %}">Transactions</a>
+                <a href="{% url 'financial_transactions:dashboard' %}">Transactions</a>
             </li>
             <li>
-                <a href="{% url 'investments_dashboard' %}">Investments</a>
+                <a href="{% url 'investments:dashboard' %}">Investments</a>
             </li>
             <li>
-                <a href="{% url 'bank_dashboard' %}">Banking</a>
+                <a href="{% url 'bank_transactions:dashboard' %}">Banking</a>
             </li>
             <li>
                 <a>Reports</a>
@@ -170,7 +170,7 @@
                 <ul>
                     <li><a href="">User management</a></li>
                     <li><a href="">Branch Details</a></li>
-                    <li><a href="{% url 'financial_codes_dashboard' %}">Accounting Codes</a></li>
+                    <li><a href="{% url 'financial_codes:dashboard' %}">Accounting Codes</a></li>
                     <li><a href="{% url 'bank_institutions:dashboard' %}">Banking details</a></li>
                 </ul>
             </li>

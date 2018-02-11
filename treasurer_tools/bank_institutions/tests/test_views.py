@@ -5,8 +5,13 @@ from django.test import TestCase
 
 from bank_institutions.models import Institution, Account
 
+from .utils import create_user
+
+
 class BankDashboardTest(TestCase):
     """Test functions for the BankSettings dashboard"""
+    def setUp(self):
+        create_user()
 
     def test_dashboard_redirect_if_not_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
@@ -14,139 +19,204 @@ class BankDashboardTest(TestCase):
 
         self.assertRedirects(response, "/accounts/login/?next=/settings/banking/")
 
-#    def test_dashboard_url_exists_at_desired_location(self):
-#        """Checks that the dashboard uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/banking/")
+    def test_dashboard_url_exists_at_desired_location(self):
+        """Checks that the dashboard uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/banking/")
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_dashboard_accessible_by_name(self):
-#        """Checks that the dashboard URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_settings"))
+    def test_dashboard_accessible_by_name(self):
+        """Checks that the dashboard URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:dashboard"))
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_dashboard_template(self):
-#        """Checks that the dashboard uses the correct template"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_settings"))
+    def test_dashboard_template(self):
+        """Checks that the dashboard uses the correct template"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:dashboard"))
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_settings/index.html")
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_institutions/index.html")
 
-#class InstitutionAddTest(TestCase):
-#    """Tests for the institution_add view"""
+class InstitutionAddTest(TestCase):
+    """Tests for the institution_add view"""
 
-#    def setUp(self):
-#        self.correct_data = {
-#            "name": "Another Financial Institution",
-#            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-#            "phone": "111-222-1234",
-#            "fax": "222-111-1111",
-#            "account_set-0-account_number": "777888999",
-#            "account_set-0-name": "Savings Account",
-#            "account_set-0-status": "a",
-#            "account_set-TOTAL_FORMS": 1,
-#            "account_set-INITIAL_FORMS": 0,
-#            "account_set-MIN_NUM_FORMS": 1,
-#            "account_set-MAX_NUM_FORMS": 1000,
-#        }
+    def setUp(self):
+        create_user()
 
-#    def test_institution_add_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(reverse("institution_add"))
+        self.valid_data = {
+            "name": "Another Financial Institution",
+            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
+            "phone": "111-222-1234",
+            "fax": "222-111-1111",
+            "account_set-0-account_number": "777888999",
+            "account_set-0-name": "Savings Account",
+            "account_set-0-status": "a",
+            "account_set-TOTAL_FORMS": 1,
+            "account_set-INITIAL_FORMS": 0,
+            "account_set-MIN_NUM_FORMS": 1,
+            "account_set-MAX_NUM_FORMS": 1000,
+        }
 
-#        self.assertEqual(response.status_code, 302)
+    def test_institution_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("bank_institutions:add"))
 
-#    def test_institution_add_url_exists_at_desired_location(self):
-#        """Checks that the add institution page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/banking/institution/add/")
+        self.assertEqual(response.status_code, 302)
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_institution_add_noredirect_if_logged_in(self):
+        """Checks that user is not redirected if logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:add"))
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#    def test_institution_add_accessible_by_name(self):
-#        """Checks that add institution page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("institution_add"))
+        # Check that 200 status code returned (i.e. no redirect)
+        self.assertEqual(response.status_code, 200)
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_institution_add_url_exists_at_desired_location(self):
+        """Checks that the add institution page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/banking/institution/add/")
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#    def test_institution_add_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("institution_add"))
+    def test_institution_add_accessible_by_name(self):
+        """Checks that add institution page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:add"))
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_settings/add.html")
+    def test_institution_add_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:add"))
 
-#    def test_institution_add_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("institution_add"), self.correct_data, follow=True,
-#        )
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_institutions/add.html")
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_institution_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:add"),
+            self.valid_data,
+            follow=True,
+        )
 
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_settings"))
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_institutions:dashboard"))
 
-#    def test_institution_add_confirm_add(self):
-#        """Confirms data is added to database on successful form submission"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("institution_add"), self.correct_data, follow=True,
-#        )
+    def test_institution_add_confirm_add(self):
+        """Confirms data is added to database on successful form submission"""
+        # Get current count of institutions and accounts
+        institution_total = Institution.objects.count()
+        account_total = Account.objects.count()
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:add"),
+            self.valid_data,
+            follow=True,
+        )
 
-#        # Check that one institution was added
-#        self.assertEqual(2, Institution.objects.count())
+        # Check that one institution was added
+        self.assertEqual(
+            Institution.objects.count(),
+            institution_total + 1
+        )
 
-#        # Check that one account was added
-#        self.assertEqual(3, Account.objects.count())
+        # Check that one account was added
+        self.assertEqual(
+            Account.objects.count(),
+            account_total + 1
+        )
 
-#    def test_institution_add_invalid_account_status(self):
-#        """Confirms that incorrect statuses are properly converted to 'a'"""
-#        # Setup incorrect data
-#        incorrect_data = self.correct_data
-#        incorrect_data["account_set-0-status"] = "z"
+    def test_institution_add_invalid_institution_data(self):
+        """Confirms form data returned on invalid institution data"""
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["name"] = ""
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:add"),
+            invalid_data,
+            follow=True,
+        )
 
-#        # Submit form
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_add"), incorrect_data, follow=True,
-#        )
+        # Check that institution data returned
+        institution_form = response.context["form"]
 
-#        # Confirm that new entry has been added properly
-#        self.assertEqual(Account.objects.get(id=1).status, "a")
+        self.assertEqual(
+            institution_form["name"].value(),
+            invalid_data["name"]
+        )
+
+        self.assertEqual(
+            institution_form["address"].value(),
+            invalid_data["address"]
+        )
+
+        # Check that account data returned
+        account_formset = response.context["formsets"]
+
+        self.assertEqual(
+            account_formset[0]["account_number"].value(),
+            invalid_data["account_set-0-account_number"]
+        )
+
+    def test_institution_add_invalid_account_data(self):
+        """Confirms form data returned on invalid account data"""
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["account_set-0-name"] = ""
+        
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:add"),
+            invalid_data,
+            follow=True,
+        )
+
+        # Check that institution data returned
+        institution_form = response.context["form"]
+
+        self.assertEqual(
+            institution_form["name"].value(),
+            invalid_data["name"]
+        )
+
+        # Check that account data returned
+        account_formset = response.context["formsets"]
+
+        self.assertEqual(
+            account_formset[0]["account_number"].value(),
+            invalid_data["account_set-0-account_number"]
+        )
+        
+        self.assertEqual(
+            account_formset[0]["name"].value(),
+            invalid_data["account_set-0-name"]
+        )
 
 #class InstitutionEditTest(TestCase):
 #    """Tests of the edit Institution form page"""

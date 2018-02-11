@@ -6,20 +6,8 @@ from .views import (
 )
 # pylint: disable=invalid-name
 urlpatterns = [
-    url(
-        r"^add/$",
-        investment_add,
-        name="investment_add",
-    ),
-    url(
-        r"^edit/(?P<investment_id>\d+)$",
-        investment_edit,
-        name="investment_edit",
-    ),
-    url(
-        r"^delete/(?P<investment_id>\d+)$",
-        investment_delete,
-        name="investment_delete",
-    ),
-    url(r"^$", dashboard, name="investments_dashboard"),
+    url(r"^add/$", investment_add, name="add"),
+    url(r"^edit/(?P<investment_id>\d+)$", investment_edit, name="edit"),
+    url(r"^delete/(?P<investment_id>\d+)$", investment_delete, name="delete"),
+    url(r"^$", dashboard, name="dashboard"),
 ]

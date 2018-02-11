@@ -38,7 +38,7 @@ class ReconciliationDashboardTest(TestCase):
     def test_dashboard_accessible_by_name(self):
         """Checks that the dashboard URL name works properly"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("bank_reconciliation"))
+        response = self.client.get(reverse("bank_reconciliation:dashboard"))
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
@@ -49,7 +49,7 @@ class ReconciliationDashboardTest(TestCase):
     def test_dashboard_template(self):
         """Checks that the dashboard uses the correct template"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("bank_reconciliation"))
+        response = self.client.get(reverse("bank_reconciliation:dashboard"))
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
