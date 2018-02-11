@@ -14,7 +14,6 @@ from .utils import create_user, create_bank_transactions, create_financial_trans
 
 class ReconciliationDashboardTest(TestCase):
     """Tests for the banking reconciliation view"""
-    # pylint: disable=no-member,protected-access
 
     def setUp(self):
         create_user()
@@ -60,7 +59,6 @@ class ReconciliationDashboardTest(TestCase):
 
 class ReconciliationRetrieveTest(TestCase):
     """Tests the retrieve transaction view"""
-    # pylint: disable=no-member,protected-access
 
     def setUp(self):
         create_user()
@@ -134,7 +132,6 @@ class ReconciliationRetrieveTest(TestCase):
 
 class ReconciliationMatchTest(TestCase):
     """Tests the match transaction view"""
-    # pylint: disable=no-member,protected-access
 
     def setUp(self):
         create_user()
@@ -201,7 +198,6 @@ class ReconciliationMatchTest(TestCase):
 
 class ReconciliationUnmatchTest(TestCase):
     """Tests the unmatch transaction view"""
-    # pylint: disable=no-member,protected-access
 
     def setUp(self):
         create_user()

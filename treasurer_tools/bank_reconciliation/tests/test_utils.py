@@ -285,7 +285,6 @@ class ReturnTransactionsAsJSONTest(TestCase):
 
 class BankReconciliationObjectTest(TestCase):
     """Tests for the BankReconciliation object"""
-    # pylint: disable=no-member,protected-access
 
     def setUp(self):
         self.bank_transactions = create_bank_transactions()

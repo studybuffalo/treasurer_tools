@@ -100,7 +100,7 @@ def return_transactions_as_json(request):
 
 class BankReconciliation(object):
     """Object to process bank transaction reconciliation"""
-    # pylint: disable=no-member
+
     def create_json_data(self, raw_data):
         """Converts raw json data to dictionary"""
         # Check for proper JSON data
@@ -197,7 +197,7 @@ class BankReconciliation(object):
 
     def is_valid(self):
         """Checks that provided transaction & banking data is valid"""
-        # pylint: disable=too-many-branches
+
         valid = True
 
         # Check for financial_ids data

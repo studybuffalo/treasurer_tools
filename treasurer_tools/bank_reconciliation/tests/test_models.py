@@ -15,7 +15,7 @@ class ReconciliationMatchModelTest(TestCase):
 
     def test_string_representation(self):
         """Tests ReconciliationMatch string representation"""
-        # pylint: disable=no-member
+
         reconciliation_match = ReconciliationMatch.objects.create(
             bank_transaction=self.bank_transactions[0],
             financial_transaction=self.financial_transactions[0]

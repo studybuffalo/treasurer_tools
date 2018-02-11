@@ -10,7 +10,6 @@ from .utils import return_transactions_as_json, BankReconciliation
 @login_required
 def dashboard(request):
     """Page to handle bank reconciliation"""
-    # pylint: disable=no-member
 
     return render(
         request,
@@ -21,7 +20,7 @@ def dashboard(request):
 @login_required
 def retrieve_transactions(request):
     """Retrieves and returns all transactions in provided date range"""
-    # pylint: disable=no-member
+
     json_data = return_transactions_as_json(request)
 
     return JsonResponse(json_data)
