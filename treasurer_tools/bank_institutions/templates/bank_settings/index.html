@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Banking</h1>
+
+    {% include 'main/messages.html' %}
+    
+    <div>
+        <ul>
+            <li><a href="{% url 'institution_add' %}">Add new institution</a></li>
+        </ul>
+    </div>
+    <div>
+        <h2>Banking Institution and Account Settings</h2>
+        <ul>
+            {% for institution in institutions %}
+                <li class="expense">
+                    {{ institution }} - 
+                    <a href="{% url 'institution_edit' institution.id %}">Edit</a> - 
+                    <a href="{% url 'institution_delete' institution.id %}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

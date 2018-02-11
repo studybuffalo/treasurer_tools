@@ -13,7 +13,7 @@ urlpatterns = [
     url(r"^contact/$", TemplateView.as_view(template_name="account/profile.html"), name="contact"),
     url(r"^banking/", include("bank_transactions.urls")),
     url(r"^banking/reconciliation/", include("bank_reconciliation.urls")),
-    url(r"^settings/banking/", include("bank_transactions.urls_settings")),
+    url(r"^settings/banking/", include("bank_institutions.urls")),
     url(r"^settings/codes/", include("financial_codes.urls")),
     url(r"^investments/", include("investments.urls")),
     url(r"^payee-payer/", include("payee_payers.urls")),

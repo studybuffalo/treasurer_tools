@@ -2,7 +2,8 @@
 
 from django.contrib.auth import get_user_model
 
-from bank_transactions.models import Institution, Account, Statement, BankTransaction
+from bank_transactions.models import Statement, BankTransaction
+from bank_institutions.models import Institution, Account
 from payee_payers.models import Country, PayeePayer
 from financial_transactions.models import FinancialTransaction, Item
 

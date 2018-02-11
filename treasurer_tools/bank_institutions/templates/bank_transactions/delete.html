@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+{% endblock %}
+
+{% block content %}
+    <h1>Delete {{ page_name|title }}</h1>
+
+    {% include 'main/form_delete.html' %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}

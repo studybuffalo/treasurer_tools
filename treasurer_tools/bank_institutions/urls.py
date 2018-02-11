@@ -1,7 +1,7 @@
 """Expense Transaction URLs"""
 from django.conf.urls import url
 
-from .views_settings import (
+from .views import (
     settings, institution_add, institution_edit, institution_delete
 )
 

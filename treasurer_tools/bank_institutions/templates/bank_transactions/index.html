@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Banking</h1>
+
+    {% include 'main/messages.html' %}
+    
+    <div>
+        <ul>
+            <li><a href="{% url 'statement_add' %}">Add new statement</a></li>
+        </ul>
+    </div>
+    <div>
+        <h2>Bank Statements</h2>
+        <ul>
+            {% for statement in statements %}
+                <li>
+                    {{ statement }} - 
+                    <a href="{% url 'statement_edit' statement.id %}">Edit</a> -
+                    <a href="{% url 'statement_delete' statement.id %}">Delete</a>
+                    <ul>
+                        {% for transaction in statement.banktransaction_set.all %}
+                            <li>
+                                {{ transaction }} -
+                                ${{ transaction.amount_debit }} -
+                                ${{ transaction.amount_credit }}
+                            </li>
+                        {% endfor %}
+                        
+                        <li>
+                            Attachments
+                            <ul>
+                                {% for attachment_match in statement.am_bank_transaction.all %}
+                                    <li><a href="{{ attachment_match.attachment.location.url }}">{{ attachment_match.attachment.location }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

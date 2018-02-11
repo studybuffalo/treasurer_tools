@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
     "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
+    "treasurer_tools.bank_institutions.apps.BankInstitutionsConfig",
     "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
     "treasurer_tools.documents.apps.DocumentsConfig",
     "treasurer_tools.investments.apps.InvestmentsConfig",

@@ -5,20 +5,9 @@ from django.core.exceptions import ValidationError
 from django.forms import Textarea, inlineformset_factory
 from multiupload.fields import MultiFileField
 
-from .models import Statement, Institution, BankTransaction, AttachmentMatch
+from documents.models import BankStatementMatch
+from .models import Statement,BankTransaction
 
-
-class InstitutionForm(forms.ModelForm):
-    """Form to add and edit transactions"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-
-    class Meta:
-        model = Institution
-
-        fields = ("name", "address", "phone", "fax")
-        widgets = {
-            "address": Textarea(),
-        }
 
 class StatementForm(forms.ModelForm):
     """Form to add and edit transactions"""
@@ -110,7 +99,7 @@ class AttachmentMatchForm(forms.ModelForm):
     """Model form for attachment matches"""
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
-        model = AttachmentMatch
+        model = BankStatementMatch
         fields = [
             "attachment",
         ]
@@ -120,7 +109,7 @@ class AttachmentMatchForm(forms.ModelForm):
 
 AttachmentMatchFormset = inlineformset_factory( # pylint: disable=invalid-name
     Statement,
-    AttachmentMatch,
+    BankStatementMatch,
     form=AttachmentMatchForm,
     extra=0,
     min_num=0,

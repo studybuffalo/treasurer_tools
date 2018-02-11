@@ -4,6 +4,11 @@ import os
 from django.db import models
 from django.utils import timezone
 
+from simple_history.models import HistoricalRecords
+
+from bank_transactions.models import Statement
+
+
 class Attachment(models.Model):
     """Holds an attachment"""
     location = models.FileField(
@@ -22,3 +27,18 @@ class Attachment(models.Model):
             return_string = file_name
 
         return return_string
+
+class BankStatementMatch(models.Model):
+    """Links bank statement to one or more attachments"""
+    statement = models.ForeignKey(
+        Statement,
+        on_delete=models.CASCADE,
+    )
+    attachment = models.ForeignKey(
+        Attachment,
+        on_delete=models.CASCADE,
+    )
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} - {}".format(self.statement, self.attachment)

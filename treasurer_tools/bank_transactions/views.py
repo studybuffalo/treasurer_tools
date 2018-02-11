@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from documents.models import Attachment
 
-from .models import Statement, AttachmentMatch
+from .models import Statement
 from .forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
 
 
