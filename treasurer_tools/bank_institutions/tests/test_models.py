@@ -1,6 +1,6 @@
 """Test cases for the bank_transaction app"""
 
-from django.test import TestCase
+#from django.test import TestCase
 
 #from bank_transactions.models import (
 #    BankTransaction, Account, Institution, Statement, AttachmentMatch

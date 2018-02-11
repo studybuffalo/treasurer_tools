@@ -12,12 +12,12 @@ from .models import Institution, Account
 @login_required
 def settings(request):
     """Page to modify bank and account settings"""
-    # pylint: disable=no-member
+
     institutions = Institution.objects.all()
 
     return render(
         request,
-        "bank_settings/index.html",
+        "bank_institutions/index.html",
         context={
             "institutions": institutions,
         },
@@ -108,7 +108,7 @@ def institution_add(request):
 
     return render(
         request,
-        "bank_settings/add.html",
+        "bank_institutions/add.html",
         {
             "form": form,
             "formsets": formsets,
@@ -246,7 +246,7 @@ def institution_edit(request, institution_id):
 
     return render(
         request,
-        "bank_settings/edit.html",
+        "bank_institutions/edit.html",
         {
             "form": form,
             "formsets": formsets,
@@ -274,7 +274,7 @@ def institution_delete(request, institution_id):
 
     return render(
         request,
-        "bank_settings/delete.html",
+        "bank_institutions/delete.html",
         {
             "page_name": "institution & accounts",
             "delete_message": "institution (and all associated accounts)",

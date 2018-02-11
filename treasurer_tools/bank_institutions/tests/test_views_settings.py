@@ -1,7 +1,7 @@
 """Test cases for the bank_transactions app views"""
 
-from django.core.urlresolvers import reverse
-from django.test import TestCase
+#from django.core.urlresolvers import reverse
+#from django.test import TestCase
 
 #from bank_transactions.models import Institution, Account
 

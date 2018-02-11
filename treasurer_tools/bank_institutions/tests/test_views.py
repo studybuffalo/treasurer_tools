@@ -1,9 +1,9 @@
 """Test cases for the bank_transactions app views"""
-from unipath import Path
+#from unipath import Path
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.urlresolvers import reverse
-from django.test import TestCase
+#from django.core.files.uploadedfile import InMemoryUploadedFile
+#from django.core.urlresolvers import reverse
+#from django.test import TestCase
 
 #from bank_transactions.models import Statement, BankTransaction, AttachmentMatch
 #from documents.models import Attachment

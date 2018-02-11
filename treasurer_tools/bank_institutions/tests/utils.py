@@ -1,6 +1,6 @@
 """Functions to assist with unit and integration testing"""
 
-from django.contrib.auth import get_user_model
+#from django.contrib.auth import get_user_model
 
 #from bank_transactions.models import Institution, Account, Statement, BankTransaction
 #from payee_payers.models import Country, PayeePayer

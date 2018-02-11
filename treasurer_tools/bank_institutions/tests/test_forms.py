@@ -1,6 +1,6 @@
 """Test cases for the bank_transaction app forms"""
 
-from django.test import TestCase
+#from django.test import TestCase
 
 #from bank_transactions.forms import StatementForm, BankTransactionForm
 

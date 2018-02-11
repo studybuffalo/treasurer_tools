@@ -11,7 +11,6 @@ from .models import Statement,BankTransaction
 
 class StatementForm(forms.ModelForm):
     """Form to add and edit transactions"""
-    # pylint: disable=missing-docstring,too-few-public-methods
 
     class Meta:
         model = Statement
