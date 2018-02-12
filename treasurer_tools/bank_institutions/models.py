@@ -11,14 +11,20 @@ class Institution(models.Model):
         max_length=250,
     )
     address = models.CharField(
+        blank=True,
         max_length=1000,
+        null=True,
     )
     phone = models.CharField(
+        blank=True,
         max_length=30,
+        null=True,
         verbose_name="phone number",
     )
     fax = models.CharField(
+        blank=True,
         max_length=30,
+        null=True,
         verbose_name="fax number",
     )
     history = HistoricalRecords()
@@ -35,8 +41,10 @@ class Account(models.Model):
         on_delete=models.CASCADE,
     )
     account_number = models.CharField(
+        blank=True,
         help_text="The account number/reference for this account",
         max_length=100,
+        null=True,
     )
     name = models.CharField(
         help_text="The name of the account",
