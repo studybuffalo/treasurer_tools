@@ -132,7 +132,7 @@ class InstitutionAddTest(TestCase):
         account_total = Account.objects.count()
 
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("bank_institutions:add"),
             self.valid_data,
             follow=True,

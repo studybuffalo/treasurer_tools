@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from bank_institutions.forms import InstitutionForm, AccountFormSet
-from bank_institutions.models import Institution, Account
+from bank_institutions.models import Account
 
 from .utils import create_bank_institution
 

@@ -2,7 +2,7 @@
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import Textarea, inlineformset_factory
+from django.forms import inlineformset_factory
 from multiupload.fields import MultiFileField
 
 from documents.models import BankStatementMatch
