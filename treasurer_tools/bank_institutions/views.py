@@ -142,7 +142,7 @@ def delete(request, institution_id):
         # Redirect back to main list
         messages.success(request, "Institution and accounts deleted")
 
-        return HttpResponseRedirect(reverse("bank_settings"))
+        return HttpResponseRedirect(reverse("bank_institutions:dashboard"))
 
     return render(
         request,
