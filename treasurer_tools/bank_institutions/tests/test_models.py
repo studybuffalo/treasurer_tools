@@ -82,7 +82,7 @@ class InstitutionModelTest(TestCase):
 
 class AccountModelTest(TestCase):
     """Test functions for the Account model"""
-    
+
     def setUp(self):
         create_bank_account()
 

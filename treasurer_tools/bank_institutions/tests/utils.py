@@ -28,12 +28,12 @@ def create_bank_institution():
 
 def create_bank_account():
     institution_reference = create_bank_institution()
-    
+
     account_reference = Account.objects.create(
         institution=institution_reference,
         account_number="123456789",
         name="Chequing Account",
         status="a",
     )
-    
+
     return account_reference

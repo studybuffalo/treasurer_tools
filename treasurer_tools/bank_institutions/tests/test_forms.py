@@ -37,7 +37,7 @@ class InstitutionFormTest(TestCase):
 
 class AccountFormsetTest(TestCase):
     """Tests for the account formset"""
-    
+
     def setUp(self):
         self.valid_data = {
             "account_set-0-account_number": "777888999",

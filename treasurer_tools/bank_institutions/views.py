@@ -49,7 +49,7 @@ def add(request):
 
         # Institution form is invalid, create a unbound account_formsets
         else:
-            # Create an account formset to return 
+            # Create an account formset to return
             account_formsets = AccountFormSet(request.POST)
 
     # GET request - create blank forms and formsets
@@ -72,7 +72,7 @@ def add(request):
 @login_required
 def edit(request, institution_id):
     """Generate and processes form to edit a financial system"""
-    
+
     # POST request - attempt to save data
     if request.method == "POST":
         # Get the institution instance
@@ -103,7 +103,7 @@ def edit(request, institution_id):
 
         # Institution form is invalid, create a unbound account_formsets
         else:
-            # Create an account formset to return 
+            # Create an account formset to return
             account_formsets = AccountFormSet(request.POST, instance=institution_instance)
 
     # GET request - create blank forms and formsets

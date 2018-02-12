@@ -6,7 +6,7 @@ from django.forms import Textarea, inlineformset_factory
 from multiupload.fields import MultiFileField
 
 from documents.models import BankStatementMatch
-from .models import Statement,BankTransaction
+from .models import Statement, BankTransaction
 
 
 class StatementForm(forms.ModelForm):

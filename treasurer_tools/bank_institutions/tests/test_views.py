@@ -155,7 +155,7 @@ class InstitutionAddTest(TestCase):
         # Setup invalid data
         invalid_data = self.valid_data
         invalid_data["name"] = ""
-        
+
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("bank_institutions:add"),
@@ -189,7 +189,7 @@ class InstitutionAddTest(TestCase):
         # Setup invalid data
         invalid_data = self.valid_data
         invalid_data["account_set-0-name"] = ""
-        
+
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
             reverse("bank_institutions:add"),
@@ -212,7 +212,7 @@ class InstitutionAddTest(TestCase):
             account_formset[0]["account_number"].value(),
             invalid_data["account_set-0-account_number"]
         )
-        
+
         self.assertEqual(
             account_formset[0]["name"].value(),
             invalid_data["account_set-0-name"]
@@ -368,7 +368,7 @@ class InstitutionEditTest(TestCase):
             delete_data,
             follow=True,
         )
-        
+
         # Confirm deletion of account
         self.assertEqual(
             Account.objects.count(),
@@ -386,7 +386,7 @@ class InstitutionEditTest(TestCase):
         # Setup form data
         delete_data = self.valid_data
         delete_data["account_set-0-DELETE"] = "on"
-        
+
         # Make the post request
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -402,11 +402,11 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_invalid_institution_data(self):
         """Tests that updates fail on invalid institution data"""
-        
+
         # Setup form data
         invalid_data = self.valid_data
         invalid_data["name"] = ""
-        
+
         # Make the post request
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
