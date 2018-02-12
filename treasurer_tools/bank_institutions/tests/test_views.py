@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from bank_institutions.models import Institution, Account
 
-from .utils import create_user
+from .utils import create_user, create_bank_account
 
 
 class BankDashboardTest(TestCase):
@@ -218,290 +218,189 @@ class InstitutionAddTest(TestCase):
             invalid_data["account_set-0-name"]
         )
 
-#class InstitutionEditTest(TestCase):
-#    """Tests of the edit Institution form page"""
-#    # pylint: disable=no-member,protected-access
+class InstitutionEditTest(TestCase):
+    """Tests of the edit Institution form page"""
 
-#    def setUp(self):
-#        # Add standard test data
-#        self.correct_data = {
-#            "name": "Another Financial Institution",
-#            "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-#            "phone": "111-222-1234",
-#            "fax": "222-111-1111",
-#            "account_set-0-account_number": "777888999",
-#            "account_set-0-name": "Savings Account",
-#            "account_set-0-status": "a",
-#            "account_set-0-id": 1,
-#            "account_set-1-account_number": "333333333",
-#            "account_set-1-name": "Embezzlement Account",
-#            "account_set-1-status": "a",
-#            "account_set-1-id": 2,
-#            "account_set-TOTAL_FORMS": 2,
-#            "account_set-INITIAL_FORMS": 0,
-#            "account_set-MIN_NUM_FORMS": 1,
-#            "account_set-MAX_NUM_FORMS": 1000,
-#        }
+    def setUp(self):
+        # Create a user
+        create_user()
 
-#    def test_institution_edit_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("institution_edit", kwargs={"institution_id": 1})
-#        )
+        # Create entries for both models
+        account = create_bank_account()
+        institution = account.institution
 
-#        self.assertEqual(response.status_code, 302)
+        # Populate the valid data
+        self.valid_data = {
+            "name": institution.name,
+            "address": institution.address,
+            "phone": institution.phone,
+            "fax": institution.fax,
+            "account_set-0-account_number": account.account_number,
+            "account_set-0-name": account.name,
+            "account_set-0-status": account.status,
+            "account_set-0-id": account.id,
+            "account_set-TOTAL_FORMS": 1,
+            "account_set-INITIAL_FORMS": 1,
+            "account_set-MIN_NUM_FORMS": 1,
+            "account_set-MAX_NUM_FORMS": 1000,
+        }
+        self.account = account
+        self.institution = institution
+        self.url = "/settings/banking/institution/edit/{}".format(institution.id)
+        self.url_args = {"institution_id": institution.id}
 
-#    def test_institution_edit_url_exists_at_desired_location(self):
-#        """Checks that the edit institution page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/banking/institution/edit/1")
+    def test_institution_edit_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("bank_institutions:edit", kwargs=self.url_args))
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        self.assertEqual(response.status_code, 302)
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+    def test_institution_edit_noredirect_if_logged_in(self):
+        """Checks that user is not redirected if logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:edit", kwargs=self.url_args))
 
-#    def test_institution_edit_html404_on_invalid_url(self):
-#        """Checks that the edit institution page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/banking/institution/edit/999999999")
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        # Check that 200 status code returned (i.e. no redirect)
+        self.assertEqual(response.status_code, 200)
 
-#    def test_institution_edit_accessible_by_name(self):
-#        """Checks that edit institution page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("institution_edit", kwargs={"institution_id": 1})
-#        )
+    def test_institution_edit_url_exists_at_desired_location(self):
+        """Checks that the edit institution page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url)
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+    def test_institution_edit_html404_on_invalid_url(self):
+        """Checks that the edit institution page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/banking/institution/edit/999999999")
 
-#    def test_institution_edit_html404_on_invalid_name(self):
-#        """Checks that edit institution page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("institution_edit", kwargs={"institution_id": 999999999})
-#        )
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+    def test_institution_edit_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_institutions:edit", kwargs=self.url_args))
 
-#    def test_institution_edit_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("institution_edit", kwargs={"institution_id": 1})
-#        )
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_institutions/edit.html")
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+    def test_institution_edit_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:edit", kwargs=self.url_args),
+            self.valid_data,
+            follow=True,
+        )
 
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_settings/edit.html")
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_institutions:dashboard"))
 
-#    def test_institution_edit_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            {
-#                "name": "Another Financial Institution 2",
-#                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-#                "phone": "111-222-1234",
-#                "fax": "222-111-1111",
-#                "account_set-0-account_number": "777888999",
-#                "account_set-0-name": "Savings Account",
-#                "account_set-0-status": "a",
-#                "account_set-0-id": 1,
-#                "account_set-TOTAL_FORMS": 1,
-#                "account_set-INITIAL_FORMS": 0,
-#                "account_set-MIN_NUM_FORMS": 1,
-#                "account_set-MAX_NUM_FORMS": 1000,
-#            },
-#            follow=True,
-#        )
+    def test_institution_edit_post_failed_on_invalid_institution_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:edit", kwargs={"institution_id": 999999999}),
+            self.valid_data,
+            follow=True,
+        )
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
 
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_settings"))
+    def test_institution_edit_post_account_addition(self):
+        """Confirms an account can be added"""
+        # Count current accounts
+        accounts_total = Account.objects.count()
 
-#    def test_institution_edit_post_failed_on_invalid_institution_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 999999999}),
-#            {
-#                "name": "Another Financial Institution 2",
-#                "address": "444 Test Boulevard\nRich City $$ T1T 1T1",
-#                "phone": "111-222-1234",
-#                "fax": "222-111-1111",
-#                "account_set-0-account_number": "777888999",
-#                "account_set-0-name": "Savings Account",
-#                "account_set-0-status": "a",
-#                "account_set-0-id": 1,
-#                "account_set-TOTAL_FORMS": 1,
-#                "account_set-INITIAL_FORMS": 0,
-#                "account_set-MIN_NUM_FORMS": 1,
-#                "account_set-MAX_NUM_FORMS": 1000,
-#            },
-#            follow=True,
-#        )
+        # Setup form data
+        edited_data = self.valid_data
+        edited_data["account_set-1-account_number"] = "222222222"
+        edited_data["account_set-1-name"] = "TFSA Account"
+        edited_data["account_set-1-status"] = "a"
+        edited_data["account_set-TOTAL_FORMS"] = 2
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_institutions:edit", kwargs=self.url_args),
+            edited_data,
+            follow=True,
+        )
 
-#    def test_institution_edit_post_confirm_institution_edit(self):
-#        """Confirms account is properly edited via the institution edit form"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["name"] = "Another Financial Institution 2"
+        # Confirm addition of account
+        self.assertEqual(
+            Account.objects.count(),
+            accounts_total + 1
+        )
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            edited_data
-#        )
+    def test_institution_edit_post_delete_account(self):
+        """Checks that account is deleted via the edit institution form"""
+        # Add an extra entry to Account
+        new_account = Account.objects.create(
+            institution=self.institution,
+            account_number="222222222",
+            name="TFSA Account",
+            status="a",
+        )
 
-#        # Confirm still only 1 entry
-#        self.assertEqual(1, Institution.objects.count())
+        # Count current accounts
+        accounts_total = Account.objects.count()
 
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            Institution.objects.get(id=1).name,
-#            "Another Financial Institution 2"
-#        )
+        # Setup form data
+        delete_data = self.valid_data
+        delete_data["account_set-0-DELETE"] = "on"
+        delete_data["account_set-1-account_number"] = "222222222"
+        delete_data["account_set-1-name"] = "TFSA Account"
+        delete_data["account_set-1-status"] = "a"
+        delete_data["account_set-1-id"] = new_account.id
+        delete_data["account_set-TOTAL_FORMS"] = 2
+        delete_data["account_set-INITIAL_FORMS"] = 2
 
-#    def test_institution_edit_post_confirm_account_edit(self):
-#        """Confirms deletion form works properly"""
-#        edited_data = self.correct_data
-#        edited_data["account_set-0-account_number"] = "222222222"
-#        edited_data["account_set-0-name"] = "TFSA Account"
+        # Make the post request
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_institutions:edit", kwargs=self.url_args),
+            delete_data,
+            follow=True,
+        )
+        
+        # Confirm deletion of account
+        self.assertEqual(
+            Account.objects.count(),
+            accounts_total - 1
+        )
 
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            edited_data
-#        )
+        # Confirm proper account was deleted
+        self.assertFalse(Account.objects.filter(id=self.account.id).count())
 
-#        # Confirm still only 2 entrries
-#        self.assertEqual(2, Account.objects.count())
+    def test_institution_edit_post_no_account(self):
+        """Checks that edit fails if no accounts saved"""
+        # Count current accounts
+        accounts_total = Account.objects.count()
 
-#        # Confirm account number has been updated properly
-#        self.assertEqual(
-#            Account.objects.get(id=1).account_number,
-#            "222222222"
-#        )
+        # Setup form data
+        delete_data = self.valid_data
+        delete_data["account_set-0-DELETE"] = "on"
+        
+        # Make the post request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_institutions:edit", kwargs=self.url_args),
+            delete_data,
+            follow=True,
+        )
 
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            Account.objects.get(id=1).name,
-#            "TFSA Account"
-#        )
-
-#    def test_institution_edit_post_fail_on_invalid_account_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["account_set-0-id"] = "999999999"
-
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            edited_data
-#        )
-
-#        # Check for the expected ValidationError
-#        self.assertEqual(
-#            response.context["formsets"][0].errors["id"][0],
-#            "Select a valid choice. That choice is not one of the available choices."
-#        )
-
-#    def test_institution_edit_post_add_account(self):
-#        """Checks that a new account is added via the edit institution form"""
-#        added_data = self.correct_data
-#        added_data["account_set-2-account_number"] = "444444444"
-#        added_data["account_set-2-name"] = "Charity Account"
-#        added_data["account_set-2-status"] = "a"
-#        added_data["account_set-2-id"] = ""
-#        added_data["account_set-TOTAL_FORMS"] = 3
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            added_data
-#        )
-
-#        # Check that the number of accounts has increased
-#        self.assertEqual(
-#            Account.objects.count(),
-#            3
-#        )
-
-#        # Check that original accounts still exist
-#        self.assertEqual(
-#            Account.objects.get(id=1).name,
-#            "Savings Account"
-#        )
-
-#        self.assertEqual(
-#            Account.objects.get(id=2).name,
-#            "Embezzlement Account"
-#        )
-
-#        # Check that the new account was saved properly
-#        self.assertEqual(
-#            Account.objects.get(id=3).name,
-#            "Charity Account"
-#        )
-
-#    def test_institution_edit_post_delete_account(self):
-#        """Checks that account is deleted via the edit institution form"""
-#        # Setup the delete data
-#        delete_data = self.correct_data
-#        delete_data["account_set-1-DELETE"] = "on"
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            delete_data
-#        )
-
-#        # Check that the number of accounts has decreased
-#        self.assertEqual(
-#            Account.objects.count(),
-#            1
-#        )
-
-#        # Check that the proper ID has been removed
-#        self.assertEqual(
-#            Account.objects.filter(id=2).count(),
-#            0
-#        )
-
-#    def test_institution_add_invalid_account_status(self):
-#        """Confirms that incorrect statuses are properly converted to 'a'"""
-#        # Setup incorrect data
-#        incorrect_data = self.correct_data
-#        incorrect_data["account_set-0-status"] = "z"
-
-#        # Submit form
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("institution_edit", kwargs={"institution_id": 1}),
-#            incorrect_data, follow=True,
-#        )
-
-#        # Confirm that new entry has been added properly
-#        self.assertEqual(Account.objects.get(id=1).status, "a")
+        # Confirm no change in account number
+        self.assertEqual(
+            Account.objects.count(),
+            accounts_total
+        )
 
 #class InstitutionDeleteTest(TestCase):
 #    """Tests the delete institution view"""

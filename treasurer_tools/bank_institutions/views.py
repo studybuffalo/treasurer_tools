@@ -72,84 +72,26 @@ def add(request):
 @login_required
 def edit(request, institution_id):
     """Generate and processes form to edit a financial system"""
-
-    def update_transaction_form(form):
-        """Updates Institution instance based on provided form data"""
-        # Collect the cleaned form fields
-        name = form.cleaned_data["name"]
-        address = form.cleaned_data["address"]
-        phone = form.cleaned_data["phone"]
-        fax = form.cleaned_data["fax"]
-
-        # Set the model data and save the instance
-        institution_data.name = name
-        institution_data.address = address
-        institution_data.phone = phone
-        institution_data.fax = fax
-
-        institution_data.save()
-
-    def update_account_formset(formset, institution_data):
-        """Create/updates BankTransaction based on provided formset data"""
-        # Only save non-empty forms
-        if formset.cleaned_data:
-             # Check if this item is marked for deletion
-            can_delete = formset.cleaned_data["DELETE"]
-
-            if can_delete:
-                # Retrieve the account for deletion
-                # pylint: disable=no-member
-                account_id = formset.cleaned_data["id"].id
-                account_data = Account.objects.get(id=account_id)
-
-                # Delete the retrieved account
-                account_data.delete()
-            else:
-                # Get this account ID
-                if formset.cleaned_data["id"]:
-                    # Retrieve item reference
-                    # pylint: disable=no-member
-                    account_data = get_object_or_404(
-                        Account, id=formset.cleaned_data["id"].id
-                    )
-                else:
-                    account_data = Account()
-
-                # Collect the cleaned formset data
-                account_number = formset.cleaned_data["account_number"]
-                name = formset.cleaned_data["name"]
-                status = formset.cleaned_data["status"]
-
-                # Set the model data and save the instance
-                account_data.institution = institution_data
-                account_data.account_number = account_number
-                account_data.name = name
-                account_data.status = status
-
-                account_data.save()
-
-    # If this is a POST request then process the Form data
+    
+    # POST request - attempt to save data
     if request.method == "POST":
-        # Get the transaction object
-        institution_data = get_object_or_404(Institution, id=institution_id)
+        # Get the institution instance
+        institution_instance = get_object_or_404(Institution, id=institution_id)
 
-        # Create a form instance and populate it with data from the request (binding):
-        form = InstitutionForm(request.POST, instance=institution_data)
+        # Create the institution form
+        institution_form = InstitutionForm(request.POST, instance=institution_instance)
 
         # Check if the form is valid:
-        if form.is_valid():
+        if institution_form.is_valid():
             # Create a item form instance and provide it the institution object
-            formsets = AccountFormSet(
-                request.POST, instance=institution_data
+            account_formsets = AccountFormSet(
+                request.POST, instance=institution_instance
             )
-            formset.can_delete = True
+            account_formsets.can_delete = True
 
-            if formsets.is_valid():
-                update_transaction_form(form)
-
-                # Cycle through each item_formset and save model data
-                for formset in formsets:
-                    update_account_formset(formset, institution_data)
+            if account_formsets.is_valid():
+                institution_form.save()
+                account_formsets.save()
 
                 # redirect to a new URL:
                 messages.success(
@@ -157,45 +99,32 @@ def edit(request, institution_id):
                     "Institution and accounts successfully updated"
                 )
 
-                return HttpResponseRedirect(reverse("bank_settings"))
+                return HttpResponseRedirect(reverse("bank_institutions:dashboard"))
 
-    # If this is a GET (or any other method) create populated forms
+        # Institution form is invalid, create a unbound account_formsets
+        else:
+            # Create an account formset to return 
+            account_formsets = AccountFormSet(request.POST, instance=institution_instance)
+
+    # GET request - create blank forms and formsets
     else:
-        # Populate the initial transaction data
-        institution_data = get_object_or_404(Institution, id=institution_id)
-        form = InstitutionForm(initial={
-            "name": institution_data.name,
-            "address": institution_data.address,
-            "phone": institution_data.phone,
-            "fax": institution_data.fax,
-        })
+        # Populate the initial institution data
+        institution_instance = get_object_or_404(Institution, id=institution_id)
+        institution_form = InstitutionForm(instance=institution_instance)
 
-        # Create dictionary of item data
-        accounts = institution_data.account_set.all()
-        initial_account_data = []
-
-        for account in accounts:
-            initial_account_data.append({
-                "id": account.id,
-                "account_number": account.account_number,
-                "name": account.name,
-                "status": account.status,
-            })
-
-        # Populate the initial formset with the item data
-        formsets = AccountFormSet(initial=initial_account_data)
-        formsets.extra = len(accounts) - 1
-        formsets.can_delete = True
+        # Populate the initial accounts data
+        account_formsets = AccountFormSet(instance=institution_instance)
+        account_formsets.can_delete = True
 
     return render(
         request,
         "bank_institutions/edit.html",
         {
-            "form": form,
-            "formsets": formsets,
+            "form": institution_form,
+            "formsets": account_formsets,
             "page_name": "banking institution & accounts",
-            "legend_title": "Transaction items",
-            "formset_button": "Add item",
+            "legend_title": "accounts",
+            "formset_button": "Add account",
         },
     )
 
