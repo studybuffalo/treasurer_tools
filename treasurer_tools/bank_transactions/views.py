@@ -9,7 +9,7 @@ from django.urls import reverse
 from documents.models import Attachment
 
 from .models import Statement
-from .forms import StatementForm, BankTransactionFormset, AttachmentMatchFormset, NewAttachmentForm
+from .forms import StatementForm, BankTransactionFormSet, AttachmentMatchFormSet, NewAttachmentForm
 
 
 @login_required
@@ -36,7 +36,7 @@ def statement_add(request):
         statement_form = StatementForm(request.POST)
 
         # Create brank transaction formsets
-        bank_transaction_formsets = BankTransactionFormset(request.POST)
+        bank_transaction_formsets = BankTransactionFormSet(request.POST)
         bank_transaction_formsets.can_delete = False
 
         # Create new attachment form
@@ -75,12 +75,12 @@ def statement_add(request):
 
             messages.success(request, "Statement successfully added")
 
-            return HttpResponseRedirect(reverse("bank_dashboard"))
+            return HttpResponseRedirect(reverse("bank_transactions:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
         statement_form = StatementForm()
-        bank_transaction_formsets = BankTransactionFormset()
+        bank_transaction_formsets = BankTransactionFormSet()
         bank_transaction_formsets.can_delete = False
         new_attachment_form = NewAttachmentForm()
 

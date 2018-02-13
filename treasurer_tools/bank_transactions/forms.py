@@ -3,8 +3,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
-from multiupload.fields import MultiFileField
 
+from documents.forms import AttachmentMatchForm, NewAttachmentForm
 from documents.models import BankStatementMatch
 from .models import Statement, BankTransaction
 
@@ -42,7 +42,6 @@ class StatementForm(forms.ModelForm):
 
 class BankTransactionForm(forms.ModelForm):
     """Form for adding and editing bank transactions"""
-    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = BankTransaction
         fields = [
@@ -52,13 +51,6 @@ class BankTransactionForm(forms.ModelForm):
             "amount_debit",
             "amount_credit",
         ]
-        labels = {
-            "date_transaction": "Transaction date",
-            "description_bank": "Bank description",
-            "description_user": "Custom description",
-            "amount_debit": "Debit amount",
-            "amount_credit": "Credit amount",
-        },
 
     def clean(self):
         form_data = self.cleaned_data
@@ -86,7 +78,7 @@ class BankTransactionForm(forms.ModelForm):
 
         return form_data
 
-BankTransactionFormset = inlineformset_factory( # pylint: disable=invalid-name
+BankTransactionFormSet = inlineformset_factory(
     Statement,
     BankTransaction,
     form=BankTransactionForm,
@@ -94,19 +86,7 @@ BankTransactionFormset = inlineformset_factory( # pylint: disable=invalid-name
     can_delete=True,
 )
 
-class AttachmentMatchForm(forms.ModelForm):
-    """Model form for attachment matches"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-    class Meta:
-        model = BankStatementMatch
-        fields = [
-            "attachment",
-        ]
-        widgets = {
-            "attachment": forms.HiddenInput(),
-        }
-
-AttachmentMatchFormset = inlineformset_factory( # pylint: disable=invalid-name
+AttachmentMatchFormSet = inlineformset_factory(
     Statement,
     BankStatementMatch,
     form=AttachmentMatchForm,
@@ -116,14 +96,9 @@ AttachmentMatchFormset = inlineformset_factory( # pylint: disable=invalid-name
     can_delete=True,
 )
 
-class NewAttachmentForm(forms.Form):
-    """Form to handle file attachments to bank statement"""
-    files = MultiFileField(
-        help_text="Documentation/files for this bank statement",
-        label="Bank statement attachments",
-        max_file_size=1024*1024*10,
-        max_num=10,
-        required=False,
-    )
-
-    prefix = "newattachment"
+class NewBankAttachmentForm(NewAttachmentForm):
+    def __init__(self, *args, **kwargs):
+        super(NewAttachmentForm, self).__init__(*args, **kwargs)
+        self.fields["files"].help_text="Documentation/files for this bank statement"
+        self.fields["files"].label="Bank statement attachments",
+        self.fields["files"].prefix = "newattachment"

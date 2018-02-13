@@ -32,6 +32,7 @@ class BankTransaction(models.Model):
         Statement,
         on_delete=models.CASCADE,
         help_text="The statement this this transaction applies to",
+        verbose_name="bank statement",
     )
     date_transaction = models.DateField(
         help_text="The date of the transaction",
@@ -47,7 +48,7 @@ class BankTransaction(models.Model):
         help_text="A user-specified description of the transaction",
         max_length=100,
         null=True,
-        verbose_name="user description",
+        verbose_name="custom description",
     )
     amount_debit = models.DecimalField(
         decimal_places=2,

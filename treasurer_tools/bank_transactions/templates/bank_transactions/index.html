@@ -7,7 +7,7 @@
     
     <div>
         <ul>
-            <li><a href="{% url 'statement_add' %}">Add new statement</a></li>
+            <li><a href="{% url 'bank_transactions:add' %}">Add new statement</a></li>
         </ul>
     </div>
     <div>
@@ -16,8 +16,8 @@
             {% for statement in statements %}
                 <li>
                     {{ statement }} - 
-                    <a href="{% url 'statement_edit' statement.id %}">Edit</a> -
-                    <a href="{% url 'statement_delete' statement.id %}">Delete</a>
+                    <a href="{% url 'bank_transactions:edit' statement.id %}">Edit</a> -
+                    <a href="{% url 'bank_transactions:delete' statement.id %}">Delete</a>
                     <ul>
                         {% for transaction in statement.banktransaction_set.all %}
                             <li>
