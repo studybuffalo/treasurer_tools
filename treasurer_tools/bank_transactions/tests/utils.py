@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 
 from bank_institutions.models import Institution, Account
-from bank_transactions.models import Statement
+from bank_transactions.models import Statement, BankTransaction
 
 def create_user():
     # Create regular user
@@ -49,3 +49,50 @@ def create_bank_statement():
     )
 
     return statement_reference
+
+
+def create_bank_statement():
+    account_reference = create_bank_account()
+
+    statement_reference = Statement.objects.create(
+        account=account_reference,
+        date_start="2017-01-01",
+        date_end="2017-01-31"
+    )
+
+    return statement_reference
+
+def create_bank_transactions():
+    statement_reference = create_bank_statement()
+
+    bank_transaction_reference_1 = BankTransaction.objects.create(
+        statement=statement_reference,
+        date_transaction="2017-01-01",
+        description_bank="CHQ#0001",
+        description_user="Cheque #0001"
+    )
+    bank_transaction_reference_2 = BankTransaction.objects.create(
+        statement=statement_reference,
+        date_transaction="2017-01-02",
+        description_bank="CHQ#0002",
+        description_user="Cheque #0002"
+    )
+    bank_transaction_reference_3 = BankTransaction.objects.create(
+        statement=statement_reference,
+        date_transaction="2017-01-03",
+        description_bank="DEP3333",
+        description_user=""
+    )
+    bank_transaction_reference_4 = BankTransaction.objects.create(
+        statement=statement_reference,
+        date_transaction="2017-01-04",
+        description_bank="DEP4444",
+        description_user="Deposit from account #4444"
+    )
+
+    return [
+        bank_transaction_reference_1,
+        bank_transaction_reference_2,
+        bank_transaction_reference_3,
+        bank_transaction_reference_4,
+    ]
