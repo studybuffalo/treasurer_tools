@@ -239,6 +239,7 @@ class InstitutionEditTest(TestCase):
             "account_set-0-name": account.name,
             "account_set-0-status": account.status,
             "account_set-0-id": account.id,
+            "account_set-0-institution": institution.id,
             "account_set-TOTAL_FORMS": 1,
             "account_set-INITIAL_FORMS": 1,
             "account_set-MIN_NUM_FORMS": 1,
@@ -297,7 +298,7 @@ class InstitutionEditTest(TestCase):
             reverse("bank_institutions:edit", kwargs=self.url_args),
             self.valid_data,
         )
-
+        
         # Check that redirection was successful
         self.assertRedirects(response, reverse("bank_institutions:dashboard"))
 
@@ -323,6 +324,8 @@ class InstitutionEditTest(TestCase):
         edited_data["account_set-1-account_number"] = "222222222"
         edited_data["account_set-1-name"] = "TFSA Account"
         edited_data["account_set-1-status"] = "a"
+        edited_data["account_set-1-id"] = ""
+        edited_data["account_set-1-institution"] = ""
         edited_data["account_set-TOTAL_FORMS"] = 2
 
         self.client.login(username="user", password="abcd123456")
@@ -340,6 +343,7 @@ class InstitutionEditTest(TestCase):
 
     def test_institution_edit_post_delete_account(self):
         """Checks that account is deleted via the edit institution form"""
+
         # Add an extra entry to Account
         new_account = Account.objects.create(
             institution=self.institution,
@@ -358,6 +362,7 @@ class InstitutionEditTest(TestCase):
         delete_data["account_set-1-name"] = "TFSA Account"
         delete_data["account_set-1-status"] = "a"
         delete_data["account_set-1-id"] = new_account.id
+        delete_data["account_set-1-institution"] = self.institution.id
         delete_data["account_set-TOTAL_FORMS"] = 2
         delete_data["account_set-INITIAL_FORMS"] = 2
 

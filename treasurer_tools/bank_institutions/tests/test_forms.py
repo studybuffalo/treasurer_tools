@@ -66,7 +66,7 @@ class AccountFormsetTest(TestCase):
 
         self.assertFalse(form.is_valid())
 
-    def test_is_valid_with_nodata(self):
+    def test_is_valid_with_no_data(self):
         """Tests that at least one form must be submitted"""
         form = AccountFormSet(
             {

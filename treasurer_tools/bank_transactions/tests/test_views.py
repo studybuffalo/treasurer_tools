@@ -5,11 +5,16 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-#from bank_transactions.models import Statement, BankTransaction, AttachmentMatch
-#from documents.models import Attachment
+from bank_transactions.models import Statement, BankTransaction
+from documents.models import Attachment
+
+from .utils import create_user, create_bank_transactions
 
 #class BankDashboardTest(TestCase):
-#    """Tests for the bank dashboard view"""
+#    """Tests for the dashboard view"""
+
+#    def setUp(self):
+#        create_user()
 
 #    def test_dashboard_redirect_if_not_logged_in(self):
 #        """Checks redirect to login page if user is not logged in"""
@@ -31,7 +36,7 @@ from django.test import TestCase
 #    def test_dashboard_accessible_by_name(self):
 #        """Checks that the dashboard URL name works properly"""
 #        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_dashboard"))
+#        response = self.client.get(reverse("bank_transactions:dashboard"))
 
 #        # Check that user logged in
 #        self.assertEqual(str(response.context['user']), 'user')
@@ -42,7 +47,7 @@ from django.test import TestCase
 #    def test_dashboard_template(self):
 #        """Checks that the dashboard uses the correct template"""
 #        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_dashboard"))
+#        response = self.client.get(reverse("bank_transactions:dashboard"))
 
 #        # Check that user logged in
 #        self.assertEqual(str(response.context['user']), 'user')
