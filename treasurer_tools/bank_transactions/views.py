@@ -200,6 +200,11 @@ def statement_delete(request, statement_id):
 
     # If this is a POST request then process the Form data
     if request.method == "POST":
+        # Delete any attachment matches
+        if statement_data.bankstatementmatch_set.all():
+            statement_data.bankstatementmatch_set.all().delete()
+
+        # Delete the statement
         statement_data.delete()
 
         # Redirect back to main list

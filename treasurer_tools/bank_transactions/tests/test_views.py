@@ -551,7 +551,6 @@ class StatementEditTest(TestCase):
             attachment_total - 1
         )
 
-
     @override_settings(MEDIA_ROOT=MEDIA_ROOT)
     def test_statement_edit_add_attachment(self):
         """Tests addition of attachment to statement"""
@@ -594,7 +593,9 @@ class StatementDeleteTest(TestCase):
     def setUp(self):
         create_user()
         transactions = create_bank_transactions()
+
         self.id = transactions[0].statement.id
+        self.transactions = transactions
 
     def test_statement_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -682,7 +683,30 @@ class StatementDeleteTest(TestCase):
         # Get original database counts
         statement_total = Statement.objects.count()
         transaction_total = BankTransaction.objects.count()
-        #attachment_match_total = AttachmentMatch.objects.count()
+
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        self.client.post(
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
+        )
+
+        # Checks that statement was deleted
+        self.assertEqual(Statement.objects.count(), statement_total - 1)
+
+        # Checks that BankTransactions were deleted
+        self.assertEqual(BankTransaction.objects.count(), transaction_total - 4)
+
+    def test_statement_delete_confirm_attachment_match_deletion(self):
+        """Confirms deletion form works properly"""
+        # Create an attachment match
+        match = create_bank_statement_match(self.transactions[0].statement)
+
+        # Get original database counts
+        statement_total = Statement.objects.count()
+        transaction_total = BankTransaction.objects.count()
+        attachment_match_total = BankStatementMatch.objects.count()
 
         # Login
         self.client.login(username="user", password="abcd123456")
@@ -699,4 +723,5 @@ class StatementDeleteTest(TestCase):
         self.assertEqual(BankTransaction.objects.count(), transaction_total - 4)
 
         # Checks that the attachment match was deleted
-        #self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)
+        self.assertEqual(BankStatementMatch.objects.count(), attachment_match_total - 1)
+
