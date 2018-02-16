@@ -10,7 +10,7 @@ from bank_transactions.models import Statement, BankTransaction
 from documents.models import Attachment, BankStatementMatch
 
 from .utils import (
-    create_user, create_bank_account, create_bank_transactions, create_temp_pdf, 
+    create_user, create_bank_account, create_bank_transactions, create_temp_pdf,
     create_bank_statement_match
 )
 
@@ -529,7 +529,7 @@ class StatementEditTest(TestCase):
         delete_data["bankstatementmatch_set-0-attachment"] = match.attachment.id
         delete_data["bankstatementmatch_set-0-id"] = match.id
         delete_data["bankstatementmatch_set-0-statement"] = match.statement.id
-        
+
         # Make the POST request
         self.client.login(username="user", password="abcd123456")
         self.client.post(
@@ -701,7 +701,7 @@ class StatementDeleteTest(TestCase):
     def test_statement_delete_confirm_attachment_match_deletion(self):
         """Confirms deletion form works properly"""
         # Create an attachment match
-        match = create_bank_statement_match(self.transactions[0].statement)
+        create_bank_statement_match(self.transactions[0].statement)
 
         # Get original database counts
         statement_total = Statement.objects.count()
@@ -724,4 +724,3 @@ class StatementDeleteTest(TestCase):
 
         # Checks that the attachment match was deleted
         self.assertEqual(BankStatementMatch.objects.count(), attachment_match_total - 1)
-
