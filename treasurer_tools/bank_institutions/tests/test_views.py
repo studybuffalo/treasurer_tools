@@ -298,7 +298,7 @@ class InstitutionEditTest(TestCase):
             reverse("bank_institutions:edit", kwargs=self.url_args),
             self.valid_data,
         )
-        
+
         # Check that redirection was successful
         self.assertRedirects(response, reverse("bank_institutions:dashboard"))
 

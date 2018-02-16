@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 from bank_institutions.models import Institution, Account
 from bank_transactions.models import Statement, BankTransaction
-from documents.models import BankStatementMatch
+from documents.models import Attachment, BankStatementMatch
 
 def create_user():
     # Create regular user
@@ -103,10 +103,19 @@ def create_temp_pdf():
 
     return temp_pdf
 
+def create_attachment():
+    temp_file = create_temp_pdf()
+
+    attachment = Attachment.objects.create(
+        location=temp_file.name
+    )
+
+    return attachment
+
 def create_bank_statement_match(statement):
     match = BankStatementMatch.objects.create(
         statement=statement,
-        attachment=create_temp_file()
+        attachment=create_attachment()
     )
 
     return match

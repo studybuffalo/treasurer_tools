@@ -43,7 +43,7 @@ class StatementFormTest(TestCase):
 
         # Generate the form
         statement_form = StatementForm(invalid_data)
-        
+
         # Check that the form is invalid
         self.assertFalse(statement_form.is_valid())
 
@@ -127,7 +127,7 @@ class BankTransactionFormSetTest(TestCase):
         invalid_data = self.valid_data
         invalid_data["banktransaction_set-0-amount_debit"] = "a"
         invalid_data["banktransaction_set-0-amount_credit"] = "a"
-        
+
         # Generate the form
         bank_transaction_formset = BankTransactionFormSet(invalid_data)
 

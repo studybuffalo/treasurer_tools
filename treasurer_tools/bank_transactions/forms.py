@@ -109,6 +109,6 @@ AttachmentMatchFormSet = inlineformset_factory(
 
 class NewBankAttachmentForm(NewAttachmentForm):
     def __init__(self, *args, **kwargs):
-        super(NewAttachmentForm, self).__init__(*args, **kwargs)
-        self.fields["files"].help_text="Documentation/files for this bank statement."
-        self.fields["files"].label="bank statement attachments"
+        super(NewBankAttachmentForm, self).__init__(*args, **kwargs)
+        self.fields["files"].help_text = "Documentation/files for this bank statement."
+        self.fields["files"].label = "bank statement attachments"

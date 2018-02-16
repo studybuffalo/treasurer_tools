@@ -1,7 +1,6 @@
 """Test cases for the bank_transactions app views"""
 
 import tempfile
-from unipath import Path
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
@@ -10,7 +9,10 @@ from django.test import TestCase, override_settings
 from bank_transactions.models import Statement, BankTransaction
 from documents.models import Attachment, BankStatementMatch
 
-from .utils import create_user, create_bank_account, create_bank_transactions, create_temp_pdf
+from .utils import (
+    create_user, create_bank_account, create_bank_transactions, create_temp_pdf, 
+    create_bank_statement_match
+)
 
 
 class BankDashboardTest(TestCase):
@@ -142,7 +144,7 @@ class StatementAddTest(TestCase):
         transaction_total = BankTransaction.objects.count()
 
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("bank_transactions:add"),
             self.valid_data,
             follow=True,
@@ -226,7 +228,7 @@ class StatementAddTest(TestCase):
 
         # Make the POST request
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("bank_transactions:add"),
             file_data,
             format="multipart/form-data",
@@ -247,6 +249,8 @@ class StatementAddTest(TestCase):
 
 class StatementEditTest(TestCase):
     """Tests for the edit statement view"""
+    # Setup a temporary media_root folder to hold any attachments
+    MEDIA_ROOT = tempfile.mkdtemp()
 
     def setUp(self):
         create_user()
@@ -508,9 +512,85 @@ class StatementEditTest(TestCase):
             "The inline foreign key did not match the parent instance primary key."
         )
 
+    def test_statement_edit_delete_attachment(self):
+        """Tests deletion of attachment match"""
+        # Create an attachment match
+        match = create_bank_statement_match(self.transactions[0].statement)
+
+        # Get current count of attachments
+        match_total = BankStatementMatch.objects.count()
+        attachment_total = Attachment.objects.count()
+
+        # Setup the data for attachment deletion
+        delete_data = self.valid_data
+        delete_data["bankstatementmatch_set-TOTAL_FORMS"] = 1
+        delete_data["bankstatementmatch_set-INITIAL_FORMS"] = 1
+        delete_data["bankstatementmatch_set-0-DELETE"] = "on"
+        delete_data["bankstatementmatch_set-0-attachment"] = match.attachment.id
+        delete_data["bankstatementmatch_set-0-id"] = match.id
+        delete_data["bankstatementmatch_set-0-statement"] = match.statement.id
+        
+        # Make the POST request
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            delete_data,
+            format="multipart/form-data",
+            follow=True,
+        )
+
+        # Check that the attachment match was removed
+        self.assertEqual(
+            BankStatementMatch.objects.count(),
+            match_total - 1
+        )
+
+        # Check that the attachment was removed
+        self.assertEqual(
+            Attachment.objects.count(),
+            attachment_total - 1
+        )
+
+
+    @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+    def test_statement_edit_add_attachment(self):
+        """Tests addition of attachment to statement"""
+        # Get current count of attachments
+        attachment_total = Attachment.objects.count()
+        match_total = BankStatementMatch.objects.count()
+
+        # Create a test file to upload
+        temp_file = InMemoryUploadedFile(
+            create_temp_pdf(), None, "test.pdf", "application/pdf", None, None
+        )
+
+        file_data = self.valid_data
+        file_data["files"] = temp_file
+
+        # Make the POST request
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            file_data,
+            format="multipart/form-data",
+            follow=True,
+        )
+
+        # Check that the attachment was added
+        self.assertEqual(
+            Attachment.objects.count(),
+            attachment_total + 1
+        )
+
+        # Check that the attachment match was added
+        self.assertEqual(
+            BankStatementMatch.objects.count(),
+            match_total + 1
+        )
+
 class StatementDeleteTest(TestCase):
     """Tests for the delete statement view"""
-    
+
     def setUp(self):
         create_user()
         transactions = create_bank_transactions()
@@ -519,7 +599,7 @@ class StatementDeleteTest(TestCase):
     def test_statement_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
         )
 
         self.assertEqual(response.status_code, 302)
@@ -528,7 +608,7 @@ class StatementDeleteTest(TestCase):
         """Checks that user is not redirected if logged in"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
         )
 
         # Check that user logged in
@@ -557,7 +637,7 @@ class StatementDeleteTest(TestCase):
         """Checks that delete statement page URL name works properly"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
         )
 
         # Check that page is accessible
@@ -567,7 +647,7 @@ class StatementDeleteTest(TestCase):
         """Checks that delete statement page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": 999999999})
+            reverse("bank_transactions:delete", kwargs={"statement_id": 999999999})
         )
 
         # Check that page is accessible
@@ -577,7 +657,7 @@ class StatementDeleteTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
         )
 
         # Check for proper template
@@ -590,7 +670,7 @@ class StatementDeleteTest(TestCase):
 
         # Delete entry
         response = self.client.post(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id}),
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id}),
             follow=True,
         )
 
@@ -609,7 +689,7 @@ class StatementDeleteTest(TestCase):
 
         # Delete entry
         self.client.post(
-            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+            reverse("bank_transactions:delete", kwargs={"statement_id": self.id})
         )
 
         # Checks that statement was deleted

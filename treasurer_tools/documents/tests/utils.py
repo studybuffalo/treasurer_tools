@@ -1,7 +1,5 @@
 """Functions to assist with unit and integration testing"""
 
-from django.contrib.auth import get_user_model
-
 from bank_institutions.models import Institution, Account
 from bank_transactions.models import Statement
 

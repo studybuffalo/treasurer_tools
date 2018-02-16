@@ -3,7 +3,6 @@
 import tempfile
 from unipath import Path
 
-from django.core.files import File
 from django.test import TestCase
 
 from documents.models import Attachment, BankStatementMatch
@@ -16,14 +15,14 @@ class AttachmentModelTest(TestCase):
         """Tests string representation works for normal name lengths"""
         temp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
         attachment = Attachment.objects.create(
-            location = temp_file.name
+            location=temp_file.name
         )
 
         self.assertEqual(
             str(attachment),
             Path(temp_file.name).name
         )
-    
+
     def test_string_representation_long(self):
         """Tests string representaton works for long name lengths"""
         temp_file = tempfile.NamedTemporaryFile(
@@ -31,7 +30,7 @@ class AttachmentModelTest(TestCase):
             suffix=".pdf"
         )
         attachment = Attachment.objects.create(
-            location = temp_file.name
+            location=temp_file.name
         )
 
         self.assertEqual(
@@ -46,14 +45,14 @@ class BankStatementMatchTest(TestCase):
         # Create a new match instance
         temp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
         attachment = Attachment.objects.create(
-            location = temp_file.name
+            location=temp_file.name
         )
 
         statement = create_bank_statement()
 
         match = BankStatementMatch.objects.create(
-            statement = statement,
-            attachment = attachment,
+            statement=statement,
+            attachment=attachment,
         )
 
         self.assertEqual(

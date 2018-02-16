@@ -2,8 +2,6 @@
 
 from django.test import TestCase
 
-from bank_transactions.models import Statement, BankTransaction
-
 from .utils import create_bank_statement, create_bank_transactions
 
 class StatementModelTest(TestCase):
@@ -126,18 +124,15 @@ class BankTransactionModelTest(TestCase):
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        bank_transactions = BankTransaction.objects.all()
-
-        transactions = self.transactions
 
         # Test string without description_user
         self.assertEqual(
-            str(transactions[2]),
+            str(self.transactions[2]),
             "2017-01-03 - DEP3333"
         )
 
         # Test string with description_user
         self.assertEqual(
-            str(transactions[0]),
+            str(self.transactions[0]),
             "2017-01-01 - Cheque #0001"
         )

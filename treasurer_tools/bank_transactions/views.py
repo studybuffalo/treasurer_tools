@@ -146,7 +146,14 @@ def statement_edit(request, statement_id):
             # Delete any old attachments
             for attachment_match_formset in attachment_match_formsets:
                 if attachment_match_formset.cleaned_data["DELETE"]:
-                    attachment_match_formset.cleaned_data["id"].delete()
+                    # Get the match object
+                    attachment_match = attachment_match_formset.cleaned_data["id"]
+
+                    # Delete the attachment
+                    attachment_match.attachment.delete()
+
+                    # Delete the attachment match
+                    attachment_match.delete()
 
             # Cycle through each new attachment
             for file in new_attachment_form.cleaned_data["files"]:
@@ -156,7 +163,7 @@ def statement_edit(request, statement_id):
                 )
 
                 # Create the attachment match
-                AttachmentMatch.objects.create(
+                BankStatementMatch.objects.create(
                     statement=saved_statement,
                     attachment=saved_attachment,
                 )
