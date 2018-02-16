@@ -6,7 +6,7 @@ from django.test import TestCase
 #class FinancialCodeDashboard(TestCase):
 #    """Tests for the financial code dashboard view"""
 #    # pylint: disable=no-member,protected-access
-    
+
 #    fixtures = [
 #        "financial_codes/tests/fixtures/authentication.json",
 #    ]
@@ -21,7 +21,7 @@ from django.test import TestCase
 #        """Checks that the dashboard uses the correct URL"""
 #        self.client.login(username="user", password="abcd123456")
 #        response = self.client.get("/settings/codes/")
-        
+
 #        # Check that user logged in
 #        self.assertEqual(str(response.context['user']), 'user')
 
@@ -32,7 +32,7 @@ from django.test import TestCase
 #        """Checks that the dashboard URL name works properly"""
 #        self.client.login(username="user", password="abcd123456")
 #        response = self.client.get(reverse("financial_codes_dashboard"))
-        
+
 #        # Check that user logged in
 #        self.assertEqual(str(response.context['user']), 'user')
 
@@ -43,7 +43,7 @@ from django.test import TestCase
 #        """Checks that the dashboard uses the correct template"""
 #        self.client.login(username="user", password="abcd123456")
 #        response = self.client.get(reverse("financial_codes_dashboard"))
-        
+
 #        # Check that user logged in
 #        self.assertEqual(str(response.context['user']), 'user')
 

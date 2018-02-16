@@ -73,7 +73,7 @@ class FinancialCodeSystemFormTest(TestCase):
         # Create data without end date
         modified_data = self.valid_data
         modified_data["date_end"] = None
-        
+
         # Create form
         form = FinancialCodeSystemForm(data=modified_data)
 
@@ -144,7 +144,7 @@ class BudgetYearFormTest(TestCase):
             form["date_end"].errors[0],
             "Enter a valid date."
         )
-        
+
     def test_missing_system_validation(self):
         """Tests that custom validation handles missing end date"""
         # Setup invalid data
@@ -214,7 +214,7 @@ class BudgetYearFormTest(TestCase):
             form["date_end"].errors[0],
             "The end date must occur before the end of the Financial Code System."
         )
-        
+
     def test_end_date_with_no_system_end_date(self):
         """
             Tests that any end date is okay if financial code

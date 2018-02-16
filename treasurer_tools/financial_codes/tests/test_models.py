@@ -2,10 +2,6 @@
 
 from django.test import TestCase
 
-from financial_codes.models import (
-    FinancialCodeSystem, BudgetYear, FinancialCodeGroup, FinancialCode
-)
-
 from .utils import (
     create_financial_code_systems, create_budget_year, create_financial_code_groups,
     create_financial_codes
@@ -82,7 +78,7 @@ class BudgetYearModelTest(TestCase):
 
     def test_date_end_label(self):
         """Tests for a proper date_end label"""
-        
+
         self.assertEqual(
             self.budget_year._meta.get_field("date_end").verbose_name,
             "end date"
