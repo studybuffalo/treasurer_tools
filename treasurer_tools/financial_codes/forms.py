@@ -25,7 +25,7 @@ def get_years_with_opt_groups():
 
 class FinancialCodeSystemForm(forms.ModelForm):
     """Form to add & edit entries in the FinancialCodeSystem model"""
-    # pylint: disable=missing-docstring,too-few-public-methods
+
     class Meta:
         model = FinancialCodeSystem
 
