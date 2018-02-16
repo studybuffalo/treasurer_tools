@@ -6,751 +6,557 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from bank_transactions.models import Statement, BankTransaction
-from documents.models import Attachment
-
-from .utils import create_user, create_bank_transactions
-
-#class BankDashboardTest(TestCase):
-#    """Tests for the dashboard view"""
-
-#    def setUp(self):
-#        create_user()
-
-#    def test_dashboard_redirect_if_not_logged_in(self):
-#        """Checks redirect to login page if user is not logged in"""
-#        response = self.client.get("/banking/")
-
-#        self.assertRedirects(response, "/accounts/login/?next=/banking/")
-
-#    def test_dashboard_url_exists_at_desired_location(self):
-#        """Checks that the dashboard uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/")
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_dashboard_accessible_by_name(self):
-#        """Checks that the dashboard URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_transactions:dashboard"))
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_dashboard_template(self):
-#        """Checks that the dashboard uses the correct template"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("bank_transactions:dashboard"))
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/index.html")
-
-#class StatementAddTest(TestCase):
-#    """Tests for the add statement view"""
-
-#    def setUp(self):
-#        self.correct_statement_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-TOTAL_FORMS": 0,
-#            "banktransaction_set-INITIAL_FORMS": 0,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#        }
-#        self.correct_transaction_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-0-date_transaction": "2017-01-01",
-#            "banktransaction_set-0-description_bank": "CHQ#0001",
-#            "banktransaction_set-0-description_user": "Cheque #0001",
-#            "banktransaction_set-0-amount_debit": 100.00,
-#            "banktransaction_set-0-amount_credit": 0.00,
-#            "banktransaction_set-TOTAL_FORMS": 1,
-#            "banktransaction_set-INITIAL_FORMS": 0,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#        }
-#        self.cwd = Path().cwd()
-#        self.test_file_dir = self.cwd.child("bank_transactions", "tests", "files")
-#        self.media_file_dir = self.cwd.child("media")
-
-#    def test_statement_add_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(reverse("statement_add"))
-
-#        self.assertEqual(response.status_code, 302)
-
-#    def test_statement_add_url_exists_at_desired_location(self):
-#        """Checks that the add statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/add/")
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_add_accessible_by_name(self):
-#        """Checks that add statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("statement_add"))
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_add_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("statement_add"))
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/add.html")
-
-#    def test_statement_add_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"), self.correct_statement_data, follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_dashboard"))
-
-#    def test_statement_add_confirm_add(self):
-#        """Confirms data is added to database on successful form submission"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"), self.correct_statement_data, follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that one statement was added
-#        self.assertEqual(1, Statement.objects.count())
-
-#    def test_statement_add_transaction_add(self):
-#        """Confirms that a transaction can be added along with statement"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_add"),
-#            self.correct_transaction_data,
-#            follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that one statement was added
-#        self.assertEqual(1, BankTransaction.objects.count())
-
-#    def test_statement_add_attachment(self):
-#        """Confirms data & files successfully added"""
-#        # Get current counts of DB entries
-#        statement_total = Statement.objects.count()
-#        attachment_total = Attachment.objects.count()
-#        attachment_match_total = AttachmentMatch.objects.count()
-
-#        with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
-#            correct_data = self.correct_statement_data
-#            correct_data["newattachment-files"] = InMemoryUploadedFile(
-#                test_file, None, "test.pdf", "application/pdf", None, None
-#            )
-
-#            self.client.login(username="user", password="abcd123456")
-#            response = self.client.post(
-#                reverse("statement_add"),
-#                correct_data,
-#                format="multipart/form-data",
-#                follow=True,
-#            )
-
-#            # Get reference to the new attachment
-#            attachment_instance = Attachment.objects.first()
-
-#            # Get the path to the new file
-#            attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that one statement was added
-#        self.assertEqual(Statement.objects.count(), statement_total + 1)
-
-#        # Check that one attachment match was added
-#        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total + 1)
-
-#        # Check that one attachment was added
-#        self.assertEqual(Attachment.objects.count(), attachment_total + 1)
-
-#        # Check that attachment match used right statement & attachment
-#        self.assertEqual(
-#            AttachmentMatch.objects.first().attachment.id,
-#            attachment_instance.id
-#        )
-
-#        self.assertEqual(
-#            AttachmentMatch.objects.first().statement.id,
-#            Statement.objects.first().id
-#        )
-
-#        # Check that the file exists in the new directory
-#        self.assertTrue(attachment_path.exists())
-
-#        # Remove the new test file
-#        attachment_path.remove()
-
-#class StatementEditTest(TestCase):
-#    """Tests for the edit statement view"""
-
-#    def setUp(self):
-#        # Add standard test data
-#        self.correct_data = {
-#            "account": 1,
-#            "date_start": "2017-01-01",
-#            "date_end": "2017-01-31",
-#            "banktransaction_set-TOTAL_FORMS": 4,
-#            "banktransaction_set-INITIAL_FORMS": 4,
-#            "banktransaction_set-MIN_NUM_FORMS": 0,
-#            "banktransaction_set-MAX_NUM_FORMS": 1000,
-#            "banktransaction_set-0-date_transaction": "2017-01-01",
-#            "banktransaction_set-0-description_bank": "CHQ#0001",
-#            "banktransaction_set-0-description_user": "Cheque #0001",
-#            "banktransaction_set-0-amount_debit": 100.00,
-#            "banktransaction_set-0-amount_credit": 0.00,
-#            "banktransaction_set-0-id": 1,
-#            "banktransaction_set-0-statement": 1,
-#            "banktransaction_set-1-date_transaction": "2017-01-02",
-#            "banktransaction_set-1-description_bank": "CHQ#0002",
-#            "banktransaction_set-1-description_user": "Cheque #0002",
-#            "banktransaction_set-1-amount_debit": 200.00,
-#            "banktransaction_set-1-amount_credit": 0.00,
-#            "banktransaction_set-1-id": 2,
-#            "banktransaction_set-1-statement": 1,
-#            "banktransaction_set-2-date_transaction": "2017-01-03",
-#            "banktransaction_set-2-description_bank": "DEP3333",
-#            "banktransaction_set-2-description_user": "",
-#            "banktransaction_set-2-amount_debit": 0.00,
-#            "banktransaction_set-2-amount_credit": 30.00,
-#            "banktransaction_set-2-id": 3,
-#            "banktransaction_set-2-statement": 1,
-#            "banktransaction_set-3-date_transaction": "2017-01-04",
-#            "banktransaction_set-3-description_bank": "DEP4444",
-#            "banktransaction_set-3-description_user": "Deposit from account #4444",
-#            "banktransaction_set-3-amount_debit": 0.00,
-#            "banktransaction_set-3-amount_credit": 40.00,
-#            "banktransaction_set-3-id": 4,
-#            "banktransaction_set-3-statement": 1,
-#            "am_bank_transaction-TOTAL_FORMS": 1,
-#            "am_bank_transaction-INITIAL_FORMS": 1,
-#            "am_bank_transaction-MIN_NUM_FORMS": 0,
-#            "am_bank_transaction-MAX_NUM_FORMS": 10,
-#            "am_bank_transaction-0-DELETE": "",
-#            "am_bank_transaction-0-attachment": 1,
-#            "am_bank_transaction-0-id": 1,
-#            "am_bank_transaction-0-statement": 1,
-#            "newattachment-files": "",
-#        }
-#        self.cwd = Path().cwd()
-#        self.test_file_dir = self.cwd.child("bank_transactions", "tests", "files")
-#        self.media_file_dir = self.cwd.child("media")
-
-#    def test_statement_edit_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
-
-#        self.assertEqual(response.status_code, 302)
-
-#    def test_statement_edit_url_exists_at_desired_location(self):
-#        """Checks that the edit statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/edit/1")
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_edit_html404_on_invalid_url(self):
-#        """Checks that the edit statement page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/edit/999999999")
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_edit_accessible_by_name(self):
-#        """Checks that edit statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_edit_html404_on_invalid_name(self):
-#        """Checks that edit statement page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 999999999})
-#        )
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_edit_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_edit", kwargs={"statement_id": 1})
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/edit.html")
-
-#    def test_statement_edit_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["end_date"] = "2017-12-31"
-
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data,
-#            follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_dashboard"))
-
-#    def test_statement_edit_post_failed_on_invalid_statement_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup the edited data
-#        edited_data = self.correct_data
-#        edited_data["end_date"] = "2017-12-31"
-
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 999999999}),
-#            edited_data,
-#            follow=True,
-#        )
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_edit_post_confirm_statement_edit(self):
-#        """Confirms banktransaction is properly edited via the statement edit form"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["date_end"] = "2017-12-31"
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
-
-#        # Confirm still only 1 entry
-#        self.assertEqual(1, Statement.objects.count())
-
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            str(Statement.objects.get(id=1).date_end),
-#            "2017-12-31"
-#        )
-
-#    def test_statement_edit_post_confirm_bank_transaction_edit(self):
-#        """Confirms that transaction can be edited in edit statement form"""
-#        # Get current count of banktransactions
-#        bank_transaction_total = BankTransaction.objects.count()
-
-#        # Setup modified data
-#        edited_data = self.correct_data
-#        edited_data["banktransaction_set-0-description_bank"] = "4"
-#        edited_data["banktransaction_set-0-description_user"] = "5"
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
-
-#        # Confirm no bank transactions were added
-#        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total)
-
-#        # Confirm banktransaction number has been updated properly
-#        self.assertEqual(
-#            BankTransaction.objects.get(id=1).description_bank,
-#            "4"
-#        )
-
-#        # Confirm name has been updated properly
-#        self.assertEqual(
-#            BankTransaction.objects.get(id=1).description_user,
-#            "5"
-#        )
-
-#    def test_statement_edit_post_fail_on_invalid_bank_transaction_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Setup edited data
-#        edited_data = self.correct_data
-#        edited_data["banktransaction_set-0-id"] = "999999999"
-
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
-
-#        # Check for the expected ValidationError
-#        self.assertEqual(
-#            response.context["bank_transaction_formsets"][0].errors["id"][0],
-#            "Select a valid choice. That choice is not one of the available choices."
-#        )
-
-#    def test_statement_edit_post_add_bank_transaction(self):
-#        """Checks that a new banktransaction is added via the edit statement form"""
-#        # Get current number of bank transactions
-#        bank_transaction_total = BankTransaction.objects.count()
-
-#        # Setup the new data
-#        added_data = self.correct_data
-#        added_data["banktransaction_set-4-id"] = ""
-#        added_data["banktransaction_set-4-statement"] = 1
-#        added_data["banktransaction_set-4-date_transaction"] = "2017-01-05"
-#        added_data["banktransaction_set-4-description_bank"] = "DEP"
-#        added_data["banktransaction_set-4-description_user"] = "Deposit"
-#        added_data["banktransaction_set-4-amount_debit"] = 0.00
-#        added_data["banktransaction_set-4-amount_credit"] = 200.00
-#        added_data["banktransaction_set-TOTAL_FORMS"] = 5
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            added_data
-#        )
-
-#        # Check that the number of banktransactions has increased
-#        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total + 1)
-
-#        # Check that original banktransactions still exist
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=1).date_transaction),
-#            "2017-01-01"
-#        )
-
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=2).date_transaction),
-#            "2017-01-02"
-#        )
-
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=3).date_transaction),
-#            "2017-01-03"
-#        )
-
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=4).date_transaction),
-#            "2017-01-04"
-#        )
-
-#        # Check that the new banktransaction was saved properly
-#        self.assertEqual(
-#            str(BankTransaction.objects.get(id=5).date_transaction),
-#            "2017-01-05"
-#        )
-
-#    def test_statement_edit_post_delete_bank_transaction(self):
-#        """Checks that bank transaction is deleted via the edit statement form"""
-#        # Setup the delete data
-#        delete_data = self.correct_data
-#        delete_data["banktransaction_set-0-DELETE"] = "on"
-
-#        self.client.login(username="user", password="abcd123456")
-#        self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            delete_data
-#        )
-
-#        # Check that the number of banktransactions has decreased
-#        self.assertEqual(
-#            BankTransaction.objects.count(),
-#            3
-#        )
-
-#        # Check that the proper ID has been removed
-#        self.assertEqual(
-#            BankTransaction.objects.filter(id=1).count(),
-#            0
-#        )
-
-#    def test_statement_edit_fail_on_changed_statement_id(self):
-#        """Confirms fail when statement ID changed for transaction"""
-
-#        # Setup modified data
-#        edited_data = self.correct_data
-#        edited_data["banktransaction_set-0-statement"] = "2"
-
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            edited_data
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check for the expected error
-#        self.assertEqual(
-#            response.context["bank_transaction_formsets"][0].errors["statement"][0],
-#            "The inline foreign key did not match the parent instance primary key."
-#        )
-
-#    def test_statement_edit_add_attachment(self):
-#        """Confirms data & files added to database on successful submission"""
-#        # Get number of Attachments and AttachmentMatches
-#        attachment_total = Attachment.objects.count()
-#        attachment_match_total = AttachmentMatch.objects.count()
-
-#        # Open reference file for upload
-#        with open(self.test_file_dir.child("test.pdf"), "rb") as test_file:
-#            # Setup POST data
-#            correct_data = self.correct_data
-#            correct_data["newattachment-files"] = InMemoryUploadedFile(
-#                test_file, None, "test.pdf", "application/pdf", None, None
-#            )
-
-#            # Make POST request
-#            self.client.login(username="user", password="abcd123456")
-#            response = self.client.post(
-#                reverse("statement_edit", kwargs={"statement_id": 1}),
-#                correct_data,
-#                format="multipart/form-data",
-#                follow=True,
-#            )
-
-#        # Get reference to the new attachment
-#        attachment_instance = Attachment.objects.last()
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that one attachment match was added
-#        self.assertEqual(
-#            AttachmentMatch.objects.count(),
-#            attachment_match_total + 1
-#        )
-
-#        # Check that one attachment was added
-#        self.assertEqual(Attachment.objects.count(), attachment_total + 1)
-
-#        # Check that the attachment match used the right transaction
-#        self.assertEqual(
-#            AttachmentMatch.objects.last().statement.id,
-#            Statement.objects.last().id
-#        )
-
-#        self.assertEqual(
-#            AttachmentMatch.objects.last().attachment.id,
-#            attachment_instance.id
-#        )
-
-#        # Get the path to the new file
-#        attachment_path = Path(self.media_file_dir, Path(str(attachment_instance.location)))
-
-#        # Check that the file exists in the new directory
-#        self.assertTrue(attachment_path.exists())
-
-#        # Remove the new test file
-#        attachment_path.remove()
-
-#    def test_statement_edit_delete_attachment(self):
-#        """Confirms attachment match successfully deleted"""
-#        # Get number of Attachments and AttachmentMatches
-#        attachment_total = Attachment.objects.count()
-#        attachment_match_total = AttachmentMatch.objects.count()
-
-#        # Setup POST data
-#        delete_data = self.correct_data
-#        delete_data["am_bank_transaction-0-DELETE"] = "on"
-
-#        # Make POST request
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.post(
-#            reverse("statement_edit", kwargs={"statement_id": 1}),
-#            delete_data,
-#            format="multipart/form-data",
-#            follow=True,
-#        )
-
-#        # Checks that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that attachment refrence was not removed
-#        # (want to keep it for easier auditing purposes)
-#        self.assertEqual(Attachment.objects.count(), attachment_total)
-
-#        # Check that one attachment match was removed
-#        self.assertEqual(
-#            AttachmentMatch.objects.count(),
-#            attachment_match_total - 1
-#        )
-
-#class StatementDeleteTest(TestCase):
-#    """Tests for the delete statement view"""
-
-#    def test_statement_delete_redirect_if_not_logged_in(self):
-#        """Checks user is redirected if not logged in"""
-#        response = self.client.get(
-#            reverse("statement_delete", kwargs={"statement_id": 1})
-#        )
-
-#        self.assertEqual(response.status_code, 302)
-
-#    def test_statement_delete_url_exists_at_desired_location(self):
-#        """Checks that the delete statement page uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/delete/1")
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_delete_html404_on_invalid_url(self):
-#        """Checks that the delete statement page URL fails on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/banking/statement/delete/999999999")
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_delete_accessible_by_name(self):
-#        """Checks that delete statement page URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_delete", kwargs={"statement_id": 1})
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
-
-#    def test_statement_delete_html404_on_invalid_name(self):
-#        """Checks that delete statement page URL name failed on invalid ID"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_delete", kwargs={"statement_id": 999999999})
-#        )
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_delete_template(self):
-#        """Checks that correct template is being used"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(
-#            reverse("statement_delete", kwargs={"statement_id": 1})
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "bank_transactions/delete.html")
-
-#    def test_statement_delete_redirect_to_dashboard(self):
-#        """Checks that form redirects to the dashboard on success"""
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
-
-#        # Delete entry
-#        response = self.client.post(
-#            reverse("statement_delete", kwargs={"statement_id": 1}),
-#            follow=True,
-#        )
-
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
-
-#        # Check that redirection was successful
-#        self.assertRedirects(response, reverse("bank_dashboard"))
-
-#    def test_statement_delete_post_failed_on_invalid_id(self):
-#        """Checks that a POST fails when an invalid ID is provided"""
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
-
-#        # Delete entry
-#        response = self.client.post(
-#            reverse("statement_delete", kwargs={"statement_id": 999999999}),
-#            follow=True,
-#        )
-
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 404)
-
-#    def test_statement_delete_confirm_deletion(self):
-#        """Confirms deletion form works properly"""
-#        # Get original database counts
-#        statement_total = Statement.objects.count()
-#        bank_transaction_total = BankTransaction.objects.count()
-#        attachment_match_total = AttachmentMatch.objects.count()
-
-#        # Login
-#        self.client.login(username="user", password="abcd123456")
-
-#        # Delete entry
-#        self.client.post(
-#            reverse("statement_delete", kwargs={"statement_id": 1})
-#        )
-
-#        # Checks that statement was deleted
-#        self.assertEqual(Statement.objects.filter(id=1).count(), 0)
-#        self.assertEqual(Statement.objects.count(), statement_total - 1)
-
-#        # Checks that BankTransactions were deleted
-#        self.assertEqual(BankTransaction.objects.count(), bank_transaction_total - 4)
-
-#        # Checks that the attachment match was deleted
-#        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)
+# from documents.models import AttachmentMatch
+
+from .utils import create_user, create_bank_account, create_bank_transactions
+
+class BankDashboardTest(TestCase):
+    """Tests for the dashboard view"""
+
+    def setUp(self):
+        create_user()
+
+    def test_dashboard_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.get("/banking/")
+
+        self.assertRedirects(response, "/accounts/login/?next=/banking/")
+
+    def test_dashboard_url_exists_at_desired_location(self):
+        """Checks that the dashboard uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/")
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_dashboard_accessible_by_name(self):
+        """Checks that the dashboard URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_transactions:dashboard"))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_dashboard_template(self):
+        """Checks that the dashboard uses the correct template"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_transactions:dashboard"))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_transactions/index.html")
+
+class StatementAddTest(TestCase):
+    """Tests for the add statement view"""
+
+    def setUp(self):
+        create_user()
+        account = create_bank_account()
+
+        self.valid_data = {
+            "account": account.id,
+            "date_start": "2017-01-01",
+            "date_end": "2017-01-31",
+            "banktransaction_set-0-date_transaction": "2017-01-01",
+            "banktransaction_set-0-description_bank": "CHQ#0001",
+            "banktransaction_set-0-description_user": "Cheque #0001",
+            "banktransaction_set-0-amount_debit": 100.00,
+            "banktransaction_set-0-amount_credit": 0.00,
+            "banktransaction_set-TOTAL_FORMS": 1,
+            "banktransaction_set-INITIAL_FORMS": 0,
+            "banktransaction_set-MIN_NUM_FORMS": 0,
+            "banktransaction_set-MAX_NUM_FORMS": 1000,
+        }
+
+    def test_statement_add_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(reverse("bank_transactions:add"))
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_statement_add_no_redirect_if_logged_in(self):
+        """Checks that user is not redirected if logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_transactions:add"))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that 200 status code returned (i.e. no redirect)
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_add_url_exists_at_desired_location(self):
+        """Checks that the add statement page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/statement/add/")
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_add_accessible_by_name(self):
+        """Checks that add statement page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_transactions:add"))
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_add_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("bank_transactions:add"))
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_transactions/add.html")
+
+    def test_statement_add_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:add"),
+            self.valid_data,
+            follow=True,
+        )
+
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_transactions:dashboard"))
+
+    def test_statement_add_transaction_add(self):
+        """Confirms that a transaction can be added along with statement"""
+        # Get current counts
+        statement_total = Statement.objects.count()
+        transaction_total = BankTransaction.objects.count()
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:add"),
+            self.valid_data,
+            follow=True,
+        )
+
+        # Check that one statement was added
+        self.assertEqual(
+            Statement.objects.count(),
+            statement_total + 1
+        )
+
+        # Check that one transaction as added
+        self.assertEqual(
+            BankTransaction.objects.count(),
+            transaction_total + 1
+        )
+
+    def test_statement_add_invalid_statement_data(self):
+        """Confirms statement cannot be processed with invalid data"""
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["date_start"] = ""
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:add"),
+            invalid_data,
+            follow=True,
+        )
+
+        # Check that page was not redirected to dashboard
+        self.assertEqual(response.status_code, 200)
+
+        # Check that other statement data returned
+        self.assertEqual(
+            response.context["statement_form"]["account"].value(),
+            str(invalid_data["account"])
+        )
+
+        self.assertEqual(
+            response.context["statement_form"]["date_end"].value(),
+            invalid_data["date_end"]
+        )
+
+    def test_statement_add_invalid_transaction_data(self):
+        """Confirms transaction cannot be processed with invalid data"""
+
+class StatementEditTest(TestCase):
+    """Tests for the edit statement view"""
+
+    def setUp(self):
+        create_user()
+        transactions = create_bank_transactions()
+
+        self.valid_data = {
+            "account": transactions[0].statement.account.id,
+            "date_start": transactions[0].statement.date_start,
+            "date_end": transactions[0].statement.date_end,
+            "banktransaction_set-0-date_transaction": transactions[0].date_transaction,
+            "banktransaction_set-0-description_bank": transactions[0].description_bank,
+            "banktransaction_set-0-description_user": transactions[0].description_user,
+            "banktransaction_set-0-amount_debit": transactions[0].amount_debit,
+            "banktransaction_set-0-amount_credit": transactions[0].amount_credit,
+            "banktransaction_set-0-id": transactions[0].id,
+            "banktransaction_set-0-statement": transactions[0].statement.id,
+            "banktransaction_set-1-date_transaction": transactions[1].date_transaction,
+            "banktransaction_set-1-description_bank": transactions[1].description_bank,
+            "banktransaction_set-1-description_user": transactions[1].description_user,
+            "banktransaction_set-1-amount_debit": transactions[1].amount_debit,
+            "banktransaction_set-1-amount_credit": transactions[1].amount_credit,
+            "banktransaction_set-1-id": transactions[1].id,
+            "banktransaction_set-1-statement": transactions[1].statement.id,
+            "banktransaction_set-2-date_transaction": transactions[2].date_transaction,
+            "banktransaction_set-2-description_bank": transactions[2].description_bank,
+            "banktransaction_set-2-description_user": transactions[2].description_user,
+            "banktransaction_set-2-amount_debit": transactions[2].amount_debit,
+            "banktransaction_set-2-amount_credit": transactions[2].amount_credit,
+            "banktransaction_set-2-id": transactions[2].id,
+            "banktransaction_set-2-statement": transactions[2].statement.id,
+            "banktransaction_set-3-date_transaction": transactions[3].date_transaction,
+            "banktransaction_set-3-description_bank": transactions[3].description_bank,
+            "banktransaction_set-3-description_user": transactions[3].description_user,
+            "banktransaction_set-3-amount_debit": transactions[3].amount_debit,
+            "banktransaction_set-3-amount_credit": transactions[3].amount_credit,
+            "banktransaction_set-3-id": transactions[3].id,
+            "banktransaction_set-3-statement": transactions[3].statement.id,
+            "banktransaction_set-4-date_transaction": "",
+            "banktransaction_set-4-description_bank": "",
+            "banktransaction_set-4-description_user": "",
+            "banktransaction_set-4-amount_debit": 0,
+            "banktransaction_set-4-amount_credit": 0,
+            "banktransaction_set-4-id": "",
+            "banktransaction_set-4-statement": "",
+            "banktransaction_set-TOTAL_FORMS": 5,
+            "banktransaction_set-INITIAL_FORMS": 4,
+            "banktransaction_set-MIN_NUM_FORMS": 0,
+            "banktransaction_set-MAX_NUM_FORMS": 1000,
+            "bankstatementmatch_set-TOTAL_FORMS": 0,
+            "bankstatementmatch_set-INITIAL_FORMS": 0,
+            "bankstatementmatch_set-MIN_FORMS": 0,
+            "bankstatementmatch_set-MAX_FORMS": 10,
+        }
+        self.valid_url = "/banking/statement/edit/{}".format(transactions[0].statement.id)
+        self.valid_args = {"statement_id": transactions[0].statement.id}
+        self.transactions = transactions
+
+    def test_statement_edit_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("bank_transactions:edit", kwargs=self.valid_args)
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_statement_edit_no_redirect_if_logged_in(self):
+        """Checks that user is not redirected if logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:edit", kwargs=self.valid_args)
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that 200 status code returned (i.e. no redirect)
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_edit_url_exists_at_desired_location(self):
+        """Checks that the edit statement page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.valid_url)
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_edit_html404_on_invalid_url(self):
+        """Checks that the edit statement page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/statement/edit/999999999")
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_statement_edit_accessible_by_name(self):
+        """Checks that edit statement page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:edit", kwargs=self.valid_args)
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_edit_html404_on_invalid_name(self):
+        """Checks that edit statement page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:edit", kwargs={"statement_id": 999999999})
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_statement_edit_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:edit", kwargs=self.valid_args)
+        )
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_transactions/edit.html")
+
+    def test_statement_edit_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            self.valid_data,
+            follow=True,
+        )
+
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_transactions:dashboard"))
+
+    def test_statement_edit_post_failed_on_invalid_statement_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:edit", kwargs={"statement_id": 999999999}),
+            self.valid_data,
+            follow=True,
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_statement_edit_post_confirm_statement_edit(self):
+        """Confirms banktransaction is properly edited via the statement edit form"""
+        statement_total = Statement.objects.count()
+
+        # Setup edited data
+        edited_data = self.valid_data
+        edited_data["date_end"] = "2017-12-31"
+
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            edited_data
+        )
+
+        # Confirm no new entries added
+        self.assertEqual(
+            Statement.objects.count(),
+            statement_total
+        )
+
+        # Confirm name has been updated properly
+        self.assertEqual(
+            str(Statement.objects.get(id=self.valid_args["statement_id"]).date_end),
+            edited_data["date_end"]
+        )
+
+    def test_statement_edit_post_confirm_bank_transaction_edit(self):
+        """Confirms that transaction can be edited in edit statement form"""
+        # Get current count of banktransactions
+        transaction_total = BankTransaction.objects.count()
+
+        # Setup modified data
+        edited_data = self.valid_data
+        edited_data["banktransaction_set-0-description_bank"] = "4"
+        edited_data["banktransaction_set-0-description_user"] = "5"
+
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            edited_data
+        )
+
+        # Confirm no bank transactions were added
+        self.assertEqual(transaction_total, BankTransaction.objects.count())
+
+        # Confirm banktransaction number has been updated properly
+        transaction_id = edited_data["banktransaction_set-0-id"]
+        self.assertEqual(
+            BankTransaction.objects.get(id=transaction_id).description_bank,
+            edited_data["banktransaction_set-0-description_bank"]
+        )
+
+        # Confirm name has been updated properly
+        self.assertEqual(
+            BankTransaction.objects.get(id=transaction_id).description_user,
+            edited_data["banktransaction_set-0-description_user"]
+        )
+
+    def test_statement_edit_post_fail_on_invalid_bank_transaction_id(self):
+        """Checks that a POST fails when an invalid ID is provided"""
+        # Setup edited data
+        edited_data = self.valid_data
+        edited_data["banktransaction_set-0-id"] = "999999999"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            edited_data
+        )
+
+        # Check for the expected ValidationError
+        self.assertEqual(
+            response.context["bank_transaction_formsets"][0].errors["id"][0],
+            "Select a valid choice. That choice is not one of the available choices."
+        )
+
+    def test_statement_edit_post_delete_bank_transaction(self):
+        """Checks that bank transaction is deleted via the edit statement form"""
+        # Coutn the transactions
+        transaction_total = BankTransaction.objects.count()
+
+        # Setup the delete data
+        delete_data = self.valid_data
+        delete_data["banktransaction_set-0-DELETE"] = "on"
+
+        self.client.login(username="user", password="abcd123456")
+        self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            delete_data
+        )
+
+        # Check that the number of banktransactions has decreased
+        self.assertEqual(BankTransaction.objects.count(), transaction_total - 1)
+
+    def test_statement_edit_fail_on_changed_statement_id(self):
+        """Confirms fail when statement ID changed for transaction"""
+
+        # Setup modified data
+        edited_data = self.valid_data
+        edited_data["banktransaction_set-0-statement"] = "2"
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:edit", kwargs=self.valid_args),
+            edited_data
+        )
+
+        # Check for the expected error
+        self.assertEqual(
+            response.context["bank_transaction_formsets"][0].errors["statement"][0],
+            "The inline foreign key did not match the parent instance primary key."
+        )
+
+class StatementDeleteTest(TestCase):
+    """Tests for the delete statement view"""
+    
+    def setUp(self):
+        create_user()
+        transactions = create_bank_transactions()
+        self.id = transactions[0].statement.id
+
+    def test_statement_delete_redirect_if_not_logged_in(self):
+        """Checks user is redirected if not logged in"""
+        response = self.client.get(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_statement_delete_no_redirect_if_logged_in(self):
+        """Checks that user is not redirected if logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+        )
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that 200 status code returned (i.e. no redirect)
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_delete_url_exists_at_desired_location(self):
+        """Checks that the delete statement page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/statement/delete/{}".format(self.id))
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_delete_html404_on_invalid_url(self):
+        """Checks that the delete statement page URL fails on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/banking/statement/delete/999999999")
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_statement_delete_accessible_by_name(self):
+        """Checks that delete statement page URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_statement_delete_html404_on_invalid_name(self):
+        """Checks that delete statement page URL name failed on invalid ID"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": 999999999})
+        )
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 404)
+
+    def test_statement_delete_template(self):
+        """Checks that correct template is being used"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+        )
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "bank_transactions/delete.html")
+
+    def test_statement_delete_redirect_to_dashboard(self):
+        """Checks that form redirects to the dashboard on success"""
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        response = self.client.post(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id}),
+            follow=True,
+        )
+
+        # Check that redirection was successful
+        self.assertRedirects(response, reverse("bank_transactions:dashboard"))
+
+    def test_statement_delete_confirm_deletion(self):
+        """Confirms deletion form works properly"""
+        # Get original database counts
+        statement_total = Statement.objects.count()
+        transaction_total = BankTransaction.objects.count()
+        #attachment_match_total = AttachmentMatch.objects.count()
+
+        # Login
+        self.client.login(username="user", password="abcd123456")
+
+        # Delete entry
+        self.client.post(
+            reverse("bank_transactions:delete" ,kwargs={"statement_id": self.id})
+        )
+
+        # Checks that statement was deleted
+        self.assertEqual(Statement.objects.count(), statement_total - 1)
+
+        # Checks that BankTransactions were deleted
+        self.assertEqual(BankTransaction.objects.count(), transaction_total - 4)
+
+        # Checks that the attachment match was deleted
+        #self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)

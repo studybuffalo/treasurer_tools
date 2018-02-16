@@ -69,25 +69,33 @@ def create_bank_transactions():
         statement=statement_reference,
         date_transaction="2017-01-01",
         description_bank="CHQ#0001",
-        description_user="Cheque #0001"
+        description_user="Cheque #0001",
+        amount_debit=100.00,
+        amount_credit=0.00,
     )
     bank_transaction_reference_2 = BankTransaction.objects.create(
         statement=statement_reference,
         date_transaction="2017-01-02",
         description_bank="CHQ#0002",
-        description_user="Cheque #0002"
+        description_user="Cheque #0002",
+        amount_debit=200.00,
+        amount_credit=0.00,
     )
     bank_transaction_reference_3 = BankTransaction.objects.create(
         statement=statement_reference,
         date_transaction="2017-01-03",
         description_bank="DEP3333",
-        description_user=""
+        description_user="",
+        amount_debit=0.00,
+        amount_credit=300.00,
     )
     bank_transaction_reference_4 = BankTransaction.objects.create(
         statement=statement_reference,
         date_transaction="2017-01-04",
         description_bank="DEP4444",
-        description_user="Deposit from account #4444"
+        description_user="Deposit from account #4444",
+        amount_debit=0.00,
+        amount_credit=400.00,
     )
 
     return [

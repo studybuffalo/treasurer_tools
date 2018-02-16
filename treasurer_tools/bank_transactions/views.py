@@ -15,7 +15,6 @@ from .forms import StatementForm, BankTransactionFormSet, AttachmentMatchFormSet
 @login_required
 def dashboard(request):
     """Main dashboard to display banking functions"""
-    # pylint: disable=no-member
     statements = Statement.objects.all()
 
     return render(
@@ -29,7 +28,6 @@ def dashboard(request):
 @login_required
 def statement_add(request):
     """Generates and processes form to add new bank statement"""
-    # pylint: disable=no-member
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Create statement form
@@ -97,7 +95,6 @@ def statement_add(request):
 @login_required
 def statement_edit(request, statement_id):
     """Generate and processes form to edit a financial system"""
-    # pylint: disable=no-member
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Get this statement instance
@@ -107,13 +104,13 @@ def statement_edit(request, statement_id):
         statement_form = StatementForm(request.POST, instance=statement_instance)
 
         # Create bank transaction formsets
-        bank_transaction_formsets = BankTransactionFormset(
+        bank_transaction_formsets = BankTransactionFormSet(
             request.POST,
             instance=statement_instance,
         )
 
         # Create attachment formsets
-        attachment_match_formsets = AttachmentMatchFormset(
+        attachment_match_formsets = AttachmentMatchFormSet(
             request.POST,
             instance=statement_instance,
         )
@@ -166,14 +163,14 @@ def statement_edit(request, statement_id):
 
             messages.success(request, "Statement successfully updated")
 
-            return HttpResponseRedirect(reverse("bank_dashboard"))
+            return HttpResponseRedirect(reverse("bank_transactions:dashboard"))
     # If this is a GET (or any other method) create populated forms
     else:
         statement_instance = get_object_or_404(Statement, id=statement_id)
 
         statement_form = StatementForm(instance=statement_instance)
-        bank_transaction_formsets = BankTransactionFormset(instance=statement_instance)
-        attachment_match_formsets = AttachmentMatchFormset(instance=statement_instance)
+        bank_transaction_formsets = BankTransactionFormSet(instance=statement_instance)
+        attachment_match_formsets = AttachmentMatchFormSet(instance=statement_instance)
         new_attachment_form = NewAttachmentForm()
 
     return render(
@@ -201,7 +198,7 @@ def statement_delete(request, statement_id):
         # Redirect back to main list
         messages.success(request, "Statement deleted")
 
-        return HttpResponseRedirect(reverse("bank_dashboard"))
+        return HttpResponseRedirect(reverse("bank_transactions:dashboard"))
 
     return render(
         request,
