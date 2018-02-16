@@ -3,49 +3,50 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-#class FinancialCodeDashboard(TestCase):
-#    """Tests for the financial code dashboard view"""
-#    # pylint: disable=no-member,protected-access
+from .utils import create_user
 
-#    fixtures = [
-#        "financial_codes/tests/fixtures/authentication.json",
-#    ]
 
-#    def test_dashboard_redirect_if_not_logged_in(self):
-#        """Checks redirect to login page if user is not logged in"""
-#        response = self.client.get("/settings/codes/")
+class FinancialCodeDashboard(TestCase):
+    """Tests for the financial code dashboard view"""
 
-#        self.assertRedirects(response, "/accounts/login/?next=/settings/codes/")
+    def setUp(self):
+        create_user()
 
-#    def test_dashboard_url_exists_at_desired_location(self):
-#        """Checks that the dashboard uses the correct URL"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get("/settings/codes/")
+    def test_dashboard_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.get("/settings/codes/")
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        self.assertRedirects(response, "/accounts/login/?next=/settings/codes/")
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+    def test_dashboard_url_exists_at_desired_location(self):
+        """Checks that the dashboard uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get("/settings/codes/")
 
-#    def test_dashboard_accessible_by_name(self):
-#        """Checks that the dashboard URL name works properly"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("financial_codes_dashboard"))
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#        # Check that page is accessible
-#        self.assertEqual(response.status_code, 200)
+    def test_dashboard_accessible_by_name(self):
+        """Checks that the dashboard URL name works properly"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("financial_codes:dashboard"))
 
-#    def test_dashboard_template(self):
-#        """Checks that the dashboard uses the correct template"""
-#        self.client.login(username="user", password="abcd123456")
-#        response = self.client.get(reverse("financial_codes_dashboard"))
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
 
-#        # Check that user logged in
-#        self.assertEqual(str(response.context['user']), 'user')
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
 
-#        # Check for proper template
-#        self.assertTemplateUsed(response, "financial_codes/index.html")
+    def test_dashboard_template(self):
+        """Checks that the dashboard uses the correct template"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("financial_codes:dashboard"))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check for proper template
+        self.assertTemplateUsed(response, "financial_codes/index.html")
