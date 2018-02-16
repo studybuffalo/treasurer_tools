@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from documents.models import Attachment
+from documents.models import Attachment, BankStatementMatch
 
 from .models import Statement
 from .forms import StatementForm, BankTransactionFormSet, AttachmentMatchFormSet, NewAttachmentForm
@@ -66,7 +66,7 @@ def statement_add(request):
                 )
 
                 # Create the attachment match
-                AttachmentMatch.objects.create(
+                BankStatementMatch.objects.create(
                     statement=saved_statement,
                     attachment=saved_attachment,
                 )

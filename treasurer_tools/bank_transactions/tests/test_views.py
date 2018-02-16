@@ -1,14 +1,17 @@
 """Test cases for the bank_transactions app views"""
+
+import tempfile
 from unipath import Path
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from bank_transactions.models import Statement, BankTransaction
-# from documents.models import AttachmentMatch
+from documents.models import Attachment, BankStatementMatch
 
-from .utils import create_user, create_bank_account, create_bank_transactions
+from .utils import create_user, create_bank_account, create_bank_transactions, create_temp_pdf
+
 
 class BankDashboardTest(TestCase):
     """Tests for the dashboard view"""
@@ -57,6 +60,8 @@ class BankDashboardTest(TestCase):
 
 class StatementAddTest(TestCase):
     """Tests for the add statement view"""
+    # Setup a temporary media_root folder to hold any attachments
+    MEDIA_ROOT = tempfile.mkdtemp()
 
     def setUp(self):
         create_user()
@@ -184,6 +189,61 @@ class StatementAddTest(TestCase):
 
     def test_statement_add_invalid_transaction_data(self):
         """Confirms transaction cannot be processed with invalid data"""
+        # Setup invalid data
+        invalid_data = self.valid_data
+        invalid_data["banktransaction_set-0-date_transaction"] = ""
+
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:add"),
+            invalid_data,
+            follow=True,
+        )
+
+        # Check that page was not redirected to dashboard
+        self.assertEqual(response.status_code, 200)
+
+        # Check that other transaction data returned
+        self.assertEqual(
+            response.context["bank_transaction_formsets"][0]["description_bank"].value(),
+            str(invalid_data["banktransaction_set-0-description_bank"])
+        )
+
+    @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+    def test_statement_add_attachment(self):
+        """Tests the file upload and attachment matching"""
+        # Get current count of attachments
+        attachment_total = Attachment.objects.count()
+        match_total = BankStatementMatch.objects.count()
+
+        # Create a test file to upload
+        temp_file = InMemoryUploadedFile(
+            create_temp_pdf(), None, "test.pdf", "application/pdf", None, None
+        )
+
+        file_data = self.valid_data
+        file_data["files"] = temp_file
+
+        # Make the POST request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.post(
+            reverse("bank_transactions:add"),
+            file_data,
+            format="multipart/form-data",
+            follow=True,
+        )
+
+        # Check that the attachment was added
+        self.assertEqual(
+            Attachment.objects.count(),
+            attachment_total + 1
+        )
+
+        # Check that the attachment match was added
+        self.assertEqual(
+            BankStatementMatch.objects.count(),
+            match_total + 1
+        )
 
 class StatementEditTest(TestCase):
     """Tests for the edit statement view"""

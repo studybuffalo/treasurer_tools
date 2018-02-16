@@ -13,7 +13,7 @@ class Attachment(models.Model):
     """Holds an attachment"""
     location = models.FileField(
         upload_to="attachments",
-        max_length="255",
+        max_length=255,
     )
     date_uploaded = models.DateTimeField(
         default=timezone.now,

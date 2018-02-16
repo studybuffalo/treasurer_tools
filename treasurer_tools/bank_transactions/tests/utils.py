@@ -1,9 +1,12 @@
 """Functions to assist with unit and integration testing"""
 
+import tempfile
+
 from django.contrib.auth import get_user_model
 
 from bank_institutions.models import Institution, Account
 from bank_transactions.models import Statement, BankTransaction
+from documents.models import BankStatementMatch
 
 def create_user():
     # Create regular user
@@ -38,18 +41,6 @@ def create_bank_account():
     )
 
     return account_reference
-
-def create_bank_statement():
-    account_reference = create_bank_account()
-
-    statement_reference = Statement.objects.create(
-        account=account_reference,
-        date_start="2017-01-01",
-        date_end="2017-01-31"
-    )
-
-    return statement_reference
-
 
 def create_bank_statement():
     account_reference = create_bank_account()
@@ -104,3 +95,18 @@ def create_bank_transactions():
         bank_transaction_reference_3,
         bank_transaction_reference_4,
     ]
+
+def create_temp_pdf():
+    temp_pdf = tempfile.NamedTemporaryFile(suffix=".pdf")
+    temp_pdf.write(b"Test data")
+    temp_pdf.seek(0)
+
+    return temp_pdf
+
+def create_bank_statement_match(statement):
+    match = BankStatementMatch.objects.create(
+        statement=statement,
+        attachment=create_temp_file()
+    )
+
+    return match

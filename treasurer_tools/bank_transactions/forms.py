@@ -4,7 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 
-from documents.forms import AttachmentMatchForm, NewAttachmentForm
+from documents.forms import NewAttachmentForm
 from documents.models import BankStatementMatch
 from .models import Statement, BankTransaction
 
@@ -86,6 +86,17 @@ BankTransactionFormSet = inlineformset_factory(
     can_delete=True,
 )
 
+class AttachmentMatchForm(forms.ModelForm):
+    """Model form for attachment matches"""
+    class Meta:
+        model = BankStatementMatch
+        fields = [
+            "attachment",
+        ]
+        widgets = {
+            "attachment": forms.HiddenInput(),
+        }
+
 AttachmentMatchFormSet = inlineformset_factory(
     Statement,
     BankStatementMatch,
@@ -99,6 +110,5 @@ AttachmentMatchFormSet = inlineformset_factory(
 class NewBankAttachmentForm(NewAttachmentForm):
     def __init__(self, *args, **kwargs):
         super(NewAttachmentForm, self).__init__(*args, **kwargs)
-        self.fields["files"].help_text="Documentation/files for this bank statement"
-        self.fields["files"].label="Bank statement attachments",
-        self.fields["files"].prefix = "newattachment"
+        self.fields["files"].help_text="Documentation/files for this bank statement."
+        self.fields["files"].label="bank statement attachments"

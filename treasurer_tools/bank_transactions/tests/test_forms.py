@@ -143,3 +143,21 @@ class BankTransactionFormSetTest(TestCase):
             bank_transaction_formset[0]["amount_credit"].errors[0],
             "Enter a number."
         )
+
+class NewAttachmentFormTest(TestCase):
+    """Tests for the NewBankAttachmentForm"""
+    def test_files_help_text(self):
+        form = NewBankAttachmentForm()
+
+        self.assertEqual(
+            form.fields["files"].help_text,
+            "Documentation/files for this bank statement."
+        )
+
+    def test_files_label(self):
+        form = NewBankAttachmentForm()
+
+        self.assertEqual(
+            form.fields["files"].label,
+            "bank statement attachments"
+        )
