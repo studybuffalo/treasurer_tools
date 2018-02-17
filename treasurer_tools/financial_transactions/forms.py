@@ -9,11 +9,10 @@ from django.utils import timezone
 from multiupload.fields import MultiFileField
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
-from financial_codes.widgets import FinancialCodeWithYearID
 from documents.models import Attachment
 
 from .models import FinancialTransaction, Item, FinancialCodeMatch, AttachmentMatch
-
+from .widgets import FinancialCodeWithYearID
 
 class CompiledForms(object):
     """Forms and functions for the add/edit transaction/item/code views"""

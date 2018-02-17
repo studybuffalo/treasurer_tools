@@ -79,7 +79,7 @@ class FinancialCodeGroupAddTest(TestCase):
         group_total = FinancialCodeGroup.objects.count()
 
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("financial_codes:group_add"), self.valid_data, follow=True,
         )
 
@@ -285,7 +285,7 @@ class FinancialCodeGroupDeleteTest(TestCase):
         response = self.client.get(
             reverse("financial_codes:group_delete", kwargs={"group_id": 999999999})
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 
@@ -298,7 +298,7 @@ class FinancialCodeGroupDeleteTest(TestCase):
 
         # Check for proper template
         self.assertTemplateUsed(response, "financial_codes/delete.html")
-        
+
     def test_group_delete_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         # Login

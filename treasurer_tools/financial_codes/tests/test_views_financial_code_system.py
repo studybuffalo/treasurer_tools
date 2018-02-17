@@ -39,7 +39,7 @@ class FinancialCodeSystemAddTest(TestCase):
         """Checks that the add financial code system page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/settings/codes/system/add/")
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
@@ -47,10 +47,10 @@ class FinancialCodeSystemAddTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(reverse("financial_codes:system_add"))
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check for proper template
         self.assertTemplateUsed(response, "financial_codes/add.html")
 
@@ -63,7 +63,7 @@ class FinancialCodeSystemAddTest(TestCase):
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check that redirection was successful
         self.assertRedirects(response, reverse("financial_codes:dashboard"))
 
@@ -78,10 +78,10 @@ class FinancialCodeSystemAddTest(TestCase):
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check that one financial code system was added
         self.assertEqual(FinancialCodeSystem.objects.count(), system_total + 1)
-    
+
 class FinancialCodeSystemEditTest(TestCase):
     """Tests for the edit financial code system view"""
 
@@ -144,14 +144,14 @@ class FinancialCodeSystemEditTest(TestCase):
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
-        
+
     def test_system_edit_html404_on_invalid_name(self):
         """Checks that edit financial code system page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
             reverse("financial_codes:system_edit", kwargs={"system_id": 999999999})
         )
-        
+
         # Check that a 404 response is generated
         self.assertEqual(response.status_code, 404)
 
@@ -164,7 +164,7 @@ class FinancialCodeSystemEditTest(TestCase):
 
         # Check for proper template
         self.assertTemplateUsed(response, "financial_codes/edit.html")
-        
+
     def test_system_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
@@ -252,7 +252,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         """Checks that the delete financial code system page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(self.valid_url)
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 

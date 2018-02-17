@@ -74,7 +74,7 @@ class BudgetYearAddTest(TestCase):
     def test_year_add_confirm_add(self):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("financial_codes:year_add"), self.valid_data, follow=True,
         )
 
@@ -285,7 +285,7 @@ class BudgetYearDeleteTest(TestCase):
         response = self.client.get(
             reverse("financial_codes:year_delete", kwargs={"year_id": 999999999})
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 

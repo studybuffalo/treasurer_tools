@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from .models import (
     BudgetYear, FinancialCodeSystem, FinancialCodeGroup, FinancialCode,
 )
-from .widgets import SelectWithYearID
+from .widgets import FinancialCodeGroupWithYearID
 
 def get_years_with_opt_groups():
     """Creates nested dictionary financial code systems & budget years"""
@@ -154,7 +154,7 @@ class FinancialCodeForm(forms.ModelForm):
         ]
 
         widgets = {
-            "financial_code_group": SelectWithYearID(),
+            "financial_code_group": FinancialCodeGroupWithYearID(),
         }
 
     def __init__(self, *args, **kwargs):
