@@ -40,40 +40,45 @@ class TransactionModelTest(TestCase):
             "submission date"
         )
 
-    #def test_memo_max_length(self):
-    #    """Tests the memo field for proper max length"""
-    #    transaction = FinancialTransaction.objects.get(id=1)
-    #    max_length = transaction._meta.get_field("memo").max_length
-    #    self.assertEqual(max_length, 1000)
-        
-    #def test_string_representation(self):
-    #    """Tests that the model string representaton returns as expected"""
-    #    transactions = FinancialTransaction.objects.all()
+    def test_memo_max_length(self):
+        """Tests the memo field for proper max length"""
+        self.assertEqual(
+            self.transactions[0]._meta.get_field("memo").max_length,
+            1000
+        )
 
-    #    for transaction in transactions:
-    #        if transaction.transaction_type == "e":
-    #            test_string = "{} - Expense - {} - {}".format(
-    #                transaction.date_submitted,
-    #                transaction.payee_payer,
-    #                transaction.memo[:100]
-    #            )
-    #        elif transaction.transaction_type == "r":
-    #            test_string = "{} - Revenue - {} - {}".format(
-    #                transaction.date_submitted,
-    #                transaction.payee_payer,
-    #                transaction.memo[:100]
-    #            )
+    def test_string_representation_expense(self):
+        """Tests that the model string representaton returns as expected"""
 
-    #        self.assertEqual(
-    #            str(transaction),
-    #            test_string
-    #        )
+        test_string = "{} - Expense - {} - {}".format(
+            self.transactions[0].date_submitted,
+            self.transactions[0].payee_payer,
+            self.transactions[0].memo[:100]
+        )
 
-    #def test_total_property(self):
-    #    """Tests that total property returns proper value"""
-    #    transaction = FinancialTransaction.objects.get(id=1)
+        self.assertEqual(
+            str(self.transactions[0]),
+            test_string
+        )
 
-    #    self.assertEqual(transaction.total, "$321.29")
+    def test_string_representation_revenue(self):
+        """Tests that the model string representaton returns as expected"""
+
+        test_string = "{} - Revenue - {} - {}".format(
+            self.transactions[1].date_submitted,
+            self.transactions[1].payee_payer,
+            self.transactions[1].memo[:100]
+        )
+
+        self.assertEqual(
+            str(self.transactions[1]),
+            test_string
+        )
+
+    def test_total_property(self):
+        """Tests that total property returns proper value"""
+
+        self.assertEqual(self.transactions[0].total, "$210.00")
 
 #class ItemModelTest(TestCase):
 #    """Test functions for the Item model"""

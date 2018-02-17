@@ -126,7 +126,15 @@ def create_financial_transactions():
     Item.objects.create(
         transaction=transaction_reference_1,
         date_item="2017-06-01",
-        description="Taxi costs",
+        description="Taxi costs (to hotel)",
+        amount=100.00,
+        gst=5.00,
+    )
+
+    Item.objects.create(
+        transaction=transaction_reference_1,
+        date_item="2017-06-01",
+        description="Taxi costs (From hotel)",
         amount=100.00,
         gst=5.00,
     )
