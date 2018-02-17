@@ -12,8 +12,8 @@
     </ul>
 
     <div>
-        <a href="{% url 'transaction_add' 'expense' %}">New expense</a>
-        <a href="{% url 'transaction_add' 'revenue' %}">New revenue</a>
+        <a href="{% url 'financial_transactions:add' 'expense' %}">New expense</a>
+        <a href="{% url 'financial_transactions:add' 'revenue' %}">New revenue</a>
     </div>
 
     <div>
@@ -27,8 +27,8 @@
                 {% if transaction.transaction_type == "e" %}
                     <li class="expense">
                         {{ transaction }} - 
-                        <a href="{% url 'transaction_edit' 'expense' transaction.id %}">Edit</a> -
-                        <a href="{% url 'transaction_delete' 'expense' transaction.id %}">Delete</a>
+                        <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}">Edit</a> -
+                        <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}">Delete</a>
                         <ul>
                             {% for item in transaction.item_set.all %}
                                 <li>
@@ -54,8 +54,8 @@
                 {% elif transaction.transaction_type == "r" %}
                     <li class="revenue">
                         {{ transaction }} - 
-                        <a href="{% url 'transaction_edit' 'revenue' transaction.id %}">Edit</a> -
-                        <a href="{% url 'transaction_delete' 'revenue' transaction.id %}">Delete</a>
+                        <a href="{% url 'financial_transactions:edit' 'revenue' transaction.id %}">Edit</a> -
+                        <a href="{% url 'financial_transactions:delete' 'revenue' transaction.id %}">Delete</a>
                         <ul>
                             {% for item in transaction.item_set.all %}
                             <li>

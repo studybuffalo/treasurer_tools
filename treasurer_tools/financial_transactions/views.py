@@ -37,7 +37,7 @@ def transaction_add(request, t_type):
             # Redirect to a new URL:
             messages.success(request, "Transaction successfully added")
 
-            return HttpResponseRedirect(reverse("transactions_dashboard"))
+            return HttpResponseRedirect(reverse("financial_transactions:dashboard"))
     # GET request - generate blank form and formset
     else:
         compiled_forms = CompiledForms(
@@ -69,7 +69,7 @@ def transaction_edit(request, t_type, transaction_id):
             # Redirect to a new URL:
             messages.success(request, "Transaction successfully edited")
 
-            return HttpResponseRedirect(reverse("transactions_dashboard"))
+            return HttpResponseRedirect(reverse("financial_transactions:dashboard"))
     # GET request - generate blank form and formset
     else:
         compiled_forms = CompiledForms(
@@ -99,7 +99,7 @@ def transaction_delete(request, t_type, transaction_id):
         # Redirect back to main list
         messages.success(request, "Transaction deleted")
 
-        return HttpResponseRedirect(reverse("transactions_dashboard"))
+        return HttpResponseRedirect(reverse("financial_transactions:dashboard"))
 
     return render(
         request,

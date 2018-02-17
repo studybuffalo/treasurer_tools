@@ -7,7 +7,6 @@ from financial_codes.models import FinancialCode
 
 class FinancialCodeWithYearID(Select):
     """Select widget that allows data-attribute addition to options"""
-    # pylint: disable=too-many-arguments, no-member
     def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
         """Modifies function to include the financial code system ID"""
         option = super(FinancialCodeWithYearID, self).create_option(

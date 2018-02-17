@@ -34,31 +34,52 @@ def create_financial_code_systems():
 
     return system_references
 
-def create_budget_year():
+def create_budget_years():
     systems = create_financial_code_systems()
 
-    year_reference = BudgetYear.objects.create(
-        financial_code_system=systems[0],
-        date_start="2017-01-01",
-        date_end="2017-12-31",
-    )
+    year_references = [
+        BudgetYear.objects.create(
+            financial_code_system=systems[0],
+            date_start="2017-01-01",
+            date_end="2017-12-31",
+        ),
+        BudgetYear.objects.create(
+            financial_code_system=systems[1],
+            date_start="2017-01-01",
+            date_end="2017-12-31",
+        ),
+    ]
 
-    return year_reference
+    return year_references
 
 def create_financial_code_groups():
-    year = create_budget_year()
+    years = create_budget_years()
 
     group_references = [
         FinancialCodeGroup.objects.create(
-            budget_year=year,
-            title="Awards & Grants",
+            budget_year=years[0],
+            title="National Awards & Grants",
             description="Expenses for awards & grants",
             type="e",
             status="a",
         ),
         FinancialCodeGroup.objects.create(
-            budget_year=year,
-            title="Awards & Grants",
+            budget_year=years[0],
+            title="National Awards & Grants",
+            description="Revenue for awards & grants",
+            type="r",
+            status="a",
+        ),
+        FinancialCodeGroup.objects.create(
+            budget_year=years[1],
+            title="Regional Awards & Grants",
+            description="Expenses for awards & grants",
+            type="e",
+            status="a",
+        ),
+        FinancialCodeGroup.objects.create(
+            budget_year=years[1],
+            title="Regional Awards & Grants",
             description="Revenue for awards & grants",
             type="r",
             status="a",
@@ -79,6 +100,16 @@ def create_financial_codes():
         FinancialCode.objects.create(
             financial_code_group=groups[1],
             code="6000",
+            description="Travel Grant Sponsorship"
+        ),
+        FinancialCode.objects.create(
+            financial_code_group=groups[2],
+            code="2000",
+            description="Travel Grant"
+        ),
+        FinancialCode.objects.create(
+            financial_code_group=groups[3],
+            code="8000",
             description="Travel Grant Sponsorship"
         ),
     ]

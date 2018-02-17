@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
 
-from .utils import create_financial_transactions
+from .utils import create_financial_transactions, create_financial_codes
 
 
 class TransactionModelTest(TestCase):
@@ -149,26 +149,22 @@ class ItemModelTest(TestCase):
             "2017-06-01 - Taxi costs (to hotel) - $105.00"
         )
 
-#class FinancialCodeMatchModelTest(TestCase):
-#    """Tests for the FinancialCodeMatch model"""
-#    fixtures = [
-#        "transactions/tests/fixtures/country.json",
-#        "transactions/tests/fixtures/demographics.json",
-#        "transactions/tests/fixtures/financial_code_system.json",
-#        "transactions/tests/fixtures/budget_year.json",
-#        "transactions/tests/fixtures/financial_code_group.json",
-#        "transactions/tests/fixtures/financial_code.json",
-#        "transactions/tests/fixtures/transaction.json",
-#        "transactions/tests/fixtures/item.json",
-#        "transactions/tests/fixtures/financial_code_match.json",
-#    ]
+class FinancialCodeMatchModelTest(TestCase):
+    """Tests for the FinancialCodeMatch model"""
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        # pylint: disable=no-member
-#        financial_code_match = FinancialCodeMatch.objects.get(id=1)
+    def setUp(self):
+        codes = create_financial_codes()
+        transactions = create_financial_transactions()
 
-#        self.assertEqual(
-#            str(financial_code_match),
-#            "2017-06-01 - Taxi costs - $105.00 - 1000 - FK Travel Grant"
-#        )
+        self.match = FinancialCodeMatch.objects.create(
+            item=transactions[0].item_set.all()[0],
+            financial_code=codes[0]
+        )
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+
+        self.assertEqual(
+            str(self.match),
+            "2017-06-01 - Taxi costs (from hotel) - $105.00 - 1000 - Travel Grant"
+        )

@@ -16,9 +16,7 @@ from .widgets import FinancialCodeWithYearID
 
 class CompiledForms(object):
     """Forms and functions for the add/edit transaction/item/code views"""
-    # pylint: disable=no-member
     class TransactionLevel(object):
-        # pylint: disable=too-few-public-methods
         """Holds transaction form and related item formsets"""
         def __init__(self):
             self.transaction_form = None
@@ -28,14 +26,12 @@ class CompiledForms(object):
             self.old_attachment_formset = None
 
     class ItemLevel(object):
-        # pylint: disable=too-few-public-methods
         """Holds itemformset and related financial code forms"""
         def __init__(self, **kwargs):
             self.item_formset = kwargs.pop("item_formset", None)
             self.financial_code_forms = kwargs.pop("financial_code_forms", None)
 
     class FinancialCodeLevel(object):
-        # pylint: disable=too-few-public-methods
         """Holds financial code forms and other related data"""
         def __init__(self, **kwargs):
             self.system = kwargs.pop("financial_code_system", None)
@@ -410,7 +406,6 @@ class CompiledForms(object):
 
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""
-    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialTransaction
 
@@ -422,7 +417,6 @@ class TransactionForm(forms.ModelForm):
 
 class ItemForm(forms.ModelForm):
     """Form to add and edit Items"""
-    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = Item
         fields = [
@@ -432,7 +426,6 @@ class ItemForm(forms.ModelForm):
             "gst",
         ]
 
-# pylint: disable=invalid-name
 ItemFormSet = inlineformset_factory(
     FinancialTransaction,
     Item,
@@ -461,7 +454,6 @@ class FinancialCodeAssignmentForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        # pylint: disable=no-member, invalid-name
         # Get the financial code system
         financial_code_system = kwargs.pop("system")
         transaction_type = kwargs.pop("transaction_type")
@@ -514,7 +506,6 @@ class NewAttachmentForm(forms.Form):
 
 class OldAttachmentForm(forms.ModelForm):
     """Form to view and delete attachments"""
-    # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
         model = FinancialTransactionMatch
         fields = [

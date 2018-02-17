@@ -71,7 +71,7 @@ def add_payee_payer(request):
             # redirect to a new URL:
             messages.success(request, "Payee/payer successfully added")
 
-            return HttpResponseRedirect(reverse("payee_payer_dashboard"))
+            return HttpResponseRedirect(reverse("payee_payers:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -127,7 +127,7 @@ def edit_payee_payer(request, payee_payer_id):
             # redirect to a new URL:
             messages.success(request, "Payee/payer successfully edited")
 
-            return HttpResponseRedirect(reverse("payee_payer_dashboard"))
+            return HttpResponseRedirect(reverse("payee_payers:dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
@@ -168,7 +168,7 @@ def delete_payee_payer(request, payee_payer_id):
 
         # Redirect back to main list
         messages.success(request, "Payee/payer deleted")
-        return HttpResponseRedirect(reverse('payee_payer_dashboard'))
+        return HttpResponseRedirect(reverse('payee_payers:dashboard'))
 
     return render(
         request,
