@@ -74,7 +74,7 @@ def system_add(request):
             # redirect to a new URL:
             messages.success(request, "Financial code system successfully added")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -106,7 +106,7 @@ def system_edit(request, system_id):
             # redirect to a new URL:
             messages.success(request, "Financial code system successfully edited")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
@@ -137,7 +137,7 @@ def system_delete(request, system_id):
         # Redirect back to main list
         messages.success(request, "Financial code system deleted")
 
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+        return HttpResponseRedirect(reverse('financial_codes:dashboard'))
 
     return render(
         request,
@@ -168,7 +168,7 @@ def year_add(request):
             # redirect to a new URL:
             messages.success(request, "Budget year successfully added")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -200,7 +200,7 @@ def year_edit(request, year_id):
             # redirect to a new URL:
             messages.success(request, "Budget year successfully edited")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
@@ -231,7 +231,7 @@ def year_delete(request, year_id):
         # Redirect back to main list
         messages.success(request, "Budget year deleted")
 
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+        return HttpResponseRedirect(reverse('financial_codes:dashboard'))
 
     return render(
         request,
@@ -262,7 +262,7 @@ def group_add(request):
             # redirect to a new URL:
             messages.success(request, "Financial code group successfully added")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -294,7 +294,7 @@ def group_edit(request, group_id):
             # redirect to a new URL:
             messages.success(request, "Financial code group successfully edited")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
@@ -325,7 +325,7 @@ def group_delete(request, group_id):
         # Redirect back to main list
         messages.success(request, "Financial code group deleted")
 
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+        return HttpResponseRedirect(reverse('financial_codes:dashboard'))
 
     return render(
         request,
@@ -358,7 +358,7 @@ def code_add(request):
             # redirect to a new URL:
             messages.success(request, "Financial code successfully added")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -389,7 +389,7 @@ def code_edit(request, code_id):
             # redirect to a new URL:
             messages.success(request, "Financial code successfully added")
 
-            return HttpResponseRedirect(reverse("financial_codes_dashboard"))
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
 
     # If this is a GET (or any other method) populate the default form.
     else:
@@ -419,7 +419,7 @@ def code_delete(request, code_id):
         # Redirect back to main list
         messages.success(request, "Financial code deleted")
 
-        return HttpResponseRedirect(reverse('financial_codes_dashboard'))
+        return HttpResponseRedirect(reverse('financial_codes:dashboard'))
 
     return render(
         request,
