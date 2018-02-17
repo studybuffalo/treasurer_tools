@@ -80,59 +80,74 @@ class TransactionModelTest(TestCase):
 
         self.assertEqual(self.transactions[0].total, "$210.00")
 
-#class ItemModelTest(TestCase):
-#    """Test functions for the Item model"""
-#    # pylint: disable=no-member,protected-access
-#    fixtures = [
-#        "transactions/tests/fixtures/country.json",
-#        "transactions/tests/fixtures/demographics.json",
-#        "transactions/tests/fixtures/transaction.json",
-#        "transactions/tests/fixtures/item.json",
-#    ]
+class ItemModelTest(TestCase):
+    """Test functions for the Item model"""
 
-#    def test_labels(self):
-#        """tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "transaction", "label_name": "transaction"},
-#            {"field_name": "date_item", "label_name": "date"},
-#            {"field_name": "description", "label_name": "description"},
-#            {"field_name": "amount", "label_name": "amount"},
-#            {"field_name": "gst", "label_name": "gst"},
-#        ]
+    def setUp(self):
+        transactions = create_financial_transactions()
+        self.items = transactions[0].item_set.all().order_by("id")
 
-#        for test_item in test_list:
-#            item = Item.objects.get(id=1)
-#            field_label = item._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
+    def test_labels(self):
+        """tests a series of fields for proper label generation"""
+        test_list = [
+            {"field_name": "transaction", "label_name": "transaction"},
+            {"field_name": "date_item", "label_name": "date"},
+            {"field_name": "description", "label_name": "description"},
+            {"field_name": "amount", "label_name": "amount"},
+            {"field_name": "gst", "label_name": "gst"},
+        ]
 
-#    def test_description_max_length(self):
-#        """Tests the memo field for proper max length"""
-#        item = Item.objects.get(id=1)
-#        max_length = item._meta.get_field("description").max_length
-#        self.assertEqual(max_length, 500)
-        
-#    def test_total_function(self):
-#        """Tests the total function for propery string generation"""
-#        # Create a test item with known details
-#        item = Item.objects.create(
-#            transaction=FinancialTransaction.objects.get(id=1),
-#            date_item="2017-01-02",
-#            description="Test item",
-#            amount=2.00,
-#            gst=0.1,
-#        )
+        # Test transaction label
+        self.assertEqual(
+            self.items[0]._meta.get_field("transaction").verbose_name,
+            "transaction"
+        )
 
-#        # Tests that total matches desired total and format
-#        self.assertEqual(item.total, "$2.10")
+        # Test date_item label
+        self.assertEqual(
+            self.items[0]._meta.get_field("date_item").verbose_name,
+            "date"
+        )
 
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        item = Item.objects.get(id=1)
+        # Test description label
+        self.assertEqual(
+            self.items[0]._meta.get_field("description").verbose_name,
+            "description"
+        )
 
-#        self.assertEqual(
-#            str(item),
-#            "{} - {} - {}".format(item.date_item, item.description, item.total)
-#        )
+        # Test amount label
+        self.assertEqual(
+            self.items[0]._meta.get_field("amount").verbose_name,
+            "amount"
+        )
+
+        # Test gst label
+        self.assertEqual(
+            self.items[0]._meta.get_field("gst").verbose_name,
+            "gst"
+        )
+
+    def test_description_max_length(self):
+        """Tests the memo field for proper max length"""
+
+        self.assertEqual(
+            self.items[0]._meta.get_field("description").max_length,
+            500
+        )
+
+    def test_total_function(self):
+        """Tests the total function for propery string generation"""
+
+        # Tests that total matches desired total and format
+        self.assertEqual(self.items[0].total, "$105.00")
+
+    def test_string_representation(self):
+        """Tests that the model string representaton returns as expected"""
+
+        self.assertEqual(
+            str(self.items[0]),
+            "2017-06-01 - Taxi costs (to hotel) - $105.00"
+        )
 
 #class FinancialCodeMatchModelTest(TestCase):
 #    """Tests for the FinancialCodeMatch model"""
@@ -156,36 +171,4 @@ class TransactionModelTest(TestCase):
 #        self.assertEqual(
 #            str(financial_code_match),
 #            "2017-06-01 - Taxi costs - $105.00 - 1000 - FK Travel Grant"
-#        )
-
-#class AttachmentMatchModelTest(TestCase):
-#    """Test functions for the Attachment match model"""
-#    # pylint: disable=no-member,protected-access
-#    fixtures = [
-#        "transactions/tests/fixtures/country.json",
-#        "transactions/tests/fixtures/demographics.json",
-#        "transactions/tests/fixtures/transaction.json",
-#        "transactions/tests/fixtures/attachment.json",
-#        "transactions/tests/fixtures/attachment_match.json",
-#    ]
-
-#    def test_labels(self):
-#        """tests a series of fields for proper label generation"""
-#        test_list = [
-#            {"field_name": "transaction", "label_name": "transaction"},
-#            {"field_name": "attachment", "label_name": "attachment"},
-#        ]
-
-#        for test_item in test_list:
-#            attachment_match = AttachmentMatch.objects.get(id=1)
-#            field_label = attachment_match._meta.get_field(test_item["field_name"]).verbose_name
-#            self.assertEqual(field_label, test_item["label_name"])
-
-#    def test_string_representation(self):
-#        """Tests that the model string representaton returns as expected"""
-#        attachment_match = AttachmentMatch.objects.get(id=1)
-
-#        self.assertEqual(
-#            str(attachment_match),
-#            "2017-06-01 - Expense - Joshua Torrance - Travel Grant award 2017 - test.pdf"
 #        )
