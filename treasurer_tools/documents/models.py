@@ -7,7 +7,7 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from bank_transactions.models import Statement
-
+from financial_transactions.models import FinancialTransaction
 
 class Attachment(models.Model):
     """Holds an attachment"""
@@ -43,3 +43,18 @@ class BankStatementMatch(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.statement, self.attachment)
+
+class FinancialTransactionMatch(models.Model):
+    """Links a transaction to one or more attachments"""
+    transaction = models.ForeignKey(
+        FinancialTransaction,
+        on_delete=models.CASCADE,
+    )
+    attachment = models.ForeignKey(
+        Attachment,
+        on_delete=models.CASCADE,
+    )
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{} - {}".format(self.transaction, self.attachment)

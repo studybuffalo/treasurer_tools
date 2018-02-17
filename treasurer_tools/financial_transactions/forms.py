@@ -9,9 +9,9 @@ from django.utils import timezone
 from multiupload.fields import MultiFileField
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
-from documents.models import Attachment
+from documents.models import Attachment, FinancialTransactionMatch
 
-from .models import FinancialTransaction, Item, FinancialCodeMatch, AttachmentMatch
+from .models import FinancialTransaction, Item, FinancialCodeMatch
 from .widgets import FinancialCodeWithYearID
 
 class CompiledForms(object):
@@ -516,7 +516,7 @@ class OldAttachmentForm(forms.ModelForm):
     """Form to view and delete attachments"""
     # pylint: disable=missing-docstring,too-few-public-methods
     class Meta:
-        model = AttachmentMatch
+        model = FinancialTransactionMatch
         fields = [
             "attachment",
         ]
@@ -526,7 +526,7 @@ class OldAttachmentForm(forms.ModelForm):
 
 AttachmentFormSet = inlineformset_factory(
     FinancialTransaction,
-    AttachmentMatch,
+    FinancialTransactionMatch,
     form=OldAttachmentForm,
     extra=0,
     min_num=0,

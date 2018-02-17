@@ -7,7 +7,6 @@ from simple_history.models import HistoricalRecords
 
 from payee_payers.models import PayeePayer
 from financial_codes.models import FinancialCode
-from documents.models import Attachment
 
 class FinancialTransaction(models.Model):
     """Holds data on the overall transaction"""
@@ -107,7 +106,7 @@ class Item(models.Model):
 
         # Return total as a proper dollar currency
         return "${0:.2f}".format(total)
-
+    
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
     item = models.ForeignKey(
@@ -122,18 +121,4 @@ class FinancialCodeMatch(models.Model):
 
     def __str__(self):
         return "{} - {}".format(str(self.item), str(self.financial_code))
-
-class AttachmentMatch(models.Model):
-    """Links a transaction to one or more attachments"""
-    transaction = models.ForeignKey(
-        FinancialTransaction,
-        on_delete=models.CASCADE,
-    )
-    attachment = models.ForeignKey(
-        Attachment,
-        on_delete=models.CASCADE,
-    )
-    history = HistoricalRecords()
-
-    def __str__(self):
-        return "{} - {}".format(self.transaction, self.attachment)
+    

@@ -2,9 +2,10 @@
 
 from django.contrib.auth import get_user_model
 
-from financial_codes.models import (
-    FinancialCodeSystem, BudgetYear, FinancialCodeGroup, FinancialCode
-)
+from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCodeGroup, FinancialCode
+from documents.models import FinancialTransactionMatch
+from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
+
 
 def create_user():
     # Create regular user

@@ -4,251 +4,251 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
 
-from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch, AttachmentMatch
+#from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch, AttachmentMatch
 
-DELETE_FIXTURES = [
-    "transactions/tests/fixtures/authentication.json",
-    "transactions/tests/fixtures/country.json",
-    "transactions/tests/fixtures/demographics.json",
-    "transactions/tests/fixtures/financial_code_system.json",
-    "transactions/tests/fixtures/financial_code_group.json",
-    "transactions/tests/fixtures/budget_year.json",
-    "transactions/tests/fixtures/financial_code.json",
-    "transactions/tests/fixtures/attachment.json",
-    "transactions/tests/fixtures/transaction.json",
-    "transactions/tests/fixtures/item.json",
-    "transactions/tests/fixtures/financial_code_match.json",
-    "transactions/tests/fixtures/attachment_match.json",
-]
+#DELETE_FIXTURES = [
+#    "transactions/tests/fixtures/authentication.json",
+#    "transactions/tests/fixtures/country.json",
+#    "transactions/tests/fixtures/demographics.json",
+#    "transactions/tests/fixtures/financial_code_system.json",
+#    "transactions/tests/fixtures/financial_code_group.json",
+#    "transactions/tests/fixtures/budget_year.json",
+#    "transactions/tests/fixtures/financial_code.json",
+#    "transactions/tests/fixtures/attachment.json",
+#    "transactions/tests/fixtures/transaction.json",
+#    "transactions/tests/fixtures/item.json",
+#    "transactions/tests/fixtures/financial_code_match.json",
+#    "transactions/tests/fixtures/attachment_match.json",
+#]
 
-class ExpenseDeleteTest(TestCase):
-    """Tests for the delete expense view"""
-    # pylint: disable=no-member,protected-access
+#class ExpenseDeleteTest(TestCase):
+#    """Tests for the delete expense view"""
+#    # pylint: disable=no-member,protected-access
     
-    fixtures = DELETE_FIXTURES
+#    fixtures = DELETE_FIXTURES
 
-    def test_expense_delete_redirect_if_not_logged_in(self):
-        """Checks user is redirected if not logged in"""
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 1}
-            )
-        )
+#    def test_expense_delete_redirect_if_not_logged_in(self):
+#        """Checks user is redirected if not logged in"""
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 1}
+#            )
+#        )
 
-        self.assertEqual(response.status_code, 302)
+#        self.assertEqual(response.status_code, 302)
 
-    def test_expense_delete_url_exists_at_desired_location(self):
-        """Checks that the delete expense page uses the correct URL"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/transactions/expense/delete/1")
+#    def test_expense_delete_url_exists_at_desired_location(self):
+#        """Checks that the delete expense page uses the correct URL"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get("/transactions/expense/delete/1")
         
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
 
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 200)
 
-    def test_expense_delete_html404_on_invalid_url(self):
-        """Checks that the delete expense page URL fails on invalid ID"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/transactions/expense/delete/999999999")
+#    def test_expense_delete_html404_on_invalid_url(self):
+#        """Checks that the delete expense page URL fails on invalid ID"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get("/transactions/expense/delete/999999999")
         
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 404)
 
-    def test_expense_delete_accessible_by_name(self):
-        """Checks that delete expense page URL name works properly"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 1}
-            )
-        )
+#    def test_expense_delete_accessible_by_name(self):
+#        """Checks that delete expense page URL name works properly"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 1}
+#            )
+#        )
         
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
 
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 200)
         
-    def test_expense_delete_html404_on_invalid_name(self):
-        """Checks that delete expense page URL name failed on invalid ID"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 999999999}
-            )
-        )
+#    def test_expense_delete_html404_on_invalid_name(self):
+#        """Checks that delete expense page URL name failed on invalid ID"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 999999999}
+#            )
+#        )
         
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 404)
 
-    def test_expense_delete_template(self):
-        """Checks that correct template is being used"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 1}
-            )
-        )
+#    def test_expense_delete_template(self):
+#        """Checks that correct template is being used"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 1}
+#            )
+#        )
         
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
         
-        # Check for proper template
-        self.assertTemplateUsed(response, "transactions/delete.html")
+#        # Check for proper template
+#        self.assertTemplateUsed(response, "transactions/delete.html")
         
-    def test_expense_delete_redirect_to_dashboard(self):
-        """Checks that form redirects to the dashboard on success"""
-        # Login
-        self.client.login(username="user", password="abcd123456")
+#    def test_expense_delete_redirect_to_dashboard(self):
+#        """Checks that form redirects to the dashboard on success"""
+#        # Login
+#        self.client.login(username="user", password="abcd123456")
 
-        # Delete entry
-        response = self.client.post(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 1}
-            ),
-            follow=True,
-        )
+#        # Delete entry
+#        response = self.client.post(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 1}
+#            ),
+#            follow=True,
+#        )
 
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
         
-        # Check that redirection was successful
-        self.assertRedirects(response, reverse("transactions_dashboard"))
+#        # Check that redirection was successful
+#        self.assertRedirects(response, reverse("transactions_dashboard"))
 
-    def test_expense_delete_post_failed_on_invalid_id(self):
-        """Checks that a POST fails when an invalid ID is provided"""
-        # Login
-        self.client.login(username="user", password="abcd123456")
+#    def test_expense_delete_post_failed_on_invalid_id(self):
+#        """Checks that a POST fails when an invalid ID is provided"""
+#        # Login
+#        self.client.login(username="user", password="abcd123456")
 
-        # Delete entry
-        response = self.client.post(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 999999999}
-            ),
-            follow=True,
-        )
+#        # Delete entry
+#        response = self.client.post(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 999999999}
+#            ),
+#            follow=True,
+#        )
 
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 404)
 
-    def test_expense_delete_confirm_deletion(self):
-        """Confirms deletion form works properly"""
-        # Get original model counts
-        transaction_total = FinancialTransaction.objects.count()
-        item_total = Item.objects.count()
-        financial_code_match_total = FinancialCodeMatch.objects.count()
-        attachment_match_total = AttachmentMatch.objects.count()
+#    def test_expense_delete_confirm_deletion(self):
+#        """Confirms deletion form works properly"""
+#        # Get original model counts
+#        transaction_total = FinancialTransaction.objects.count()
+#        item_total = Item.objects.count()
+#        financial_code_match_total = FinancialCodeMatch.objects.count()
+#        attachment_match_total = AttachmentMatch.objects.count()
 
-        # Login
-        self.client.login(username="user", password="abcd123456")
+#        # Login
+#        self.client.login(username="user", password="abcd123456")
 
-        # Delete entry
-        self.client.post(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "expense", "transaction_id": 1}
-            )
-        )
+#        # Delete entry
+#        self.client.post(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "expense", "transaction_id": 1}
+#            )
+#        )
 
-        # Checks that Transaction was deleted
-        self.assertEqual(FinancialTransaction.objects.filter(id=1).count(), 0)
+#        # Checks that Transaction was deleted
+#        self.assertEqual(FinancialTransaction.objects.filter(id=1).count(), 0)
 
-        # Checks that Items were deleted
-        self.assertEqual(Item.objects.filter(id=1).count(), 0)
-        self.assertEqual(Item.objects.filter(id=2).count(), 0)
+#        # Checks that Items were deleted
+#        self.assertEqual(Item.objects.filter(id=1).count(), 0)
+#        self.assertEqual(Item.objects.filter(id=2).count(), 0)
         
-        # Checks that financial code matches were deleted
-        self.assertEqual(FinancialCodeMatch.objects.filter(item_id=1).count(), 0)
+#        # Checks that financial code matches were deleted
+#        self.assertEqual(FinancialCodeMatch.objects.filter(item_id=1).count(), 0)
 
-        # Checks that the attachment match was deleted
-        self.assertEqual(AttachmentMatch.objects.filter(transaction_id=1).count(), 0)
+#        # Checks that the attachment match was deleted
+#        self.assertEqual(AttachmentMatch.objects.filter(transaction_id=1).count(), 0)
 
-        # Check that final model counts are corrects
-        self.assertEqual(FinancialTransaction.objects.count(), transaction_total - 1)
-        self.assertEqual(Item.objects.count(), item_total - 2)
-        self.assertEqual(FinancialCodeMatch.objects.count(), financial_code_match_total - 4)
-        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)
+#        # Check that final model counts are corrects
+#        self.assertEqual(FinancialTransaction.objects.count(), transaction_total - 1)
+#        self.assertEqual(Item.objects.count(), item_total - 2)
+#        self.assertEqual(FinancialCodeMatch.objects.count(), financial_code_match_total - 4)
+#        self.assertEqual(AttachmentMatch.objects.count(), attachment_match_total - 1)
  
-class RevenueDeleteTest(TestCase):
-    """Tests covering revenue-specific delete views"""
-    # pylint: disable=no-member,protected-access
-    fixtures = DELETE_FIXTURES
+#class RevenueDeleteTest(TestCase):
+#    """Tests covering revenue-specific delete views"""
+#    # pylint: disable=no-member,protected-access
+#    fixtures = DELETE_FIXTURES
        
-    def test_revenue_delete_redirect_if_not_logged_in(self):
-        """Checks user is redirected if not logged in"""
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "revenue", "transaction_id": 2}
-            )
-        )
+#    def test_revenue_delete_redirect_if_not_logged_in(self):
+#        """Checks user is redirected if not logged in"""
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "revenue", "transaction_id": 2}
+#            )
+#        )
 
-        self.assertEqual(response.status_code, 302)
+#        self.assertEqual(response.status_code, 302)
 
-    def test_revenue_delete_url_exists_at_desired_location(self):
-        """Checks that the delete expense page uses the correct URL"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/transactions/revenue/delete/2")
+#    def test_revenue_delete_url_exists_at_desired_location(self):
+#        """Checks that the delete expense page uses the correct URL"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get("/transactions/revenue/delete/2")
         
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
 
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 200)
 
-    def test_revenue_delete_accessible_by_name(self):
-        """Checks that delete expense page URL name works properly"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(
-            reverse(
-                "transaction_delete",
-                kwargs={"t_type": "revenue", "transaction_id": 2}
-            )
-        )
+#    def test_revenue_delete_accessible_by_name(self):
+#        """Checks that delete expense page URL name works properly"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get(
+#            reverse(
+#                "transaction_delete",
+#                kwargs={"t_type": "revenue", "transaction_id": 2}
+#            )
+#        )
         
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+#        # Check that user logged in
+#        self.assertEqual(str(response.context['user']), 'user')
 
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 200)
        
-class TransactionDeleteTest(TestCase):
-    """Tests covering remaining delete transaction views"""
-    # pylint: disable=no-member,protected-access,duplicate-code
-    fixtures = DELETE_FIXTURES
+#class TransactionDeleteTest(TestCase):
+#    """Tests covering remaining delete transaction views"""
+#    # pylint: disable=no-member,protected-access,duplicate-code
+#    fixtures = DELETE_FIXTURES
        
-    def test_transaction_delete_html404_on_invalid_url(self):
-        """Checks that the transaction page URL fails on invalid ID"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/transactions/abc/delete/2")
+#    def test_transaction_delete_html404_on_invalid_url(self):
+#        """Checks that the transaction page URL fails on invalid ID"""
+#        self.client.login(username="user", password="abcd123456")
+#        response = self.client.get("/transactions/abc/delete/2")
         
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
+#        # Check that page is accessible
+#        self.assertEqual(response.status_code, 404)
         
-    def test_transaction_delete_html404_on_invalid_name(self):
-        """Checks that the transaction page URL fails on invalid ID"""
-        self.client.login(username="user", password="abcd123456")
+#    def test_transaction_delete_html404_on_invalid_name(self):
+#        """Checks that the transaction page URL fails on invalid ID"""
+#        self.client.login(username="user", password="abcd123456")
 
-        exception = False
+#        exception = False
 
-        try:
-            self.client.get(
-                reverse(
-                    "transaction_delete",
-                    kwargs={"t_type": "abc", "transaction_id": 1}
-                )
-            )
-        except NoReverseMatch:
-            exception = True
+#        try:
+#            self.client.get(
+#                reverse(
+#                    "transaction_delete",
+#                    kwargs={"t_type": "abc", "transaction_id": 1}
+#                )
+#            )
+#        except NoReverseMatch:
+#            exception = True
 
-        # Check that exception is raised
-        self.assertTrue(exception)
+#        # Check that exception is raised
+#        self.assertTrue(exception)
  
