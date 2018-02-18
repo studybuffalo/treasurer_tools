@@ -28,7 +28,7 @@ def create_financial_code_systems():
         FinancialCodeSystem.objects.create(
             title="Regional",
             date_start="2000-01-01",
-            date_end="2015-12-31",
+            date_end="2020-12-31",
         ),
     ]
 

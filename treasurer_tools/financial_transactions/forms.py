@@ -64,6 +64,8 @@ class CompiledForms(object):
                             "{}-code".format(prefix): match.financial_code.id,
                         }
 
+                        break
+
             # No item ID = initial add form generation
             else:
                 data = None
@@ -363,7 +365,7 @@ class CompiledForms(object):
                     # Get any ID for an exisiting match ID
                     match_id = financial_code_form.form.cleaned_data["financial_code_match_id"]
 
-                    # If a match ID is present, get the orignial object
+                    # If a match ID is present, get the original object
                     if match_id:
                         match = get_object_or_404(FinancialCodeMatch, id=match_id)
                     # No match ID - create new instance
@@ -385,7 +387,7 @@ class CompiledForms(object):
             )
 
             # Create record in attachment matching model
-            attachment_match = AttachmentMatch(
+            attachment_match = FinancialTransactionMatch(
                 transaction=FinancialTransaction.objects.get(id=transaction_id),
                 attachment=attachment_instance,
             )
@@ -393,8 +395,11 @@ class CompiledForms(object):
 
         # Delete any old attachments
         for attachment_form in self.forms.old_attachment_formset:
-            if attachment_form.cleaned_data["DELETE"]:
-                attachment_form.cleaned_data["id"].delete()
+            try:
+                if attachment_form.cleaned_data["DELETE"]:
+                    attachment_form.cleaned_data["id"].delete()
+            except KeyError:
+                pass
 
     def __init__(self, transaction_type="EXPENSE", request_type="GET", data=None, files=None, **kwargs):
         self.transaction_type = "e" if transaction_type.upper() == "EXPENSE" else "r"
