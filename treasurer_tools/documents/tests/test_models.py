@@ -5,8 +5,10 @@ from unipath import Path
 
 from django.test import TestCase
 
-from documents.models import Attachment, BankStatementMatch
-from .utils import create_bank_statement
+from documents.models import Attachment, BankStatementMatch, FinancialTransactionMatch
+
+from .utils import create_bank_statement, create_financial_transactions
+
 
 class AttachmentModelTest(TestCase):
     """Test functions for the Attachment model"""
@@ -40,6 +42,7 @@ class AttachmentModelTest(TestCase):
 
 class BankStatementMatchTest(TestCase):
     """Tests for the BankStatementMatch model"""
+
     def test_string_representation(self):
         """Tests string representation of attachment match"""
         # Create a new match instance
@@ -58,4 +61,27 @@ class BankStatementMatchTest(TestCase):
         self.assertEqual(
             str(match),
             "{} - {}".format(statement, attachment)
+        )
+
+class FinancialTransactionMatchTest(TestCase):
+    """Tests for the FinancialTransactionMatch model"""
+
+    def test_string_representation(self):
+        """Tests string representation of attachment match"""
+        # Create a new match instance
+        temp_file = tempfile.NamedTemporaryFile(suffix=".pdf")
+        attachment = Attachment.objects.create(
+            location=temp_file.name
+        )
+
+        transactions = create_financial_transactions()
+
+        match = FinancialTransactionMatch.objects.create(
+            transaction=transactions[0],
+            attachment=attachment,
+        )
+
+        self.assertEqual(
+            str(match),
+            "{} - {}".format(transactions[0], attachment)
         )
