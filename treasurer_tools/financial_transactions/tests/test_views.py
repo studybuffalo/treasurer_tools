@@ -3,7 +3,6 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from documents.models import Attachment, FinancialTransactionMatch
 from financial_transactions.forms import FinancialCodeAssignmentForm
 from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
 
@@ -97,7 +96,7 @@ class RetrieveFinancialCodeSystemTest(TestCase):
         response = self.client.get(self.valid_url, invalid_args)
 
         self.assertEqual(response.status_code, 404)
-        
+
     def test_404_on_missing_item_form_id(self):
         """Checks that a 404 returns on invalid date"""
         # Generate incorrect parameters
@@ -108,7 +107,7 @@ class RetrieveFinancialCodeSystemTest(TestCase):
         response = self.client.get(self.valid_url, invalid_args)
 
         self.assertEqual(response.status_code, 404)
-        
+
     def test_404_on_invalid_date(self):
         """Checks that a 404 returns on invalid date"""
         # Generate incorrect parameters
@@ -119,7 +118,7 @@ class RetrieveFinancialCodeSystemTest(TestCase):
         response = self.client.get(self.valid_url, invalid_args)
 
         self.assertEqual(response.status_code, 404)
-        
+
     def test_404_on_invalid_item_form_id(self):
         """Checks that a 404 returns on invalid date"""
         # Generate incorrect parameters
@@ -210,7 +209,7 @@ class FinancialTransactionAddTest(TestCase):
         response = self.client.get(
             reverse("financial_transactions:add", kwargs=self.valid_args)
         )
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
@@ -260,7 +259,7 @@ class FinancialTransactionAddTest(TestCase):
     def test_add_confirm_add(self):
         """Confirms data is added to database on successful form submission"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
+        self.client.post(
             reverse("financial_transactions:add", kwargs=self.valid_args),
             self.valid_data,
             follow=True,
@@ -271,7 +270,7 @@ class FinancialTransactionAddTest(TestCase):
 
         # Check that one item was added
         self.assertEqual(1, Item.objects.count())
-        
+
         # Check that item was associated with the transaction
         self.assertEqual(1, FinancialTransaction.objects.first().item_set.count())
 
@@ -347,7 +346,7 @@ class FinancialTransactionEditTest(TestCase):
         response = self.client.get(
             reverse("financial_transactions:edit", kwargs=self.valid_args)
         )
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
@@ -358,7 +357,7 @@ class FinancialTransactionEditTest(TestCase):
         """Checks that the edit page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(self.valid_url)
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
@@ -371,7 +370,7 @@ class FinancialTransactionEditTest(TestCase):
                 kwargs={"t_type": "expense", "transaction_id": 999999999}
             )
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 
@@ -384,7 +383,7 @@ class FinancialTransactionEditTest(TestCase):
 
         # Check for proper template
         self.assertTemplateUsed(response, "transactions/edit.html")
-        
+
     def test_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         # Setup the edited data
@@ -409,7 +408,7 @@ class FinancialTransactionDeleteTest(TestCase):
 
         transactions = create_financial_transactions()
         transaction = transactions[0]
-        
+
         self.valid_args = {"t_type": "expense", "transaction_id": transaction.id}
         self.valid_url = "/transactions/expense/delete/{}".format(transaction.id)
 
@@ -461,7 +460,7 @@ class FinancialTransactionDeleteTest(TestCase):
                 kwargs={"t_type": "expense", "transaction_id": 999999999}
             )
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 

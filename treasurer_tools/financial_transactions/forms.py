@@ -18,6 +18,8 @@ class CompiledForms(object):
     """Forms and functions for the add/edit transaction/item/code views"""
     class TransactionLevel(object):
         """Holds transaction form and related item formsets"""
+        # pylint: disable=too-few-public-methods
+        # TODO: switch this to a dictionary
         def __init__(self):
             self.transaction_form = None
             self.item_formset = None
@@ -27,12 +29,16 @@ class CompiledForms(object):
 
     class ItemLevel(object):
         """Holds itemformset and related financial code forms"""
+        # pylint: disable=too-few-public-methods
+        # TODO: switch this to a dictionary
         def __init__(self, **kwargs):
             self.item_formset = kwargs.pop("item_formset", None)
             self.financial_code_forms = kwargs.pop("financial_code_forms", None)
 
     class FinancialCodeLevel(object):
         """Holds financial code forms and other related data"""
+        # pylint: disable=too-few-public-methods
+        # TODO: switch this to a dictionary
         def __init__(self, **kwargs):
             self.system = kwargs.pop("financial_code_system", None)
             self.form = kwargs.pop("financial_code_form", None)

@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.utils.datastructures import MultiValueDict
 
 from documents.models import Attachment, FinancialTransactionMatch
-from financial_codes.models import BudgetYear, FinancialCode
+from financial_codes.models import FinancialCode
 from financial_transactions.forms import FinancialCodeAssignmentForm, CompiledForms
 from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
 from .utils import create_financial_codes, create_demographics
@@ -37,8 +37,10 @@ class FinancialCodeAssignmentFormTest(TestCase):
         for option_grouping in code_select.choices:
             if option_grouping[0]:
                 for code in option_grouping[1]:
+                    code_instance = FinancialCode.objects.get(id=code[0])
+
                     self.assertEqual(
-                        transaction_type,
+                        code_instance.financial_code_group.type,
                         "e"
                     )
 
@@ -59,8 +61,10 @@ class FinancialCodeAssignmentFormTest(TestCase):
         for option_grouping in code_select.choices:
             if option_grouping[0]:
                 for code in option_grouping[1]:
+                    code_instance = FinancialCode.objects.get(id=code[0])
+
                     self.assertEqual(
-                        transaction_type,
+                        code_instance.financial_code_group.type,
                         "r"
                     )
 
@@ -284,14 +288,14 @@ class CompiledFormsTest(TestCase):
             # Create a 1 mb file
             test_file.write(b"1" * 1024 * 1024)
             test_file.seek(0)
-            
+
             # Creates a proper MultiValueDict to mimic request.FILES
             files = MultiValueDict({
                 "newattachment-attachment_files": [
                     InMemoryUploadedFile(test_file, None, "test.txt", "text/plain", 1024 * 1024, None),
                 ]
             })
-            
+
             # Creats a QueryDict to mimic request.POST
             data = QueryDict('', mutable=True)
             data.update(self.valid_data)
@@ -317,14 +321,14 @@ class CompiledFormsTest(TestCase):
             # Create a 1 mb file
             test_file.write(b"1" * 1024 * 1024)
             test_file.seek(0)
-            
+
             # Creates a proper MultiValueDict to mimic request.FILES
             files = MultiValueDict({
                 "newattachment-attachment_files": [
                     InMemoryUploadedFile(test_file, None, "test.txt", "text/plain", 1024 * 1024, None),
                 ]
             })
-            
+
             # Creats a QueryDict to mimic request.POST
             data = QueryDict('', mutable=True)
             data.update(self.valid_data)
@@ -389,7 +393,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid transaction form"""
         edited_data = self.valid_data
         edited_data["memo"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -399,7 +403,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid transaction form"""
         edited_data = self.valid_data
         edited_data["date_submitted"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -409,7 +413,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid item date"""
         edited_data = self.valid_data
         edited_data["item_set-0-date_item"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -419,7 +423,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid item description"""
         edited_data = self.valid_data
         edited_data["item_set-0-description"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -429,7 +433,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid item amount"""
         edited_data = self.valid_data
         edited_data["item_set-0-amount"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -439,7 +443,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid item gst"""
         edited_data = self.valid_data
         edited_data["item_set-0-gst"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -449,7 +453,7 @@ class CompiledFormsTest(TestCase):
         """Confirms is_valid() returns false with invalid code"""
         edited_data = self.valid_data
         edited_data["item_set-0-coding_set-0-code"] = ""
-        
+
         forms = CompiledForms("expense", "POST", edited_data)
 
         # Check that CompiledForm is invalid
@@ -511,6 +515,7 @@ class CompiledFormsTest(TestCase):
             Tests handling when a financial code match is not
             available for an item ID
         """
+        # pylint: disable=protected-access,no-member
         form = CompiledForms(
             "expense"
             "GET"

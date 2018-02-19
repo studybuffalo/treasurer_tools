@@ -106,7 +106,7 @@ class Item(models.Model):
 
         # Return total as a proper dollar currency
         return "${0:.2f}".format(total)
-    
+
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
     item = models.ForeignKey(

@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
+from financial_transactions.models import FinancialCodeMatch
 
 from .utils import create_financial_transactions, create_financial_codes
 
@@ -89,13 +89,6 @@ class ItemModelTest(TestCase):
 
     def test_labels(self):
         """tests a series of fields for proper label generation"""
-        test_list = [
-            {"field_name": "transaction", "label_name": "transaction"},
-            {"field_name": "date_item", "label_name": "date"},
-            {"field_name": "description", "label_name": "description"},
-            {"field_name": "amount", "label_name": "amount"},
-            {"field_name": "gst", "label_name": "gst"},
-        ]
 
         # Test transaction label
         self.assertEqual(

@@ -5,6 +5,8 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from treasurer_tools.users.models import User
 
 
+# TODO: Review this app and see if any of these are valuable
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     # These next two lines tell the view to index lookups by username
@@ -13,6 +15,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
+    # pylint: disable=arguments-differ
     permanent = False
 
     def get_redirect_url(self):
@@ -21,6 +24,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
+    # pylint: disable=arguments-differ,too-many-ancestors
 
     fields = ['name', ]
 
