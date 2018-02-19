@@ -2,46 +2,59 @@
 
 from django.test import TestCase
 
-from investments.models import Investment
+from .utils import create_investment
 
-class FinancialCodeSystemModelTest(TestCase):
+
+class InvestmentModelTest(TestCase):
     """Test functions for the Financial Code System model"""
-    # pylint: disable=no-member,protected-access
-    
-    fixtures = [
-        "investments/tests/fixtures/investment.json",
-    ]
+
+    def setUp(self):
+        self.investment = create_investment()
 
     def test_labels(self):
         """tests a series of fields for proper label generation"""
-        test_list = [
-            {"field_name": "name", "label_name": "name"},
-            {"field_name": "date_invested", "label_name": "date invested"},
-            {"field_name": "amount", "label_name": "amount"},
-            {"field_name": "rate", "label_name": "rate"},
-        ]
 
-        for test_item in test_list:
-            investment = Investment.objects.get(id=1)
-            field_label = investment._meta.get_field(test_item["field_name"]).verbose_name
-            self.assertEqual(field_label, test_item["label_name"])
+        # Test name label
+        self.assertEqual(
+            self.investment._meta.get_field("name").verbose_name,
+            "name"
+        )
+
+        # Test date_invested label
+        self.assertEqual(
+            self.investment._meta.get_field("date_invested").verbose_name,
+            "date invested"
+        )
+
+        # Test amount label
+        self.assertEqual(
+            self.investment._meta.get_field("amount").verbose_name,
+            "amount"
+        )
+
+        # Test rate label
+        self.assertEqual(
+            self.investment._meta.get_field("rate").verbose_name,
+            "rate"
+        )
 
     def test_name_max_length(self):
         """Tests the name field for proper max length"""
-        investment = Investment.objects.get(id=1)
-        max_length = investment._meta.get_field("name").max_length
-        self.assertEqual(max_length, 256)
-        
+        self.assertEqual(
+            self.investment._meta.get_field("name").max_length,
+            256
+        )
+
     def test_rate_max_length(self):
         """Tests the rate field for proper max length"""
-        investment = Investment.objects.get(id=1)
-        max_length = investment._meta.get_field("rate").max_length
-        self.assertEqual(max_length, 256)
+        self.assertEqual(
+            self.investment._meta.get_field("rate").max_length,
+            256
+        )
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        investment = Investment.objects.get(id=1)
         self.assertEqual(
-            str(investment),
-            "{} - {}".format(investment.date_invested, investment.name)
+            str(self.investment),
+            "2017-02-01 - Term Deposit #1"
         )

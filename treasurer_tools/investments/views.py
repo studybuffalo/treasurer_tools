@@ -11,7 +11,6 @@ from .models import Investment
 @login_required
 def dashboard(request):
     """Main dashboard to view investments"""
-    # pylint: disable=no-member
     investments = Investment.objects.all()
 
     return render(
@@ -26,22 +25,6 @@ def dashboard(request):
 def investment_add(request):
     """Generates and processes form to add an investment"""
 
-    def save_investment_form(form, investment_data):
-        """Saves Investment instance based on provided form data"""
-        # Collect the cleaned form fields
-        name = form.cleaned_data["name"]
-        date_invested = form.cleaned_data["date_invested"]
-        amount = form.cleaned_data["amount"]
-        rate = form.cleaned_data["rate"]
-
-        # Set the model data and save the instance
-        investment_data.name = name
-        investment_data.date_invested = date_invested
-        investment_data.amount = amount
-        investment_data.rate = rate
-
-        investment_data.save()
-
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Create a Transaction object
@@ -52,12 +35,12 @@ def investment_add(request):
 
         # Check if the form is valid:
         if form.is_valid():
-            save_investment_form(form, investment_data)
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Investment successfully added")
 
-            return HttpResponseRedirect(reverse("investments_dashboard"))
+            return HttpResponseRedirect(reverse("investments:dashboard"))
 
     # If this is a GET (or any other method) create the default form.
     else:
@@ -76,22 +59,6 @@ def investment_add(request):
 def investment_edit(request, investment_id):
     """Generate and processes form to edit a financial system"""
 
-    def update_investment_form(form, investment_data):
-        """Updates/saves investment instance based on provided form data"""
-
-        name = form.cleaned_data["name"]
-        date_invested = form.cleaned_data["date_invested"]
-        amount = form.cleaned_data["amount"]
-        rate = form.cleaned_data["rate"]
-
-        # Set the model data and save the instance
-        investment_data.name = name
-        investment_data.date_invested = date_invested
-        investment_data.amount = amount
-        investment_data.rate = rate
-
-        investment_data.save()
-
     # If this is a POST request then process the Form data
     if request.method == "POST":
         # Get the Investment object
@@ -102,12 +69,12 @@ def investment_edit(request, investment_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            update_investment_form(form, investment_data)
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Investment updated")
 
-            return HttpResponseRedirect(reverse("investments_dashboard"))
+            return HttpResponseRedirect(reverse("investments:dashboard"))
 
     # If this is a GET (or any other method) create populated forms
     else:
@@ -143,7 +110,7 @@ def investment_delete(request, investment_id):
         # Redirect back to main list
         messages.success(request, "Investment deleted")
 
-        return HttpResponseRedirect(reverse("investments_dashboard"))
+        return HttpResponseRedirect(reverse("investments:dashboard"))
 
     return render(
         request,

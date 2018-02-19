@@ -6,7 +6,7 @@
     {% include 'main/messages.html' %}
 
     <div>
-        <a href="{% url 'investment_add'%}">Add new investment</a>
+        <a href="{% url 'investments:add'%}">Add new investment</a>
     </div>
 
     <div>
@@ -14,8 +14,8 @@
             {% for investment in investments %}
                 <li>
                     {{ investment }} - 
-                    <a href="{% url 'investment_edit' investment.id %}">Edit</a> -
-                    <a href="{% url 'investment_delete' investment.id %}">Delete</a>
+                    <a href="{% url 'investments:edit' investment.id %}">Edit</a> -
+                    <a href="{% url 'investments:delete' investment.id %}">Delete</a>
                 </li>
             {% endfor %}
         </ul>
