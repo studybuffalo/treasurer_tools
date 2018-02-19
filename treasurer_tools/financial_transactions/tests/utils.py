@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCodeGroup, FinancialCode
-from financial_transactions.models import FinancialTransaction, Item
+from financial_transactions.models import FinancialTransaction, Item, FinancialCodeMatch
 from payee_payers.models import Country, PayeePayer
 
 def create_user():
@@ -145,7 +145,9 @@ def create_demographics():
 
 def create_financial_transactions():
     demographic_reference = create_demographics()
+    codes = create_financial_codes()
 
+    # Create Transaction 1
     transaction_reference_1 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="e",
@@ -154,7 +156,7 @@ def create_financial_transactions():
     )
 
     # Create associated items for transaction 1
-    Item.objects.create(
+    transaction_1_item_1 = Item.objects.create(
         transaction=transaction_reference_1,
         date_item="2017-06-01",
         description="Taxi costs (to hotel)",
@@ -162,7 +164,7 @@ def create_financial_transactions():
         gst=5.00,
     )
 
-    Item.objects.create(
+    transaction_1_item_2 = Item.objects.create(
         transaction=transaction_reference_1,
         date_item="2017-06-01",
         description="Taxi costs (from hotel)",
@@ -170,6 +172,28 @@ def create_financial_transactions():
         gst=5.00,
     )
 
+    # Create financial code matches for transaction 1
+    FinancialCodeMatch.objects.create(
+        item=transaction_1_item_1,
+        financial_code=codes[0]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_1_item_1,
+        financial_code=codes[2]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_1_item_2,
+        financial_code=codes[0]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_1_item_2,
+        financial_code=codes[2]
+    )
+
+    # Create Transaction 2
     transaction_reference_2 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="r",
@@ -178,7 +202,7 @@ def create_financial_transactions():
     )
 
     # Create associated items for transaction 2
-    Item.objects.create(
+    transaction_2_item = Item.objects.create(
         transaction=transaction_reference_2,
         date_item="2017-01-01",
         description="Sponsorship",
@@ -186,6 +210,18 @@ def create_financial_transactions():
         gst=50.00,
     )
 
+    # Create financial code matches for transaction 2
+    FinancialCodeMatch.objects.create(
+        item=transaction_2_item,
+        financial_code=codes[1]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_2_item,
+        financial_code=codes[3]
+    )
+
+    # Create Transaction 3
     transaction_reference_3 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="r",
@@ -194,7 +230,7 @@ def create_financial_transactions():
     )
 
     # Create associated items for transaction 3
-    Item.objects.create(
+    transaction_3_item = Item.objects.create(
         transaction=transaction_reference_3,
         date_item="2017-01-05",
         description="Funding",
@@ -202,6 +238,18 @@ def create_financial_transactions():
         gst=0.00,
     )
 
+    # Create financial code matches for transaction 3
+    FinancialCodeMatch.objects.create(
+        item=transaction_3_item,
+        financial_code=codes[1]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_3_item,
+        financial_code=codes[3]
+    )
+
+    # Create Transaction 4
     transaction_reference_4 = FinancialTransaction.objects.create(
         payee_payer=demographic_reference,
         transaction_type="e",
@@ -210,12 +258,23 @@ def create_financial_transactions():
     )
 
     # Create associated items for transaction 4
-    Item.objects.create(
+    transaction_4_item = Item.objects.create(
         transaction=transaction_reference_4,
         date_item="2017-06-04",
         description="Hotel",
         amount=129.99,
         gst=7.30,
+    )
+
+    # Create financial code matches for transaction 4
+    FinancialCodeMatch.objects.create(
+        item=transaction_4_item,
+        financial_code=codes[0]
+    )
+
+    FinancialCodeMatch.objects.create(
+        item=transaction_4_item,
+        financial_code=codes[2]
     )
 
     return [
