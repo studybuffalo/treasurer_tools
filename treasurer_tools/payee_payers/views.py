@@ -42,31 +42,7 @@ def add_payee_payer(request):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            name = form.cleaned_data["name"]
-            address = form.cleaned_data["address"]
-            country = form.cleaned_data["country"]
-            province = form.cleaned_data["province"]
-            city = form.cleaned_data["city"]
-            postal_code = form.cleaned_data["postal_code"]
-            phone = form.cleaned_data["phone"]
-            fax = form.cleaned_data["fax"]
-            email = form.cleaned_data["email"]
-            status = form.cleaned_data["status"]
-
-            # Update the Payee/Payer model object
-            payee_payer_data.name = name
-            payee_payer_data.address = address
-            payee_payer_data.country = country
-            payee_payer_data.province = province
-            payee_payer_data.city = city
-            payee_payer_data.postal_code = postal_code
-            payee_payer_data.phone = phone
-            payee_payer_data.fax = fax
-            payee_payer_data.email = email
-            payee_payer_data.status = status
-
-            payee_payer_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Payee/payer successfully added")
@@ -98,31 +74,7 @@ def edit_payee_payer(request, payee_payer_id):
 
         # Check if the form is valid:
         if form.is_valid():
-            # Collect the form fields
-            name = form.cleaned_data["name"]
-            address = form.cleaned_data["address"]
-            country = form.cleaned_data["country"]
-            province = form.cleaned_data["province"]
-            city = form.cleaned_data["city"]
-            postal_code = form.cleaned_data["postal_code"]
-            phone = form.cleaned_data["phone"]
-            fax = form.cleaned_data["fax"]
-            email = form.cleaned_data["email"]
-            status = form.cleaned_data["status"]
-
-            # Update the PayeePayer model object
-            payee_payer_data.name = name
-            payee_payer_data.address = address
-            payee_payer_data.country = country
-            payee_payer_data.province = province
-            payee_payer_data.city = city
-            payee_payer_data.postal_code = postal_code
-            payee_payer_data.phone = phone
-            payee_payer_data.fax = fax
-            payee_payer_data.email = email
-            payee_payer_data.status = status
-
-            payee_payer_data.save()
+            form.save()
 
             # redirect to a new URL:
             messages.success(request, "Payee/payer successfully edited")
@@ -134,18 +86,7 @@ def edit_payee_payer(request, payee_payer_id):
         # Get initial form data
         payee_payer_data = get_object_or_404(PayeePayer, id=payee_payer_id)
 
-        form = PayeePayerForm(initial={
-            "name": payee_payer_data.name,
-            "address": payee_payer_data.address,
-            "country": payee_payer_data.country,
-            "province": payee_payer_data.province,
-            "city": payee_payer_data.city,
-            "postal_code": payee_payer_data.postal_code,
-            "phone": payee_payer_data.phone,
-            "fax": payee_payer_data.fax,
-            "email": payee_payer_data.email,
-            "status": payee_payer_data.status,
-        })
+        form = PayeePayerForm(instance=payee_payer_data)
 
     return render(
         request,

@@ -2,92 +2,160 @@
 
 from django.test import TestCase
 
-from payee_payers.models import Country, PayeePayer
+from .utils import create_country, create_demographics
+
 
 class CountryModelTest(TestCase):
-    """Test functions for the PayeePayer model"""
-    # pylint: disable=no-member,protected-access
-    fixtures = ["payee_payer/tests/fixtures/country.json"]
+    """Test functions for the Country model"""
+
+    def setUp(self):
+        self.country = create_country()
 
     def test_country_verbose_name_plural(self):
         """Tests for expected model verbose name"""
-        country = Country.objects.get(id=1)
 
         self.assertEqual(
-            country._meta.verbose_name_plural,
+            self.country._meta.verbose_name_plural,
             "countries"
         )
 
     def test_country_code_label(self):
         """Tests for expected country code label"""
-        country = Country.objects.get(country_code="CA")
 
         self.assertEqual(
-            country._meta.get_field("country_code").verbose_name,
+            self.country._meta.get_field("country_code").verbose_name,
             "country code"
         )
 
     def test_country_name_label(self):
         """Tests for expected country name label"""
-        country = Country.objects.get(country_code="CA")
 
         self.assertEqual(
-            country._meta.get_field("country_name").verbose_name,
+            self.country._meta.get_field("country_name").verbose_name,
             "country name"
         )
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        country = Country.objects.get(country_code="CA")
-        self.assertEqual(str(country), country.country_name)
+        self.assertEqual(
+            str(self.country),
+            "Canada"
+        )
 
 class PayeePayersModelTest(TestCase):
     """Test functions for the Payee/Payers model"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json"
-    ]
+    def setUp(self):
+        self.payee_payer = create_demographics()
 
     def test_labels(self):
         """Tests a series of fields for proper label generation"""
-        test_list = [
-            {"field_name": "name", "label_name": "name"},
-            {"field_name": "address", "label_name": "address"},
-            {"field_name": "city", "label_name": "city"},
-            {"field_name": "province", "label_name": "province"},
-            {"field_name": "country", "label_name": "country"},
-            {"field_name": "postal_code", "label_name": "postal code"},
-            {"field_name": "phone", "label_name": "phone number"},
-            {"field_name": "fax", "label_name": "fax number"},
-            {"field_name": "email", "label_name": "email"},
-            {"field_name": "status", "label_name": "status"},
-        ]
 
-        for test_item in test_list:
-            payee_payer = PayeePayer.objects.get(id=1)
-            field_label = payee_payer._meta.get_field(test_item["field_name"]).verbose_name
-            self.assertEqual(field_label, test_item["label_name"])
+        # Test name label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("name").verbose_name,
+            "name"
+        )
+
+        # Test address label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("address").verbose_name,
+            "address"
+        )
+
+        # Test city label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("city").verbose_name,
+            "city"
+        )
+
+        # Test province label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("province").verbose_name,
+            "province"
+        )
+
+        # Test country label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("country").verbose_name,
+            "country"
+        )
+
+        # Test postal_code label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("postal_code").verbose_name,
+            "postal code"
+        )
+
+        # Test phone label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("phone").verbose_name,
+            "phone number"
+        )
+
+        # Test fax label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("fax").verbose_name,
+            "fax number"
+        )
+
+        # Test email label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("email").verbose_name,
+            "email"
+        )
+
+        # Test status label
+        self.assertEqual(
+            self.payee_payer._meta.get_field("status").verbose_name,
+            "status"
+        )
 
     def test_max_length(self):
         """Tests a series of fields for proper max length"""
-        test_list = [
-            {"field_name": "name", "max_length": 250},
-            {"field_name": "address", "max_length": 1000},
-            {"field_name": "city", "max_length": 1000},
-            {"field_name": "province", "max_length": 100},
-            {"field_name": "postal_code", "max_length": 10},
-            {"field_name": "phone", "max_length": 30},
-            {"field_name": "fax", "max_length": 30},
-        ]
 
-        for test_item in test_list:
-            payee_payer = PayeePayer.objects.get(id=1)
-            max_length = payee_payer._meta.get_field(test_item["field_name"]).max_length
-            self.assertEqual(max_length, test_item["max_length"])
+        # Test name max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("name").max_length,
+            250
+        )
+
+        # Test address max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("address").max_length,
+            1000
+        )
+
+        # Test city max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("city").max_length,
+            250
+        )
+
+        # Test province max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("province").max_length,
+            100
+        )
+
+        # Test postal_code max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("postal_code").max_length,
+            10
+        )
+
+        # Test phone max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("phone").max_length,
+            30
+        )
+
+        # Test fax max length
+        self.assertEqual(
+            self.payee_payer._meta.get_field("fax").max_length,
+            30
+        )
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-        payee_payer = PayeePayer.objects.get(id=1)
-        self.assertEqual(str(payee_payer), payee_payer.name)
+        self.assertEqual(str(self.payee_payer), "Test User")

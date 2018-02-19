@@ -3,42 +3,38 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from payee_payer.models import PayeePayer
+from payee_payers.models import PayeePayer
+
+from .utils import create_user, create_country, create_demographics
+
 
 class DashboardTest(TestCase):
     """Test functions for the Payee/Payer model"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/authentication.json",
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json",
-    ]
+    def setUp(self):
+        create_user()
 
     def test_dashboard_redirect_if_not_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
-        response = self.client.get("/payee-payer/")
+        response = self.client.get(reverse("payee_payers:dashboard"))
 
         self.assertRedirects(response, "/accounts/login/?next=/payee-payer/")
 
-    def test_dashboard_url_exists_at_desired_location(self):
-        """Checks that the dashboard uses the correct URL"""
+    def test_dashboard_no_redirect_if_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/payee-payer/")
-        
+        response = self.client.get(reverse("payee_payers:dashboard"))
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
-    def test_dashboard_accessible_by_name(self):
-        """Checks that the dashboard URL name works properly"""
+    def test_dashboard_url_exists_at_desired_location(self):
+        """Checks that the dashboard uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("payee_payer_dashboard"))
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+        response = self.client.get("/payee-payer/")
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
@@ -46,23 +42,17 @@ class DashboardTest(TestCase):
     def test_dashboard_template(self):
         """Checks that the dashboard uses the correct template"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("payee_payer_dashboard"))
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+        response = self.client.get(reverse("payee_payers:dashboard"))
 
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/index.html")
 
 class RetrieveListTest(TestCase):
     """Test functions for the Payee/Payer model"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/authentication.json",
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json",
-    ]
+    def setUp(self):
+        create_user()
+        create_demographics()
 
     def test_retrieve_list_redirect_if_not_logged_in(self):
         """Checks that request is redirected if user is not logged in"""
@@ -70,24 +60,21 @@ class RetrieveListTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-    def test_retrieve_list_url_exists_at_desired_location(self):
-        """Checks that the retrieve payee/payer list URL is correct"""
+    def test_retrieve_list_no_redirect_if_logged_in(self):
+        """Checks that request is redirected if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
-        # Check that response is corret
+        # Check that response is correct
         self.assertEqual(response.status_code, 200)
 
     def test_retrieve_list_all_entries(self):
         """Checks that all payee_payer entries are retrieved"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
 
         # Check that the number of retrieved entries matches the DB
         db_count = PayeePayer.objects.all().count()
@@ -99,376 +86,290 @@ class RetrieveListTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/payee_payer_list.html")
 
-
 class PayeePayerAddTest(TestCase):
     """Tests of the add payee/payer form page"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/authentication.json",
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json",
-    ]
-    
-    def test_payee_payer_add_redirect_if_not_logged_in(self):
+    def setUp(self):
+        create_user()
+
+        country = create_country()
+
+        self.valid_data = {
+            "user": None,
+            "name": "Another Test User",
+            "address": "111-222 Fake Street",
+            "city": "Edmonton",
+            "province": "Alberta",
+            "country": country.id,
+            "postal_code": "T1T 1T1",
+            "phone": "111-222-3333",
+            "fax": "444-555-6666",
+            "email": "test@email.com",
+            "status": "a"
+        }
+
+    def test_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
-        response = self.client.get(reverse("payee_payer_add"))
+        response = self.client.get(reverse("payee_payers:add"))
 
         self.assertEqual(response.status_code, 302)
 
-    def test_payee_payer_add_url_exists_at_desired_location(self):
-        """Checks that the add payee/payer page uses the correct URL"""
+    def test_add_no_redirect_if_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(reverse("payee_payers:add"))
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_url_exists_at_desired_location(self):
+        """Checks that the add page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get("/payee-payer/add/")
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
-    def test_payee_payer_add_accessible_by_name(self):
-        """Checks that add payee/payer page URL name works properly"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("payee_payer_add"))
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
-
-    def test_payee_payer_add_template(self):
+    def test_add_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("payee_payer_add"))
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
+        response = self.client.get(reverse("payee_payers:add"))
+
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/add.html")
 
-    def test_payee_payer_add_redirect_to_dashboard(self):
+    def test_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("payee_payer_add"),
-            {
-                "name": "Test Case Company",
-                "address": "444 Test Boulevard",
-                "country": 1,
-                "province": "British Columbia",
-                "city": "Vancouver",
-                "postal_code": "V1V 1V1",
-                "phone": "111-111-1111",
-                "fax": "222-222-2222",
-                "email": "testcase@email.com",
-                "status": "a",
-            },
-            follow=True,
+            reverse("payee_payers:add"), self.valid_data, follow=True
         )
 
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
         # Check that redirection was successful
-        self.assertRedirects(response, reverse("payee_payer_dashboard"))
+        self.assertRedirects(response, reverse("payee_payers:dashboard"))
 
-    def test_payee_payer_add_confirm_add(self):
-        """Confirms data is added to database on successful form submission"""
+    def test_add_saves_to_database(self):
+        """Checks that form can properly save to database"""
+        # Get current total of payee_payers
+        payee_payer_total = PayeePayer.objects.count()
+
         self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
-            reverse("payee_payer_add"),
-            {
-                "name": "Test Case Company",
-                "address": "444 Test Boulevard",
-                "country": 1,
-                "province": "British Columbia",
-                "city": "Vancouver",
-                "postal_code": "V1V 1V1",
-                "phone": "111-111-1111",
-                "fax": "222-222-2222",
-                "email": "testcase@email.com",
-                "status": "a",
-            },
-            follow=True,
+        self.client.post(
+            reverse("payee_payers:add"), self.valid_data, follow=True,
         )
 
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
-        self.assertEqual(2, PayeePayer.objects.count())
+        # Check that one entry is added
+        self.assertEqual(PayeePayer.objects.count(), payee_payer_total + 1)
 
 class PayeePayerEditTest(TestCase):
     """Tests of the edit payee/payer form page"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/authentication.json",
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json",
-    ]
+    def setUp(self):
+        create_user()
 
-    def test_payee_payer_edit_redirect_if_not_logged_in(self):
+        country = create_country()
+        payee_payer = create_demographics()
+
+        self.current_data = {
+            "user": payee_payer.user,
+            "name": payee_payer.name,
+            "address": payee_payer.address,
+            "city": payee_payer.city,
+            "province": payee_payer.province,
+            "country": payee_payer.country.id,
+            "postal_code": payee_payer.postal_code,
+            "phone": payee_payer.phone,
+            "fax": payee_payer.fax,
+            "email": payee_payer.email,
+            "status": payee_payer.status,
+        }
+        self.new_data = {
+            "user": None,
+            "name": "Another Test User",
+            "address": "New Address",
+            "city": "Edmonton",
+            "province": "Alberta",
+            "country": country.id,
+            "postal_code": "T1T 1T1",
+            "phone": "111-222-3333",
+            "fax": "444-555-6666",
+            "email": "test@email.com",
+            "status": "a"
+        }
+        self.valid_args = {"payee_payer_id": payee_payer.id}
+        self.valid_url = "/payee-payer/edit/{}".format(payee_payer.id)
+
+    def test_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:edit", kwargs=self.valid_args)
         )
 
         self.assertEqual(response.status_code, 302)
 
-    def test_payee_payer_edit_url_exists_at_desired_location(self):
-        """Checks that the edit payee/payer page uses the correct URL"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/payee-payer/edit/1")
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 200)
-
-    def test_payee_payer_edit_html404_on_invalid_url(self):
-        """Checks that the edit payee/payer page URL fails on invalid ID"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/payee-payer/edit/999999999")
-        
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
-
-    def test_payee_payer_edit_accessible_by_name(self):
-        """Checks that edit payee/payer page URL name works properly"""
+    def test_edit_no_redirect_if_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:edit", kwargs=self.valid_args)
         )
-        
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
-        
-    def test_payee_payer_edit_html404_on_invalid_name(self):
+
+    def test_edit_url_exists_at_desired_location(self):
+        """Checks that the edit page uses the correct URL"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.valid_url)
+
+        # Check that page is accessible
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_html404_on_invalid_name(self):
         """Checks that edit payee/payer page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 999999999})
+            reverse("payee_payers:edit", kwargs={"payee_payer_id": 999999999})
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 
-    def test_payee_payer_edit_template(self):
+    def test_edit_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:edit", kwargs=self.valid_args)
         )
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/edit.html")
-        
+
     def test_payee_payer_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1}),
-            {
-                "name": "Test Case Company - 2",
-                "address": "444 Test Boulevard",
-                "country": 1,
-                "province": "British Columbia",
-                "city": "Vancouver",
-                "postal_code": "V1V 1V12",
-                "phone": "111-111-1111",
-                "fax": "222-222-2222",
-                "email": "testcase@email.com",
-                "status": "a",
-            },
+            reverse("payee_payers:edit", kwargs=self.valid_args),
+            self.current_data,
             follow=True,
         )
 
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
         # Check that redirection was successful
-        self.assertRedirects(response, reverse("payee_payer_dashboard"))
+        self.assertRedirects(response, reverse("payee_payers:dashboard"))
 
-    def test_payee_payer_edit_post_failed_on_invalid_id(self):
-        """Checks that a POST fails when an invalid ID is provided"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.post(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 999999999}),
-            {
-                "name": "Test Case Company - 3",
-                "address": "444 Test Boulevard",
-                "country": 1,
-                "province": "British Columbia",
-                "city": "Vancouver",
-                "postal_code": "V1V 1V12",
-                "phone": "111-111-1111",
-                "fax": "222-222-2222",
-                "email": "testcase@email.com",
-                "status": "a",
-            },
-            follow=True,
-        )
-
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
-        
-    def test_payee_payer_edit_confirm_edit(self):
+    def test_edit_confirm_edit(self):
         """Confirms deletion form works properly"""
+        # Get current number of entries
+        payee_payer_total = PayeePayer.objects.count()
+
         self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("payee_payer_edit", kwargs={"payee_payer_id": 1}),
-            {
-                "name": "Test Case Company - 2",
-                "address": "444 Test Boulevard",
-                "country": 1,
-                "province": "British Columbia",
-                "city": "Vancouver",
-                "postal_code": "V1V 1V12",
-                "phone": "111-111-1111",
-                "fax": "222-222-2222",
-                "email": "testcase@email.com",
-                "status": "a",
-            },
+            reverse("payee_payers:edit", kwargs=self.valid_args),
+            self.new_data
         )
 
         # Confirm still only 1 entry
-        self.assertEqual(1, PayeePayer.objects.count())
+        self.assertEqual(PayeePayer.objects.count(), payee_payer_total)
 
         # Confirm name has been updated properly
         self.assertEqual(
-            PayeePayer.objects.get(id=1).name,
-            "Test Case Company - 2"
+            PayeePayer.objects.last().name,
+            self.new_data["name"]
         )
 
 class PayeePayerDeleteTest(TestCase):
     """Tests of the delete payee/payer form page"""
-    # pylint: disable=no-member,protected-access
 
-    fixtures = [
-        "payee_payer/tests/fixtures/authentication.json",
-        "payee_payer/tests/fixtures/country.json",
-        "payee_payer/tests/fixtures/demographics.json",
-    ]
+    def setUp(self):
+        create_user()
+        payee_payer = create_demographics()
 
-    def test_payee_payer_delete_redirect_if_not_logged_in(self):
+        self.valid_args = {"payee_payer_id": payee_payer.id}
+        self.valid_url = "/payee-payer/delete/{}".format(payee_payer.id)
+
+    def test_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:delete", kwargs={"payee_payer_id": 1})
         )
 
         self.assertEqual(response.status_code, 302)
 
-    def test_payee_payer_delete_url_exists_at_desired_location(self):
-        """Checks that the delete payee/payer page uses the correct URL"""
+    def test_delete_no_redirect_if_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/payee-payer/delete/1")
-        
+        response = self.client.get(
+            reverse("payee_payers:delete", kwargs=self.valid_args)
+        )
+
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
 
-    def test_payee_payer_delete_html404_on_invalid_url(self):
-        """Checks that the delete payee/payer page URL fails on invalid ID"""
+    def test_delete_url_exists_at_desired_location(self):
+        """Checks that the delete page uses the correct URL"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/payee-payer/delete/999999999")
-        
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
-
-    def test_payee_payer_delete_accessible_by_name(self):
-        """Checks that delete payee/payer page URL name works properly"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
-        )
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
+        response = self.client.get(self.valid_url)
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 200)
-        
-    def test_payee_payer_delete_html404_on_invalid_name(self):
-        """Checks that delete payee/payer page URL name failed on invalid ID"""
+
+    def test_delete_html404_on_invalid_name(self):
+        """Checks that delete page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 999999999})
+            reverse("payee_payers:delete", kwargs={"payee_payer_id": 999999999})
         )
-        
+
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
 
-    def test_payee_payer_delete_template(self):
+    def test_delete_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:delete", kwargs=self.valid_args)
         )
-        
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
+
         # Check for proper template
         self.assertTemplateUsed(response, "payee_payer/delete.html")
-        
-    def test_payee_payer_delete_redirect_to_dashboard(self):
+
+    def test_delete_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
         # Login
         self.client.login(username="user", password="abcd123456")
 
         # Delete entry
         response = self.client.post(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1}),
+            reverse("payee_payers:delete", kwargs=self.valid_args),
             follow=True,
         )
 
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-        
         # Check that redirection was successful
-        self.assertRedirects(response, reverse("payee_payer_dashboard"))
+        self.assertRedirects(response, reverse("payee_payers:dashboard"))
 
-    def test_payee_payer_edit_post_failed_on_invalid_id(self):
-        """Checks that a POST fails when an invalid ID is provided"""
-        # Login
-        self.client.login(username="user", password="abcd123456")
-
-        # Delete entry
-        response = self.client.post(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 999999999}),
-            follow=True,
-        )
-
-        # Check that page is accessible
-        self.assertEqual(response.status_code, 404)
-
-    def test_payee_payer_delete_confirm_deletion(self):
+    def test_delete_confirm_deletion(self):
         """Confirms deletion form works properly"""
-        # Login
-        self.client.login(username="user", password="abcd123456")
+        # Get current totals
+        payee_payer_total = PayeePayer.objects.count()
 
         # Delete entry
+        self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("payee_payer_delete", kwargs={"payee_payer_id": 1})
+            reverse("payee_payers:delete", kwargs=self.valid_args)
         )
 
-        self.assertEqual(0, PayeePayer.objects.filter(id=1).count())
+        # Checks that payee/payer was deleted
+        self.assertEqual(PayeePayer.objects.count(), payee_payer_total - 1)

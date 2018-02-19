@@ -243,7 +243,7 @@ class InvestmentDeleteTest(TestCase):
         self.valid_args = {"investment_id": investment.id}
         self.valid_url = "/investments/delete/{}".format(investment.id)
 
-    def test_investment_delete_redirect_if_not_logged_in(self):
+    def test_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
             reverse("investments:delete", kwargs=self.valid_args)
