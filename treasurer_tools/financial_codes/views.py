@@ -37,17 +37,23 @@ def dashboard(request):
         for year in budget_years:
             data[system_index]["budget_years"].append({
                 "budget_year": year,
-                "financial_code_groups": [],
+                "revenue_groups": [],
+                "expense_groups": [],
             })
 
             financial_code_groups = year.financialcodegroup_set.all()
 
             for group in financial_code_groups:
-                data[system_index]["budget_years"][year_index]["financial_code_groups"].append({
-                    "financial_code_group": group,
-                    "financial_codes": group.financialcode_set.all(),
-                })
-
+                if group.type=="r":
+                    data[system_index]["budget_years"][year_index]["revenue_groups"].append({
+                        "financial_code_group": group,
+                        "financial_codes": group.financialcode_set.all(),
+                    })
+                elif group.type=="e":
+                    data[system_index]["budget_years"][year_index]["expense_groups"].append({
+                        "financial_code_group": group,
+                        "financial_codes": group.financialcode_set.all(),
+                    })
             year_index = year_index + 1
         system_index = system_index + 1
 

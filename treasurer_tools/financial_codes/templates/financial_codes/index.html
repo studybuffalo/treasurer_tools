@@ -1,5 +1,44 @@
 {% extends 'main/base.html' %}
 
+{% block styles %}
+    <style>
+        .financial-code-system {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+            .financial-code-system > li {
+                background-color: rgb(40, 120, 200);
+                color: rgb(255, 255, 255);
+                font-weight: 700;
+                margin: 0;
+                padding: 0;
+            }
+
+        .budget-year {
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            list-style: none;
+            margin: 0;
+            padding: 1rem 0;
+        }
+
+        .group-type {
+            list-style: none;
+            margin: 0 0 0 2rem;
+            padding: 0;
+        }
+
+        .financial-code-group {
+            font-weight: 500;
+            list-style: none;
+            margin: 0;
+            padding: 0 0 0 2rem;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <h1>Financial Codes</h1>
 
@@ -20,35 +59,63 @@
         </li>
     </ul>
     
-    <ul>
+    <ul class="financial-code-system">
         {% for system in data %}
         <li>
             {{ system.system }} - 
             <a href="{% url 'financial_codes:system_edit' system.system.id %}">Edit</a> - 
             <a href="{% url 'financial_codes:system_delete' system.system.id %}">Delete</a>
-            <ul>
+            <ul class="budget-year">
                 {% for budget_year in system.budget_years %}
                 <li>
                     {{ budget_year.budget_year }} - 
                     <a href="{% url 'financial_codes:year_edit' budget_year.budget_year.id %}">Edit</a> - 
                     <a href="{% url 'financial_codes:year_delete' budget_year.budget_year.id %}">Delete</a>
-                    <ul>
-                        {% for financial_code_group in budget_year.financial_code_groups %}
+                    <ul class="group-type">
+                        <!-- List the Revenue Groups-->
                         <li>
-                            {{ financial_code_group.financial_code_group }} - 
-                            <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}">Edit</a> - 
-                            <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}">Delete</a>
-                            <ul>
-                                {% for financial_code in financial_code_group.financial_codes %}
-                                <li>
-                                    {{ financial_code }} -
-                                    <a href="{% url 'financial_codes:code_edit' financial_code.id %}">Edit</a> -
-                                    <a href="{% url 'financial_codes:code_delete' financial_code.id %}">Delete</a>
-                                </li>
-                                {% endfor %}
+                            Revenue Accounts
+                            <ul class="financial-code-group">
+                            {% for financial_code_group in budget_year.revenue_groups %}
+                            <li>
+                                {{ financial_code_group.financial_code_group.title }} -
+                                <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}">Edit</a> -
+                                <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}">Delete</a>
+                                <ul class="financial-code">
+                                    {% for financial_code in financial_code_group.financial_codes %}
+                                    <li>
+                                        {{ financial_code }} -
+                                        <a href="{% url 'financial_codes:code_edit' financial_code.id %}">Edit</a> -
+                                        <a href="{% url 'financial_codes:code_delete' financial_code.id %}">Delete</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
                             </ul>
                         </li>
-                        {% endfor %}
+                        <!-- List the Expense Groups-->
+                        <li>
+                            Expense Accounts
+                            <ul class="financial-code-group">
+                            {% for financial_code_group in budget_year.expense_groups %}
+                            <li>
+                                {{ financial_code_group.financial_code_group.title }} -
+                                <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}">Edit</a> -
+                                <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}">Delete</a>
+                                <ul class="financial-code">
+                                    {% for financial_code in financial_code_group.financial_codes %}
+                                    <li>
+                                        {{ financial_code }} -
+                                        <a href="{% url 'financial_codes:code_edit' financial_code.id %}">Edit</a> -
+                                        <a href="{% url 'financial_codes:code_delete' financial_code.id %}">Delete</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endfor %}
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 {% endfor %}
