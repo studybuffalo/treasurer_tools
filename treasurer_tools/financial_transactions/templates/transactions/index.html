@@ -1,5 +1,51 @@
 {% extends 'main/base.html' %}
 
+{% block styles %}
+    <style>
+        #transactions {
+            display: block;
+        }
+
+        .transaction {
+            align-content: flex-start;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0.25rem;
+        }
+
+        .transaction > div {
+            display: flex;
+            flex-direction: column;
+            align-content: flex-start;
+        }
+
+        .items {
+            display: block;
+            padding-left: 1rem;
+        }
+            .items:nth-child(even) .item {
+                background-color: rgb(40, 120, 200);
+            }
+            
+        .item {
+            align-content: flex-start;
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+            .item em {
+                font-size: 1rem;
+            }
+
+        .financial-codes {
+            display: flex;
+            flex-direction: column;
+            font-size: 1.5rem;
+            align-content: flex-start;
+        }
+    </style>
+{% endblock %}
 {% block content %}
     <h1>Branch Transactions</h1>
 
@@ -20,57 +66,64 @@
         <a href="">Submit to transactions to CSHP</a>
     </div>
 
-    <div>
-        <h2>Transaction List</h2>
-        <ul>
-            {% for transaction in transactions %}
-                {% if transaction.transaction_type == "e" %}
-                    <li class="expense">
-                        {{ transaction }} - 
-                        <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}">Edit</a> -
-                        <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}">Delete</a>
-                        <ul>
-                            {% for item in transaction.item_set.all %}
-                                <li>
-                                    {{ item }}
-                                    <ul>
-                                        {% for financial_code in item.financialcodematch_set.all %}
-                                            <li>{{ financial_code.financial_code }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                            {% endfor %}
-                            
-                                <li>
-                                    Attachments
-                                    <ul>
-                                        {% for attachment in transaction.attachmentmatch_set.all %}
-                                            <li><a href="{{ attachment.attachment.location.url }}">{{ attachment.attachment.location }}</a></li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                        </ul>
-                    </li>
-                {% elif transaction.transaction_type == "r" %}
-                    <li class="revenue">
-                        {{ transaction }} - 
-                        <a href="{% url 'financial_transactions:edit' 'revenue' transaction.id %}">Edit</a> -
-                        <a href="{% url 'financial_transactions:delete' 'revenue' transaction.id %}">Delete</a>
-                        <ul>
-                            {% for item in transaction.item_set.all %}
-                            <li>
-                                {{ item }}
-                                <ul>
-                                    {% for financial_code in item.financialcodematch_set.all %}
-                                    <li>{{ financial_code.financial_code }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+    <h2>Transaction List</h2>
+
+    <div id="transactions">
+        {% for transaction in transactions %}
+        <div class="transaction"
+             data-transaction-type="{{ transaction.transaction_type }}"
+             data-date-submitted="{{ transaction.date_submitted }}"
+             data-memo="{{ transaction.memo }}"
+             data-payee-payer="{{ transaction.payee_payer}}">
+            <div>
+                <span>{{ transaction.date_submitted }}</span>
+                <span>{{ transaction.memo }}</span>
+                <span>{{ transaction.payee_payer }}</span>
+                <span>
+                    <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}">Edit</a>
+                    <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}">Delete</a>
+                </span>
+            </div>
+
+            <div class="items">
+                <div class="item"
+                     data-description="{{ item.description }}"
+                     data-amount="{{ item.amount }}"
+                     data-gst="{{ item.gst }}"
+                     data-total="{{ item.total }}">
+
+                    {% for item in transaction.item_set.all %}
+                <div>
+                    <span>{{ item.date_item }}</span>
+                    <span>{{ item.description }}</span>
+                    <span><em>Amount</em> ${{ item.amount }}</span>
+                    <span><em>GST</em> ${{ item.gst }}</span>
+                    <span><em>Total</em> {{ item.total }}</span>
+                </div>
+
+                <div class="financial-codes">
+                    <span>Account Codes</span>
+                    {% for financial_code in item.financialcodematch_set.all %}
+                    {% with financial_code.financial_code as code %}
+                    <span data-code="{{ code.code }}" data-code-description="{{ code.description }}">
+                        {{ code.financial_code_group.budget_year.financial_code_system.title }}:
+                        {{ code }}
+                    </span>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if attachment in transaction.attachmentmatch_set.all is not None %}
+                <div class="attachments">
+                    Attachments
+                    {% for attachment in transaction.attachmentmatch_set.all %}
+                        <div class="attachments"><a href="{{ attachment.attachment.location.url }}">{{ attachment.attachment.location }}</a></div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
 {% endblock %}
