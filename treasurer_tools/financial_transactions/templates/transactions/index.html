@@ -124,12 +124,6 @@
 
     {% include 'main/messages.html' %}
 
-    <ul>
-        <li>All</li>
-        <li>Expenses</li>
-        <li>Revenue</li>
-    </ul>
-
     <div>
         <a href="{% url 'financial_transactions:add' 'expense' %}">New expense</a>
         <a href="{% url 'financial_transactions:add' 'revenue' %}">New revenue</a>
@@ -139,6 +133,38 @@
         <a href="">Submit to transactions to CSHP</a>
     </div>
 
+    <div class="filters">
+        <div>
+            <label>Transaction type</label>
+            <select>
+                <option selected="selected">All</option>
+                <option>Expenses</option>
+                <option>Revenue</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Date</label>
+            <select>
+
+            </select>
+            
+            <div class="date">
+                <label>Start date:</label>
+                <input type="date">
+            </div>
+
+            <div class="date">
+                <label>End date:</label>
+                <input type="date">
+            </div>
+        </div>
+
+        <div>
+            <strong>Text filter</strong>
+            <input type="text">
+        </div>
+    </div>
     <h2>Transaction List</h2>
 
     <div id="transactions">
