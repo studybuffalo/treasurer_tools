@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% load static %}
+
 {% block styles %}
     <style>
         #transactions {
@@ -136,17 +138,21 @@
     <div class="filters">
         <div>
             <label>Transaction type</label>
-            <select>
-                <option selected="selected">All</option>
-                <option>Expenses</option>
-                <option>Revenue</option>
+            <select id="transaction-type">
+                <option value="a" selected="selected">All</option>
+                <option value="e">Expenses</option>
+                <option value="r">Revenue</option>
             </select>
         </div>
 
         <div>
             <label>Date</label>
-            <select>
-
+            <select id="transaction-dates">
+                <option value="30 days">Past 30 days</option>
+                <option value="90 days">Past 90 days</option>
+                <option value="1 year" selected="selected">Past year</option>
+                <option value="2 years">Past 2 years</option>
+                <option value="range">Date range</option>
             </select>
             
             <div class="date">
@@ -167,69 +173,9 @@
     </div>
     <h2>Transaction List</h2>
 
-    <div id="transactions">
-        {% for transaction in transactions %}
-            <div class="transaction"
-                 data-transaction-type="{{ transaction.transaction_type }}"
-                 data-date-submitted="{{ transaction.date_submitted }}"
-                 data-memo="{{ transaction.memo }}"
-                 data-payee-payer="{{ transaction.payee_payer}}">
+    <div id="transactions"></div>
+{% endblock %}
 
-                <div class="details">
-                    <span class="date-submitted">{{ transaction.date_submitted }}</span>
-                    <span class="memo">{{ transaction.memo }}</span>
-                    <span class="payee-payer">{{ transaction.payee_payer }}</span>
-                </div>
-
-                <div class="options">
-                    <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}">Edit</a>
-                    <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}">Delete</a>
-                </div>
-
-                <div class="items">
-                    {% for item in transaction.item_set.all %}
-                        <div class="item"
-                             data-description="{{ item.description }}"
-                             data-amount="{{ item.amount }}"
-                             data-gst="{{ item.gst }}"
-                             data-total="{{ item.total }}">
-
-                            <div class="details">
-                                <span class="date-item">{{ item.date_item }}</span>
-                                <span class="description">{{ item.description }}</span>
-                                <span class="amount"><em>Amount</em> ${{ item.amount }}</span>
-                                <span class="gst"><em>GST</em> ${{ item.gst }}</span>
-                                <span class="total"><em>Total</em> {{ item.total }}</span>
-                            </div>
-
-                            <div class="financial-codes">
-                                <strong>Account Codes</strong>
-                                {% for financial_code in item.financialcodematch_set.all %}
-                                    {% with financial_code.financial_code as code %}
-                                        <span class="financial-code" data-code="{{ code.code }}" data-code-description="{{ code.description }}">
-                                            {{ code.financial_code_group.budget_year.financial_code_system.title }}:
-                                            {{ code }}
-                                        </span>
-                                    {% endwith %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                
-                {% if attachment in transaction.attachmentmatch_set.all is not None %}
-                    <div class="attachments">
-                        Attachments
-                        {% for attachment in transaction.attachmentmatch_set.all %}
-                            <div class="attachments"><a href="{{ attachment.attachment.location.url }}">{{ attachment.attachment.location }}</a></div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                <div class="totals">
-                    <span><em>Total</em> {{ transaction.total }}</span>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+{% block js %}
+    <script type="text/javascript" src="{% static 'transactions/js/index.js' %}"></script>
 {% endblock %}

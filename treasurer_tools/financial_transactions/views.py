@@ -13,15 +13,39 @@ from .models import FinancialTransaction
 @login_required
 def dashboard(request):
     """Main dashboard to expenses and revenue"""
-    # pylint: disable=no-member
+    return render(request, "transactions/index.html")
+
+
+@login_required
+def request_transactions_list(request):
+    """Retrieves list of transactions"""
+    # Get all transactions
     transactions = FinancialTransaction.objects.all()
+    
+    # Filter by type
+    transaction_type = request.GET.get("transaction_type", "a")
+    
+    if transaction_type == "e":
+        transactions = transactions.filter(transaction_type="e")
+    elif transaction_type == "r":
+        transactions = transactions.filter(transaction_type="r")
+
+    # Filter by date
+    date_start = request.GET.get("date_start", None)
+    date_end = request.GET.get("date_end", None)
+    
+    if date_start:
+        transactions = transactions.filter(date_submitted__lte=date_start)
+    
+    if date_end:
+        transactions = transactions.filter(date_submitted__gte=date_end)
 
     return render(
         request,
-        "transactions/index.html",
+        "transactions/transactions.html",
         context={
-            "transactions": transactions,
-        },
+            "transactions": transactions
+        }
     )
 
 @login_required
