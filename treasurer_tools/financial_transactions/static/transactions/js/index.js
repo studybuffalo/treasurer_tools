@@ -148,7 +148,7 @@ function filterResults() {
             }
 
             // Check item total
-            var itemTotal = $item.attr("data-total  ").toUpperCase();
+            var itemTotal = $item.attr("data-total").toUpperCase();
 
             if (itemTotal.indexOf(filterText) !== -1) {
                 $transaction.removeClass("hide");

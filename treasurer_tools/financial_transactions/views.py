@@ -21,10 +21,10 @@ def request_transactions_list(request):
     """Retrieves list of transactions"""
     # Get all transactions
     transactions = FinancialTransaction.objects.all()
-    
+
     # Filter by type
     transaction_type = request.GET.get("transaction_type", "a")
-    
+
     if transaction_type == "e":
         transactions = transactions.filter(transaction_type="e")
     elif transaction_type == "r":
@@ -36,8 +36,8 @@ def request_transactions_list(request):
     print(date_start)
     if date_start:
         transactions = transactions.filter(date_submitted__gte=date_start)
-    
-    if date_end:
+
+    if date_end:    
         transactions = transactions.filter(date_submitted__lte=date_end)
 
     return render(
