@@ -85,6 +85,102 @@ function retrieveTransactions() {
     });
 }
 
+function filterResults() {
+    var filterText = $("#text-filter").val().toUpperCase();
+
+    // Hide all transactions
+    var $transactions = $(".transaction");
+
+    $transactions.addClass("hide");
+
+    $transactions.each(function (transactionIndex, transaction) {
+        var $transaction = $(transaction);
+
+        // Check transaction name
+        var transactionMemo = $transaction.attr("data-memo").toUpperCase();
+
+        if (transactionMemo.indexOf(filterText) !== -1) {
+            $transaction.removeClass("hide");
+            return true;
+        }
+
+        // Check payee/payers
+        var payeePayer = $transaction.attr("data-payee-payer").toUpperCase();
+
+        if (payeePayer.indexOf(filterText) !== -1) {
+            $transaction.removeClass("hide");
+            return true;
+        }
+
+        // Check transaction total
+        var transactionTotal = $transaction.attr("data-transaction-total").toUpperCase();
+
+        if (transactionTotal.indexOf(filterText) !== -1) {
+            $transaction.removeClass("hide");
+            return true;
+        }
+
+        $transaction.find(".item").each(function (itemIndex, item) {
+            $item = $(item);
+
+            // Check item names
+            var itemDescription = $item.attr("data-description").toUpperCase();
+
+            if (itemDescription.indexOf(filterText) !== -1) {
+                $transaction.removeClass("hide");
+                return false;
+            }
+
+            // Check item amounts
+            var itemAmount = $item.attr("data-amount").toUpperCase();
+
+            if (itemAmount.indexOf(filterText) !== -1) {
+                $transaction.removeClass("hide");
+                return false;
+            }
+
+            // Check item GST
+            var itemGST = $item.attr("data-gst").toUpperCase();
+
+            if (itemGST.indexOf(filterText) !== -1) {
+                $transaction.removeClass("hide");
+                return false;
+            }
+
+            // Check item total
+            var itemTotal = $item.attr("data-total  ").toUpperCase();
+
+            if (itemTotal.indexOf(filterText) !== -1) {
+                $transaction.removeClass("hide");
+                return false;
+            }
+
+            // Check item accounting codes
+            $item.find(".financial-code").each(function (codeIndex, code) {
+                var $code = $(code);
+
+                // Check the accounting code
+                var codeCode = $code.attr("data-code").toUpperCase();
+
+                if (codeCode.indexOf(filterText) !== -1) {
+                    $transaction.removeClass("hide");
+                    return false;
+                }
+
+                // Check the accounting code description
+
+                // Check the accounting code
+                var codeDescription = $code.attr("data-code-description").toUpperCase();
+
+                if (codeDescription.indexOf(filterText) !== -1) {
+                    $transaction.removeClass("hide");
+                    return false;
+                }
+            });
+        });
+    });
+}
+
 $(document).ready(function () {
 
     $("#transaction-type").on("change", function () {
@@ -102,6 +198,10 @@ $(document).ready(function () {
 
     $("#date-end").on("change", function () {
         retrieveTransactions();
+    });
+
+    $("#text-filter").on("keyup", function () {
+        filterResults();
     });
 
     toggleDateInputs();

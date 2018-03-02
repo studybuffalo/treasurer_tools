@@ -3,7 +3,8 @@
          data-transaction-type="{{ transaction.transaction_type }}"
          data-date-submitted="{{ transaction.date_submitted }}"
          data-memo="{{ transaction.memo }}"
-         data-payee-payer="{{ transaction.payee_payer}}">
+         data-payee-payer="{{ transaction.payee_payer }}"
+         data-transaction-total="{{ transaction.total }}">
 
         <div class="details">
             <span class="date-submitted">{{ transaction.date_submitted }}</span>
@@ -20,8 +21,8 @@
             {% for item in transaction.item_set.all %}
                 <div class="item"
                  data-description="{{ item.description }}"
-                 data-amount="{{ item.amount }}"
-                 data-gst="{{ item.gst }}"
+                 data-amount="${{ item.amount }}"
+                 data-gst="${{ item.gst }}"
                  data-total="{{ item.total }}">
 
                     <div class="details">
