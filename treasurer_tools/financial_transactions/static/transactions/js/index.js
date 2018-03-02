@@ -20,39 +20,58 @@ function convertDateToString(date) {
     return year + "-" + month + "-" + day;
 }
 
-function retrieve_transactions() {
+function setDefaultDates() {
+    var today = new Date()
+    var dateEnd = convertDateToString(today);
+    var dateStart = convertDateToString(
+        new Date(today.setDate(today.getDate() - 365))
+    );
+
+    $("#date-end").val(dateEnd);
+    $("#date-start").val(dateStart);
+}
+
+function toggleDateInputs() {
+    if ($("#transaction-dates").val() === "range") {
+        $(".date").removeClass("hide");
+    } else {
+        $(".date").addClass("hide");
+    }
+}
+
+function retrieveTransactions() {
     // Get the transaction type
     var transactionType = $("#transaction-type").val();
 
     // Get the start and stop dates
     var dateType = $("#transaction-dates").val();
     var today = new Date();
-    var dateStart;
-    var dateEnd;
+    var dateStart = "";
+    var dateEnd = "";
 
     if (dateType === "30 days") {
-        dateStart = convertDateToString(today);
-        dateEnd = convertDateToString(
+        dateEnd = convertDateToString(today);
+        dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 30))
         );
     } else if (dateType === "90 days") {
-        dateStart = convertDateToString(today);
-        dateEnd = convertDateToString(
+        dateEnd = convertDateToString(today);
+        dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 90))
         );
     } else if (dateType === "1 year") {
-        dateStart = convertDateToString(today);
-        dateEnd = convertDateToString(
+        dateEnd = convertDateToString(today);
+        dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 365))
         );
     } else if (dateType === "2 years") {
-        dateStart = convertDateToString(today);
-        dateEnd = convertDateToString(
+        dateEnd = convertDateToString(today);
+        dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 730))
         );
     } else {
-        dateStart = $("#date-start").val();
-        dateEnd = $("#date-end").val();
+        dateStart = $("#date-start").val() ? $("#date-start").val() : "";
+        dateEnd = $("#date-end").val() ? $("#date-end").val() : "";
     }
     
     var url = "retrieve-transactions/";
@@ -69,12 +88,23 @@ function retrieve_transactions() {
 $(document).ready(function () {
 
     $("#transaction-type").on("change", function () {
-        retrieve_transactions();
+        retrieveTransactions();
     });
 
     $("#transaction-dates").on("change", function () {
-        retrieve_transactions();
+        toggleDateInputs();
+        retrieveTransactions();
     });
 
-    retrieve_transactions();
+    $("#date-start").on("change", function () {
+        retrieveTransactions();
+    });
+
+    $("#date-end").on("change", function () {
+        retrieveTransactions();
+    });
+
+    toggleDateInputs();
+    setDefaultDates();
+    retrieveTransactions();
 });

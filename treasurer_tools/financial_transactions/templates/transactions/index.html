@@ -118,6 +118,10 @@
         .transaction > .totals em {
             font-size: 1.5rem;
         }
+
+        .hide {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -157,12 +161,12 @@
             
             <div class="date">
                 <label>Start date:</label>
-                <input type="date">
+                <input type="date" id="date-start">
             </div>
 
             <div class="date">
                 <label>End date:</label>
-                <input type="date">
+                <input type="date" id="date-end">
             </div>
         </div>
 
