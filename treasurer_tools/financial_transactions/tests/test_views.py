@@ -47,6 +47,190 @@ class TransactionsDashboard(TestCase):
         # Check for proper template
         self.assertTemplateUsed(response, "transactions/index.html")
 
+class RetrieveTransactionsTest(TestCase):
+    """Checks that transactions are retrieved properly"""
+    
+    def setUp(self):
+        create_user()
+        create_financial_transactions()
+
+        self.url = "/transactions/retrieve-transactions/"
+        self.valid_args = {
+            "transaction_type": "a",
+            "date_start": "2016-04-01",
+            "date_end": "2018-03-31"
+        }
+        
+    def test_redirect_if_not_logged_in(self):
+        """Checks redirect to login page if user is not logged in"""
+        response = self.client.get(self.url, self.valid_args)
+
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next={}%3Ftransaction_type%3D{}%26date_start%3D{}%26date_end%3D{}".format(
+                self.url, "a", "2016-04-01", "2018-03-31"
+            )
+        )
+
+    def test_no_redirect_if_logged_in(self):
+        """Checks no redirect if user is logged in"""
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, self.valid_args)
+
+        # Check that user logged in
+        self.assertEqual(str(response.context['user']), 'user')
+
+        # Check that page is accessible and there was no dedirection
+        self.assertEqual(response.status_code, 200)
+
+    def test_retrieval_on_valid_data(self):
+        """Checks that transactions are retrieved when provided with valid data"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.count()
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, self.valid_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+
+    def test_expense_type_filter(self):
+        """Checks that you can filter by expense transaction_type"""
+        # Count total number of transactions
+        expense_total = FinancialTransaction.objects.filter(transaction_type="e").count()
+
+        # Create modified args
+        new_args = self.valid_args
+        new_args["transaction_type"] = "e"
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, new_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            expense_total
+        )
+
+    def test_revenue_type_filter(self):
+        """Checks that you can filter by revenue transaction_type"""
+        # Count total number of transactions
+        expense_total = FinancialTransaction.objects.filter(transaction_type="r").count()
+
+        # Create modified args
+        new_args = self.valid_args
+        new_args["transaction_type"] = "r"
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, new_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            expense_total
+        )
+        
+    def test_date_start_filter(self):
+        """Checks that you can filter by date_start"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.filter(date_submitted__gte="2017-04-01").count()
+
+        # Create modified args
+        new_args = self.valid_args
+        new_args["date_start"] = "2017-04-01"
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, new_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+
+    def test_date_end_filter(self):
+        """Checks that you can filter by date_end"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.filter(date_submitted__lte="2017-03-31").count()
+
+        # Create modified args
+        new_args = self.valid_args
+        new_args["date_end"] = "2017-03-31"
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, new_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+
+    def test_no_filter_on_invalid_transaction_type(self):
+        """Checks that no type filtering occurs on invalid type"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.count()
+
+        # Generate incorrect parameters
+        invalid_args = self.valid_args
+        invalid_args["transaction_type"] = ""
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, invalid_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+        
+    def test_no_filter_on_invalid_date_start(self):
+        """Checks that no type filtering occurs on invalid date_start"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.count()
+
+        # Generate incorrect parameters
+        invalid_args = self.valid_args
+        invalid_args["date_start"] = ""
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, invalid_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+        
+    def test_no_filter_on_invalid_date_end(self):
+        """Checks that no type filtering occurs on invalid date_end"""
+        # Count total number of transactions
+        transaction_total = FinancialTransaction.objects.count()
+
+        # Generate incorrect parameters
+        invalid_args = self.valid_args
+        invalid_args["date_end"] = ""
+
+        # Make request
+        self.client.login(username="user", password="abcd123456")
+        response = self.client.get(self.url, invalid_args)
+
+        # Check number of transactions retrieved
+        self.assertEqual(
+            len(response.context["transactions"]),
+            transaction_total
+        )
+
 class RetrieveFinancialCodeSystemTest(TestCase):
     """Checks that financial code systems are properly retrieved"""
 

@@ -33,7 +33,7 @@ def request_transactions_list(request):
     # Filter by date
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
-    print(date_start)
+    
     if date_start:
         transactions = transactions.filter(date_submitted__gte=date_start)
 
