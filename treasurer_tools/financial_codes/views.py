@@ -44,12 +44,12 @@ def dashboard(request):
             financial_code_groups = year.financialcodegroup_set.all()
 
             for group in financial_code_groups:
-                if group.type=="r":
+                if group.type == "r":
                     data[system_index]["budget_years"][year_index]["revenue_groups"].append({
                         "financial_code_group": group,
                         "financial_codes": group.financialcode_set.all(),
                     })
-                elif group.type=="e":
+                elif group.type == "e":
                     data[system_index]["budget_years"][year_index]["expense_groups"].append({
                         "financial_code_group": group,
                         "financial_codes": group.financialcode_set.all(),

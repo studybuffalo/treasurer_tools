@@ -1,9 +1,9 @@
-function retrieve_payee_payer_list() {
-    $("#payee-payer-list").load("retrieve-payee-payer-list/", function () {
+function retrieve_transaction_list() {
+    $("#transactions").load("retrieve-transactions/", function () {
         // Callback function goes here (e.g. error handling)
     });
 }
 
 $(document).ready(function () {
-    retrieve_payee_payer_list();
+    retrieve_transaction_list();
 });
