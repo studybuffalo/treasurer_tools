@@ -17,6 +17,7 @@ urlpatterns = [
     url(r"^settings/codes/", include("financial_codes.urls", namespace="financial_codes")),
     url(r"^investments/", include("investments.urls", namespace="investments")),
     url(r"^payee-payer/", include("payee_payers.urls", namespace="payee_payers")),
+    url(r"^reports/", include("reports.urls", namespace="reports")),
     url(r"^transactions/", include("financial_transactions.urls", namespace="financial_transactions")),
     url(r"^users/", include("users.urls", namespace="users")),
     url(r"^$", TemplateView.as_view(template_name="main/index.html"), name="home"),

@@ -3,55 +3,55 @@
 {% load static %}
 
 {% block styles %}
-    <script>
+<script>
 
-    </script>
+</script>
 {% endblock %}
 
 {% block content %}
-    <h1>Account Summary</h1>
+<h1>Account Summary</h1>
+
+<div>
+    <div>
+        <label>Financial Code System:</label>
+        <select>
+            {% for system in financial_code_systems %}
+            <option value="{{ system.id }}">{{ system.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label>Group By:</label>
+        <select>
+            <option>Year</option>
+            <option>Fiscal Year</option>
+            <option>Month</option>
+            <option>Week</option>
+        </select>
+    </div>
 
     <div>
         <div>
-            <label>Financial Code System:</label>
-            <select>
-                {% for system in financial_code_systems %}
-                    <option value="{{ system.id }}">{{ system.title }}</option>
-                {% endfor %}
-            </select>
+            <label>Start Date:</label>
+            <input type="date">
         </div>
-
         <div>
-            <label>Group By:</label>
-            <select>
-                <option>Year</option>
-                <option>Fiscal Year</option>
-                <option>Month</option>
-                <option>Week</option>
-            </select>
-        </div>
-
-        <div>
-            <div>
-                <label>Start Date:</label>
-                <input type="date">
-            </div>
-            <div>
-                <label>End Date:</label>
-                <input type="date">
-            </div>
-        </div>
-
-        <div>
-            <input type="checkbox">
-            <label>Show empty accounts</label>
+            <label>End Date:</label>
+            <input type="date">
         </div>
     </div>
 
-    <div id="report"></div>
+    <div>
+        <input type="checkbox">
+        <label>Show empty accounts</label>
+    </div>
+</div>
+
+<div id="report"></div>
 
 {% endblock %}
-    
+
 {% block js %}
     <script type="text/javascript" src="{% static 'reports/js/account_summary.js' %}"></script>
 {% endblock %}

@@ -1,5 +1,10 @@
-﻿{% extends 'main/base.html' %}
+{% extends 'main/base.html' %}
 
 {% block content %}
     <h1>Reports</h1>
+
+    <ul>
+        <li><a href="{% url 'reports:balance_sheet' %}">Balance Sheet</a></li>
+        <li><a href="{% url 'reports:account_summary' %}">Account Summary</a></li>
+    </ul>
 {% endblock %}

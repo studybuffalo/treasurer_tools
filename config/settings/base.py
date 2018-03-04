@@ -45,11 +45,12 @@ LOCAL_APPS = [
     "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
     "treasurer_tools.bank_institutions.apps.BankInstitutionsConfig",
     "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
-    "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
     "treasurer_tools.documents.apps.DocumentsConfig",
+    "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
+    "treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig",
     "treasurer_tools.investments.apps.InvestmentsConfig",
     "treasurer_tools.payee_payers.apps.PayeePayersConfig",
-    "treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig",
+    "treasurer_tools.reports.apps.ReportsConfig",
     "treasurer_tools.users.apps.UsersConfig",
 ]
 
