@@ -2,7 +2,8 @@
 from django.conf.urls import url
 
 from .views import (
-    dashboard, transaction_add, transaction_edit, transaction_delete, retrieve_financial_code_systems
+    dashboard, request_transactions_list, transaction_add,
+    transaction_edit, transaction_delete, retrieve_financial_code_systems
 )
 
 urlpatterns = [
@@ -13,5 +14,6 @@ urlpatterns = [
     url(r"^expense/edit/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
     url(r"^revenue/add/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
     url(r"^revenue/edit/retrieve-financial-code-systems/$", retrieve_financial_code_systems),
+    url(r"^retrieve-transactions/", request_transactions_list),
     url(r"^$", dashboard, name="dashboard"),
 ]

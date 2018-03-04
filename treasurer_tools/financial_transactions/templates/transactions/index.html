@@ -1,10 +1,16 @@
 {% extends 'main/base.html' %}
 
+{% load static %}
+
 {% block styles %}
     <style>
         #transactions {
             display: block;
         }
+
+            #transactions .transaction:nth-child(even) {
+                background-color: rgba(40, 120, 200, 0.1);
+            }
 
         .transaction {
             align-content: flex-start;
@@ -13,49 +19,116 @@
             padding: 1rem 0.25rem;
         }
 
-        .transaction > div {
-            display: flex;
-            flex-direction: column;
-            align-content: flex-start;
-        }
+            .transaction > .details {
+                display: flex;
+                flex-direction: column;
+                align-content: flex-start;
+            }
 
+            .transaction > .details > .date-submitted {
+                font-style: italic;
+                font-size: 1.6rem;
+                order: 2;
+            }
+
+            .transaction > .details >.memo {
+                font-weight: 700;
+                order: 1;
+            }
+
+            .transaction > .details > .payee-payer {
+                font-style: italic;
+                font-size: 1.6rem;
+                order: 3;
+            }
+
+            .transaction > .options {
+                order: 4;
+            }
         .items {
             display: block;
             padding-left: 1rem;
         }
-            .items:nth-child(even) .item {
-                background-color: rgb(40, 120, 200);
+            .items .item:nth-child(even) {
+                background-color: rgba(40, 120, 200, 0.1);
             }
             
         .item {
             align-content: flex-start;
             display: flex;
             flex-direction: column;
-            
+            font-size: 1.8rem;
+            padding: 0.5rem;
         }
 
             .item em {
                 font-size: 1rem;
             }
 
-        .financial-codes {
-            display: flex;
-            flex-direction: column;
+            .item > .details {
+                align-content: flex-start;
+                display: flex;
+                flex-direction: column;
+            }
+
+                .item > .details > span {
+                    display: block;
+                }
+
+                .item > .details > .date-item {
+                    font-size: 1.4rem;
+                    font-style: italic;
+                    order: 2;
+                }
+
+                .item > .details > .description {
+                    font-weight: 700;
+                    order: 1;
+                }
+
+                .item > .details > .amount {
+                    order: 3;
+                    padding-left: 0.5rem;
+                }
+
+                .item > .details > .gst {
+                    order: 4;
+                    padding-left: 0.5rem;
+                }
+
+                .item > .details > .total {
+                    order: 5;
+                    padding-left: 0.5rem;
+                }
+
+            .item > .financial-codes {
+                align-content: flex-start;
+                display: flex;
+                flex-direction: column;
+                font-size: 1.6rem;
+                padding: 1rem 0 0 0.5rem;
+            }
+
+            .item > .financial-codes > .financial-code {
+                font-size: 1.4rem;
+                font-style: italic;
+                padding-left: 0.5rem;
+            }
+
+        .transaction > .totals em {
             font-size: 1.5rem;
-            align-content: flex-start;
+        }
+
+        .hide {
+            display: none;
         }
     </style>
 {% endblock %}
+
 {% block content %}
     <h1>Branch Transactions</h1>
 
     {% include 'main/messages.html' %}
-
-    <ul>
-        <li>All</li>
-        <li>Expenses</li>
-        <li>Revenue</li>
-    </ul>
 
     <div>
         <a href="{% url 'financial_transactions:add' 'expense' %}">New expense</a>
@@ -66,64 +139,47 @@
         <a href="">Submit to transactions to CSHP</a>
     </div>
 
+    <div class="filters">
+        <div>
+            <label>Transaction type</label>
+            <select id="transaction-type">
+                <option value="a" selected="selected">All</option>
+                <option value="e">Expenses</option>
+                <option value="r">Revenue</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Date</label>
+            <select id="transaction-dates">
+                <option value="30 days">Past 30 days</option>
+                <option value="90 days">Past 90 days</option>
+                <option value="1 year" selected="selected">Past year</option>
+                <option value="2 years">Past 2 years</option>
+                <option value="range">Date range</option>
+            </select>
+            
+            <div class="date">
+                <label>Start date:</label>
+                <input type="date" id="date-start">
+            </div>
+
+            <div class="date">
+                <label>End date:</label>
+                <input type="date" id="date-end">
+            </div>
+        </div>
+
+        <div>
+            <label>Text filter</label>
+            <input type="text" id="text-filter">
+        </div>
+    </div>
     <h2>Transaction List</h2>
 
-    <div id="transactions">
-        {% for transaction in transactions %}
-        <div class="transaction"
-             data-transaction-type="{{ transaction.transaction_type }}"
-             data-date-submitted="{{ transaction.date_submitted }}"
-             data-memo="{{ transaction.memo }}"
-             data-payee-payer="{{ transaction.payee_payer}}">
-            <div>
-                <span>{{ transaction.date_submitted }}</span>
-                <span>{{ transaction.memo }}</span>
-                <span>{{ transaction.payee_payer }}</span>
-                <span>
-                    <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}">Edit</a>
-                    <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}">Delete</a>
-                </span>
-            </div>
+    <div id="transactions"></div>
+{% endblock %}
 
-            <div class="items">
-                <div class="item"
-                     data-description="{{ item.description }}"
-                     data-amount="{{ item.amount }}"
-                     data-gst="{{ item.gst }}"
-                     data-total="{{ item.total }}">
-
-                    {% for item in transaction.item_set.all %}
-                <div>
-                    <span>{{ item.date_item }}</span>
-                    <span>{{ item.description }}</span>
-                    <span><em>Amount</em> ${{ item.amount }}</span>
-                    <span><em>GST</em> ${{ item.gst }}</span>
-                    <span><em>Total</em> {{ item.total }}</span>
-                </div>
-
-                <div class="financial-codes">
-                    <span>Account Codes</span>
-                    {% for financial_code in item.financialcodematch_set.all %}
-                    {% with financial_code.financial_code as code %}
-                    <span data-code="{{ code.code }}" data-code-description="{{ code.description }}">
-                        {{ code.financial_code_group.budget_year.financial_code_system.title }}:
-                        {{ code }}
-                    </span>
-                    {% endwith %}
-                    {% endfor %}
-                </div>
-                {% endfor %}
-            </div>
-
-            {% if attachment in transaction.attachmentmatch_set.all is not None %}
-                <div class="attachments">
-                    Attachments
-                    {% for attachment in transaction.attachmentmatch_set.all %}
-                        <div class="attachments"><a href="{{ attachment.attachment.location.url }}">{{ attachment.attachment.location }}</a></div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
+{% block js %}
+    <script type="text/javascript" src="{% static 'transactions/js/index.js' %}"></script>
 {% endblock %}
