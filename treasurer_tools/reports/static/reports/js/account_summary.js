@@ -30,21 +30,28 @@ function setDefaultDates() {
     $("#date-end").val(dateEnd);
     $("#date-start").val(dateStart);
 }
-/*
+
 function toggleDateInputs() {
-    if ($("#transaction-dates").val() === "range") {
-        $(".date").removeClass("hide");
-    } else {
-        $(".date").addClass("hide");
+    var grouping = $("#grouping").val()
+
+    if (grouping === "year") {
+
+    } else if (grouping === "budget") {
+
+    } else if (grouping === "month") {
+
+    } else if (grouping === "week") {
+
     }
 }
-*/
+
 function retrieveReport() {
     // Get the financial code system
     var financialCodeSystem = $("#financial-code-system").val();
 
     // Get the grouping type
-    
+    grouping = $("#grouping").val();
+
     // Get the start and stop dates
     var dateStart = $("#date-start").val() ? $("#date-start").val() : "";
     var dateEnd = $("#date-end").val() ? $("#date-end").val() : "";
@@ -52,6 +59,7 @@ function retrieveReport() {
     var url = "retrieve-report/";
     var parameters = "?"
         + "financial_code_system=" + financialCodeSystem
+        + "&grouping=" + grouping
         + "&date_start=" + dateStart
         + "&date_end=" + dateEnd;
 
@@ -59,128 +67,48 @@ function retrieveReport() {
         // Callback function goes here (e.g. error handling)
     });
 }
-/*
-function filterResults() {
-    var filterText = $("#text-filter").val().toUpperCase();
 
-    // Hide all transactions
-    var $transactions = $(".transaction");
+function updateDateInputs() {
+    /* Updates the date inputs with the proper values for the
+     * financial code system
+     */
+    financial_code_system = $("#financial-code-system").val();
 
-    $transactions.addClass("hide");
-
-    $transactions.each(function (transactionIndex, transaction) {
-        var $transaction = $(transaction);
-
-        // Check transaction name
-        var transactionMemo = $transaction.attr("data-memo").toUpperCase();
-
-        if (transactionMemo.indexOf(filterText) !== -1) {
-            $transaction.removeClass("hide");
-            return true;
+    $.ajax(
+        "retrieve-dates/",
+        {
+            data: {financial_code_system: financial_code_system},
+            dataType: "json",
+            success: function (dateData) {
+                console.log(dateData);
+            },
+            error: function (jqXHR, textStatus, error) {
+                console.error(textStatus + ": " + error);
+            }
         }
-
-        // Check payee/payers
-        var payeePayer = $transaction.attr("data-payee-payer").toUpperCase();
-
-        if (payeePayer.indexOf(filterText) !== -1) {
-            $transaction.removeClass("hide");
-            return true;
-        }
-
-        // Check transaction total
-        var transactionTotal = $transaction.attr("data-transaction-total").toUpperCase();
-
-        if (transactionTotal.indexOf(filterText) !== -1) {
-            $transaction.removeClass("hide");
-            return true;
-        }
-
-        $transaction.find(".item").each(function (itemIndex, item) {
-            $item = $(item);
-
-            // Check item names
-            var itemDescription = $item.attr("data-description").toUpperCase();
-
-            if (itemDescription.indexOf(filterText) !== -1) {
-                $transaction.removeClass("hide");
-                return false;
-            }
-
-            // Check item amounts
-            var itemAmount = $item.attr("data-amount").toUpperCase();
-
-            if (itemAmount.indexOf(filterText) !== -1) {
-                $transaction.removeClass("hide");
-                return false;
-            }
-
-            // Check item GST
-            var itemGST = $item.attr("data-gst").toUpperCase();
-
-            if (itemGST.indexOf(filterText) !== -1) {
-                $transaction.removeClass("hide");
-                return false;
-            }
-
-            // Check item total
-            var itemTotal = $item.attr("data-total").toUpperCase();
-
-            if (itemTotal.indexOf(filterText) !== -1) {
-                $transaction.removeClass("hide");
-                return false;
-            }
-
-            // Check item accounting codes
-            $item.find(".financial-code").each(function (codeIndex, code) {
-                var $code = $(code);
-
-                // Check the accounting code
-                var codeCode = $code.attr("data-code").toUpperCase();
-
-                if (codeCode.indexOf(filterText) !== -1) {
-                    $transaction.removeClass("hide");
-                    return false;
-                }
-
-                // Check the accounting code description
-
-                // Check the accounting code
-                var codeDescription = $code.attr("data-code-description").toUpperCase();
-
-                if (codeDescription.indexOf(filterText) !== -1) {
-                    $transaction.removeClass("hide");
-                    return false;
-                }
-            });
-        });
-    });
+    );
 }
-*/
 
 $(document).ready(function () {
-    /*
-    $("#transaction-type").on("change", function () {
-        retrieveTransactions();
+    $("#financial-code-system").on("change", function () {
+        updateDateInputs();
+        retrieveReport();
     });
 
-    $("#transaction-dates").on("change", function () {
+    $("#grouping").on("change", function () {
+        retrieveReport();
         toggleDateInputs();
-        retrieveTransactions();
     });
 
     $("#date-start").on("change", function () {
-        retrieveTransactions();
+        retrieveReport();
     });
 
     $("#date-end").on("change", function () {
-        retrieveTransactions();
+        retrieveReport();
     });
-
-    $("#text-filter").on("keyup", function () {
-        filterResults();
-    });
-    */
-    // toggleDateInputs();
+    
+    toggleDateInputs();
     setDefaultDates();
-    // retrieveTransactions();
+    retrieveReport();
 });

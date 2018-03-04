@@ -16,7 +16,8 @@
         <label>Financial Code System:</label>
         <select id="financial-code-system">
             {% for system in financial_code_systems %}
-            <option value="{{ system.id }}">{{ system.title }}</option>
+                {% if forloop.first %}<option>----------</option>{% endif %}
+                <option value="{{ system.id }}">{{ system.title }}</option>
             {% endfor %}
         </select>
     </div>
@@ -24,22 +25,38 @@
     <div>
         <label>Group By:</label>
         <select id="grouping">
-            <option>Year</option>
-            <option>Budget Year</option>
-            <option>Month</option>
-            <option>Week</option>
+            <option value="">----------</option>
+            <option value="year">Year</option>
+            <option value="budget">Budget Year</option>
+            <option value="month">Month</option>
         </select>
     </div>
 
-    <div>
-        <div>
-            <label>Start Date:</label>
-            <input type="date" id="date-start">
-        </div>
-        <div>
-            <label>End Date:</label>
-            <input type="date" id="date-end">
-        </div>
+    <div id="date-year">
+        <label>Start date:</label>
+        <select id="date-year-start">
+            {% for year in date_years %}
+                {% if forloop.first %}<option value="">----------</option>{% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="date-budget">
+        <label>Start date:</label>
+        <select id="date-budget-start">
+            {% for year in date_budget_years %}
+                {% if forloop.first %}<option value="">----------</option>{% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="date-month">
+        <label>Start date:</label>
+        <select id="date-month-start">
+            {% for month in date_months %}
+                {% if forloop.first %}<option value="">----------</option>{% endif %}
+            {% endfor %}
+        </select>
     </div>
 
     <div>
