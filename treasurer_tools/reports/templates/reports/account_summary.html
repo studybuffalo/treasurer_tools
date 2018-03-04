@@ -14,7 +14,7 @@
 <div>
     <div>
         <label>Financial Code System:</label>
-        <select>
+        <select id="financial-code-system">
             {% for system in financial_code_systems %}
             <option value="{{ system.id }}">{{ system.title }}</option>
             {% endfor %}
@@ -23,9 +23,9 @@
 
     <div>
         <label>Group By:</label>
-        <select>
+        <select id="grouping">
             <option>Year</option>
-            <option>Fiscal Year</option>
+            <option>Budget Year</option>
             <option>Month</option>
             <option>Week</option>
         </select>
@@ -34,11 +34,11 @@
     <div>
         <div>
             <label>Start Date:</label>
-            <input type="date">
+            <input type="date" id="date-start">
         </div>
         <div>
             <label>End Date:</label>
-            <input type="date">
+            <input type="date" id="date-end">
         </div>
     </div>
 
