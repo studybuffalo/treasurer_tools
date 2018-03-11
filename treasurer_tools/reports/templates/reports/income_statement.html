@@ -16,7 +16,7 @@
         <label>Financial Code System:</label>
         <select id="financial-code-system">
             {% for system in financial_code_systems %}
-                {% if forloop.first %}<option>----------</option>{% endif %}
+                {% if forloop.first %}<option value="">----------</option>{% endif %}
                 <option value="{{ system.id }}">{{ system.title }}</option>
             {% endfor %}
         </select>

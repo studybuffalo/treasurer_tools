@@ -6,12 +6,14 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 
-from financial_codes.models import FinancialCodeSystem
+from financial_codes.models import FinancialCodeSystem, FinancialCode
+from financial_transactions.models import Item, FinancialCodeMatch
 
 
 @login_required
@@ -70,24 +72,32 @@ def retrieve_dates(request):
         content_type="application/json"
     )
 
+
 @login_required
 def retrieve_income_statement(request):
     """Retrieves data for account summary report"""
 
     financial_code_system = request.GET.get("financial_code_system", None)
-    grouping = request.GET.get("grouping", None)
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
 
-    if all([financial_code_system, grouping, date_start, date_end]):
-        print("All valid")
+    if all([financial_code_system, date_start, date_end]):
+        code_totals = FinancialCode.objects.values("code").filter(
+            Q(financial_code_group__budget_year__financial_code_system__id=financial_code_system)
+            & Q(financialcodematch__item__transaction__date_submitted__gte=date_start)
+            & Q(financialcodematch__item__transaction__date_submitted__lte=date_end)
+        ).annotate(
+            total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
+        )
     else:
-        print("Not all valid")
+        code_totals = None
 
     return render(
         request,
         "reports/income_statement_report.html",
-        context={}
+        context={
+            "codes": code_totals
+        }
     )
 @login_required
 def balance_sheet_dashboard(request):

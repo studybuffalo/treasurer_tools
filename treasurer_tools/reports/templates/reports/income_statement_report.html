@@ -1,1 +1,7 @@
-﻿<h2>Some Report</h2>
+﻿{% if codes %}
+    {% for code in codes %}
+        {{ code }}: {{ code.total }}<br>
+    {% endfor %}
+{% else %}
+    <strong>No transactions found.</strong>
+{% endif %}

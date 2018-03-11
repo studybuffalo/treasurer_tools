@@ -30,7 +30,6 @@ function retrieveReport() {
     var url = "retrieve-report/";
     var parameters = "?"
         + "financial_code_system=" + financialCodeSystem
-        + "&grouping=" + grouping
         + "&date_start=" + dateStart
         + "&date_end=" + dateEnd;
 
