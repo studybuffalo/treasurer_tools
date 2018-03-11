@@ -1,19 +1,14 @@
 """Views for the reports app"""
 
 import json
-from datetime import datetime
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q, Sum
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse
-from django.urls import reverse
 from django.utils import timezone
 
 from financial_codes.models import FinancialCodeSystem, FinancialCode
-from financial_transactions.models import Item, FinancialCodeMatch
 
 
 @login_required
@@ -68,7 +63,7 @@ def retrieve_dates(request):
     }
 
     return HttpResponse(
-        json.dumps(json_dates, cls=DjangoJSONEncoder), 
+        json.dumps(json_dates, cls=DjangoJSONEncoder),
         content_type="application/json"
     )
 
@@ -111,6 +106,7 @@ def retrieve_income_statement(request):
             "expense_codes": expense_code_totals,
         }
     )
+
 @login_required
 def balance_sheet_dashboard(request):
     """Dashboard to generate balance sheet views"""
