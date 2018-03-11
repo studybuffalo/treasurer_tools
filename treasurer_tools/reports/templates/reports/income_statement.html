@@ -4,7 +4,9 @@
 
 {% block styles %}
 <script>
-
+    .hide {
+        display: none;
+    }
 </script>
 {% endblock %}
 
@@ -28,7 +30,7 @@
             <option value="last 30 days">Last 30 days</option>
             <option value="last year">Last year</option>
             <option value="year-to-date">Year-to-date</option>
-            <option>Custom range</option>
+            <option value="custom">Custom range</option>
         </select>
     </div>
 
@@ -40,11 +42,6 @@
     <div>
         <label>End date:</label>
         <input type="date" id="date-end">
-    </div>
-
-    <div>
-        <input type="checkbox">
-        <label>Show empty accounts</label>
     </div>
 </div>
 

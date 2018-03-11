@@ -38,6 +38,14 @@ function retrieveReport() {
     });
 }
 
+function updatePredefinedSelect() {
+    /*
+     * Changes the predefined select to custom when date input changed
+     */
+
+    $("#date-predefined").val("custom");
+}
+
 $(document).ready(function () {
     $("#financial-code-system").on("change", function () {
         retrieveReport();
@@ -45,13 +53,16 @@ $(document).ready(function () {
 
     $("#date-predefined").on("change", function () {
         updateDateInputs();
+        retrieveReport();
     });
 
     $("#date-start").on("change", function () {
+        updatePredefinedSelect();
         retrieveReport();
     });
 
     $("#date-end").on("change", function () {
+        updatePredefinedSelect();
         retrieveReport();
     });
 
