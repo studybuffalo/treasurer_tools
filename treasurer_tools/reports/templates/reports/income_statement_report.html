@@ -1,0 +1,27 @@
+﻿<h2>Revenue</h2>
+
+{% if revenue_codes %}
+    <ul id="revenue-accounts">
+        {% for code in revenue_codes %}
+            <li data-total="{{ code.total }}">
+                {{ code.code }} - {{ code.description }}: ${{ code.total }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>No transactions found.</strong>
+{% endif %}
+
+<h2>Expenses</h2>
+
+{% if expense_codes %}
+    <ul id="expense_accounts">
+        {% for code in expense_codes %}
+            <li data-total="{{ code.total }}">
+                {{ code.code }} - {{ code.description }}: ${{ code.total }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>No transactions found.</strong>
+{% endif %}

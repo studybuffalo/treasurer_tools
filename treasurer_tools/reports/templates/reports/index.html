@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h1>Reports</h1>
+
+    <ul>
+        <li><a href="{% url 'reports:balance_sheet' %}">Balance Sheet</a></li>
+        <li><a href="{% url 'reports:income_statement' %}">Income Statement</a></li>
+    </ul>
+{% endblock %}
