@@ -24,12 +24,12 @@ def dashboard(request):
     )
 
 @login_required
-def account_summary_dashboard(request):
+def income_statement_dashboard(request):
     """Dashboard to generate account summary views"""
 
     return render(
         request,
-        "reports/account_summary.html",
+        "reports/income_statement.html",
         context={
             "financial_code_systems": FinancialCodeSystem.objects.all(),
             "date_years": [1],
@@ -71,7 +71,7 @@ def retrieve_dates(request):
     )
 
 @login_required
-def retrieve_account_summary(request):
+def retrieve_income_statement(request):
     """Retrieves data for account summary report"""
 
     financial_code_system = request.GET.get("financial_code_system", None)
@@ -86,7 +86,7 @@ def retrieve_account_summary(request):
 
     return render(
         request,
-        "reports/account_summary_report.html",
+        "reports/income_statement_report.html",
         context={}
     )
 @login_required

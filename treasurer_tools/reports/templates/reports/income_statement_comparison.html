@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>Account Summary</h1>
+<h1>Income Statement</h1>
 
 <div>
     <div>
@@ -34,29 +34,17 @@
 
     <div id="date-year">
         <label>Start date:</label>
-        <select id="date-year-start">
-            {% for year in date_years %}
-                {% if forloop.first %}<option value="">----------</option>{% endif %}
-            {% endfor %}
-        </select>
+        <select id="date-year-start"></select>
     </div>
 
     <div id="date-budget">
         <label>Start date:</label>
-        <select id="date-budget-start">
-            {% for year in date_budget_years %}
-                {% if forloop.first %}<option value="">----------</option>{% endif %}
-            {% endfor %}
-        </select>
+        <select id="date-budget-start"></select>
     </div>
 
     <div id="date-month">
         <label>Start date:</label>
-        <select id="date-month-start">
-            {% for month in date_months %}
-                {% if forloop.first %}<option value="">----------</option>{% endif %}
-            {% endfor %}
-        </select>
+        <select id="date-month-start"></select>
     </div>
 
     <div>
