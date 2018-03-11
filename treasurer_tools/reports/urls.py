@@ -11,6 +11,6 @@ urlpatterns = [
     url(r"balance-sheet/$", balance_sheet_dashboard, name="balance_sheet"),
     url(r"^income-statement/retrieve-dates/", retrieve_dates),
     url(r"^income-statement/retrieve-report/", retrieve_income_statement),
-    url(r"^income-statement/$", income_statement_dashboard, name="account_summary"),
+    url(r"^income-statement/$", income_statement_dashboard, name="income_statement"),
     url(r"^$", dashboard, name="dashboard"),
 ]
