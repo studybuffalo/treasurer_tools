@@ -82,21 +82,33 @@ def retrieve_income_statement(request):
     date_end = request.GET.get("date_end", None)
 
     if all([financial_code_system, date_start, date_end]):
-        code_totals = FinancialCode.objects.values("code").filter(
+        revenue_code_totals = FinancialCode.objects.values("code", "description").filter(
             Q(financial_code_group__budget_year__financial_code_system__id=financial_code_system)
+            & Q(financial_code_group__type="r")
+            & Q(financialcodematch__item__transaction__date_submitted__gte=date_start)
+            & Q(financialcodematch__item__transaction__date_submitted__lte=date_end)
+        ).annotate(
+            total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
+        )
+
+        expense_code_totals = FinancialCode.objects.values("code", "description").filter(
+            Q(financial_code_group__budget_year__financial_code_system__id=financial_code_system)
+            & Q(financial_code_group__type="e")
             & Q(financialcodematch__item__transaction__date_submitted__gte=date_start)
             & Q(financialcodematch__item__transaction__date_submitted__lte=date_end)
         ).annotate(
             total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
         )
     else:
-        code_totals = None
+        revenue_code_totals = None
+        expense_code_totals = None
 
     return render(
         request,
         "reports/income_statement_report.html",
         context={
-            "codes": code_totals
+            "revenue_codes": revenue_code_totals,
+            "expense_codes": expense_code_totals,
         }
     )
 @login_required

@@ -1,7 +1,19 @@
-﻿{% if codes %}
-    {% for code in codes %}
-        {{ code }}: {{ code.total }}<br>
+﻿<h2>Revenue</h2>
+
+{% if revenue_codes %}
+    {% for code in revenue_codes %}
+{{ code.code }} - {{ code.description }}: {{ code.total }}<br>
     {% endfor %}
 {% else %}
-    <strong>No transactions found.</strong>
+<strong>No transactions found.</strong>
+{% endif %}
+
+<h2>Expenses</h2>
+
+{% if expense_codes %}
+    {% for code in expense_codes %}
+{{ code.code }} - {{ code.description }}: {{ code.total }}<br>
+    {% endfor %}
+{% else %}
+<strong>No transactions found.</strong>
 {% endif %}
