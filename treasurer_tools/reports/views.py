@@ -1,6 +1,7 @@
 """Views for the reports app"""
 
 import json
+from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,6 +9,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.urls import reverse
+from django.utils import timezone
 
 from financial_codes.models import FinancialCodeSystem
 
@@ -39,31 +41,29 @@ def account_summary_dashboard(request):
 @login_required
 def retrieve_dates(request):
     """Retrieves a list of dates for code system"""
-    
-    try:
-        system_id = request.GET.get("financial_code_system", None)
-        print(system_id)
-        system = FinancialCodeSystem.objects.get(id=system_id)
-    except ValueError as e:
-        system = None
+    # Get reference to the provided system ID
+    system_id = request.GET.get("financial_code_system", None)
+    system = get_object_or_404(FinancialCodeSystem, id=system_id)
 
-    if system:
-        budget_years = system.budgetyear_set.all()
+    # Get all years
+    system_year_start = system.date_start
+    system_year_end = system.date_end if system.date_end else timezone.now()
 
-        # Get all years
+    # Get all budget years
+    budget_years = system.budgetyear_set.all().order_by("date_start")
+    budget_year_dictionary = []
 
-        # Get all budget years
+    for budget_year in budget_years:
+        budget_year_dictionary.append({
+            "start": budget_year.date_start,
+            "end": budget_year.date_end
+        })
 
-        # Get all months
-
-        json_dates = {
-            "error": False,
-            "test": "test"
-        }
-    else:
-        json_dates = {
-            "error": True
-        }
+    json_dates = {
+        "system_year_start": system_year_start.strftime("%Y-%m-%d"),
+        "system_year_end": system_year_end.strftime("%Y-%m-%d"),
+        "budget_years": budget_year_dictionary,
+    }
 
     return HttpResponse(
         json.dumps(json_dates, cls=DjangoJSONEncoder), 

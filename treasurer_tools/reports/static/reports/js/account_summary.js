@@ -68,6 +68,48 @@ function retrieveReport() {
     });
 }
 
+function createDateInputs(data) {
+    var system_start = moment(data.system_year_start, "YYYY-MM-DD");
+    var system_end = moment(data.system_year_end, "YYYY-MM-DD");
+    var budget_years = data.budget_years
+
+    // Create array of all the system years and months
+    // TODO: Figure out how to handle months
+    system_years = []
+    system_months = []
+
+    var system_year_start = system_start.year();
+    var system_year_end = system_end.year();
+    var system_month_start = system_start.month();
+    var system_month_end = system_end.month();
+
+    for (var i = 0; i < (system_year_end - system_year_start) + 2; i++) {
+        year = system_year_start + i;
+        system_years.push({
+            start: moment({ year: year, month: 0, day: 1 }),
+            end: moment({ year: year, month: 11, day: 31 })
+        });
+    }
+    console.log(system_years);  
+    console.log(budget_years);
+
+    // Update the system year select
+    var $systemYearSelect = $("#date-year-start");
+
+    // Remove prior entries
+    $systemYearSelect.children().remove
+
+    $.each(system_years, function (index, year) {
+        var $option = $("<option></option>")
+        $option
+            .text(year.start.toString("YYYY-MM-DD") + " to " + year.end)
+            .attr("data-start", year.start)
+            .attr("date-end", year.end);
+        
+        $systemYearSelect.append($option);
+    });
+}
+
 function updateDateInputs() {
     /* Updates the date inputs with the proper values for the
      * financial code system
@@ -80,7 +122,7 @@ function updateDateInputs() {
             data: {financial_code_system: financial_code_system},
             dataType: "json",
             success: function (dateData) {
-                console.log(dateData);
+                createDateInputs(dateData);
             },
             error: function (jqXHR, textStatus, error) {
                 console.error(textStatus + ": " + error);
