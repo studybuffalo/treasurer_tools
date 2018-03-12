@@ -1,16 +1,34 @@
 {% extends 'main/base.html' %}
 
+{% block styles %}
+<style>
+    #button-submit {
+        display: block;
+    }
+
+    #button-login {
+        display: block;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- TODO: At handling of logged in users to change this page -->
 
 <h1>CSHP Alberta Branch Expense Submissions</h1>
 
 <p>
-    <a href="">Submit an expense</a><br>
-    or<br>
-    <a href="{% url 'account_login' %}">Login</a>
-    <br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test
-    <br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test<br>Test
+    Welcome to the CSHP Alberta Branch expense submissions page.
+    To get started, either <a href="{% url 'account_login' %}">login</a>
+    or <a href="">submit an expense</a>.
 </p>
+
+<a id="button-submit" href="">
+    Submit an Expense
+</a>
+
+<a id="button-login" href="{% url 'account_login' %}">
+    Login
+</a>
 
 {% endblock %}
