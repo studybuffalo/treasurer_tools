@@ -39,7 +39,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
 
 # SUB_SITE SETTINGS
-SUB_SITE = env("SUB_SITE", "")
+SUB_SITE = env.list("SUB_SITE", [])
 
 # SECURITY CONFIGURATION
 # ------------------------------------------------------------------------------
