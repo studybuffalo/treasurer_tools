@@ -38,6 +38,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
 #MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
 
+# SUB_SITE SETTINGS
+SUB_SITE = env("SUB_SITE", "")
 
 # SECURITY CONFIGURATION
 # ------------------------------------------------------------------------------
