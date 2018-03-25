@@ -6,6 +6,7 @@ django-environ>=0.4.4
 django-jenkins>=0.11
 django-multiupload>=0.5.2
 django-simple-history>=1.9.0
+django[argon2]>=18.1
 psycopg2-binary>=2.7.3
 pylint==1.8.2
 pylint_common>=0.2
