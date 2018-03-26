@@ -14,7 +14,7 @@ def dashboard(request):
     """Main dashboard to manage payees and payers"""
     return render(
         request,
-        "payee_payer/index.html",
+        "payee_payers/index.html",
         context={},
     )
 
@@ -24,7 +24,7 @@ def request_payee_payers(request):
     # pylint: disable=no-member
     return render(
         request,
-        "payee_payer/payee_payer_list.html",
+        "payee_payers/payee_payer_list.html",
         context={
             "payee_payer_list": PayeePayer.objects.all(),
         }
@@ -55,7 +55,7 @@ def add_payee_payer(request):
 
     return render(
         request,
-        "payee_payer/add.html",
+        "payee_payers/add.html",
         {
             "form": form,
             "page_name": "payee/payer",
@@ -90,7 +90,7 @@ def edit_payee_payer(request, payee_payer_id):
 
     return render(
         request,
-        "payee_payer/edit.html",
+        "payee_payers/edit.html",
         {
             "form": form,
             "page_name": "payee/payer",
@@ -113,7 +113,7 @@ def delete_payee_payer(request, payee_payer_id):
 
     return render(
         request,
-        "payee_payer/delete.html",
+        "payee_payers/delete.html",
         {
             "page_name": "payee/payer",
             "delete_message": "payee/payee",
