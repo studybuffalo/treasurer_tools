@@ -98,6 +98,7 @@ def system_add(request):
 @login_required
 def system_edit(request, system_id):
     """Generate and processes form to edit a financial system"""
+    # TODO: Fix javascript for this section - doesn't display correct budget year
     # If this is a POST request then process the Form data
     if request.method == "POST":
         system_data = get_object_or_404(FinancialCodeSystem, id=system_id)
