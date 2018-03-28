@@ -33,8 +33,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Use Whitenoise to serve static files
 # See: https://whitenoise.readthedocs.io/
-#WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ]
-#MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
+WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ]
+MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 #RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
 #MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
 
@@ -100,7 +100,7 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['127.0.0.1', ])
 
 # Static Assets
 # ------------------------
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # EMAIL
@@ -219,7 +219,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 #}
 
 # Custom Admin URL, use {% url 'admin:index' %}
-ADMIN_URL = env('DJANGO_ADMIN_URL')
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin")
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
