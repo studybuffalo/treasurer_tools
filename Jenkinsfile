@@ -82,7 +82,7 @@ pipeline {
                   cd treasurer_tools
                   git pull
                   python manage.py collectstatic --noinput
-                  sudo /bin/systemctl restart uwsgi''',
+                  sudo /bin/systemctl restart uwsgi || exit 0''',
                 execTimeout: 120000,
                 flatten: false,
                 makeEmptyDirs: false,
