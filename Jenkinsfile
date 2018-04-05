@@ -61,7 +61,7 @@ pipeline {
       steps {
         echo 'This is the Deploy Stage'
       }
-      cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
+      junit 'reports/junit.xml'
     }
   }
 }
