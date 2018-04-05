@@ -81,7 +81,7 @@ pipeline {
                 execCommand: '''source ~/Env/expenses/bin/activate
                   cd treasurer_tools
                   git pull
-                  echo yes | python manage.py collectstatic
+                  python manage.py collectstatic --noinput
                   sudo /bin/systemctl restart uwsgi''',
                 execTimeout: 120000,
                 flatten: false,
