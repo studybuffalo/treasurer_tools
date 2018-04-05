@@ -53,7 +53,7 @@ pipeline {
           sh """
           . venv/bin/activate
           pylint --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || echo "pylint exited with $?"
-          cat reports/pylint.log
+          cat reports/pylint.txt
           """
         }
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
