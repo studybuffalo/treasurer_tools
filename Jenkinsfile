@@ -49,6 +49,11 @@ pipeline {
           python manage.py jenkins --enable-coverage --settings=config.settings.test
           """
         }
+        script {
+          sh """
+          . venv/bin/activate
+          """
+        }
       }
     }
     stage('Deploy') {
