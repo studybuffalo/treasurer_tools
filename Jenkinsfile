@@ -71,6 +71,29 @@ pipeline {
     stage('Deploy') {
       steps {
         echo 'This is the Deploy Stage'
+        sshPublisher(
+          publishers: [
+            sshPublisherDesc(
+              configName: 'cshp_ab_expenses',
+              transfers: [sshTransfer(
+                excludes: '',
+                execCommand: 'ls',
+                execTimeout: 120000,
+                flatten: false,
+                makeEmptyDirs: false,
+                noDefaultExcludes: false,
+                patternSeparator: '[, ]+',
+                remoteDirectory: '',
+                remoteDirectorySDF: false,
+                removePrefix: '',
+                sourceFiles: ''
+              )],
+              usePromotionTimestamp: false,
+              useWorkspaceInPromotion: false,
+              verbose: false
+            )
+          ]
+        )
       }
     }
   }
