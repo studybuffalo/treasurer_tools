@@ -52,7 +52,6 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          pwd
            --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
           """
         }
