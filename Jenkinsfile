@@ -55,13 +55,13 @@ pipeline {
            --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
           """
         }
+        junit 'reports/junit.xml'
       }
     }
     stage('Deploy') {
       steps {
         echo 'This is the Deploy Stage'
       }
-      junit 'reports/junit.xml'
     }
   }
 }
