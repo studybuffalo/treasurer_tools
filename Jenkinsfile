@@ -81,7 +81,8 @@ pipeline {
                 execCommand: '''workon expenses
                   cd treasurer_tools
                   git pull
-                  python manage.py collectstatic''',
+                  python manage.py collectstatic
+                  /bin/systemctl reload uwsgi''',
                 execTimeout: 120000,
                 flatten: false,
                 makeEmptyDirs: false,
