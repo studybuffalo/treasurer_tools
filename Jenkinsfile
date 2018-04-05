@@ -49,6 +49,7 @@ pipeline {
           python manage.py jenkins --enable-coverage --settings=config.settings.test
           """
         }
+		/*
         script {
           sh """
           . venv/bin/activate
@@ -57,6 +58,7 @@ pipeline {
         }
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
         junit 'reports/junit.xml'
+		*/
         step([
             $class: "WarningsPublisher",
             parserConfigurations: [[
