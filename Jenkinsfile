@@ -52,7 +52,7 @@ pipeline {
         script {
           sh """
           . venv/bin/activate
-          pylint --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
+          pylint --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools | cat > reports/pylint.txt
           """
         }
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
