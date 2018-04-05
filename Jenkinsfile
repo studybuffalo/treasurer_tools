@@ -63,7 +63,7 @@ pipeline {
             parserName: "PyLint",
             pattern: "reports/pylint.txt"
           ]],
-          unstaableTotalAll: "0",
+          unstableTotalAll: "0",
           usePreviousBuildAsReference: true
         ])
       }
