@@ -78,7 +78,7 @@ pipeline {
               configName: 'cshp_ab_expenses',
               transfers: [sshTransfer(
                 excludes: '',
-                execCommand: '''workon expenses
+                execCommand: '''source ~/Env/expenses/bin/activate
                   cd treasurer_tools
                   git pull
                   python manage.py collectstatic
