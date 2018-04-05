@@ -55,6 +55,7 @@ pipeline {
            --rcfile=.pylintrc --output-format=parseable --reports=no treasurer_tools > reports/pylint.txt || exit 0
           """
         }
+        cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
         junit 'reports/junit.xml'
       }
     }
