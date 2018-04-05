@@ -72,6 +72,7 @@ pipeline {
       steps {
         echo 'This is the Deploy Stage'
         sshPublisher(
+          failOnError: true,
           publishers: [
             sshPublisherDesc(
               configName: 'cshp_ab_expenses',
