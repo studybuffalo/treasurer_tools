@@ -7,6 +7,7 @@ django-jenkins>=0.11
 django-multiupload>=0.5.2
 django-redis>=4.9
 django-simple-history>=1.9.0
+django-storages>=1.6
 django[argon2]>=18.1
 psycopg2-binary>=2.7.3
 pylint==1.8.2
