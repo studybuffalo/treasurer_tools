@@ -81,6 +81,7 @@ pipeline {
                 execCommand: '''source ~/Env/expenses/bin/activate
                   cd treasurer_tools
                   git pull
+                  pip install -r requirements.txt
                   python manage.py collectstatic --noinput
                   sudo /bin/systemctl restart uwsgi || exit 0''',
                 execTimeout: 120000,
