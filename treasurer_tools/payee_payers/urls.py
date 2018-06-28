@@ -6,7 +6,8 @@ from .views import (
     delete_payee_payer
 )
 
-# pylint: disable=invalid-name
+app_name = "payee_payers"
+
 urlpatterns = [
     url(r"^retrieve-payee-payer-list/$", request_payee_payers),
     url(r"^add/$", add_payee_payer, name="add"),

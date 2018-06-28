@@ -6,7 +6,8 @@ from .views import (
     retrieve_income_statement
 )
 
-# pylint: disable=invalid-name
+app_name="reports"
+
 urlpatterns = [
     url(r"balance-sheet/$", balance_sheet_dashboard, name="balance_sheet"),
     url(r"^income-statement/retrieve-report/", retrieve_income_statement),
