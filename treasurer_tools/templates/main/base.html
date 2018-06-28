@@ -12,16 +12,23 @@
     </title>
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Libre+Franklin:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" media="all">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css" media="all">
     {% block styles %}{% endblock %}
 </head>
 
 <body>
-    <header id="header-bar">
-        <button id="toggle-sidebar">Minimize</button>
-        <!-- Other content: Search bar, settings, help? -->
+  <header id="header-bar">
+    <button id="toggle-sidebar" class="menu-button">
+      <span class="menu-icon-open" aria-label="open"></span>
+      <span class="menu-icon-close" aria-label="close"></span>
+      Menu
+    </button>
+    <!-- Other content: Search bar, settings, help? -->
 
-        <a href="{% url 'home' %}"><img src="#" alt="Logo"></a>
-    </header>
+    <a href="{% url 'home' %}"><img src="#" alt="Logo"></a>
+    <a href="{% url 'account_login' %}" class="login">Log in</a>
+  </header>
 
     <nav id="sidebar">
         <ul>
@@ -37,7 +44,7 @@
                         <li><a href="{% url 'account_logout' %}">Logout</a></li>
                     </ul>
                 {% else %}
-                    <a href="{% url 'account_login' %}">Login</a>
+                    <a href="{% url 'account_login' %}">Log in</a>
                 {% endif %}
             </li>
             <li>
@@ -80,10 +87,12 @@
     <script>
         function toggleSidebar() {
             $("#sidebar").toggleClass("show-sidebar");
+            $("#toggle-sidebar").toggleClass("open");
         }
 
         function hideSidebar() {
             $("#sidebar").removeClass("show-sidebar");
+            $("#toggle-sidebar").toggleClass("open");
         }
 
         function showSubMenu(menuItem) {

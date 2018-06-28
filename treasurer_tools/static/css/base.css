@@ -13,19 +13,29 @@ html {
 }
 
 body {
-    background-color: rgb(255, 255, 255);
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 2rem;
-    margin: 0;
-    padding: 0;
+  background-color: rgb(255, 255, 255);
+  color: #454545;
+  font-family: "Libre Franklin","Helvetica Nueue","Arial",sans-serif;
+  font-size: 2rem;
+  line-height: 1.4em;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: rgb(40, 120, 200);
+  font-family: "Libre Franklin","Helvetica Nueue","Arial",sans-serif;
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 3.25rem;
 }
 
 #header-bar {
-    background-color: rgb(237, 244, 242);
-    height: 5rem;
-    position: fixed;
-    width: 100%;
-    z-index: 5;
+  background-color: rgb(237, 244, 242);
+  height: 5rem;
+  position: fixed;
+  width: 100%;
+  z-index: 5;
 }
 
 #sidebar {
@@ -87,15 +97,61 @@ body {
                         text-decoration: none;
                     }
 
+.login {
+  color: #2878c8;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.menu-button {
+  background-color: #2878c8;
+  border: none;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  font-size: 2rem;
+  padding: 1.25rem 1rem;
+}
+
+  .menu-button.open .menu-icon-open,
+  .menu-button .menu-icon-close {
+    display: none;
+  }
+
+  .menu-button .menu-icon-open,
+  .menu-button.open .menu-icon-close {
+    display: inline-block;
+  }
+
+.menu-icon-open, .menu-icon-close {
+  cursor: pointer;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 2rem;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+  .menu-icon-open::before {
+    content: "\f0c9";
+  }
+
+  .menu-icon-close::before {
+    content: "\f00d";
+    font-size: 2.2rem;
+  }
+
 #main-container {
-    background: rgb(255, 255, 255);
-    margin: 0;
-    min-height: 100%;
-    min-width: 100%;
-    overflow-y: scroll;
-    padding: 0;
-    position: absolute;
-    z-index: 1;
+  background: rgb(255, 255, 255);
+  margin: 0;
+  min-height: 100%;
+  min-width: 100%;
+  overflow-y: scroll;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
 }
 
 #main-content {
