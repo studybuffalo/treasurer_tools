@@ -42,6 +42,10 @@ h1 {
   z-index: 5;
 }
 
+  #header-bar a {
+    text-decoration: none;
+  }
+
 #sidebar {
     background-color: rgb(40, 120, 200);
     border: 1px solid rgb(69, 69, 69);
@@ -72,6 +76,7 @@ h1 {
 
             #sidebar > ul > li > a {
                 color: inherit;
+                cursor: pointer;
                 display: block;
                 padding: 1rem 0.5rem;
                 text-decoration: none;
@@ -108,12 +113,13 @@ h1 {
 
 #logo-text-image {
   display: none;
+  height: 45px;
+  padding-top: 5px;
 }
 
 .login {
   color: #2878c8;
   font-weight: 700;
-  text-decoration: none;
 }
 
 .menu-button {
@@ -157,7 +163,9 @@ h1 {
   }
 
 #main-container {
-  background: rgb(255, 255, 255);
+  background: rgb(245, 245, 245);
+  display: flex;
+  justify-content: center;
   margin: 0;
   min-height: 100%;
   min-width: 100%;
@@ -168,16 +176,17 @@ h1 {
 }
 
 #main-content {
-    box-sizing: border-box;
-    margin: 5rem 0 0 0;
-    padding: 0.5rem;
-    width: 100%;
+  background: rgb(255, 255, 255);
+  box-sizing: border-box;
+  margin: 5rem 0 0 0;
+  padding: 0.5rem;
+  width: 100%;
 }
 
 .center_content {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 #button-submit {
@@ -186,4 +195,24 @@ h1 {
 
 #button-login {
   display: block;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  #main-content {
+    max-width: 1024px;
+  }
+
+  #logo-text-image {
+    display: inline-block;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  #main-content {
+    max-width: 1024px;
+  }
+
+  #logo-text-image {
+    display: inline-block;
+  }
 }

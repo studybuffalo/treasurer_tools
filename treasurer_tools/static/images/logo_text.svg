@@ -15,7 +15,7 @@
    id="svg4151"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="CSHP-AB Logo Text.svg">
+   sodipodi:docname="logo_text.svg">
   <defs
      id="defs4153" />
   <sodipodi:namedview
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="214.15181"
+     inkscape:cx="-212.99105"
      inkscape:cy="59.702702"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -49,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,34 +58,44 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(266.29467,-221.23093)">
-    <g
-       id="g4227"
-       transform="translate(1013.4825,-68.328529)">
-      <flowRoot
-         transform="translate(740.03777,232.79066)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:145px;line-height:1.04999995;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:end;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:end;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         id="flowRoot4187"
-         xml:space="preserve"><flowRegion
-           id="flowRegion4189"><rect
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:145px;line-height:1.04999995;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;fill:#0055a5;fill-opacity:1"
-             y="32.321583"
-             x="-2057.1428"
-             height="468.57141"
-             width="1322.8573"
-             id="rect4191" /></flowRegion><flowPara
-           id="flowPara4195">Canadian Society of Hospital Pharmacists</flowPara></flowRoot>      <flowRoot
-         transform="translate(775.75206,-310.06652)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         id="flowRoot4197"
-         xml:space="preserve"><flowRegion
-           id="flowRegion4199"><rect
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#0055a5;fill-opacity:1"
-             y="880.89301"
-             x="-1325.7142"
-             height="131.42857"
-             width="565.71429"
-             id="rect4201" /></flowRegion><flowPara
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:145px;line-height:1.04999995;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:end;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:end;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-1565.2766"
+       y="319.85641"
+       id="text4154"><tspan
+         sodipodi:role="line"
+         x="-194.85666"
+         y="319.85641"
+         id="tspan4156"
+         style="text-anchor:start;text-align:start"><tspan
+           x="-194.85666"
+           y="319.85641"
+           id="tspan4158"
+           style="text-align:start;text-anchor:start">Canadian Society of</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="-278.40158"
+         y="472.10641"
+         id="tspan4162"
+         style="text-anchor:start;text-align:start"><tspan
+           x="-278.40158"
+           y="472.10641"
+           id="tspan4164"
+           style="text-align:start;text-anchor:start">Hospital Pharmacists</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="463.51974"
+       y="590.91138"
+       id="text4166"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="463.51974"
+         y="590.91138"
+         id="tspan4168"><tspan
+           x="463.51974"
+           y="590.91138"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
-           id="flowPara4203">Alberta Branch</flowPara></flowRoot>    </g>
+           id="tspan4170">Alberta Branch</tspan></tspan></text>
   </g>
 </svg>
