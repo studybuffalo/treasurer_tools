@@ -509,7 +509,7 @@ class StatementEditTest(TestCase):
         # Check for the expected error
         self.assertEqual(
             response.context["bank_transaction_formsets"][0].errors["statement"][0],
-            "The inline foreign key did not match the parent instance primary key."
+            "The inline value did not match the parent instance."
         )
 
     def test_statement_edit_delete_attachment(self):
