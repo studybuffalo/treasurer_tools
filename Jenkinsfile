@@ -20,5 +20,13 @@ pipeline {
         }
       }
     }
+    stage('Test') {
+      steps {
+        echo 'This is the Testing Stage'
+        script {
+          sh 'pipenv run python manage.py jenkins --enable-coverage --settings=config.settings.test'
+        }
+      }
+    }
   }
 }
