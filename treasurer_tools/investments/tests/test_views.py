@@ -1,6 +1,6 @@
 """Test cases for the investments app views"""
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from investments.models import Investment

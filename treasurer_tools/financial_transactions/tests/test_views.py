@@ -1,6 +1,6 @@
 """Test cases for other transactions app views"""
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from financial_transactions.forms import FinancialCodeAssignmentForm
@@ -49,7 +49,7 @@ class TransactionsDashboard(TestCase):
 
 class RetrieveTransactionsTest(TestCase):
     """Checks that transactions are retrieved properly"""
-    
+
     def setUp(self):
         create_user()
         create_financial_transactions()
@@ -60,7 +60,7 @@ class RetrieveTransactionsTest(TestCase):
             "date_start": "2016-04-01",
             "date_end": "2018-03-31"
         }
-        
+
     def test_redirect_if_not_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
         response = self.client.get(self.url, self.valid_args)
@@ -135,7 +135,7 @@ class RetrieveTransactionsTest(TestCase):
             len(response.context["transactions"]),
             expense_total
         )
-        
+
     def test_date_start_filter(self):
         """Checks that you can filter by date_start"""
         # Count total number of transactions
@@ -192,7 +192,7 @@ class RetrieveTransactionsTest(TestCase):
             len(response.context["transactions"]),
             transaction_total
         )
-        
+
     def test_no_filter_on_invalid_date_start(self):
         """Checks that no type filtering occurs on invalid date_start"""
         # Count total number of transactions
@@ -211,7 +211,7 @@ class RetrieveTransactionsTest(TestCase):
             len(response.context["transactions"]),
             transaction_total
         )
-        
+
     def test_no_filter_on_invalid_date_end(self):
         """Checks that no type filtering occurs on invalid date_end"""
         # Count total number of transactions

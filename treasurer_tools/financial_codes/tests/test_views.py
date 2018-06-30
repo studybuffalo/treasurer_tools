@@ -1,6 +1,6 @@
 """Test cases for the financial_codes app non-form views"""
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from .utils import create_user
