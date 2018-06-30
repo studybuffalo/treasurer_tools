@@ -31,8 +31,12 @@ h1 {
 }
 
 #header-bar {
+  align-items: center;
   background-color: rgb(237, 244, 242);
+  display: flex;
+  flex-direction: row;
   height: 5rem;
+  justify-content: space-between;
   position: fixed;
   width: 100%;
   z-index: 5;
@@ -96,6 +100,15 @@ h1 {
                         padding: 0.5rem 1rem;
                         text-decoration: none;
                     }
+
+#logo-image {
+  height: 45px;
+  padding-top: 5px;
+}
+
+#logo-text-image {
+  display: none;
+}
 
 .login {
   color: #2878c8;

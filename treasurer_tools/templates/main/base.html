@@ -26,7 +26,10 @@
     </button>
     <!-- Other content: Search bar, settings, help? -->
 
-    <a href="{% url 'home' %}"><img src="#" alt="Logo"></a>
+    <a href="{% url 'home' %}">
+      <img src="{% static 'images/logo.svg' %}" id="logo-image" alt="">
+      <img src="{% static 'images/logo_text.svg' %}" id="logo-text-image" alt="CSHP Alberta Branch">
+    </a>
     <a href="{% url 'account_login' %}" class="login">Log in</a>
   </header>
 

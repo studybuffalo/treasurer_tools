@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="538.67914mm"
+   width="139.99171mm"
    height="125.23615mm"
-   viewBox="0 0 1908.7056 443.75009"
+   viewBox="0 0 496.03363 443.75006"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="CSHP-AB Logo.svg"
+   sodipodi:docname="logo_text.svg"
    inkscape:export-filename="E:\Desktop\CSHP-AB Logo + Text [Color].png"
    inkscape:export-xdpi="282.91"
    inkscape:export-ydpi="282.91">
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
-     inkscape:cx="1115.7762"
-     inkscape:cy="273.27557"
+     inkscape:cx="-598.93152"
+     inkscape:cy="273.27555"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,8 +39,8 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="1912"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
@@ -59,12 +59,12 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer 2"
-     transform="translate(1412.6721,-643.01797)" />
+     transform="translate(-1.1995331e-5,-643.01798)" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(1279.7772,-870.38004)">
+     transform="translate(-132.89491,-870.38005)">
     <g
        id="g4218"
        transform="translate(0,643.01795)">
