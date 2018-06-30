@@ -1,37 +1,22 @@
 pipeline {
   agent any
   options {
-    buildDiscarder(logRotator(numToKeepStr: "10"))
+    buildDiscarder(logRotator(numToKeepStr: '10'))
   }
   stages {
     stage('Build') {
       steps {
         echo 'Setup virtual environment'
         script {
-          sh """
-          pipenv install --dev
-          """
-        }
-        echo 'Install requirements.txt'
-        script {
-          sh """
-          . venv/bin/activate
-          pip install -r requirements.txt
-          """
+          sh 'pipenv install --dev'
         }
         echo 'Migrate database'
         script {
-          sh """
-          . venv/bin/activate
-          python manage.py migrate --noinput
-          """
+          sh 'pipenv run python manage.py migrate --noinput'
         }
         echo 'Collect static'
         script {
-          sh """
-          . venv/bin/activate
-          python manage.py collectstatic --noinput
-          """
+          sh 'pipenv run python manage.py collectstatic --noinput'
         }
       }
     }
@@ -39,11 +24,9 @@ pipeline {
       steps {
         echo 'This is the Testing Stage'
         script {
-          sh """
-          . venv/bin/activate
-          python manage.py jenkins --enable-coverage --settings=config.settings.test
-          """
+          sh 'pipenv run python manage.py jenkins --enable-coverage --settings=config.settings.test'
         }
+        /*
         script {
           sh """
           . venv/bin/activate
@@ -53,15 +36,16 @@ pipeline {
         cobertura(autoUpdateHealth: true, autoUpdateStability: true, coberturaReportFile: 'reports/coverage.xml')
         junit 'reports/junit.xml'
         step([
-          $class: "WarningsPublisher",
+          $class: 'WarningsPublisher',
           parserConfigurations: [[
-            parserName: "PyLint",
-            pattern: "reports/pylint.txt"
+            parserName: 'PyLint',
+            pattern: 'reports/pylint.txt'
           ]],
-          unstableTotalAll: "0",
+          unstableTotalAll: '0',
           usePreviousBuildAsReference: true
         ])
       }
+      */
     }
     stage('Deploy') {
       steps {
