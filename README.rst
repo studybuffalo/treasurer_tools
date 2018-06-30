@@ -1,7 +1,7 @@
 Treasurer Tools
 ===============
 
-A Django-based system to assist Non-Profit Organization treasurers in managing/tracking finances. Jenkins Testing.
+A Django-based system to assist Non-Profit Organization treasurers in managing/tracking finances.
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
