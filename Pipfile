@@ -31,6 +31,7 @@ coverage = "==4.5.1"  # https://github.com/nedbat/coveragepy
 
 # Django
 # ------------------------------------------------------------------------------
+django_coverage_plugin = ">=1.5.0" # https://github.com/nedbat/django_coverage_plugin
 django-debug-toolbar = "==1.9.1"  # https://github.com/jazzband/django-debug-toolbar
 django-jenkins = ">=0.110.0"  # https://github.com/kmmbvnr/django-jenkins
 pylint-common = ">=0.2.5"  # https://github.com/landscapeio/pylint-common
