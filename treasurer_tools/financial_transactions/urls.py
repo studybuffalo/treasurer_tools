@@ -6,6 +6,8 @@ from .views import (
     transaction_edit, transaction_delete, retrieve_financial_code_systems
 )
 
+app_name = "financial_transactions"
+
 urlpatterns = [
     url(r"^(?P<t_type>(expense|revenue))/add/$", transaction_add, name="add",),
     url(r"^(?P<t_type>(expense|revenue))/edit/(?P<transaction_id>\d+)$", transaction_edit, name="edit",),

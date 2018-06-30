@@ -5,7 +5,8 @@ from .views import (
     dashboard, statement_add, statement_edit, statement_delete
 )
 
-# pylint: disable=invalid-name
+app_name = "bank_transactions"
+
 urlpatterns = [
     url(r"^statement/add/$", statement_add, name="add"),
     url(r"^statement/edit/(?P<statement_id>\d+)$", statement_edit, name="edit"),

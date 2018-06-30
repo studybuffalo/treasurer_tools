@@ -1,6 +1,6 @@
 """Test cases for the payee_payer app"""
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from payee_payers.models import PayeePayer
@@ -45,7 +45,7 @@ class DashboardTest(TestCase):
         response = self.client.get(reverse("payee_payers:dashboard"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payer/index.html")
+        self.assertTemplateUsed(response, "payee_payers/index.html")
 
 class RetrieveListTest(TestCase):
     """Test functions for the Payee/Payer model"""
@@ -88,7 +88,7 @@ class RetrieveListTest(TestCase):
         response = self.client.get("/payee-payer/retrieve-payee-payer-list/")
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payer/payee_payer_list.html")
+        self.assertTemplateUsed(response, "payee_payers/payee_payer_list.html")
 
 class PayeePayerAddTest(TestCase):
     """Tests of the add payee/payer form page"""
@@ -143,7 +143,7 @@ class PayeePayerAddTest(TestCase):
         response = self.client.get(reverse("payee_payers:add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payer/add.html")
+        self.assertTemplateUsed(response, "payee_payers/add.html")
 
     def test_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -253,7 +253,7 @@ class PayeePayerEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payer/edit.html")
+        self.assertTemplateUsed(response, "payee_payers/edit.html")
 
     def test_payee_payer_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -344,7 +344,7 @@ class PayeePayerDeleteTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payer/delete.html")
+        self.assertTemplateUsed(response, "payee_payers/delete.html")
 
     def test_delete_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

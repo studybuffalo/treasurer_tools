@@ -11,132 +11,32 @@
         {% block title %}{% endblock %}
     </title>
 
-    <style>
-        /*
-            Colors
-                CSHP background green = 237, 244 242
-                CSHP blue = 40, 120, 200
-                CSHP orange = 241, 100, 69
-                CSHP other orange = 255, 128, 102
-                CSHP border grey = 69, 69, 69
-        */
-        html {
-            font-size: 62.5%;
-            height: 100%;
-        }
-
-        body {
-            background-color: rgb(255, 255, 255);
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 2rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        #header-bar {
-            background-color: rgb(237, 244, 242);
-            height: 5rem;
-            position: fixed;
-            width: 100%;
-            z-index: 5;
-        }
-
-        #sidebar {
-            background-color: rgb(40, 120, 200);
-            border: 1px solid rgb(69, 69, 69);
-            color: rgb(255, 255, 255);
-            height: 100%;
-            left: -300px;
-            margin: 5rem 0 0 0;
-            padding: 0;
-            position: fixed;
-            transition: all ease-in-out 0.5s;
-            width: 280px;
-            z-index: 2;
-        }
-
-            #sidebar.show-sidebar {
-                left: 0px;
-            }
-
-            #sidebar > ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-
-                #sidebar > ul > li {
-                    border-bottom: 1px solid rgb(255, 255, 255);
-                }
-
-                    #sidebar > ul > li > a {
-                        color: inherit;
-                        display: block;
-                        padding: 1rem 0.5rem;
-                        text-decoration: none;
-                    }
-
-                    #sidebar > ul > li > a.show-sub-menu + ul {
-                        height: auto;
-                    }
-
-                    #sidebar > ul > li > ul {
-                        color: rgb(0, 0, 0);
-                        height: 0;
-                        list-style: none;
-                        margin: 0;
-                        overflow: hidden;
-                        padding: 0;
-                    }
-
-                        #sidebar > ul > li > ul > li {
-                            background-color: rgb(255, 255, 255);
-                        }
-
-                            #sidebar > ul > li > ul > li > a {
-                                color: inherit;
-                                display: block;
-                                padding: 0.5rem 1rem;
-                                text-decoration: none;
-                            }
-
-        #main-container {
-            background: rgb(255, 255, 255);
-            margin: 0;
-            min-height: 100%;
-            min-width: 100%;
-            overflow-y: scroll;
-            padding: 0;
-            position: absolute;
-            z-index: 1;
-        }
-
-        #main-content {
-            box-sizing: border-box;
-            margin: 5rem 0 0 0;
-            padding: 0.5rem;
-            width: 100%;
-        }
-
-        .center_content {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-        }
-    </style>
-
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Libre+Franklin:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" media="all">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css" media="all">
     {% block styles %}{% endblock %}
 </head>
 
 <body>
-    <header id="header-bar">
-        <button id="toggle-sidebar">Minimize</button>
-        <!-- Other content: Search bar, settings, help? -->
+  <header id="header-bar">
+    {% if user.is_authenticated %}
+      <button id="toggle-sidebar" class="menu-button">
+        <span class="menu-icon-open" aria-label="open"></span>
+        <span class="menu-icon-close" aria-label="close"></span>
+        Menu
+      </button>
+    {% endif %}
 
-        <a href="{% url 'home' %}"><img src="" alt="Logo"></a>
-    </header>
+    <a href="{% url 'home' %}">
+      <img src="{% static 'images/logo.svg' %}" id="logo-image" alt="">
+      <img src="{% static 'images/logo_text.svg' %}" id="logo-text-image" alt="CSHP Alberta Branch">
+    </a>
+    <a href="{% url 'account_login' %}" class="login">Log in</a>
+  </header>
 
+  {% if user.is_authenticated %}
     <nav id="sidebar">
+<<<<<<< HEAD
         <ul>
             <li>
                 <a href="{% url 'home' %}">Home</a>
@@ -178,50 +78,94 @@
                 </ul>
             </li>
         </ul>
+=======
+      <ul>
+        <li>
+          <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li>
+          <a class="menu-header">Account Management</a>
+          <ul>
+            <li><a href="{% url 'account_profile' %}">Profile</a></li>
+            <li><a href="{% url 'account_logout' %}">Logout</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="{% url 'payee_payers:dashboard' %}">Manage payees and payers</a>
+        </li>
+        <li>
+          <a href="{% url 'financial_transactions:dashboard' %}">Transactions</a>
+        </li>
+        <li>
+          <a href="{% url 'investments:dashboard' %}">Investments</a>
+        </li>
+        <li>
+          <a href="{% url 'bank_transactions:dashboard' %}">Banking</a>
+        </li>
+        <li>
+          <a href="{% url 'reports:dashboard' %}">Reports</a>
+        </li>
+        <li>
+          <a class="menu-header">Admin and Branch Settings</a>
+          <ul>
+            <li><a href="">User management</a></li>
+            <li><a href="">Branch Details</a></li>
+            <li><a href="{% url 'financial_codes:dashboard' %}">Accounting Codes</a></li>
+            <li><a href="{% url 'bank_institutions:dashboard' %}">Banking details</a></li>
+          </ul>
+        </li>
+      </ul>
+>>>>>>> master
     </nav>
+  {% endif %}
 
-    <section id="main-container">
-        <div id="main-content">
-            {% block content %}
-            {% endblock %}
-        </div>
-    </section>
+  <section id="main-container">
+      <div id="main-content">
+          {% block content %}
+          {% endblock %}
+      </div>
+  </section>
 
-    <!-- JS files -->
-    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+  <!-- JS files -->
+  <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 
+  {% if user.is_authenticated %}
     <script>
-        function toggleSidebar() {
-            $("#sidebar").toggleClass("show-sidebar");
-        }
+      function toggleSidebar() {
+        $("#sidebar").toggleClass("show-sidebar");
+        $("#toggle-sidebar").toggleClass("open");
+      }
 
-        function hideSidebar() {
-            $("#sidebar").removeClass("show-sidebar");
-        }
+      function hideSidebar() {
+        $("#sidebar").removeClass("show-sidebar");
+        $("#toggle-sidebar").removeClass("open");
+      }
 
-        function showSubMenu(menuItem) {
-            // Reset the menu display
-            $("#sidebar").find(".show-sub-menu").removeClass("show-sub-menu");
+      function showSubMenu(menuItem) {
+        // Reset the menu display
+        $("#sidebar").find(".show-sub-menu").removeClass("show-sub-menu");
 
-            // Add display to this clicked item
-            $(menuItem).addClass("show-sub-menu");
-        }
+        // Add display to this clicked item
+        $(menuItem).addClass("show-sub-menu");
+      }
 
-        // Add event listeners
-        $(document).ready(function () {
-            $("#toggle-sidebar").on("click", function () {
-                toggleSidebar();
-            });
-
-            $("#main-container").on("click", function () {
-                hideSidebar();
-            });
-
-            $(".menu-header").on("click", function () {
-                showSubMenu(this);
-            })
+      // Add event listeners
+      $(document).ready(function () {
+        $("#toggle-sidebar").on("click", function () {
+          toggleSidebar();
         });
+
+        $("#main-container").on("click", function () {
+          hideSidebar();
+        });
+
+        $(".menu-header").on("click", function () {
+          showSubMenu(this);
+        })
+      });
     </script>
-    {% block js %}{% endblock %}
+  {% endif %}
+
+  {% block js %}{% endblock %}
 </body>
 </html>

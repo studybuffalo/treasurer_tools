@@ -5,6 +5,8 @@ from .views import (
     dashboard, retrieve_transactions, match_transactions, unmatch_transactions
 )
 
+app_name = "bank_reconciliation"
+
 urlpatterns = [
     url(r"^retrieve-transactions/", retrieve_transactions),
     url(r"^match-transactions/", match_transactions),

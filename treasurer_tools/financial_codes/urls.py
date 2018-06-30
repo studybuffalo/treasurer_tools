@@ -3,7 +3,8 @@ from django.conf.urls import url
 
 from . import views
 
-# pylint: disable=invalid-name
+app_name = "financial_codes"
+
 urlpatterns = [
     url(r"^system/add/", views.system_add, name="system_add"),
     url(r"^system/edit/(?P<system_id>\d+)$", views.system_edit, name="system_edit"),

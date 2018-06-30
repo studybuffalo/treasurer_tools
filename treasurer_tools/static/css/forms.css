@@ -23,3 +23,62 @@
 #form_content em {
     font-size: 1.2rem;
 }
+
+#form_content .financial-transaction-details {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+  #form_content .financial-transaction-details > div {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  #form_content .financial-transaction-items .formset-row > div {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  #main-content {
+    max-width: 1024px;
+  }
+
+  #logo-text-image {
+    display: inline-block;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  #form_content .financial-transaction-details {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .financial-transaction-details > div:nth-child(1) {
+    min-width: 200px;
+  }
+
+  .financial-transaction-details > div:nth-child(2) {
+    min-width: 200px;
+  }
+
+  .financial-transaction-details > div:nth-child(3) {
+    width: 200px;
+  }
+
+  #form_content .financial-transaction-items > .formset-row {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}

@@ -18,17 +18,20 @@
 <h1>CSHP Alberta Branch Expense Submissions</h1>
 
 <p>
-    Welcome to the CSHP Alberta Branch expense submissions page.
-    To get started, either <a href="{% url 'account_login' %}">login</a>
-    or <a href="">submit an expense</a>.
+  Welcome to the CSHP Alberta Branch expense submissions page.
 </p>
 
-<a id="button-submit" href="">
-    Submit an Expense
-</a>
+<p>
+  To submit an expense, enter in your access code below and click <b>Open expense claim form</b>
+</p>
 
-<a id="button-login" href="{% url 'account_login' %}">
-    Login
-</a>
+<div>
+  <label for="access-code">
+    Access code:
+    <input type="text" id="access-code">
+  </label>
+
+  <button>Open expense claim form</button>
+</div>
 
 {% endblock %}

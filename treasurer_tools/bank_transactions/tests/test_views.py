@@ -3,7 +3,7 @@
 import tempfile
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, override_settings
 
 from bank_transactions.models import Statement, BankTransaction
@@ -509,7 +509,7 @@ class StatementEditTest(TestCase):
         # Check for the expected error
         self.assertEqual(
             response.context["bank_transaction_formsets"][0].errors["statement"][0],
-            "The inline foreign key did not match the parent instance primary key."
+            "The inline value did not match the parent instance."
         )
 
     def test_statement_edit_delete_attachment(self):

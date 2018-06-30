@@ -3,7 +3,8 @@ from django.conf.urls import url
 
 from .views import dashboard, add, edit, delete
 
-# pylint: disable=invalid-name
+app_name = "bank_institutions"
+
 urlpatterns = [
     url(r"^institution/add/$", add, name="add"),
     url(r"^institution/edit/(?P<institution_id>\d+)$", edit, name="edit"),

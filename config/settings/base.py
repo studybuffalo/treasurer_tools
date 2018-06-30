@@ -26,12 +26,6 @@ DJANGO_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Useful template tags:
-    # 'django.contrib.humanize',
-
-    # Admin
-    #'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
     "allauth",
@@ -269,9 +263,6 @@ LOGIN_URL = 'account_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-
-# Location of root django.contrib.admin URL, use {% url 'admin:index' %}
-ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------

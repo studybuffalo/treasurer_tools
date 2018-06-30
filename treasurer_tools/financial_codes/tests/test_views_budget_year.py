@@ -1,6 +1,6 @@
 """Test cases for the financial_codes app budget year views"""
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from financial_codes.models import BudgetYear
