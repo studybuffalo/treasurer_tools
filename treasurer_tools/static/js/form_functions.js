@@ -1,6 +1,4 @@
-// TODO: Remove when form redesign complete
 function add_formset_row(e) {
-
     e.preventDefault();
 
     // Get the current number of items
@@ -17,8 +15,20 @@ function add_formset_row(e) {
     $("[id$=TOTAL_FORMS").val(count + 1);
 }
 
+function show_help_text(e, button) {
+    e.preventDefault();
+
+    const helpText = button.dataset.helpText;
+    // TODO: Change this to a modal
+    alert(helpText);
+}
+
 $(document).ready(function () {
     $("#add-formset-row").on("click", function (e) {
         add_formset_row(e);
     });
+
+    $(".input-help").on("click", function(e) {
+        show_help_text(e, this);
+    })
 });

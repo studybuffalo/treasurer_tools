@@ -7,6 +7,7 @@
         CSHP border grey = 69, 69, 69
 */
 
+/* GENERAL STYLES */
 html {
     font-size: 62.5%;
     height: 100%;
@@ -30,6 +31,49 @@ h1 {
   line-height: 3.25rem;
 }
 
+.rem1 {
+  width: 1rem;
+}
+
+.rem2 {
+  width: 2rem;
+}
+
+.rem3 {
+  width: 3rem;
+}
+
+.rem4 {
+  width: 4rem;
+}
+
+.rem5 {
+  width: 5rem;
+}
+
+.rem6 {
+  width: 6rem;
+}
+
+.rem7 {
+  width: 7rem;
+}
+
+.rem8 {
+  width: 8rem;
+}
+
+.rem9 {
+  width: 9rem;
+}
+
+.rem10 {
+  width: 10rem;
+}
+
+.right-align {
+  text-align: right;
+}
 #header-bar {
   align-items: center;
   background-color: rgb(237, 244, 242);

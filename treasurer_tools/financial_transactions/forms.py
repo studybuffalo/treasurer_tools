@@ -285,6 +285,7 @@ class CompiledForms(object):
             # Setup the proper prefix for the form fields
             prefix = "item_set-__prefix__-coding_set-{}".format(form_id)
 
+            # TODO: figure out why an error is occuring in the code field
             financial_code_forms.append({
                 "name": str(system),
                 "form": FinancialCodeAssignmentForm(

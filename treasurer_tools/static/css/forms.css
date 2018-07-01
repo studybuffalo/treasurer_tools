@@ -1,3 +1,4 @@
+/* REMOVE THESE WHEN FORM STYLES ARE FINALIZED */
 #form_content > div {
     align-items: flex-start;
     display: flex;
@@ -59,6 +60,22 @@
     justify-content: flex-start;
   }
 
+
+
+.flex-col {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.input-flex-col {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   #main-content {
     max-width: 1024px;
@@ -66,6 +83,14 @@
 
   #logo-text-image {
     display: inline-block;
+  }
+
+  .flex-ctr-m {
+    flex-direction: row !important;
+  }
+
+  .input-flex-ctr-m {
+    flex-direction: row !important;
   }
 }
 
@@ -90,6 +115,22 @@
     flex-direction: row;
   }
 
+    .item-details > div:nth-child(1) {
+      width: 150px;
+    }
+
+    .item-details > div:nth-child(2) {
+      min-width: 200px;
+    }
+
+    .item-details > div:nth-child(3) {
+      width: 150px;
+    }
+
+    .item-details > div:nth-child(4) {
+      width: 150px;
+    }
+
   .financial-code-systems {
     flex-direction: row;
   }
@@ -97,4 +138,16 @@
     .financial-code-systems > fieldset {
       flex-direction: row;
     }
+
+      .financial-code-systems > fieldset > div:nth-child(1) {
+        width: 150px;
+      }
+
+  .flex-ctr-l {
+    flex-direction: row !important;
+  }
+
+  .input-flex-ctr-l {
+    flex-direction: row !important;
+  }
 }

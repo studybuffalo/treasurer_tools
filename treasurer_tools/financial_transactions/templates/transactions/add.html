@@ -4,6 +4,55 @@
 
 {% block styles %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+
+  <style>
+    .payee {
+      flex: 0 2 350px;
+    }
+
+    .memo {
+      flex: 0 2 350px;
+    }
+
+    .submission-date {
+      flex: 0 1 200px;
+    }
+
+      /* TODO: Remove !important when finished form styling */
+      .submission-date input {
+        width: 9rem !important;
+      }
+
+    .date {
+      flex: 0 1 100px;
+    }
+
+      .date input {
+        width: 9rem !important;
+      }
+
+    .description {
+      flex: 0 2 350px;
+    }
+
+    .amount {
+      flex: 0 1 150px;
+    }
+
+      /* TODO: Remove !important when finished form styling */
+      .amount input {
+        width: 9rem !important;
+      }
+
+    .gst {
+      flex: 0 1 150px;
+    }
+
+      /* TODO: Remove !important when finished form styling */
+      .gst input {
+        width: 9rem !important;
+      }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -18,33 +67,25 @@
       <div id="form_content">
         {% include 'main/errors.html' with errors=form.transaction_form.non_field_errors %}
 
-        <div class="financial-transaction-details">
-          {% for field in form.transaction_form.visible_fields %}
-            <div>
-              {{ field.label_tag }}
+        <div class="flex-col flex-ctr-m flex-ctr-l payee">
+          <div class="input-flex-col">
+            {% include 'main/input_field.html' with field=form.transaction_form.payee_payer %}
+          </div>
 
-              <span>
-                {{ field }}
-              </span>
+          <div class="input-flex-col memo">
+            {% include 'main/input_field.html' with field=form.transaction_form.memo %}
+          </div>
 
-              <em>
-                {{ field.help_text }}
-              </em>
+          <div class="input-flex-col submission-date">
+            {% include 'main/input_field.html' with field=form.transaction_form.date_submitted %}
+          </div>
 
-              {% include 'main/errors.html' with errors=field.errors %}
-            </div>
+          {% for field in form.transaction_form.hidden_fields %}
+            {{ field }}
           {% endfor %}
         </div>
 
-        {% for field in form.transaction_form.hidden_fields %}
-          <div>
-            {{ field }}
-          </div>
-
-          {% include 'main/errors.html' with errors=field.errors %}
-        {% endfor %}
-
-        <fieldset class="financial-transaction-items">
+        <fieldset>
           <legend>Transaction Items</legend>
 
           {{ form.item_formset.management_form }}
@@ -53,100 +94,75 @@
             {% include 'main/errors.html' with errors=form.item_formset.non_form_errors %}
 
             {% for group in formsets %}
-              {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
-
               <div class="formset-row">
-                <div class="item-details">
-                  {% for field in group.item_formset.visible_fields %}
-                    <div>
-                      {{ field.label_tag }}
+                {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
 
-                      <span>
-                        {{ field }}
-                      </span>
+                <div class="flex-col flex-ctr-m flex-ctr-l">
+                  <div class="input-flex-col date">
+                    {% include 'main/input_field.html' with field=group.item_formset.date_item %}
+                  </div>
 
-                      <em>
-                        {{ field.help_text }}
-                      </em>
+                  <div class="input-flex-col description">
+                    {% include 'main/input_field.html' with field=group.item_formset.description %}
+                  </div>
 
-                      {% include 'main/errors.html' with errors=field.errors %}
-                    </div>
+                  <div class="input-flex-col amount">
+                    {% include 'main/input_field.html' with field=group.item_formset.amount %}
+                  </div>
+
+                  <div class="input-flex-col gst">
+                    {% include 'main/input_field.html' with field=group.item_formset.gst %}
+                  </div>
+
+                  {% for field in group.item_formset.hidden_fields %}
+                    {{ field }}
                   {% endfor %}
                 </div>
 
-                {% for field in group.item_formset.hidden_fields %}
-                  {{ field }}
-
-                  {% include 'main/errors.html' with errors=field.errors %}
-                {% endfor %}
-
-                <div class="financial-code-systems">
+                <div class="flex-col flex-ctr-m flex-ctr-l">
                   {% for financial_code_form in group.financial_code_forms %}
                     <fieldset>
                       <legend>{{ financial_code_form.system }}</legend>
 
                       {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
 
-                      {% for field in financial_code_form.form.visible_fields %}
-                        <div>
-                          {{ field.label_tag }}
+                      <div class="input-flex-col">
+                        {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+                      </div>
 
-                          <span>
-                            {{ field }}
-                          </span>
-
-                          <em>
-                            {{ field.help_text }}
-                          </em>
-
-                          {% include 'main/errors.html' with errors=field.errors %}
-                        </div>
-                      {% endfor %}
+                      <div class="input-flex-col">
+                        {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+                      </div>
 
                       {% for field in financial_code_form.form.hidden_fields %}
                         {{ field }}
-
-                        {% include 'main/errors.html' with errors=field.errors %}
                       {% endfor %}
-                      <hr>
                     </fieldset>
                   {% endfor %}
                 </div>
               </div>
-
-              <hr>
             {% endfor %}
           {% endwith %}
 
+          <hr>
+
           <div>
-              <button id="add-formset-row">Add item</button>
+            <button id="add-formset-row">Add item</button>
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Attachments</legend>
 
-          <div>
-            {% for field in form.new_attachment_form.visible_fields %}
-              {{ field.label_tag }}
-
-              <span>
-                {{ field }}
-              </span>
-
-              <em>
-                {{ field.help_text }}
-              </em>
-
-              {% include 'main/errors.html' with errors=field.errors %}
-            {% endfor %}
+          <div class="flex-col flex-ctr-m flex-ctr-l">
+            <div class="input-flex-col">
+              {% include 'main/input_field.html' with field=form.new_attachment_form.attachment_files %}
+            </div>
 
             {% for field in form.attachment_form.hidden_fields %}
               {{ field }}
-
-              {% include 'main/errors.html' with errors=field.errors %}
             {% endfor %}
-          </div>
+          <div>
 
           <ul>
             {{ form.old_attachment_formset.management_form }}
@@ -168,7 +184,7 @@
         </fieldset>
       </div>
 
-      <div class="right_align">
+      <div class="right-align">
         <button type="submit">Add new {{ page_name|lower }}</button>
       </div>
     {% endwith %}
@@ -178,6 +194,6 @@
 {% block js %}
   {% include 'transactions/formset_template.html' %}
 
-  <script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/form_functions.js' %}"></script>
   <script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
 {% endblock %}

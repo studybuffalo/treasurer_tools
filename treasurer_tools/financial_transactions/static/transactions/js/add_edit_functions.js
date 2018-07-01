@@ -58,6 +58,13 @@ function add_event_listeners_to_new_formset_row(e) {
             update_financial_code(this);
         });
     });
+
+    // Cycle through each help button
+    $lastRow.find("button.input-help").each(function (index, button) {
+        $(button).on("click", function(e) {
+            show_help_text(e, this);
+        });
+    });
 }
 
 $(document).ready(function () {

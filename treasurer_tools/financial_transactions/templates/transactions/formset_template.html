@@ -1,47 +1,41 @@
 <script type="text/html" id="formset-template">
   <div class="formset-row">
-    <div class="item-details">
-      {% for field in forms.forms.item_formset.empty_form.visible_fields %}
-        <div>
-          {{ field.label_tag }}
+    <div class="flex-col flex-ctr-m flex-ctr-l">
+      <div class="input-flex-col date">
+        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.date_item %}
+      </div>
 
-          <span>
-            {{ field }}
-          </span>
+      <div class="input-flex-col description">
+        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.description %}
+      </div>
 
-          <em>
-            {{ field.help_text }}
-          </em>
-        </div>
+      <div class="input-flex-col amount">
+        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.amount %}
+      </div>
+
+      <div class="input-flex-col gst">
+        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.gst %}
+      </div>
+
+      {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
+        {{ field }}
       {% endfor %}
     </div>
 
-    {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
-      {{ field }}
-    {% endfor %}
-
-    <div class="financial-code-systems">
-      {% for form in forms.empty_financial_code_form %}
+    <div class="flex-col flex-ctr-m flex-ctr-l">
+      {% for financial_code_form in forms.empty_financial_code_form %}
         <fieldset>
-          <legend>{{ form.system }}</legend>
+          <legend>{{ financial_code_form.name }}</legend>
 
-          {% include 'main/errors.html' with errors=form.form.non_field_errors %}
+          <div class="input-flex-col">
+            {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+          </div>
 
-          {% for field in form.form.visible_fields %}
-            <div>
-              {{ field.label_tag }}
+          <div class="input-flex-col">
+            {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+          </div>
 
-              <span>
-                {{ field }}
-              </span>
-
-              <em>
-                {{ field.help_text }}
-              </em>
-            </div>
-          {% endfor %}
-
-          {% for field in form.form.hidden_fields %}
+          {% for field in financial_code_form.form.hidden_fields %}
             {{ field }}
           {% endfor %}
         </fieldset>
