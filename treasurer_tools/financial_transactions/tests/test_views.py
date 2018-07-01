@@ -324,12 +324,12 @@ class RetrieveFinancialCodeSystemTest(TestCase):
         # Check that the proper systems are retrieved
         self.assertEqual(
             forms[0].system,
-            "National (2010-01-01 to Present)"
+            "National"
         )
 
         self.assertEqual(
             forms[1].system,
-            "Regional (2000-01-01 to 2020-12-31)"
+            "Regional"
         )
 
         # Check that a financial code form is provided
