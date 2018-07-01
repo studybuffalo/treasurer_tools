@@ -1,0 +1,23 @@
+{
+  "name": "treasurer_tools",
+  "version": "1.0.0",
+  "description": "Treasurer Tools ===============",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studybuffalo/treasurer_tools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/studybuffalo/treasurer_tools/issues"
+  },
+  "homepage": "https://github.com/studybuffalo/treasurer_tools#readme"
+}
