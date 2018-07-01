@@ -3,55 +3,63 @@
 {% load static %}
 
 {% block styles %}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'transactions/css/forms_custom.css' %}">
 
   <style>
-    .payee {
-      flex: 0 2 350px;
+    #transaction-items {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "header-date header-description header-amount header-gst header-national header-national header-regional header-regional"
+        "header-date header-description header-amount header-gst header-year-1 header-code-1 header-year-2 header-code-2"
+        ". . . . . . . ."
     }
 
-    .memo {
-      flex: 0 2 350px;
+    .header-date {
+      grid-area: header-date;
     }
 
-    .submission-date {
-      flex: 0 1 200px;
+    .header-description {
+      grid-area: header-description;
     }
 
-      /* TODO: Remove !important when finished form styling */
-      .submission-date input {
-        width: 9rem !important;
-      }
-
-    .date {
-      flex: 0 1 100px;
+    .header-amount {
+      grid-area: header-amount;
     }
 
-      .date input {
-        width: 9rem !important;
-      }
-
-    .description {
-      flex: 0 2 350px;
+    .header-gst {
+      grid-area: header-gst;
     }
 
-    .amount {
-      flex: 0 1 150px;
+    .header-national {
+      grid-area: header-national;
     }
 
-      /* TODO: Remove !important when finished form styling */
-      .amount input {
-        width: 9rem !important;
-      }
-
-    .gst {
-      flex: 0 1 150px;
+    .header-regional {
+      grid-area: header-regional;
     }
 
-      /* TODO: Remove !important when finished form styling */
-      .gst input {
-        width: 9rem !important;
-      }
+    .header-year-1 {
+      grid-area: header-year-1;
+    }
+
+    .header-code-1 {
+      grid-area: header-code-1;
+    }
+
+    .header-year-2 {
+      grid-area: header-year-2;
+    }
+
+    .header-code-2 {
+      grid-area: header-code-2;
+    }
+
+    .add {
+      grid-area: add;
+    }
   </style>
 {% endblock %}
 
@@ -64,92 +72,99 @@
     {% csrf_token %}
 
     {% with forms.forms as form %}
-      <div id="form_content">
-        {% include 'main/errors.html' with errors=form.transaction_form.non_field_errors %}
+      {% include 'main/errors.html' with errors=form.transaction_form.non_field_errors %}
 
-        <div class="flex-col flex-ctr-m flex-ctr-l payee">
-          <div class="input-flex-col">
-            {% include 'main/input_field.html' with field=form.transaction_form.payee_payer %}
-          </div>
-
-          <div class="input-flex-col memo">
-            {% include 'main/input_field.html' with field=form.transaction_form.memo %}
-          </div>
-
-          <div class="input-flex-col submission-date">
-            {% include 'main/input_field.html' with field=form.transaction_form.date_submitted %}
-          </div>
-
-          {% for field in form.transaction_form.hidden_fields %}
-            {{ field }}
-          {% endfor %}
+      <div class="flex-col flex-ctr-m flex-ctr-l payee">
+        <div class="input-flex-col">
+          {% include 'main/input_field.html' with field=form.transaction_form.payee_payer %}
         </div>
 
-        <fieldset>
+        <div class="input-flex-col memo">
+          {% include 'main/input_field.html' with field=form.transaction_form.memo %}
+        </div>
+
+        <div class="input-flex-col submission-date">
+          {% include 'main/input_field.html' with field=form.transaction_form.date_submitted %}
+        </div>
+
+        {% for field in form.transaction_form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+      </div>
+
+        <fieldset id="transaction-items">
           <legend>Transaction Items</legend>
 
-          {{ form.item_formset.management_form }}
+          <!-- Header for table view -->
+          {% with forms.forms.item_formset.empty_form as header %}
+            <div class="header-date">{{ header.date_item.label }}</div>
+            <div class="header-description">{{ header.description.label }}</div>
+            <div class="header-amount">{{ header.amount.label }}</div>
+            <div class="header-gst">{{ header.gst.label }}</div>
+
+            {% with forms.empty_financial_code_form.0 as financial_code_form %}
+              <div class="header-national">{{ financial_code_form.name }}</div>
+              <div class="header-year-1">{{ financial_code_form.form.budget_year.label }}</div>
+              <div class="header-code-1">{{ financial_code_form.form.code.label }}</div>
+            {% endwith %}
+
+            {% with forms.empty_financial_code_form.1 as financial_code_form %}
+              <div class="header-regional">{{ financial_code_form.name }}</div>
+              <div class="header-year-2">{{ financial_code_form.form.budget_year.label }}</div>
+              <div class="header-code-2">{{ financial_code_form.form.code.label }}</div>
+            {% endwith %}
+          {% endwith %}
 
           {% with form.item_formsets as formsets %}
             {% include 'main/errors.html' with errors=form.item_formset.non_form_errors %}
 
             {% for group in formsets %}
-              <div class="formset-row">
-                {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
+              {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
 
-                <div class="flex-col flex-ctr-m flex-ctr-l">
-                  <div class="input-flex-col date">
-                    {% include 'main/input_field.html' with field=group.item_formset.date_item %}
-                  </div>
-
-                  <div class="input-flex-col description">
-                    {% include 'main/input_field.html' with field=group.item_formset.description %}
-                  </div>
-
-                  <div class="input-flex-col amount">
-                    {% include 'main/input_field.html' with field=group.item_formset.amount %}
-                  </div>
-
-                  <div class="input-flex-col gst">
-                    {% include 'main/input_field.html' with field=group.item_formset.gst %}
-                  </div>
-
-                  {% for field in group.item_formset.hidden_fields %}
-                    {{ field }}
-                  {% endfor %}
-                </div>
-
-                <div class="flex-col flex-ctr-m flex-ctr-l">
-                  {% for financial_code_form in group.financial_code_forms %}
-                    <fieldset>
-                      <legend>{{ financial_code_form.system }}</legend>
-
-                      {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
-
-                      <div class="input-flex-col">
-                        {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
-                      </div>
-
-                      <div class="input-flex-col">
-                        {% include 'main/input_field.html' with field=financial_code_form.form.code %}
-                      </div>
-
-                      {% for field in financial_code_form.form.hidden_fields %}
-                        {{ field }}
-                      {% endfor %}
-                    </fieldset>
-                  {% endfor %}
-                </div>
+              <div class="date">
+                {% include 'main/input_field.html' with field=group.item_formset.date_item %}
               </div>
+
+              <div class="description">
+                {% include 'main/input_field.html' with field=group.item_formset.description %}
+              </div>
+
+              <div class="amount">
+                {% include 'main/input_field.html' with field=group.item_formset.amount %}
+              </div>
+
+              <div class="gst">
+                {% include 'main/input_field.html' with field=group.item_formset.gst %}
+              </div>
+
+              {% for field in group.item_formset.hidden_fields %}
+                {{ field }}
+              {% endfor %}
+
+              {% for financial_code_form in group.financial_code_forms %}
+                {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
+
+                <div>
+                  {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+                </div>
+
+                <div>
+                  {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+                </div>
+
+                {% for field in financial_code_form.form.hidden_fields %}
+                  {{ field }}
+                {% endfor %}
+              {% endfor %}
             {% endfor %}
           {% endwith %}
-
-          <hr>
-
-          <div>
-            <button id="add-formset-row">Add item</button>
-          </div>
         </fieldset>
+
+        <div class="add">
+          <button id="add-item">Add item</button>
+        </div>
+
+        {{ form.item_formset.management_form }}
 
         <fieldset>
           <legend>Attachments</legend>

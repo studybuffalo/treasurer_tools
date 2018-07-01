@@ -5,5 +5,5 @@
     <button class="input-help" data-help-text="{{ field.help_text }}"></button>
   {% endif %}
 </label>
-<span>{{ field }}</span>
+{{ field }}
 {% include 'main/errors.html' with errors=field.errors %}

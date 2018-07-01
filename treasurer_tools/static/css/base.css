@@ -74,6 +74,7 @@ h1 {
 .right-align {
   text-align: right;
 }
+
 #header-bar {
   align-items: center;
   background-color: rgb(237, 244, 242);
@@ -253,7 +254,7 @@ h1 {
 
 @media screen and (min-width: 1024px) {
   #main-content {
-    max-width: 1024px;
+    max-width: 1400px;
   }
 
   #logo-text-image {

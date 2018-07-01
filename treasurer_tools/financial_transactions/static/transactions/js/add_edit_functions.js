@@ -41,9 +41,21 @@ function reset_financial_code(yearSelect) {
     $fieldset.find('[id*="-code"]').val("");
 }
 
-function add_event_listeners_to_new_formset_row(e) {
-    e.preventDefault;
+function add_item() {
+    // Get the current number of items
+    var count = Number($("[id$=TOTAL_FORMS").val());
 
+    // Get the template and replace it with the proper item ID
+    var template = $("#item-template").html();
+    var replacedTemplate = template.replace(/__prefix__/g, count);
+    // Add the replaced template after the last formset-row
+    $("#transaction-items").append(replacedTemplate);
+
+    // Update the form count
+    $("[id$=TOTAL_FORMS").val(count + 1);
+}
+
+function add_event_listeners_to_new_formset_row(e) {
     // Get the last formset row (i.e. the added row)
     const $lastRow = $(".formset-row:last");
 
@@ -73,7 +85,9 @@ $(document).ready(function () {
         update_financial_code(this);
     });
 
-    $("#add-formset-row").on("click", function (e) {
+    $("#add-item").on("click", function (e) {
+        e.preventDefault();
+        add_item();
         add_event_listeners_to_new_formset_row(e);
     });
 

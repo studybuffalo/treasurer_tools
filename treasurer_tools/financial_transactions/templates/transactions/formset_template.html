@@ -1,47 +1,35 @@
-<script type="text/html" id="formset-template">
-  <div class="formset-row">
-    <div class="flex-col flex-ctr-m flex-ctr-l">
-      <div class="input-flex-col date">
-        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.date_item %}
-      </div>
-
-      <div class="input-flex-col description">
-        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.description %}
-      </div>
-
-      <div class="input-flex-col amount">
-        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.amount %}
-      </div>
-
-      <div class="input-flex-col gst">
-        {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.gst %}
-      </div>
-
-      {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
-        {{ field }}
-      {% endfor %}
-    </div>
-
-    <div class="flex-col flex-ctr-m flex-ctr-l">
-      {% for financial_code_form in forms.empty_financial_code_form %}
-        <fieldset>
-          <legend>{{ financial_code_form.name }}</legend>
-
-          <div class="input-flex-col">
-            {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
-          </div>
-
-          <div class="input-flex-col">
-            {% include 'main/input_field.html' with field=financial_code_form.form.code %}
-          </div>
-
-          {% for field in financial_code_form.form.hidden_fields %}
-            {{ field }}
-          {% endfor %}
-        </fieldset>
-      {% endfor %}
-    </div>
+<script type="text/html" id="item-template">
+  <div class="date">
+    {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.date_item %}
   </div>
 
-  <hr>
+  <div class="description">
+    {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.description %}
+  </div>
+
+  <div class="amount">
+    {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.amount %}
+  </div>
+
+  <div class="gst">
+    {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.gst %}
+  </div>
+
+  {% for field in forms.item_formset.empty_form.hidden_fields %}
+    {{ field }}
+  {% endfor %}
+
+  {% for financial_code_form in forms.empty_financial_code_form %}
+    <div>
+      {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+    </div>
+
+    <div>
+      {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+    </div>
+
+    {% for field in financial_code_form.form.hidden_fields %}
+      {{ field }}
+    {% endfor %}
+  {% endfor %}
 </script>
