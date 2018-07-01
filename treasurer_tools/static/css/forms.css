@@ -76,6 +76,26 @@
   justify-content: flex-start;
 }
 
+.input-help {
+  background-color: transparent;
+  border: none;
+  color: rgb(50, 50, 50);
+  cursor: pointer;
+  font-family: FontAwesome;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: normal;
+  transition: color ease-in-out 0.15s;
+}
+
+  .input-help::before {
+    content: "\f059";
+  }
+
+  .input-help:hover {
+    color: rgb(40, 120, 200);
+  }
+
 #attachment-drop-zone {
   align-items: center;
   background-color: rgb(237, 244, 242);

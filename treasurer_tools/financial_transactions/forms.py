@@ -113,7 +113,7 @@ class CompiledForms(object):
 
             # Add the form and a system title to the list
             financial_code_forms.append(self.FinancialCodeLevel(
-                financial_code_system=str(system),
+                financial_code_system=system.title,
                 financial_code_form=financial_code_form
             ))
 
@@ -287,7 +287,7 @@ class CompiledForms(object):
 
             # TODO: figure out why an error is occuring in the code field
             financial_code_forms.append({
-                "name": str(system),
+                "name": system.title,
                 "form": FinancialCodeAssignmentForm(
                     {},
                     prefix=prefix,
