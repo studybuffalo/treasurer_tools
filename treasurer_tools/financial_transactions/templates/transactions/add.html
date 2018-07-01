@@ -56,19 +56,21 @@
               {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
 
               <div class="formset-row">
-                <div>
+                <div class="item-details">
                   {% for field in group.item_formset.visible_fields %}
-                    {{ field.label_tag }}
+                    <div>
+                      {{ field.label_tag }}
 
-                    <span>
-                      {{ field }}
-                    </span>
+                      <span>
+                        {{ field }}
+                      </span>
 
-                    <em>
-                      {{ field.help_text }}
-                    </em>
+                      <em>
+                        {{ field.help_text }}
+                      </em>
 
-                    {% include 'main/errors.html' with errors=field.errors %}
+                      {% include 'main/errors.html' with errors=field.errors %}
+                    </div>
                   {% endfor %}
                 </div>
 
@@ -86,17 +88,19 @@
                       {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
 
                       {% for field in financial_code_form.form.visible_fields %}
-                        {{ field.label_tag }}
+                        <div>
+                          {{ field.label_tag }}
 
-                        <span>
-                          {{ field }}
-                        </span>
+                          <span>
+                            {{ field }}
+                          </span>
 
-                        <em>
-                          {{ field.help_text }}
-                        </em>
+                          <em>
+                            {{ field.help_text }}
+                          </em>
 
-                        {% include 'main/errors.html' with errors=field.errors %}
+                          {% include 'main/errors.html' with errors=field.errors %}
+                        </div>
                       {% endfor %}
 
                       {% for field in financial_code_form.form.hidden_fields %}

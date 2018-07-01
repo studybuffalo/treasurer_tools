@@ -38,7 +38,21 @@
     justify-content: flex-start;
   }
 
-  #form_content .financial-transaction-items .formset-row > div {
+.item-details {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.financial-code-systems {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+  .financial-code-systems > fieldset {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -57,10 +71,7 @@
 
 @media screen and (min-width: 1024px) {
   #form_content .financial-transaction-details {
-    align-items: flex-start;
-    display: flex;
     flex-direction: row;
-    justify-content: flex-start;
   }
 
   .financial-transaction-details > div:nth-child(1) {
@@ -75,10 +86,15 @@
     width: 200px;
   }
 
-  #form_content .financial-transaction-items > .formset-row {
-    align-items: flex-start;
-    display: flex;
+  .item-details {
     flex-direction: row;
-    justify-content: flex-start;
   }
+
+  .financial-code-systems {
+    flex-direction: row;
+  }
+
+    .financial-code-systems > fieldset {
+      flex-direction: row;
+    }
 }

@@ -1,45 +1,53 @@
 <script type="text/html" id="formset-template">
-    <div class="formset-row">
-        {% for field in forms.forms.item_formset.empty_form.visible_fields %}
-            {{ field.label_tag }}
+  <div class="formset-row">
+    <div class="item-details">
+      {% for field in forms.forms.item_formset.empty_form.visible_fields %}
+        <div>
+          {{ field.label_tag }}
 
-            <span>
-                {{ field }}
-            </span>
-            <em>
-                {{ field.help_text }}
-            </em>
-        {% endfor %}
-
-        {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
+          <span>
             {{ field }}
-        {% endfor %}
+          </span>
 
-        <div class="financial-code-systems">
-            {% for form in forms.empty_financial_code_form %}
-                <fieldset>
-                    <legend>{{ form.name }}</legend>
-                                
-                    {% for field in form.form.visible_fields %}
-                        {{ field.label_tag }}
-
-                        <span>
-                            {{ field }}
-                        </span>
-
-                        <em>
-                            {{ field.help_text }}
-                        </em>
-                    {% endfor %}
-                                
-                    {% for field in form.form.hidden_fields %}
-                        {{ field }}
-                    {% endfor %}
-                    <hr>
-                </fieldset>
-            {% endfor %}
+          <em>
+            {{ field.help_text }}
+          </em>
         </div>
+      {% endfor %}
     </div>
 
-    <hr>
+    {% for field in forms.forms.item_formset.empty_form.hidden_fields %}
+      {{ field }}
+    {% endfor %}
+
+    <div class="financial-code-systems">
+      {% for form in forms.empty_financial_code_form %}
+        <fieldset>
+          <legend>{{ form.system }}</legend>
+
+          {% include 'main/errors.html' with errors=form.form.non_field_errors %}
+
+          {% for field in form.form.visible_fields %}
+            <div>
+              {{ field.label_tag }}
+
+              <span>
+                {{ field }}
+              </span>
+
+              <em>
+                {{ field.help_text }}
+              </em>
+            </div>
+          {% endfor %}
+
+          {% for field in form.form.hidden_fields %}
+            {{ field }}
+          {% endfor %}
+        </fieldset>
+      {% endfor %}
+    </div>
+  </div>
+
+  <hr>
 </script>
