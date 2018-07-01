@@ -9,57 +9,80 @@
   <style>
     #transaction-items {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1fr;
       grid-template-rows: auto;
-      grid-template-areas:
-        "header-date header-description header-amount header-gst header-national header-national header-regional header-regional"
-        "header-date header-description header-amount header-gst header-year-1 header-code-1 header-year-2 header-code-2"
-        ". . . . . . . ."
     }
 
-    .header-date {
-      grid-area: header-date;
+    .header-date, .header-description, .header-amount, .header-gst, .header-national,
+    .header-regional, .header-year-1, .header-code-1, .header-year-2, .header-code-2 {
+      display: none;
     }
 
-    .header-description {
-      grid-area: header-description;
+    @media screen and (min-width: 1024px) {
+      #transaction-items {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+          "header-date header-description header-amount header-gst header-national header-national header-regional header-regional"
+          "header-date header-description header-amount header-gst header-year-1 header-code-1 header-year-2 header-code-2"
+          ". . . . . . . ."
+      }
+      .header-date {
+        display: block;
+        grid-area: header-date;
+      }
+
+      .header-description {
+        display: block;
+        grid-area: header-description;
+      }
+
+      .header-amount {
+        display: block;
+        grid-area: header-amount;
+      }
+
+      .header-gst {
+        display: block;
+        grid-area: header-gst;
+      }
+
+      .header-national {
+        display: block;
+        grid-area: header-national;
+      }
+
+      .header-regional {
+        display: block;
+        grid-area: header-regional;
+      }
+
+      .header-year-1 {
+        display: block;
+        grid-area: header-year-1;
+      }
+
+      .header-code-1 {
+        display: block;
+        grid-area: header-code-1;
+      }
+
+      .header-year-2 {
+        display: block;
+        grid-area: header-year-2;
+      }
+
+      .header-code-2 {
+        display: block;
+        grid-area: header-code-2;
+      }
+
+      .add {
+        grid-area: add;
+      }
     }
 
-    .header-amount {
-      grid-area: header-amount;
-    }
-
-    .header-gst {
-      grid-area: header-gst;
-    }
-
-    .header-national {
-      grid-area: header-national;
-    }
-
-    .header-regional {
-      grid-area: header-regional;
-    }
-
-    .header-year-1 {
-      grid-area: header-year-1;
-    }
-
-    .header-code-1 {
-      grid-area: header-code-1;
-    }
-
-    .header-year-2 {
-      grid-area: header-year-2;
-    }
-
-    .header-code-2 {
-      grid-area: header-code-2;
-    }
-
-    .add {
-      grid-area: add;
-    }
   </style>
 {% endblock %}
 
@@ -200,10 +223,10 @@
             {% endfor %}
           </ul>
         </fieldset>
-      </div>
 
-      <div class="right-align">
-        <button type="submit">Add new {{ page_name|lower }}</button>
+        <div class="right-align">
+          <button type="submit">Add new {{ page_name|lower }}</button>
+        </div>
       </div>
     {% endwith %}
   </form>
