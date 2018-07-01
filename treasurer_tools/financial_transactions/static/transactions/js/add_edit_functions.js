@@ -81,4 +81,29 @@ $(document).ready(function () {
     $('[id*="-budget_year"]').each(function (index, select) {
         update_financial_code(select);
     });
+
+    // Handles drag and drop attachment functionality
+    $("#attachment-drop-zone").on("drop", function(e) {
+        e.preventDefault();
+
+        const attachmentInput = document.getElementById("id_newattachment-attachment_files");
+
+        // Add files to the attachment input
+        attachmentInput.files = e.originalEvent.dataTransfer.files;
+
+        // Update the input to show the file
+        attachmentInput.dispatchEvent(new Event('change'))
+    });
+
+    $("#attachment-drop-zone").on("dragover dragenter", function(e) {
+        e.preventDefault();
+
+        $("#attachment-drop-zone").addClass("is-dragover");
+    });
+
+    $("#attachment-drop-zone").on("dragleave dragend drop", function(e) {
+        e.preventDefault();
+
+        $("#attachment-drop-zone").removeClass("is-dragover");
+    });
 });

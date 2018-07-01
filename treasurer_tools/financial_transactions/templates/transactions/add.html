@@ -153,11 +153,14 @@
 
         <fieldset>
           <legend>Attachments</legend>
-
+          <!-- TODO: Improve UI for this drag and drop box -->
           <div class="flex-col flex-ctr-m flex-ctr-l">
-            <div class="input-flex-col">
-              {% include 'main/input_field.html' with field=form.new_attachment_form.attachment_files %}
-            </div>
+            <label for="{{ form.new_attachment_form.attachment_files.id_for_label }}" id="attachment-drop-zone" class="input-flex-col">
+                Drag attachments here or click the button below
+
+              {{ form.new_attachment_form.attachment_files }}
+              {% include 'main/errors.html' with errors=form.new_attachment_form.attachment_files.errors %}
+            </label>
 
             {% for field in form.attachment_form.hidden_fields %}
               {{ field }}
