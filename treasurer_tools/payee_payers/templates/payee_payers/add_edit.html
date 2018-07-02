@@ -10,8 +10,8 @@
       grid-template-columns: 15rem 20rem;
     }
 
-    /* Override button width */
-    .edit {
+    /* Override button styles */
+    .edit, .delete {
       width: 15rem;
     }
   </style>
@@ -23,6 +23,10 @@
   {% include 'main/messages.html' %}
 
   {% include 'main/form_add_edit.html' %}
+
+  <div>
+    <a href="{% url 'payee_payers:dashboard' %}" class="delete">Cancel</a>
+  </div>
 {% endblock %}
 
 {% block js %}
