@@ -14,8 +14,8 @@
       grid-template-rows: auto;
     }
 
-    .header-date, .header-description, .header-amount, .header-gst, .header-national,
-    .header-regional, .header-year-1, .header-code-1, .header-year-2, .header-code-2 {
+    .header-date, .header-description, .header-amount, .header-gst,
+    {% for financial_code_form in forms.empty_financial_code_form %}.header-{{ financial_code_form.name|lower }}, .header-{{ financial_code_form.name|lower }}-year, .header-{{ financial_code_form.name|lower }}-code{% if forloop.last %}{% else %}, {% endif %}{% endfor %} {
       display: none;
     }
 
@@ -25,8 +25,8 @@
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-template-rows: auto;
         grid-template-areas:
-          "header-date header-description header-amount header-gst header-national header-national header-regional header-regional"
-          "header-date header-description header-amount header-gst header-year-1 header-code-1 header-year-2 header-code-2"
+          "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }} header-{{ financial_code_form.name|lower }} {% endfor %}"
+          "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }}-year header-{{ financial_code_form.name|lower }}-code {% endfor %}"
           ". . . . . . . ."
       }
       .header-date {
@@ -49,35 +49,20 @@
         grid-area: header-gst;
       }
 
-      .header-national {
-        display: block;
-        grid-area: header-national;
-      }
-
-      .header-regional {
-        display: block;
-        grid-area: header-regional;
-      }
-
-      .header-year-1 {
-        display: block;
-        grid-area: header-year-1;
-      }
-
-      .header-code-1 {
-        display: block;
-        grid-area: header-code-1;
-      }
-
-      .header-year-2 {
-        display: block;
-        grid-area: header-year-2;
-      }
-
-      .header-code-2 {
-        display: block;
-        grid-area: header-code-2;
-      }
+      {% for financial_code_form in forms.empty_financial_code_form %}
+        .header-{{ financial_code_form.name|lower }} {
+          display: block;
+          grid-area: header-{{ financial_code_form.name|lower }};
+        }
+        .header-{{ financial_code_form.name|lower }}-year {
+          display: block;
+          grid-area: header-{{ financial_code_form.name|lower }}-year;
+        }
+        .header-{{ financial_code_form.name|lower }}-code {
+          display: block;
+          grid-area: header-{{ financial_code_form.name|lower }}-code;
+        }
+      {% endfor %}
 
       .add {
         grid-area: add;
@@ -127,15 +112,15 @@
             <div class="header-gst">{{ header.gst.label }}</div>
 
             {% with forms.empty_financial_code_form.0 as financial_code_form %}
-              <div class="header-national">{{ financial_code_form.name }}</div>
-              <div class="header-year-1">{{ financial_code_form.form.budget_year.label }}</div>
-              <div class="header-code-1">{{ financial_code_form.form.code.label }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
             {% endwith %}
 
             {% with forms.empty_financial_code_form.1 as financial_code_form %}
-              <div class="header-regional">{{ financial_code_form.name }}</div>
-              <div class="header-year-2">{{ financial_code_form.form.budget_year.label }}</div>
-              <div class="header-code-2">{{ financial_code_form.form.code.label }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
+              <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
             {% endwith %}
           {% endwith %}
 
