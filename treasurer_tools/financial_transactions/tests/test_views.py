@@ -231,118 +231,6 @@ class RetrieveTransactionsTest(TestCase):
             transaction_total
         )
 
-class RetrieveFinancialCodeSystemTest(TestCase):
-    """Checks that financial code systems are properly retrieved"""
-
-    def setUp(self):
-        create_user()
-        create_financial_codes()
-
-        transactions = create_financial_transactions()
-        item = transactions[0].item_set.all()[0]
-
-        self.valid_args = {
-            "item_date": str(item.date_item),
-            "item_form_id": 0
-        }
-        self.valid_url = "/transactions/expense/add/retrieve-financial-code-systems/"
-        self.item = item
-
-    def test_redirect_if_not_logged_in(self):
-        """Checks redirect to login page if user is not logged in"""
-        response = self.client.get(self.valid_url, self.valid_args)
-
-        self.assertRedirects(
-            response,
-            "/accounts/login/?next={}%3Fitem_date%3D{}%26item_form_id%3D{}".format(
-                self.valid_url, self.item.date_item, 0
-            )
-        )
-
-    def test_no_redirect_if_logged_in(self):
-        """Checks redirect to login page if user is not logged in"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, self.valid_args)
-
-        # Check that user logged in
-        self.assertEqual(str(response.context['user']), 'user')
-
-        # Check that page is accessible and there was no dedirection
-        self.assertEqual(response.status_code, 200)
-
-    def test_404_on_missing_date(self):
-        """Checks that a 404 returns on invalid date"""
-        # Generate incorrect parameters
-        invalid_args = self.valid_args
-        invalid_args["item_date"] = ""
-
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, invalid_args)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_404_on_missing_item_form_id(self):
-        """Checks that a 404 returns on invalid date"""
-        # Generate incorrect parameters
-        invalid_args = self.valid_args
-        invalid_args["item_form_id"] = ""
-
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, invalid_args)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_404_on_invalid_date(self):
-        """Checks that a 404 returns on invalid date"""
-        # Generate incorrect parameters
-        invalid_args = self.valid_args
-        invalid_args["item_date"] = "a"
-
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, invalid_args)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_404_on_invalid_item_form_id(self):
-        """Checks that a 404 returns on invalid date"""
-        # Generate incorrect parameters
-        invalid_args = self.valid_args
-        invalid_args["item_form_id"] = "a"
-
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, invalid_args)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_financial_code_forms_are_returned_on_valid_data(self):
-        """Checks that financial_code_forms are returned"""
-        self.client.login(username="user", password="abcd123456")
-        response = self.client.get(self.valid_url, self.valid_args)
-
-        forms = response.context["financial_code_forms"]
-
-        # Check that the proper systems are retrieved
-        self.assertEqual(
-            forms[0].system,
-            "National"
-        )
-
-        self.assertEqual(
-            forms[1].system,
-            "Regional"
-        )
-
-        # Check that a financial code form is provided
-        self.assertEqual(
-            type(forms[0].form),
-            type(FinancialCodeAssignmentForm(system=1, transaction_type="e"))
-        )
-
-        self.assertEqual(
-            type(forms[1].form),
-            type(FinancialCodeAssignmentForm(system=2, transaction_type="e"))
-        )
-
 class FinancialTransactionAddTest(TestCase):
     """Tests for the financial transaction add view"""
 
@@ -426,7 +314,7 @@ class FinancialTransactionAddTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "transactions/add.html")
+        self.assertTemplateUsed(response, "transactions/add_edit.html")
 
     def test_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -566,7 +454,7 @@ class FinancialTransactionEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "transactions/edit.html")
+        self.assertTemplateUsed(response, "transactions/add_edit.html")
 
     def test_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

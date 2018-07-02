@@ -133,36 +133,3 @@ def transaction_delete(request, t_type, transaction_id):
             "item_to_delete": transaction,
         },
     )
-
-@login_required
-def retrieve_financial_code_systems(request):
-    """Retrieves all financial code systems active on provided date"""
-    form_object = CompiledForms()
-    transaction_date = request.GET.get("item_date", None)
-    item_form_id = request.GET.get("item_form_id", None)
-
-    # Basic data validation before carrying on processing
-    if transaction_date and item_form_id:
-        # Validates the date string as a proper date
-        try:
-            datetime.strptime(transaction_date, "%Y-%m-%d")
-        except ValueError:
-            return HttpResponse(status=404)
-
-        # Validates the item_form_id as a proper integer
-        try:
-            int(item_form_id)
-        except ValueError:
-            return HttpResponse(status=404)
-    else:
-        return HttpResponse(status=404)
-
-    return render(
-        request,
-        "transactions/financial_code_systems.html",
-        context={
-            "financial_code_forms" : form_object.create_financial_code_forms(
-                item_form_id, None, transaction_date=transaction_date
-            ),
-        },
-    )
