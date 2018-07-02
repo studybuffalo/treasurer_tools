@@ -1,12 +1,34 @@
 {% if payee_payer_list %}
   {% for pp in payee_payer_list %}
     <div>
-      <div><a href="{% url 'payee_payers:edit' pp.id %}">Edit</a></div>
-      <div>{{ pp.name }}</div>
-      <div>{{ pp.city }}, {{ pp.province }}, {{ pp.country }}</div>
-      <div>Phone: {{ pp.phone }} Fax: {{ pp.fax }}</div>
-      <div>Email: {{ pp.email }}</div>
-      <div><a href="{% url 'payee_payers:delete' pp.id %}">Delete</a></div>
+      <div class="name">{{ pp.name }}</div>
+      <div class="city">
+        <em>
+          {{ pp.city }}, {{ pp.province }}, {{ pp.country }}
+        </em>
+      </div>
+      <div class="phone-fax">
+        {% if pp.phone %}
+          <div class="phone">
+            <strong>Phone</strong>: {{ pp.phone }}
+          </div>
+        {% endif %}
+
+        {% if pp.fax %}
+          <div class="phone">
+            <strong>Fax</strong>: {{ pp.fax }}
+          </div>
+        {% endif %}
+      </div>
+      <div>
+        {% if pp.email %}
+          <strong>Email</strong>: {{ pp.email }}
+        {% endif %}
+      </div>
+      <div class="buttons">
+        <a href="{% url 'payee_payers:edit' pp.id %}" class="edit">Edit</a>
+        <a href="{% url 'payee_payers:delete' pp.id %}" class="delete">Delete</a>
+      </div>
     </div>
   {% endfor %}
 {% endif %}

@@ -2,18 +2,89 @@
 
 {% load static %}
 
+{% block styles %}
+  <style>
+    .save {
+      font-size: 2rem;
+      height: 5rem;
+      width: 20rem;
+    }
+
+    .filter {
+      padding-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+      .filter > div {
+        padding: 0 3rem 1rem 0;
+
+      }
+
+      .filter label {
+        display: block;
+        font-weight: 700;
+      }
+
+    #filter-text {
+      width: 100%;
+    }
+
+    #payee-payer-list > div:nth-child(even){
+      background-color: rgba(40, 120, 200, 0.1);
+    }
+
+    .name {
+      font-size: 2.25rem;
+      font-weight: 700;
+    }
+
+    .buttons {
+      align-content: flex-start;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    @media screen and (min-width: 768px) {
+      .filter {
+        flex-direction: row;
+      }
+
+      #filter-text {
+        width: 30rem;
+      }
+
+      .phone {
+        display: inline-block;
+        padding-right: 2rem;
+      }
+    }
+  </style>
+{% endblock %}
 {% block content %}
   <h1>Payee and Payers</h1>
 
   {% include 'main/messages.html' %}
 
   <div>
-    <a href="{% url 'payee_payers:add' %}">Add new entry</a>
+    <a href="{% url 'payee_payers:add' %}" class="save">Add new entry</a>
   </div>
 
-  <div>
-    Search: <input type="text"><br>
-    Status: <select><option>All</option></select>
+  <h2>Filter Entries</h2>
+
+  <div class="filter">
+    <div>
+      <label for="filter-text">Search:</label>
+      <input type="text" id="filter-text">
+    </div>
+    <div>
+      <label for="filter-status">Status:</label>
+      <select id="filter-status">
+        <option>All</option>
+      </select>
+    </div>
   </div>
 
   <div id="payee-payer-list"></div>
