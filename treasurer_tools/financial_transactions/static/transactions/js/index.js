@@ -4,7 +4,7 @@ function convertDateToString(date) {
     var month
 
     if (date.getMonth() < 9) {
-        month = "0" + (date.getMonth() + 1);
+        month = `0${date.getMonth() + 1}`;
     } else {
         month = date.getMonth() + 1;
     }
@@ -12,12 +12,12 @@ function convertDateToString(date) {
     var day;
 
     if (date.getDate() < 10) {
-        day = "0" + (date.getDate());
+        day = `0${date.getDate()}`;
     } else {
         day = date.getDate();
     }
 
-    return year + "-" + month + "-" + day;
+    return `${year}-${month}-${day}`;
 }
 
 function setDefaultDates() {
@@ -50,22 +50,30 @@ function retrieveTransactions() {
     var dateEnd = "";
 
     if (dateType === "30 days") {
-        dateEnd = convertDateToString(today);
+        dateEnd = convertDateToString(
+            new Date(today.setDate(today.getDate() + 1))
+        );
         dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 30))
         );
     } else if (dateType === "90 days") {
-        dateEnd = convertDateToString(today);
+        dateEnd = convertDateToString(
+            new Date(today.setDate(today.getDate() + 1))
+        );
         dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 90))
         );
     } else if (dateType === "1 year") {
-        dateEnd = convertDateToString(today);
+        dateEnd = convertDateToString(
+            new Date(today.setDate(today.getDate() + 1))
+        );
         dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 365))
         );
     } else if (dateType === "2 years") {
-        dateEnd = convertDateToString(today);
+        dateEnd = convertDateToString(
+            new Date(today.setDate(today.getDate() + 1))
+        );
         dateStart = convertDateToString(
             new Date(today.setDate(today.getDate() - 730))
         );
@@ -73,7 +81,7 @@ function retrieveTransactions() {
         dateStart = $("#date-start").val() ? $("#date-start").val() : "";
         dateEnd = $("#date-end").val() ? $("#date-end").val() : "";
     }
-    
+
     var url = "retrieve-transactions/";
     var parameters = "?"
         + "transaction_type=" + encodeURIComponent(transactionType)
