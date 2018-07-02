@@ -85,6 +85,56 @@
       padding: 1rem 0.25rem;
     }
 
+    .date-submitted {
+      font-weight: 700;
+    }
+
+    .memo {
+      font-weight: 700;
+    }
+
+    .payee-payer {
+      font-size: 1.75rem;
+      font-style: italic;
+    }
+
+    .header {
+      display: none;
+    }
+
+    .item {
+      padding-left: 2rem;
+    }
+
+    .date-item {
+      font-size: 1.75rem;
+      font-style: italic;
+    }
+
+    .description {
+      font-weight: 700;
+    }
+
+    .amount em, .gst em, .total em, .totals em {
+      display: inline-block;
+      padding-left: 1rem;
+      width: 10rem;
+    }
+
+    .financial-codes em {
+      padding-left: 1rem;
+    }
+
+    .financial-codes span {
+      display: block;
+      font-size: 1.5rem;
+      padding-left: 2rem;
+    }
+
+    .totals {
+      font-weight: 700;
+    }
+
     .options {
       align-content: flex-start;
       display: flex;
@@ -155,6 +205,8 @@
       }
 
       .payee-payer {
+        font-size: inherit;
+        font-style: normal;
         padding-left: 0.5rem;
       }
 
@@ -174,10 +226,13 @@
       }
 
       .date-item {
+        font-size: inherit;
+        font-style: normal;
         grid-area: date-item;
       }
 
       .description {
+        font-weight: inherit;
         grid-area: description;
       }
 
@@ -197,9 +252,12 @@
       }
 
       .financial-codes {
-        font-size: 1.5rem;
         grid-area: financial-codes;
       }
+
+        .financial-codes span {
+          padding: 0;
+        }
 
       .totals {
         font-weight: 700;
