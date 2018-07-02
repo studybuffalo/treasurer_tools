@@ -143,7 +143,7 @@ class PayeePayerAddTest(TestCase):
         response = self.client.get(reverse("payee_payers:add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payers/add.html")
+        self.assertTemplateUsed(response, "payee_payers/add_edit.html")
 
     def test_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -253,7 +253,7 @@ class PayeePayerEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "payee_payers/edit.html")
+        self.assertTemplateUsed(response, "payee_payers/add_edit.html")
 
     def test_payee_payer_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

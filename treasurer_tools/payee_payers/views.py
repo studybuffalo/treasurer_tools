@@ -55,10 +55,10 @@ def add_payee_payer(request):
 
     return render(
         request,
-        "payee_payers/add.html",
+        "payee_payers/add_edit.html",
         {
             "form": form,
-            "page_name": "payee/payer",
+            "page_name": "Add new Payee/Payer",
         },
     )
 
@@ -91,10 +91,10 @@ def edit_payee_payer(request, payee_payer_id):
 
     return render(
         request,
-        "payee_payers/edit.html",
+        "payee_payers/add_edit.html",
         {
             "form": form,
-            "page_name": "payee/payer",
+            "page_name": "Edit Payee/Payer",
         }
     )
 
