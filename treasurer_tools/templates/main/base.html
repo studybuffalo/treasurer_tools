@@ -29,10 +29,15 @@
     {% endif %}
 
     <a href="{% url 'home' %}">
-      <img src="{% static 'images/logo.svg' %}" id="logo-image" alt="">
-      <img src="{% static 'images/logo_text.svg' %}" id="logo-text-image" alt="CSHP Alberta Branch">
+      <img src="{% static 'images/logo.svg' %}" id="logo-image-small" alt="CSHP Alberta Branch">
+      <img src="{% static 'images/logo_text.svg' %}" id="logo-image-large" alt="CSHP Alberta Branch">
     </a>
-    <a href="{% url 'account_login' %}" class="login">Log in</a>
+
+    {% if user.is_authenticated %}
+      <a href="{% url 'account_logout' %}" class="login">Logout</a>
+    {% else %}
+      <a href="{% url 'account_login' %}" class="login">Log in</a>
+    {% endif %}
   </header>
 
   {% if user.is_authenticated %}
@@ -58,7 +63,11 @@
           <a href="{% url 'investments:dashboard' %}">Investments</a>
         </li>
         <li>
-          <a href="{% url 'bank_transactions:dashboard' %}">Banking</a>
+          <a class="menu-header">Banking</a>
+          <ul>
+            <li><a href="{% url 'bank_transactions:dashboard' %}">Bank Statements</a></li>
+            <li><a href="{% url 'bank_reconciliation:dashboard' %}">Banking Reconciliation</a></li>
+          </ul>
         </li>
         <li>
           <a href="{% url 'reports:dashboard' %}">Reports</a>

@@ -165,12 +165,12 @@ select, input {
                         text-decoration: none;
                     }
 
-#logo-image {
+#logo-image-small {
   height: 45px;
   padding-top: 5px;
 }
 
-#logo-text-image {
+#logo-image-large {
   display: none;
   height: 45px;
   padding-top: 5px;
@@ -325,7 +325,11 @@ select, input {
     max-width: 1024px;
   }
 
-  #logo-text-image {
+  #logo-image-small {
+    display: none;
+  }
+
+  #logo-image-large {
     display: inline-block;
   }
 }
@@ -335,7 +339,11 @@ select, input {
     max-width: 1400px;
   }
 
-  #logo-text-image {
+  #logo-image-small {
+    display: none;
+  }
+
+  #logo-image-large {
     display: inline-block;
   }
 }
