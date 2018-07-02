@@ -76,6 +76,32 @@ form input, form select {
     outline-offset: -15px;
   }
 
+#old-attachments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+  #old-attachments li {
+    border: 1px solid black;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  #old-attachments label {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1.5rem;
+    width: auto;
+  }
+
+  #old-attachments input {
+    display: inline-block;
+    width: auto;
+  }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   .flex-ctr-m {
     flex-direction: row;
