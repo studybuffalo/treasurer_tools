@@ -28,10 +28,12 @@ form input, form select {
 
 .input-flex-col {
   align-items: flex-start;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 1rem;
+  width: 100%;
 }
 
 #attachment-drop-zone {
@@ -58,7 +60,7 @@ form input, form select {
   }
 
   .input-flex-col {
-    padding: 1rem;
+    width: auto;
   }
 
   .input-flex-ctr-m {
@@ -69,6 +71,10 @@ form input, form select {
 @media screen and (min-width: 1024px) {
   .flex-ctr-l {
     flex-direction: row;
+  }
+
+  .input-flex-col {
+    width: auto;
   }
 
   .input-flex-ctr-l {

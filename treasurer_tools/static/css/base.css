@@ -31,6 +31,10 @@ h1 {
   line-height: 3.25rem;
 }
 
+select, input {
+  font-size: 1.3rem;
+}
+
 .rem1 {
   width: 1rem;
 }

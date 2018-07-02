@@ -19,7 +19,33 @@
       display: none;
     }
 
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+      .payee-payer select {
+        width: 25rem;
+      }
+
+      .memo input {
+        width: 25rem;
+      }
+
+      .submission-date input {
+        width: 9rem;
+      }
+    }
+
     @media screen and (min-width: 1024px) {
+      .payee-payer select {
+        width: 30rem;
+      }
+
+      .memo input {
+        width: 30rem;
+      }
+
+      .submission-date input {
+        width: 9rem;
+      }
+
       #transaction-items {
         display: grid;
         grid-template-columns: 9rem auto 9rem 9rem {% for financial_code_form in forms.empty_financial_code_form %}18rem 15rem{% if forloop.last %};{% else %} {% endif %}{% endfor %}
@@ -96,16 +122,16 @@
     {% with forms.forms as form %}
       {% include 'main/errors.html' with errors=form.transaction_form.non_field_errors %}
 
-      <div class="flex-col flex-ctr-m flex-ctr-l payee">
-        <div class="input-flex-col">
+      <div class="flex-col flex-ctr-m flex-ctr-l">
+        <div class="input-flex-col payee-payer">
           {% include 'main/input_field.html' with field=form.transaction_form.payee_payer %}
         </div>
 
-        <div class="input-flex-col">
+        <div class="input-flex-col memo">
           {% include 'main/input_field.html' with field=form.transaction_form.memo %}
         </div>
 
-        <div class="input-flex-col">
+        <div class="input-flex-col submission-date">
           {% include 'main/input_field.html' with field=form.transaction_form.date_submitted %}
         </div>
 
