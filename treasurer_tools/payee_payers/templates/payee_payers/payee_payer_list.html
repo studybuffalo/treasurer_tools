@@ -1,26 +1,39 @@
 {% if payee_payer_list %}
   {% for pp in payee_payer_list %}
-    <div>
-      <div class="name">{{ pp.name }}</div>
-      <div class="city">
-        <em>
-          {{ pp.city }}, {{ pp.province }}, {{ pp.country }}
-        </em>
+    <div class="{% if pp.status == 'a' %}active{% else %}inactive{% endif %}">
+      <div class="name" data-name="{{ pp.name }}">{{ pp.name }}</div>
+      <div
+        class="location"
+        data-city="{% if pp.city %}{{ pp.city }}{% endif %}"
+        data-province="{% if pp.province %}{{ pp.province }}{% endif %}"
+        data-country="{% if pp.country %}{{ pp.country }}{% endif %}"
+      >
+        {% if pp.city %}
+          {{ pp.city }}{% if pp.province or pp.country %},{% endif %}
+        {% endif %}
+
+        {% if pp.province %}
+          {{ pp.province }}{% if pp.country %},{% endif %}
+        {% endif %}
+
+        {% if pp.country %}
+          {{ pp.country }}
+        {% endif %}
       </div>
       <div class="phone-fax">
         {% if pp.phone %}
-          <div class="phone">
+          <div class="phone" data-phone="{{ pp.phone }}">
             <strong>Phone</strong>: {{ pp.phone }}
           </div>
         {% endif %}
 
         {% if pp.fax %}
-          <div class="phone">
+          <div class="fax" data-fax="{{ pp.fax }}">
             <strong>Fax</strong>: {{ pp.fax }}
           </div>
         {% endif %}
       </div>
-      <div>
+      <div class="email" data-email="{{ pp.email }}">
         {% if pp.email %}
           <strong>Email</strong>: {{ pp.email }}
         {% endif %}

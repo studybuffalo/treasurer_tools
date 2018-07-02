@@ -35,9 +35,26 @@
       background-color: rgba(40, 120, 200, 0.1);
     }
 
+    .hide {
+      display: none;
+    }
+
+    .inactive {
+      color: rgb(100, 100, 100);
+      font-style: italic;
+    }
+
+      .inactive .name {
+        font-weight: 400;
+      }
+
     .name {
       font-size: 2.25rem;
       font-weight: 700;
+    }
+
+    .location {
+      font-style: italic;
     }
 
     .buttons {
@@ -82,7 +99,9 @@
     <div>
       <label for="filter-status">Status:</label>
       <select id="filter-status">
-        <option>All</option>
+        <option value="">All</option>
+        <option value="active" selected="selected">Active</option>
+        <option value="inactive">Inactive</option>
       </select>
     </div>
   </div>
