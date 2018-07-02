@@ -91,7 +91,7 @@ class InvestmentAddTest(TestCase):
         response = self.client.get(reverse("investments:add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "investments/add.html")
+        self.assertTemplateUsed(response, "investments/add_edit.html")
 
     def test_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -199,7 +199,7 @@ class InvestmentEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "investments/edit.html")
+        self.assertTemplateUsed(response, "investments/add_edit.html")
 
     def test_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
