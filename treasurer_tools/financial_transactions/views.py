@@ -1,9 +1,7 @@
 """Views for the transactions app"""
-from datetime import datetime
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
@@ -74,6 +72,7 @@ def transaction_add(request, t_type):
         {
             "forms": compiled_forms,
             "page_name": "Add new {}".format(t_type),
+            "type": "add",
         },
     )
 
@@ -105,6 +104,7 @@ def transaction_edit(request, t_type, transaction_id):
         {
             "forms": compiled_forms,
             "page_name": "Edit {}".format(t_type),
+            "type": "edit",
         },
     )
 
