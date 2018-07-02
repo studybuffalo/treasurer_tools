@@ -24,7 +24,7 @@ pipeline {
       steps {
         echo 'This is the Testing Stage'
         script {
-          sh 'pipenv run python manage.py jenkins --enable-coverage --settings=config.settings.test'
+          sh 'pipenv run python manage.py jenkins --enable-coverage --settings=config.settings.test --noinput'
         }
       }
     }
