@@ -7,6 +7,7 @@
         CSHP other orange = 255, 128, 102
         CSHP border grey = 69, 69, 69
         CSHP red 233, 74, 55
+        CSHP green rgb(5, 150, 100);
 */
 
 /* GENERAL STYLES */
@@ -252,6 +253,64 @@ select, input {
 #button-login {
   display: block;
 }
+
+.save {
+  align-items: center;
+  background-color: rgb(5, 150, 100);
+  border-radius: 1rem;
+  color: rgb(5, 110, 75);
+  display: flex;
+  font-size: 1.5rem;
+  height: 3rem;
+  justify-content: center;
+  margin: 1rem;
+  text-decoration: none;
+  transition: background-color ease-in-out 0.2s;
+  width: 8rem;
+}
+
+  .save:hover {
+
+  }
+
+.edit {
+  align-items: center;
+  background-color: rgb(40, 120, 200);
+  border-radius: 1rem;
+  color: rgb(255, 255, 255);
+  display: flex;
+  font-size: 1.5rem;
+  height: 3rem;
+  justify-content: center;
+  margin: 1rem;
+  text-decoration: none;
+  transition: background-color ease-in-out 0.2s;
+  width: 8rem;
+}
+
+  .edit:hover {
+    background-color: rgb(21, 64, 106);
+  }
+
+.delete {
+  align-items: center;
+  background-color: rgb(233, 74, 55);
+  border-radius: 1rem;
+  color: rgb(255, 255, 255);
+  display: flex;
+  font-size: 1.5rem;
+  height: 3rem;
+  justify-content: center;
+  margin: 1rem;
+  text-decoration: none;
+  transition: background-color ease-in-out 0.2s;
+  width: 8rem;
+}
+
+  .delete:hover {
+    background-color: rgb(149, 47, 35);
+  }
+
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   #main-content {
