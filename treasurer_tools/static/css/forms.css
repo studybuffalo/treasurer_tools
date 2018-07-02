@@ -102,6 +102,7 @@ form input, form select {
     display: inline-block;
     width: auto;
   }
+
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   .flex-ctr-m {
     flex-direction: row;
