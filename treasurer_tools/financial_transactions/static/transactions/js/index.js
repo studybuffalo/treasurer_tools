@@ -83,10 +83,10 @@ function retrieveTransactions() {
   }
 
   const url = 'retrieve-transactions/';
-  const parameters = `?
-      transaction_type=${encodeURIComponent(transactionType)}
-      &date_start=${dateStart}
-      &date_end=${dateEnd}`;
+  const parameters = '?'
+      + `transaction_type=${encodeURIComponent(transactionType)}`
+      + `&date_start=${dateStart}`
+      + `&date_end=${dateEnd}`;
 
   $('#transactions').load(url + parameters, () => {
     // Callback function goes here (e.g. error handling)
