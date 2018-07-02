@@ -32,14 +32,13 @@ class Branch(models.Model):
         help_text="The main email for the branch",
         max_length=255,
     )
-    '''RE-ADD WHEN PILLOW INSTALLED
     logo_large = models.ImageField(
         help_text="A logo for the branch",
     )
     logo_small = models.ImageField(
         help_text="A reduced width logo for smaller screens",
     )
-    '''
+
     history = HistoricalRecords()
 
     def __str__(self):
