@@ -240,7 +240,7 @@
               {% endfor %}
 
               {% if type == 'edit' %}
-                {{ group.item_formset.DELETE }}
+                {% include 'main/input_field.html' with field=group.item_formset.DELETE %}
               {% endif %}
             {% endfor %}
           {% endwith %}
