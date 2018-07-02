@@ -285,15 +285,20 @@ class CompiledForms(object):
             # Setup the proper prefix for the form fields
             prefix = "item_set-__prefix__-coding_set-{}".format(form_id)
 
-            # TODO: Determine why this is causing error messages
+            # Create a financial code form to act as the blank template
+            financial_code_form = FinancialCodeAssignmentForm(
+                {},
+                prefix=prefix,
+                transaction_type=self.transaction_type,
+                system=system,
+            )
+
+            # Remove the errors generated from the code field
+            financial_code_form.errors["code"] = financial_code_form.error_class()
+
             financial_code_forms.append({
                 "name": system.title,
-                "form": FinancialCodeAssignmentForm(
-                    {},
-                    prefix=prefix,
-                    transaction_type=self.transaction_type,
-                    system=system,
-                ),
+                "form": financial_code_form,
             })
 
             form_id = form_id + 1
