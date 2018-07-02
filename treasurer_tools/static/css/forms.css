@@ -125,8 +125,8 @@ form input, form select {
   }
 
     .input-grid.submit-button button {
-      align-self: end;
-      grid-area: input;
+      justify-self: end;
+      grid-area: 1 / 1 / 2 / 3;
     }
 }
 
