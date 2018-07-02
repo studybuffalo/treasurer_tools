@@ -258,7 +258,7 @@ select, input {
   align-items: center;
   background-color: rgb(5, 150, 100);
   border-radius: 1rem;
-  color: rgb(5, 110, 75);
+  color: rgb(255, 255, 255);
   display: flex;
   font-size: 1.5rem;
   height: 3rem;
@@ -270,7 +270,7 @@ select, input {
 }
 
   .save:hover {
-
+    background-color: rgb(5, 110, 75);
   }
 
 .edit {
