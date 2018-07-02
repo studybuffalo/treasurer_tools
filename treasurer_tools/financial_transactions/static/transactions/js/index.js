@@ -121,7 +121,7 @@ function filterResults() {
         }
 
         // Check transaction total
-        var transactionTotal = $transaction.attr("data-transaction-total").toUpperCase();
+        let transactionTotal = $transaction.attr("data-transaction-total").toUpperCase();
 
         if (transactionTotal.indexOf(filterText) !== -1) {
             $transaction.removeClass("hide");
@@ -129,10 +129,10 @@ function filterResults() {
         }
 
         $transaction.find(".item").each(function (itemIndex, item) {
-            $item = $(item);
+            let $item = $(item);
 
             // Check item names
-            var itemDescription = $item.attr("data-description").toUpperCase();
+            let itemDescription = $item.attr("data-description").toUpperCase();
 
             if (itemDescription.indexOf(filterText) !== -1) {
                 $transaction.removeClass("hide");
@@ -140,7 +140,7 @@ function filterResults() {
             }
 
             // Check item amounts
-            var itemAmount = $item.attr("data-amount").toUpperCase();
+            let itemAmount = $item.attr("data-amount").toUpperCase();
 
             if (itemAmount.indexOf(filterText) !== -1) {
                 $transaction.removeClass("hide");
@@ -148,7 +148,7 @@ function filterResults() {
             }
 
             // Check item GST
-            var itemGST = $item.attr("data-gst").toUpperCase();
+            let itemGST = $item.attr("data-gst").toUpperCase();
 
             if (itemGST.indexOf(filterText) !== -1) {
                 $transaction.removeClass("hide");
@@ -156,7 +156,7 @@ function filterResults() {
             }
 
             // Check item total
-            var itemTotal = $item.attr("data-total").toUpperCase();
+            let itemTotal = $item.attr("data-total").toUpperCase();
 
             if (itemTotal.indexOf(filterText) !== -1) {
                 $transaction.removeClass("hide");
@@ -165,10 +165,10 @@ function filterResults() {
 
             // Check item accounting codes
             $item.find(".financial-code").each(function (codeIndex, code) {
-                var $code = $(code);
+                let $code = $(code);
 
                 // Check the accounting code
-                var codeCode = $code.attr("data-code").toUpperCase();
+                let codeCode = $code.attr("data-code").toUpperCase();
 
                 if (codeCode.indexOf(filterText) !== -1) {
                     $transaction.removeClass("hide");
@@ -178,7 +178,7 @@ function filterResults() {
                 // Check the accounting code description
 
                 // Check the accounting code
-                var codeDescription = $code.attr("data-code-description").toUpperCase();
+                let codeDescription = $code.attr("data-code-description").toUpperCase();
 
                 if (codeDescription.indexOf(filterText) !== -1) {
                     $transaction.removeClass("hide");
