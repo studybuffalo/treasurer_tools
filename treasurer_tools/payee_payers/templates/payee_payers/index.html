@@ -3,24 +3,24 @@
 {% load static %}
 
 {% block content %}
-    <h1>Payee and Payers</h1>
-    
-    {% include 'main/messages.html' %}
+  <h1>Payee and Payers</h1>
 
-    <div>
-        <a href="{% url 'payee_payers:add' %}">Add new entry</a>
-    </div>
+  {% include 'main/messages.html' %}
 
-    <div>
-        Search: <input type="text"><br>
-        Status: <select><option>All</option></select>
-    </div>
+  <div>
+    <a href="{% url 'payee_payers:add' %}">Add new entry</a>
+  </div>
 
-    <div id="payee-payer-list"></div>
+  <div>
+    Search: <input type="text"><br>
+    Status: <select><option>All</option></select>
+  </div>
 
-	{% csrf_token %}
+  <div id="payee-payer-list"></div>
+
+  {% csrf_token %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'payee_payers/js/index.js' %}"></script>
+  <script type="text/javascript" src="{% static 'payee_payers/js/index.js' %}"></script>
 {% endblock %}
