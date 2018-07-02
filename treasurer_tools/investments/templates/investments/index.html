@@ -1,23 +1,116 @@
 {% extends 'main/base.html' %}
 
+{% block styles %}
+  <style>
+    /* Override button styles */
+    .save {
+      width: 20rem;
+    }
+
+    .edit, .delete {
+      font-size: 1.5rem;
+      min-width: 7rem;
+    }
+
+    #investments > div:nth-child(even) {
+      background-color: rgba(40, 120, 200, 0.1);
+    }
+
+    .header {
+      display: none;
+      font-weight: 700;
+    }
+
+    .grid-investment em {
+      font-size: 1.25rem;
+    }
+
+    .date {
+      font-weight: 700;
+    }
+
+    .name {
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 280px;
+    }
+
+    @media screen and (min-width: 768px) {
+      .grid-investment {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 2fr 3fr 2fr 2fr 3fr;
+        grid-template-areas: "date name amount rate buttons";
+      }
+
+      .grid-investment em {
+        display: none;
+      }
+
+      .header {
+        display: grid;
+      }
+
+      .date {
+        grid-area: date;
+      }
+
+      .name {
+        grid-area: name;
+      }
+
+      .amount {
+        grid-area: amount;
+        justify-self: end;
+      }
+
+      .rate {
+        grid-area: rate;
+        justify-self: end;
+      }
+
+      .buttons {
+        grid-area: buttons;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
     <h1>Investments</h1>
 
     {% include 'main/messages.html' %}
 
     <div>
-        <a href="{% url 'investments:add'%}">Add new investment</a>
+      <a href="{% url 'investments:add'%}" class="save">
+        Add new investment
+      </a>
     </div>
 
-    <div>
-        <ul>
-            {% for investment in investments %}
-                <li>
-                    {{ investment }} - 
-                    <a href="{% url 'investments:edit' investment.id %}">Edit</a> -
-                    <a href="{% url 'investments:delete' investment.id %}">Delete</a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div id="investments">
+      {% for investment in investments %}
+        <div class="grid-investment header">
+          <div class="amount">Amount</div>
+          <div class="rate">Rate</div>
+        </div>
+
+        <div class="grid-investment">
+          <div class="date">{{ investment.date_invested }}</div>
+          <div class="name">{{ investment.name }}</div>
+          <div class="amount"><em>Amount:</em> ${{ investment.amount }}</div>
+          <div class="rate"><em>Rate:</em> {{ investment.rate }}</div>
+          <div class="buttons">
+            <a href="{% url 'investments:edit' investment.id %}" class="edit">Edit</a>
+            <a href="{% url 'investments:delete' investment.id %}" class="delete">Delete</a>
+          </div>
+        </div>
+      {% endfor %}
     </div>
 {% endblock %}

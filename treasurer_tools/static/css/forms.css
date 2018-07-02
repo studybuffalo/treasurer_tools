@@ -152,4 +152,17 @@ form input, form select {
   .input-flex-ctr-l {
     flex-direction: row;
   }
+
+  .input-grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "label input";
+    padding: 0.5rem 0;
+  }
+
+    .input-grid.submit-button button {
+      justify-self: end;
+      grid-area: 1 / 1 / 2 / 3;
+    }
 }
