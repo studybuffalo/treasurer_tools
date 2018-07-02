@@ -32,4 +32,8 @@
       {{ field }}
     {% endfor %}
   {% endfor %}
+
+  {% if type == 'edit' %}
+    {% include 'main/input_field.html' with field=forms.forms.item_formset.empty_form.DELETE %}
+  {% endif %}
 </script>
