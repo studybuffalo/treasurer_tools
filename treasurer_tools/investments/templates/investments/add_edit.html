@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+  <style>
+    /* Override column widths */
+    .input-grid {
+      grid-template-columns: 20rem 20rem;
+    }
+
+    /* Override button styles */
+    .edit, .delete {
+      width: 15rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ page_name|title }}</h1>
+
+  {% include 'main/messages.html' %}
+
+  {% include 'main/form_add_edit.html' %}
+
+  <hr>
+
+  <div>
+    <a href="{% url 'investments:dashboard' %}" class="delete">Cancel</a>
+  </div>
+{% endblock %}

@@ -48,10 +48,11 @@ def investment_add(request):
 
     return render(
         request,
-        "investments/add.html",
+        "investments/add_edit.html",
         {
-            "page_name": "investment",
+            "page_name": "Add New Investment",
             "form": form,
+            "submit_button": "Add new investment",
         },
     )
 
@@ -89,10 +90,11 @@ def investment_edit(request, investment_id):
 
     return render(
         request,
-        "investments/edit.html",
+        "investments/add_edit.html",
         {
-            "page_name": "investment",
+            "page_name": "Edit Investment",
             "form": form,
+            "submit_button": "Save investment changes",
         },
     )
 
