@@ -9,7 +9,7 @@
   <style>
     #transaction-items {
       display: grid;
-      grid-gap: 5px;
+      grid-gap: 1rem;
       grid-template-columns: 1fr;
       grid-template-rows: auto;
     }
@@ -29,23 +29,28 @@
           "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }}-year header-{{ financial_code_form.name|lower }}-code {% endfor %}"
           ". . . . . . . ."
       }
+
       .header-date {
+        align-self: end;
         display: block;
         grid-area: header-date;
       }
 
       .header-description {
+        align-self: end;
         display: block;
         grid-area: header-description;
       }
 
       .header-amount {
+        align-self: end;
         display: block;
         grid-area: header-amount;
         justify-self: end;
       }
 
       .header-gst {
+        align-self: end;
         display: block;
         grid-area: header-gst;
         justify-self: end;
@@ -53,15 +58,20 @@
 
       {% for financial_code_form in forms.empty_financial_code_form %}
         .header-{{ financial_code_form.name|lower }} {
+          align-self: end;
           display: block;
           grid-area: header-{{ financial_code_form.name|lower }};
           justify-self: center;
         }
+
         .header-{{ financial_code_form.name|lower }}-year {
+          align-self: end;
           display: block;
           grid-area: header-{{ financial_code_form.name|lower }}-year;
         }
+
         .header-{{ financial_code_form.name|lower }}-code {
+         align-self: end;
           display: block;
           grid-area: header-{{ financial_code_form.name|lower }}-code;
         }
@@ -91,11 +101,11 @@
           {% include 'main/input_field.html' with field=form.transaction_form.payee_payer %}
         </div>
 
-        <div class="input-flex-col memo">
+        <div class="input-flex-col">
           {% include 'main/input_field.html' with field=form.transaction_form.memo %}
         </div>
 
-        <div class="input-flex-col submission-date">
+        <div class="input-flex-col">
           {% include 'main/input_field.html' with field=form.transaction_form.date_submitted %}
         </div>
 
