@@ -42,17 +42,20 @@
       .header-amount {
         display: block;
         grid-area: header-amount;
+        justify-self: end;
       }
 
       .header-gst {
         display: block;
         grid-area: header-gst;
+        justify-self: end;
       }
 
       {% for financial_code_form in forms.empty_financial_code_form %}
         .header-{{ financial_code_form.name|lower }} {
           display: block;
           grid-area: header-{{ financial_code_form.name|lower }};
+          justify-self: center;
         }
         .header-{{ financial_code_form.name|lower }}-year {
           display: block;
