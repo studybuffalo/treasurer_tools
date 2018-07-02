@@ -33,11 +33,11 @@ def request_transactions_list(request):
     # Filter by date
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
-    
+
     if date_start:
         transactions = transactions.filter(date_submitted__gte=date_start)
 
-    if date_end:    
+    if date_end:
         transactions = transactions.filter(date_submitted__lte=date_end)
 
     return render(
@@ -70,11 +70,10 @@ def transaction_add(request, t_type):
 
     return render(
         request,
-        "transactions/add.html",
+        "transactions/add_edit.html",
         {
             "forms": compiled_forms,
-            "page_name": t_type,
-            "formset_button": "Add item",
+            "page_name": "Add new {}".format(t_type),
         },
     )
 
@@ -102,10 +101,10 @@ def transaction_edit(request, t_type, transaction_id):
 
     return render(
         request,
-        "transactions/edit.html",
+        "transactions/add_edit.html",
         {
             "forms": compiled_forms,
-            "page_name": t_type,
+            "page_name": "Edit {}".format(t_type),
         },
     )
 
@@ -167,4 +166,3 @@ def retrieve_financial_code_systems(request):
             ),
         },
     )
-    

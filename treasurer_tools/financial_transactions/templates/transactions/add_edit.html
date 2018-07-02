@@ -119,7 +119,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Add New {{ page_name|title }}</h1>
+  <h1>{{ page_name|title }}</h1>
 
   {% include 'main/messages.html' %}
 
@@ -273,7 +273,7 @@
         </fieldset>
 
         <div class="right-align">
-          <button type="submit">Add new {{ page_name|lower }}</button>
+          <button type="submit">{{ page_name|title }}</button>
         </div>
       </div>
     {% endwith %}
@@ -281,7 +281,7 @@
 {% endblock %}
 
 {% block js %}
-  {% include 'transactions/formset_template.html' %}
+  {% include 'transactions/item_template.html' %}
 
   <script type="text/javascript" src="{% static 'js/form_functions.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.modal.min.js' %}"></script>
