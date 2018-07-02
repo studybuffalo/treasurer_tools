@@ -1,11 +1,12 @@
 {
     "extends": [
-        "airbnb",
+        "airbnb-base",
         "eslint:recommended"
     ],
     "env": {
         "browser": true,
-        "node": false
+        "node": false,
+        "jquery": true
     },
     "rules": {},
     "globals": {
