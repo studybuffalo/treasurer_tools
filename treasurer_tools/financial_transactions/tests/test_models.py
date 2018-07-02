@@ -117,7 +117,7 @@ class ItemModelTest(TestCase):
         # Test gst label
         self.assertEqual(
             self.items[0]._meta.get_field("gst").verbose_name,
-            "gst"
+            "GST/HST"
         )
 
     def test_description_max_length(self):

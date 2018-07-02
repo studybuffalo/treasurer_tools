@@ -29,7 +29,7 @@ class FinancialTransaction(models.Model):
         max_length=1,
     )
     memo = models.CharField(
-        help_text="Details of the transaction",
+        help_text="Overall summary of the transaction",
         max_length=1000,
     )
     date_submitted = models.DateField(
@@ -91,6 +91,7 @@ class Item(models.Model):
         default=0,
         help_text="The tax (GST/HST) dollar value",
         max_digits=12,
+        verbose_name="GST/HST",
     )
     history = HistoricalRecords()
 
@@ -121,4 +122,3 @@ class FinancialCodeMatch(models.Model):
 
     def __str__(self):
         return "{} - {}".format(str(self.item), str(self.financial_code))
-    
