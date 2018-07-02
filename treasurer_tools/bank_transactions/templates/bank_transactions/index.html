@@ -1,10 +1,18 @@
 {% extends 'main/base.html' %}
 
+{% load static %}
+
+{% block styles %}
+  <style>
+
+  </style>
+{% endblock %}
+
 {% block content %}
     <h1>Banking</h1>
 
     {% include 'main/messages.html' %}
-    
+
     <div>
         <ul>
             <li><a href="{% url 'bank_transactions:add' %}">Add new statement</a></li>
@@ -15,7 +23,7 @@
         <ul>
             {% for statement in statements %}
                 <li>
-                    {{ statement }} - 
+                    {{ statement }} -
                     <a href="{% url 'bank_transactions:edit' statement.id %}">Edit</a> -
                     <a href="{% url 'bank_transactions:delete' statement.id %}">Delete</a>
                     <ul>
@@ -26,7 +34,7 @@
                                 ${{ transaction.amount_credit }}
                             </li>
                         {% endfor %}
-                        
+
                         <li>
                             Attachments
                             <ul>
