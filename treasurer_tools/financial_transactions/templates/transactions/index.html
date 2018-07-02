@@ -3,181 +3,261 @@
 {% load static %}
 
 {% block styles %}
-    <style>
-        #transactions {
-            display: block;
+  <style>
+    #transactions {
+      display: block;
+    }
+
+      #transactions .transaction:nth-child(even) {
+        background-color: rgba(40, 120, 200, 0.1);
+      }
+
+    .transaction {
+      align-content: flex-start;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0.25rem;
+    }
+
+      .transaction > .details {
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+      }
+
+      .transaction > .details > .date-submitted {
+        font-style: italic;
+        font-size: 1.6rem;
+        order: 2;
+      }
+
+      .transaction > .details >.memo {
+        font-weight: 700;
+        order: 1;
+      }
+
+      .transaction > .details > .payee-payer {
+        font-style: italic;
+        font-size: 1.6rem;
+        order: 3;
+      }
+
+      .transaction > .options {
+        order: 4;
+      }
+
+    .items {
+      display: block;
+      padding-left: 1rem;
+    }
+
+      .items .item:nth-child(even) {
+        background-color: rgba(40, 120, 200, 0.1);
+      }
+
+    .item {
+      align-content: flex-start;
+      display: flex;
+      flex-direction: column;
+      font-size: 1.8rem;
+      padding: 0.5rem;
+    }
+
+      .item em {
+        font-size: 1rem;
+      }
+
+      .item > .details {
+      align-content: flex-start;
+      display: flex;
+      flex-direction: column;
+      }
+
+        .item > .details > span {
+          display: block;
         }
 
-            #transactions .transaction:nth-child(even) {
-                background-color: rgba(40, 120, 200, 0.1);
-            }
-
-        .transaction {
-            align-content: flex-start;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem 0.25rem;
+        .item > .details > .date-item {
+          font-size: 1.4rem;
+          font-style: italic;
+          order: 2;
         }
 
-            .transaction > .details {
-                display: flex;
-                flex-direction: column;
-                align-content: flex-start;
-            }
-
-            .transaction > .details > .date-submitted {
-                font-style: italic;
-                font-size: 1.6rem;
-                order: 2;
-            }
-
-            .transaction > .details >.memo {
-                font-weight: 700;
-                order: 1;
-            }
-
-            .transaction > .details > .payee-payer {
-                font-style: italic;
-                font-size: 1.6rem;
-                order: 3;
-            }
-
-            .transaction > .options {
-                order: 4;
-            }
-        .items {
-            display: block;
-            padding-left: 1rem;
-        }
-            .items .item:nth-child(even) {
-                background-color: rgba(40, 120, 200, 0.1);
-            }
-            
-        .item {
-            align-content: flex-start;
-            display: flex;
-            flex-direction: column;
-            font-size: 1.8rem;
-            padding: 0.5rem;
+        .item > .details > .description {
+          font-weight: 700;
+          order: 1;
         }
 
-            .item em {
-                font-size: 1rem;
-            }
-
-            .item > .details {
-                align-content: flex-start;
-                display: flex;
-                flex-direction: column;
-            }
-
-                .item > .details > span {
-                    display: block;
-                }
-
-                .item > .details > .date-item {
-                    font-size: 1.4rem;
-                    font-style: italic;
-                    order: 2;
-                }
-
-                .item > .details > .description {
-                    font-weight: 700;
-                    order: 1;
-                }
-
-                .item > .details > .amount {
-                    order: 3;
-                    padding-left: 0.5rem;
-                }
-
-                .item > .details > .gst {
-                    order: 4;
-                    padding-left: 0.5rem;
-                }
-
-                .item > .details > .total {
-                    order: 5;
-                    padding-left: 0.5rem;
-                }
-
-            .item > .financial-codes {
-                align-content: flex-start;
-                display: flex;
-                flex-direction: column;
-                font-size: 1.6rem;
-                padding: 1rem 0 0 0.5rem;
-            }
-
-            .item > .financial-codes > .financial-code {
-                font-size: 1.4rem;
-                font-style: italic;
-                padding-left: 0.5rem;
-            }
-
-        .transaction > .totals em {
-            font-size: 1.5rem;
+        .item > .details > .amount {
+          order: 3;
+          padding-left: 0.5rem;
         }
 
-        .hide {
-            display: none;
+        .item > .details > .gst {
+          order: 4;
+          padding-left: 0.5rem;
         }
-    </style>
+
+        .item > .details > .total {
+          order: 5;
+          padding-left: 0.5rem;
+        }
+
+      .item > .financial-codes {
+        align-content: flex-start;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.6rem;
+        padding: 1rem 0 0 0.5rem;
+      }
+
+      .item > .financial-codes > .financial-code {
+        font-size: 1.4rem;
+        font-style: italic;
+        padding-left: 0.5rem;
+      }
+
+    .transaction > .totals em {
+      font-size: 1.5rem;
+    }
+
+    .hide {
+      display: none;
+    }
+
+  .nav-buttons {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-button {
+    align-items: center;
+    background-color: rgb(40, 120, 200);
+    border-radius: 1rem;
+    color: rgb(255, 255, 255);
+    display: flex;
+    height: 5rem;
+    justify-content: center;
+    margin: 1rem;
+    text-decoration: none;
+    transition: background-color ease-in-out 0.2s;
+    width: 20rem;
+  }
+
+    .nav-button:hover {
+      background-color: rgb(21, 64, 106);
+    }
+
+  #filters {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  #filters > div {
+    align-items: flex-start;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-right: 5rem;
+  }
+
+    #filters > div > label {
+      font-weight: 700;
+      padding: 1rem 0;
+    }
+
+  .date label {
+    display: inline-block;
+    padding: 0.25rem 0;
+    width: 12rem;
+  }
+
+  #text-filter {
+    width: 20rem;
+    max-width: 100%;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1024px) {
+    .nav-buttons {
+      justify-content: flex-start;
+    }
+
+    #filters {
+      flex-direction: row;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .nav-buttons {
+      justify-content: flex-start;
+    }
+
+    #filters {
+      flex-direction: row;
+    }
+  }
+
+  </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Branch Transactions</h1>
+  <h1>Branch Transactions</h1>
 
-    {% include 'main/messages.html' %}
+  {% include 'main/messages.html' %}
+
+  <div class="nav-buttons">
+      <a href="{% url 'financial_transactions:add' 'expense' %}" class="nav-button">New expense</a>
+      <a href="{% url 'financial_transactions:add' 'revenue' %}" class="nav-button">New revenue</a>
+  </div>
+
+  <h2>Filter Transactions</h2>
+
+  <div id="filters">
+    <div>
+      <label for"transaction-type">Transaction type:</label>
+      <select id="transaction-type">
+        <option value="a" selected="selected">All</option>
+        <option value="e">Expenses</option>
+        <option value="r">Revenue</option>
+      </select>
+    </div>
 
     <div>
-        <a href="{% url 'financial_transactions:add' 'expense' %}">New expense</a>
-        <a href="{% url 'financial_transactions:add' 'revenue' %}">New revenue</a>
+      <label for="transaction-dates">Date:</label>
+      <select id="transaction-dates">
+        <option value="30 days">Past 30 days</option>
+        <option value="90 days">Past 90 days</option>
+        <option value="1 year" selected="selected">Past year</option>
+        <option value="2 years">Past 2 years</option>
+        <option value="range">Date range</option>
+      </select>
+
+      <div class="date">
+        <label>Start date:</label>
+        <input type="date" id="date-start">
+      </div>
+
+      <div class="date">
+        <label>End date:</label>
+        <input type="date" id="date-end">
+      </div>
     </div>
 
     <div>
-        <a href="">Submit to transactions to CSHP</a>
+      <label for="text-filter">Text filter:</label>
+      <input type="text" id="text-filter">
     </div>
+  </div>
 
-    <div class="filters">
-        <div>
-            <label>Transaction type</label>
-            <select id="transaction-type">
-                <option value="a" selected="selected">All</option>
-                <option value="e">Expenses</option>
-                <option value="r">Revenue</option>
-            </select>
-        </div>
+  <h2>Transaction List</h2>
 
-        <div>
-            <label>Date</label>
-            <select id="transaction-dates">
-                <option value="30 days">Past 30 days</option>
-                <option value="90 days">Past 90 days</option>
-                <option value="1 year" selected="selected">Past year</option>
-                <option value="2 years">Past 2 years</option>
-                <option value="range">Date range</option>
-            </select>
-            
-            <div class="date">
-                <label>Start date:</label>
-                <input type="date" id="date-start">
-            </div>
-
-            <div class="date">
-                <label>End date:</label>
-                <input type="date" id="date-end">
-            </div>
-        </div>
-
-        <div>
-            <label>Text filter</label>
-            <input type="text" id="text-filter">
-        </div>
-    </div>
-    <h2>Transaction List</h2>
-
-    <div id="transactions"></div>
+  <div id="transactions"></div>
 {% endblock %}
 
 {% block js %}
