@@ -58,7 +58,8 @@ def add_payee_payer(request):
         "payee_payers/add_edit.html",
         {
             "form": form,
-            "page_name": "Add new Payee/Payer",
+            "page_name": "Add New Payee/Payer",
+            "submit_button": "Add new payee/payer"
         },
     )
 
@@ -95,6 +96,7 @@ def edit_payee_payer(request, payee_payer_id):
         {
             "form": form,
             "page_name": "Edit Payee/Payer",
+            "submit_button": "Save changes to payee/payer"
         }
     )
 

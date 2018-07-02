@@ -3,45 +3,23 @@
 {% load static %}
 
 {% block styles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
-
-    <style>
-        #form_content > div {
-            align-items: flex-start;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        #form_content label, #form_content span, #form_content em {
-            box-sizing: border-box;
-            display: block;
-            padding: 0.25rem 0.5rem;
-            width: 100%;
-        }
-
-        #form_content label {
-            font-weight: 700;
-        }
-
-        #form_content span input, #form_content span select {
-            width: 100%;
-        }
-
-        #form_content em {
-            font-size: 1.2rem;
-        }
-    </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+  <style>
+    /* Override column widths */
+    .input-grid {
+      grid-template-columns: 15rem 20rem;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Add New {{ page_name|title }}</h1>
+  <h1>{{ page_name|title }}</h1>
 
-    {% include 'main/messages.html' %}
+  {% include 'main/messages.html' %}
 
-    {% include 'main/form_add_edit.html' %}
+  {% include 'main/form_add_edit.html' %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'payee_payers/js/add_edit.js' %}"></script>
+  <script type="text/javascript" src="{% static 'payee_payers/js/add_edit.js' %}"></script>
 {% endblock %}

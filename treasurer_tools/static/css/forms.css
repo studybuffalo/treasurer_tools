@@ -115,6 +115,19 @@ form input, form select {
   .input-flex-ctr-m {
     flex-direction: row;
   }
+
+  .input-grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "label input";
+    padding: 0.5rem 0;
+  }
+
+    .input-grid.submit-button button {
+      align-self: end;
+      grid-area: input;
+    }
 }
 
 @media screen and (min-width: 1024px) {
@@ -125,6 +138,16 @@ form input, form select {
   .input-flex-col {
     width: auto;
   }
+
+    .input-flex-col label {
+      display: inline-block;
+      width: auto;
+    }
+
+    .input-flex-col input {
+      display: inline-block;
+      width: auto;
+    }
 
   .input-flex-ctr-l {
     flex-direction: row;

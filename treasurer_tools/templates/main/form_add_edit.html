@@ -1,35 +1,19 @@
 <form action="" method="post">
-    {% csrf_token %}
+  {% csrf_token %}
 
-    <div id="form_content">
-        {% include 'main/errors.html' with errors=form.non_field_errors %}
+  {% include 'main/errors.html' with errors=form.non_field_errors %}
 
-        {% for field in form.visible_fields %}
-            <div>
-                {{ field.label_tag }}
-
-                <span>
-                    {{ field }}
-                </span>
-
-                <em>
-                    {{ field.help_text }}
-                </em>
-
-                {% include 'main/errors.html' with errors=field.errors %}
-            </div>
-        {% endfor %}
-
-        {% for field in form.hidden_fields %}
-            <div>
-                {{ field }}
-            </div>
-            
-            {% include 'main/errors.html' with errors=field.errors %}
-        {% endfor %}
+  {% for field in form.visible_fields %}
+    <div class="input-grid">
+      {% include 'main/input_field.html' with field=field %}
     </div>
+  {% endfor %}
 
-    <div class="right_align">
-        <button type="submit">Save changes to {{ page_name|lower }}</button>
-    </div>
+  <div class="input-grid submit-button">
+    <button type="submit" class="edit">{{ submit_button }}</button>
+  </div>
+
+  {% for field in form.hidden_fields %}
+    {{ field }}
+  {% endfor %}
 </form>
