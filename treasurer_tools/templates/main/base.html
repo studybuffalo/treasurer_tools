@@ -12,6 +12,7 @@
     </title>
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.modal.min.css' %}">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Libre+Franklin:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" media="all">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css" media="all">
     {% block styles %}{% endblock %}
@@ -84,6 +85,7 @@
 
   <!-- JS files -->
   <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery.modal.min.js' %}"></script>
 
   {% if user.is_authenticated %}
     <script>
