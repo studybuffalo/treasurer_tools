@@ -1,8 +1,8 @@
 function update_financial_code(yearSelect) {
     // Shows only financial codes for the selected budget year
     const $yearSelect = $(yearSelect);
-    const codeID = $yearSelect.id.replace("budget_year", "code")
-    const $codeSelect = $(`#{codeID}`);
+    const codeID = $yearSelect.attr("id").replace("budget_year", "code");
+    const $codeSelect = $(`#${ codeID }`);
     const $codeGroups = $codeSelect.children();
 
     const yearID = $yearSelect.val();
