@@ -66,7 +66,6 @@ def add_payee_payer(request):
 @login_required
 def edit_payee_payer(request, payee_payer_id):
     """Generates and processes form to edit a payee/payer"""
-    # TODO: Fix javascript functions - defaults to Canada/Alberta on edit
     # If this is a POST request then process the Form data
     if request.method == "POST":
         payee_payer_data = get_object_or_404(PayeePayer, id=payee_payer_id)

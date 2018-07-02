@@ -123,7 +123,10 @@ function setCountryToCanada() {
 }
 
 $(document).ready(() => {
-  setCountryToCanada();
+  // If not country provided, set to Canada
+  if (document.getElementById('id_country').value === '') {
+    setCountryToCanada();
+  }
 
   $('#id_country').on('change', () => {
     updateProvinceInput();
