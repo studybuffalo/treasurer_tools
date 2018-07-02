@@ -18,6 +18,7 @@
     .header-date, .header-description, .header-amount, .header-gst,
     {% for financial_code_form in forms.empty_financial_code_form %}.header-{{ financial_code_form.name|lower }}, .header-{{ financial_code_form.name|lower }}-year, .header-{{ financial_code_form.name|lower }}-code{% if forloop.last %}{% else %}, {% endif %}{% endfor %} {
       display: none;
+      font-weight: 700;
     }
 
     @media screen and (min-width: 768px) and (max-width: 1024px) {
@@ -35,6 +36,10 @@
     }
 
     @media screen and (min-width: 1024px) {
+      #transaction-items label {
+        display: none;
+      }
+
       .payee-payer select {
         width: 30rem;
       }
@@ -146,10 +151,26 @@
 
           <!-- Header for table view -->
           {% with forms.forms.item_formset.empty_form as header %}
-            <div class="header-date">{{ header.date_item.label }}</div>
-            <div class="header-description">{{ header.description.label }}</div>
-            <div class="header-amount">{{ header.amount.label }}</div>
-            <div class="header-gst">{{ header.gst.label }}</div>
+            <div class="header-date">
+              {{ header.date_item.label }}
+              <div id="help-{{ header.date_item.auto_id }}" class="modal">{{  header.date_item.help_text }}</div>
+              <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div class="header-description">
+              {{ header.description.label }}
+              <div id="help-{{ header.description.auto_id }}" class="modal">{{  header.description.help_text }}</div>
+              <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div class="header-amount">
+              {{ header.amount.label }}
+              <div id="help-{{ header.amount.auto_id }}" class="modal">{{  header.amount.help_text }}</div>
+              <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div class="header-gst">
+              {{ header.gst.label }}
+              <div id="help-{{ header.gst.auto_id }}" class="modal">{{  header.gst.help_text }}</div>
+              <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
 
             {% with forms.empty_financial_code_form.0 as financial_code_form %}
               <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
