@@ -22,7 +22,7 @@
     @media screen and (min-width: 1024px) {
       #transaction-items {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 9rem auto 9rem 9rem {% for financial_code_form in forms.empty_financial_code_form %}18rem 15rem{% if forloop.last %};{% else %} {% endif %}{% endfor %}
         grid-template-rows: auto;
         grid-template-areas:
           "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }} header-{{ financial_code_form.name|lower }} {% endfor %}"
