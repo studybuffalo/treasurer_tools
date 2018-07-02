@@ -39,6 +39,7 @@ LOCAL_APPS = [
     "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
     "treasurer_tools.bank_institutions.apps.BankInstitutionsConfig",
     "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
+    "treasurer_tools.branch_details.apps.BranchDetailsConfig",
     "treasurer_tools.documents.apps.DocumentsConfig",
     "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
     "treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig",
