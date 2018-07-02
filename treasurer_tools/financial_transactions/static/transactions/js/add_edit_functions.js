@@ -49,6 +49,7 @@ function add_item() {
     // Get the template and replace it with the proper item ID
     var template = $("#item-template").html();
     var replacedTemplate = template.replace(/__prefix__/g, count);
+
     // Add the replaced template after the last formset-row
     $("#transaction-items").append(replacedTemplate);
 

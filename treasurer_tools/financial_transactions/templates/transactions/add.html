@@ -3,7 +3,8 @@
 {% load static %}
 
 {% block styles %}
-  <link rel="stylesheet" type="text/css" href="{% static '/css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.modal.min.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'transactions/css/forms_custom.css' %}">
 
   <style>
@@ -261,5 +262,6 @@
   {% include 'transactions/formset_template.html' %}
 
   <script type="text/javascript" src="{% static 'js/form_functions.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/jquery.modal.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'transactions/js/add_edit_functions.js' %}"></script>
 {% endblock %}

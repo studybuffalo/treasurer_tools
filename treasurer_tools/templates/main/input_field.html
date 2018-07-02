@@ -1,8 +1,8 @@
 <label for="{{field.id_for_label}}">
   {{ field.label }}:
   {% if field.help_text %}
-    <!-- TODO: Add better styling to this -->
-    <button class="input-help" data-help-text="{{ field.help_text }}"></button>
+    <div id="help-{{ field.auto_id }}" class="modal">{{ field.help_text }}</div>
+    <a href="#help-{{ field.auto_id }}" rel="modal:open" class="input-help"></a>
   {% endif %}
 </label>
 {{ field }}
