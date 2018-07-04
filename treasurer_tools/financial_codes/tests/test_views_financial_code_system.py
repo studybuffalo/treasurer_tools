@@ -52,7 +52,7 @@ class FinancialCodeSystemAddTest(TestCase):
         self.assertEqual(str(response.context['user']), 'user')
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/add.html")
+        self.assertTemplateUsed(response, "financial_codes/add_edit.html")
 
     def test_system_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -163,7 +163,7 @@ class FinancialCodeSystemEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/edit.html")
+        self.assertTemplateUsed(response, "financial_codes/add_edit.html")
 
     def test_system_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

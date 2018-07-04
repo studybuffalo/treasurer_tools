@@ -61,7 +61,7 @@ class FinancialCodeGroupAddTest(TestCase):
         response = self.client.get(reverse("financial_codes:group_add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/add.html")
+        self.assertTemplateUsed(response, "financial_codes/add_edit.html")
 
     def test_group_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -175,7 +175,7 @@ class FinancialCodeGroupEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/edit.html")
+        self.assertTemplateUsed(response, "financial_codes/add_edit.html")
 
     def test_group_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

@@ -59,7 +59,7 @@ class FinancialCodeAddTest(TestCase):
         response = self.client.get(reverse("financial_codes:code_add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/code_add.html")
+        self.assertTemplateUsed(response, "financial_codes/code_add_edit.html")
 
     def test_code_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -168,7 +168,7 @@ class FinancialCodeEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "financial_codes/code_edit.html")
+        self.assertTemplateUsed(response, "financial_codes/code_add_edit.html")
 
     def test_code_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
