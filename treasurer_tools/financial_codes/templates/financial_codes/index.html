@@ -9,10 +9,79 @@
       justify-content: center;
     }
 
+      .buttons a {
+        width: 25rem;
+      }
     /* Overriding base style */
-    .save, .edit, .delete {
-      width: 15rem;
+    h2, h3, h4 {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 1rem;
+      margin: 0;
     }
+
+    .financial-code-systems .save,
+    .financial-code-systems .edit,
+    .financial-code-systems .delete {
+      display: inline-flex;
+      height: 3rem;
+      margin: 0.5rem;
+      min-width: 6rem;
+    }
+
+    .financial-code-system {
+      align-items: center;
+      background-color: rgb(125, 125, 125);
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .budget-year {
+      align-items: center;
+      background-color: rgb(200, 200, 200);
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      padding-left: 2rem;
+      width: 100%;
+    }
+
+    .financial-codes {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+      .financial-codes h4 {
+        background-color: rgb(225, 225, 225);
+        display: block;
+        padding-left: 6rem;
+      }
+
+    .financial-code-group {
+      list-style: none;
+      padding: 0 0 0 7rem;
+      margin: 0;
+    }
+
+    .financial-code {
+      list-style: none;
+      padding: 0 0 0 2rem;
+      margin: 0;
+    }
+
+
+  @media screen and (min-width: 1024px) {
+    .financial-codes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
   </style>
 {% endblock %}
 
@@ -21,84 +90,88 @@
 
   {% include 'main/messages.html' %}
 
-  <a href="{% url 'financial_codes:system_add' %}" class="save">Add new financial code system</a>
+  <div class="buttons">
+    <a href="{% url 'financial_codes:system_add' %}" class="save">Add new financial code system</a>
+    <a href="{% url 'financial_codes:year_add' %}" class="save">Add new budget year</a>
+    <a href="{% url 'financial_codes:group_add' %}" class="save">Add new financial code group</a>
+    <a href="{% url 'financial_codes:code_add' %}" class="save">Add new financial code</a>
+  </div>
 
-  <div class="financial-code-system">
+  <div class="financial-code-systems">
     {% for system in data %}
       <div>
-        <h2>Financial Code System: {{ system.system.title }}</h2>
-
-        <div class="buttons">
-          <a href="{% url 'financial_codes:system_edit' system.system.id %}" class="edit">Edit financial code system</a>
-          <a href="{% url 'financial_codes:system_delete' system.system.id %}" class="delete">Delete financial code system</a>
-          <a href="{% url 'financial_codes:year_add' %}" class="save">Add new budget year</a>
+        <div class="financial-code-system">
+            <span class="closed">&#9650;</span>
+            <span class="open">&#9660;</span>
+          <h2>Financial Code System: {{ system.system.title }}</h2>
+          <a href="{% url 'financial_codes:system_edit' system.system.id %}" class="edit">Edit</a>
+          <a href="{% url 'financial_codes:system_delete' system.system.id %}" class="delete">Delete</a>
         </div>
 
-        {% for budget_year in system.budget_years %}
-          <h3>{{ budget_year.budget_year }} Budget Year</h3>
-
-          <div class="buttons">
-            <a href="{% url 'financial_codes:year_edit' budget_year.budget_year.id %}" class="edit">Edit budget year</a>
-            <a href="{% url 'financial_codes:year_delete' budget_year.budget_year.id %}" class="delete">Delete budget year</a>
-            <a href="{% url 'financial_codes:group_add' %}" class="save">Add new financial code group</a>
-          </div>
-
-          <div>
-            <div>
-              <h4>Revenue Accounts</h4>
-              <ul class="financial-code-group">
-                {% for financial_code_group in budget_year.revenue_groups %}
-                  <li>
-                    {{ financial_code_group.financial_code_group.title }}
-
-                    <div class="buttons">
-                      <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}" class="edit">Edit</a>
-                      <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}" class="delete">Delete</a>
-                      <a href="{% url 'financial_codes:code_add' %}" class="save">Add new financial code</a>
-                    </div>
-
-                    <ul class="financial-code">
-                      {% for financial_code in financial_code_group.financial_codes %}
-                        <li>
-                          {{ financial_code }} -
-                          <a href="{% url 'financial_codes:code_edit' financial_code.id %}">Edit</a> -
-                          <a href="{% url 'financial_codes:code_delete' financial_code.id %}">Delete</a>
-                        </li>
-                      {% endfor %}
-                    </ul>
-                  </li>
-                {% endfor %}
-              </ul>
+        <div class="budget-years">
+          {% for budget_year in system.budget_years %}
+            <div class="budget-year">
+              <span class="closed">&#9650;</span>
+              <span class="open">&#9660;</span>
+              <h3>{{ budget_year.budget_year }} Budget Year</h3>
+              <a href="{% url 'financial_codes:year_edit' budget_year.budget_year.id %}" class="edit">Edit</a>
+              <a href="{% url 'financial_codes:year_delete' budget_year.budget_year.id %}" class="delete">Delete</a>
             </div>
 
-            <div>
-              <h4>Expense Accounts</h4>
-              <ul class="financial-code-group">
-                {% for financial_code_group in budget_year.expense_groups %}
-                  <li>
-                    {{ financial_code_group.financial_code_group.title }}
+            <div class="financial-codes">
+              <div class="revenue-codes">
+                <h4>Revenue Accounts</h4>
 
-                    <div class="buttons">
-                      <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}" class="edit">Edit</a>
-                      <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}" class="delete">Delete</a>
-                      <a href="{% url 'financial_codes:code_add' %}" class="save">Add new financial code</a>
-                    </div>
+                <ul class="financial-code-group">
+                  {% for financial_code_group in budget_year.revenue_groups %}
+                    <li>
+                      <div>
+                        <strong>{{ financial_code_group.financial_code_group.title }}</strong>
+                        <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}" class="edit">Edit</a>
+                        <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}" class="delete">Delete</a>
+                      </div>
 
-                    <ul class="financial-code">
-                      {% for financial_code in financial_code_group.financial_codes %}
-                        <li>
-                          {{ financial_code }} -
-                          <a href="{% url 'financial_codes:code_edit' financial_code.id %}">Edit</a> -
-                          <a href="{% url 'financial_codes:code_delete' financial_code.id %}">Delete</a>
-                        </li>
-                      {% endfor %}
-                    </ul>
-                  </li>
-                {% endfor %}
-              </ul>
+                      <ul class="financial-code">
+                        {% for financial_code in financial_code_group.financial_codes %}
+                          <li>
+                            {{ financial_code }}
+                            <a href="{% url 'financial_codes:code_edit' financial_code.id %}" class="edit">Edit</a>
+                            <a href="{% url 'financial_codes:code_delete' financial_code.id %}" class="delete">Delete</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <div class="expense-codes">
+                <h4>Expense Accounts</h4>
+                <ul class="financial-code-group">
+                  {% for financial_code_group in budget_year.expense_groups %}
+                    <li>
+                      <div>
+                        <strong>{{ financial_code_group.financial_code_group.title }}</strong>
+                        <a href="{% url 'financial_codes:group_edit' financial_code_group.financial_code_group.id %}" class="edit">Edit</a>
+                        <a href="{% url 'financial_codes:group_delete' financial_code_group.financial_code_group.id %}" class="delete">Delete</a>
+                      </div>
+
+                      <ul class="financial-code">
+                        {% for financial_code in financial_code_group.financial_codes %}
+                          <li>
+                            {{ financial_code }}
+                            <a href="{% url 'financial_codes:code_edit' financial_code.id %}" class="edit">Edit</a>
+                            <a href="{% url 'financial_codes:code_delete' financial_code.id %}" class="delete">Delete</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     {% endfor %}
   </div>
