@@ -88,10 +88,11 @@ def system_add(request):
 
     return render(
         request,
-        "financial_codes/add.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "financial system",
+            "page_name": "Add New Financial System",
             "form": form,
+            "submit_button": "Add new financial system",
         },
     )
 
@@ -124,10 +125,11 @@ def system_edit(request, system_id):
 
     return render(
         request,
-        "financial_codes/edit.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "financial code system",
+            "page_name": "Edit Financial Code System",
             "form": form,
+            "submit_button": "Save changes"
         },
     )
 
@@ -183,10 +185,11 @@ def year_add(request):
 
     return render(
         request,
-        "financial_codes/add.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "budget year",
+            "page_name": "Add New Budget Year",
             "form": form,
+            "submit_button": "Add new budget year",
         },
     )
 
@@ -218,10 +221,11 @@ def year_edit(request, year_id):
 
     return render(
         request,
-        "financial_codes/edit.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "budget year",
+            "page_name": "Edit Budget Year",
             "form": form,
+            "submit_button": "Save changes",
         },
     )
 
@@ -277,10 +281,11 @@ def group_add(request):
 
     return render(
         request,
-        "financial_codes/add.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "financial code group",
-            "form": form
+            "page_name": "Add New Financial Code Group",
+            "form": form,
+            "submit_button": "Add new financial code group",
         },
     )
 
@@ -312,10 +317,11 @@ def group_edit(request, group_id):
 
     return render(
         request,
-        "financial_codes/edit.html",
+        "financial_codes/add_edit.html",
         {
-            "page_name": "financial code group",
+            "page_name": "Edit Financial Code Group",
             "form": form,
+            "submit_button": "Save changes",
         },
     )
 
@@ -373,9 +379,11 @@ def code_add(request):
 
     return render(
         request,
-        "financial_codes/code_add.html",
+        "financial_codes/code_add_edit.html",
         {
+            "page_name": "Add New Financial Code",
             "form": form,
+            "submit_button": "Add new financial code",
         },
     )
 
@@ -407,9 +415,11 @@ def code_edit(request, code_id):
 
     return render(
         request,
-        "financial_codes/code_edit.html",
+        "financial_codes/code_add_edit.html",
         {
+            "page_name": "Edit Financial Code",
             "form": form,
+            "submit_button": "Save changes",
         },
     )
 
