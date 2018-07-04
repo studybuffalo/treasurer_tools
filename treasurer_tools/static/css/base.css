@@ -256,9 +256,8 @@ select, input {
   display: block;
 }
 
-.save {
+.save, .edit, .delete {
   align-items: center;
-  background-color: rgb(5, 150, 100);
   border: none;
   border-radius: 1rem;
   color: rgb(255, 255, 255);
@@ -269,8 +268,13 @@ select, input {
   min-height: 3rem;
   min-width: 8em;
   padding: 1rem;
+  text-align: center;
   text-decoration: none;
   transition: background-color ease-in-out 0.2s;
+}
+
+.save {
+  background-color: rgb(5, 150, 100);
 }
 
   .save:hover {
@@ -278,20 +282,7 @@ select, input {
   }
 
 .edit {
-  align-items: center;
   background-color: rgb(40, 120, 200);
-  border: none;
-  border-radius: 1rem;
-  color: rgb(255, 255, 255);
-  display: flex;
-  font-size: 1.5rem;
-  justify-content: center;
-  margin: 1rem;
-  min-height: 3rem;
-  min-width: 8em;
-  padding: 1rem;
-  text-decoration: none;
-  transition: background-color ease-in-out 0.2s;
 }
 
   .edit:hover {
@@ -299,20 +290,7 @@ select, input {
   }
 
 .delete {
-  align-items: center;
   background-color: rgb(233, 74, 55);
-  border: none;
-  border-radius: 1rem;
-  color: rgb(255, 255, 255);
-  display: flex;
-  font-size: 1.5rem;
-  justify-content: center;
-  margin: 1rem;
-  min-height: 3rem;
-  min-width: 8em;
-  padding: 1rem;
-  text-decoration: none;
-  transition: background-color ease-in-out 0.2s;
 }
 
   .delete:hover {
