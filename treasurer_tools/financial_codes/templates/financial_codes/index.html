@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% load static %}
+
 {% block styles %}
   <style>
     .buttons {
@@ -12,7 +14,7 @@
       .buttons a {
         width: 25rem;
       }
-    /* Overriding base style */
+
     h2, h3, h4 {
       display: inline-flex;
       align-items: center;
@@ -29,20 +31,37 @@
       min-width: 6rem;
     }
 
+    .financial-code-system > .edit, .financial-code-system > .delete,
+    .budget-year > .edit, .budget-year > .delete {
+        box-shadow: 2px 2px rgb(50, 50, 50);
+      }
+
     .financial-code-system {
       align-items: center;
-      background-color: rgb(125, 125, 125);
+      background-color: rgb(241, 100, 69);
+      border-bottom: 1px solid rgb(250, 250, 250);
+      color: rgb(255, 255, 255);
       cursor: pointer;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       justify-content: flex-start;
+      padding-left: 0.5rem;
+      transition: background-color ease-in-out 0.3s;
       width: 100%;
+    }
+
+      .financial-code-system:hover {
+        background-color: rgb(190, 80, 50);
+      }
+
+    .budget-years {
+      display: none;
     }
 
     .budget-year {
       align-items: center;
-      background-color: rgb(200, 200, 200);
+      background-color: rgb(175, 175, 175);
       cursor: pointer;
       display: flex;
       flex-direction: row;
@@ -52,9 +71,13 @@
       width: 100%;
     }
 
+      .budget-year:hover {
+        background-color: rgb(150, 150, 150);
+        transition: background-color ease-in-out 0.3s;
+      }
+
     .financial-codes {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: none;
     }
 
       .financial-codes h4 {
@@ -75,9 +98,26 @@
       margin: 0;
     }
 
+    .arrow {
+      transform: rotate(90deg);
+      transition: transform ease-in-out 0.2s;
+    }
+
+    .opened > .arrow {
+      transform: rotate(180deg);
+    }
+
+    .opened + .budget-years {
+      display: block;
+    }
+
+    .opened + .financial-codes {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
 
   @media screen and (min-width: 1024px) {
-    .financial-codes {
+    .opened + .financial-codes {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
@@ -101,8 +141,7 @@
     {% for system in data %}
       <div>
         <div class="financial-code-system">
-            <span class="closed">&#9650;</span>
-            <span class="open">&#9660;</span>
+          <span class="arrow">&#9650;</span>
           <h2>Financial Code System: {{ system.system.title }}</h2>
           <a href="{% url 'financial_codes:system_edit' system.system.id %}" class="edit">Edit</a>
           <a href="{% url 'financial_codes:system_delete' system.system.id %}" class="delete">Delete</a>
@@ -111,8 +150,7 @@
         <div class="budget-years">
           {% for budget_year in system.budget_years %}
             <div class="budget-year">
-              <span class="closed">&#9650;</span>
-              <span class="open">&#9660;</span>
+              <span class="arrow">&#9650;</span>
               <h3>{{ budget_year.budget_year }} Budget Year</h3>
               <a href="{% url 'financial_codes:year_edit' budget_year.budget_year.id %}" class="edit">Edit</a>
               <a href="{% url 'financial_codes:year_delete' budget_year.budget_year.id %}" class="delete">Delete</a>
@@ -175,4 +213,8 @@
       </div>
     {% endfor %}
   </div>
+{% endblock %}
+
+{% block js%}
+  <script type="text/javascript" src="{% static 'financial_codes/js/index.js' %}"></script>
 {% endblock %}
