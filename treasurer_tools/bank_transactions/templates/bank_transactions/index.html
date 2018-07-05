@@ -4,7 +4,111 @@
 
 {% block styles %}
   <style>
+    h3 {
+      margin: 0.5rem 0;
+    }
+    .save {
+      width: 18rem;
+    }
 
+    .edit, .delete {
+      display: inline-flex;
+      margin: 0 1rem;
+      padding: 0.5rem;
+      min-width: 8rem;
+    }
+
+    em {
+      display: block;
+      font-size: 1rem;
+      width: 6rem;
+    }
+
+    .transaction {
+      padding: 0 10px;
+    }
+
+    .header {
+      display: none;
+    }
+
+    .date {
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .description {
+      font-weight: 700;
+    }
+
+    .debit, .credit {
+      display: inline-block;
+      width: 140px;
+    }
+
+    .negative {
+      color: rgb(233, 74, 55);
+    }
+
+    .totals {
+      background-color: rgb(200, 200, 200);
+      font-weight: 700;
+    }
+
+    .total-header {
+      padding-top: 1rem;
+    }
+
+    @media screen and (min-width: 768px) {
+      h3 {
+        display: inline-block;
+      }
+
+      em {
+        display: none;
+      }
+
+      .transaction {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 2fr 4fr 2fr 2fr;
+        grid-template-areas: "date description debit credit";
+      }
+
+      .header {
+        background-color: rgb(40, 120, 200);
+        color: rgb(255, 255, 255);
+        display: grid;
+        font-weight: 700;
+        margin-top: 1rem;
+      }
+
+      .date {
+        grid-area: date;
+      }
+
+      .description {
+        grid-area: description;
+      }
+
+      .debit {
+        justify-self: end;
+        grid-area: debit;
+        width: auto;
+      }
+
+      .credit {
+        justify-self: end;
+        grid-area: credit;
+        width: auto;
+      }
+
+      .total-header {
+        grid-area: description;
+        justify-self: end;
+        margin: 0;
+      }
+    }
   </style>
 {% endblock %}
 
@@ -13,13 +117,71 @@
 
     {% include 'main/messages.html' %}
 
+    <a href="{% url 'bank_transactions:add' %}" class="save">Add new statement</a>
+
+    {% for account in accounts %}
     <div>
-        <ul>
-            <li><a href="{% url 'bank_transactions:add' %}">Add new statement</a></li>
-        </ul>
+      <h2>{{ account }} Statements</h2>
+
+      {% for statement in account.statement_set.all %}
+        <div class="statement">
+          <div>
+            <h3>{{ statement|title }}</h3>
+            <a href="" class="edit">Edit</a>
+            <a href="" class="delete">Delete</a>
+          </div>
+
+          <div class="transaction header">
+            <div class="date">Date</div>
+            <div class="description">Description</div>
+            <div class="debit">Debit</div>
+            <div class="credit">Credit</div>
+          </div>
+
+          {% for transaction in statement.banktransaction_set.all %}
+            <div class="transaction">
+              <div class="date">
+                {{ transaction.date_transaction }}
+              </div>
+              <div class="description">
+                {% if transaction.description_user %}
+                  {{ transaction.description_user }}
+                {% else %}
+                  {{ transaction.description_bank }}
+                {% endif %}
+              </div>
+              <div class="debit">
+                <em>Debit:</em>
+                <span class="negative">${{ transaction.amount_debit }}</span>
+              </div>
+              <div class="credit">
+                <em>Credit:</em>
+                <span>${{ transaction.amount_credit }}</span>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="transaction totals">
+            <div class="total-header">SUBTOTAL</div>
+            <div class="debit">
+              <em>Debit:</em>
+              <span class="negative">$0.00</span>
+            </div>
+            <div class="credit">
+              <em>Credit:</em>
+              <span>$0.00</span>
+            </div>
+          </div>
+
+          <div class="transaction totals">
+            <div class="total-header">TOTAL</div>
+            <div class="credit"><span>$0.00</span></div>
+          </div>
+        </div>
+      {% endfor %}
+
     </div>
-    <div>
-        <h2>Bank Statements</h2>
+    {% endfor %}
         <ul>
             {% for statement in statements %}
                 <li>
