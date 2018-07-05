@@ -127,8 +127,8 @@
         <div class="statement">
           <div>
             <h3>{{ statement|title }}</h3>
-            <a href="" class="edit">Edit</a>
-            <a href="" class="delete">Delete</a>
+            <a href="{% url 'bank_transactions:edit' statement.id %}" class="edit">Edit</a>
+            <a href="{% url 'bank_transactions:delete' statement.id %}" class="delete">Delete</a>
           </div>
 
           <div class="transaction header">
