@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from documents.models import Attachment, BankStatementMatch
-
+from bank_institutions.models import Account
 from .models import Statement
 from .forms import StatementForm, BankTransactionFormSet, AttachmentMatchFormSet, NewAttachmentForm
 
@@ -15,13 +15,13 @@ from .forms import StatementForm, BankTransactionFormSet, AttachmentMatchFormSet
 @login_required
 def dashboard(request):
     """Main dashboard to display banking functions"""
-    statements = Statement.objects.all()
+    accounts = Account.objects.all()
 
     return render(
         request,
         "bank_transactions/index.html",
         context={
-            "statements": statements,
+            "accounts": accounts,
         },
     )
 
