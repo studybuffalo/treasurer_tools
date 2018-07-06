@@ -123,7 +123,7 @@ class StatementAddTest(TestCase):
         response = self.client.get(reverse("bank_transactions:add"))
 
         # Check for proper template
-        self.assertTemplateUsed(response, "bank_transactions/add.html")
+        self.assertTemplateUsed(response, "bank_transactions/add_edit.html")
 
     def test_statement_add_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""
@@ -373,7 +373,7 @@ class StatementEditTest(TestCase):
         )
 
         # Check for proper template
-        self.assertTemplateUsed(response, "bank_transactions/edit.html")
+        self.assertTemplateUsed(response, "bank_transactions/add_edit.html")
 
     def test_statement_edit_redirect_to_dashboard(self):
         """Checks that form redirects to the dashboard on success"""

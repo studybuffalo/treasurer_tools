@@ -84,11 +84,13 @@ def statement_add(request):
 
     return render(
         request,
-        "bank_transactions/add.html",
+        "bank_transactions/add_edit.html",
         {
             "statement_form": statement_form,
             "bank_transaction_formsets": bank_transaction_formsets,
             "new_attachment_form": new_attachment_form,
+            "page_name": "Add New Bank Statement",
+            "submit_button": "Add new bank statement",
         },
     )
 
@@ -182,12 +184,14 @@ def statement_edit(request, statement_id):
 
     return render(
         request,
-        "bank_transactions/edit.html",
+        "bank_transactions/add_edit.html",
         {
             "statement_form": statement_form,
             "bank_transaction_formsets": bank_transaction_formsets,
             "attachment_match_formsets": attachment_match_formsets,
             "new_attachment_form": new_attachment_form,
+            "page_name": "Edit Bank Statement",
+            "submit_button": "Save changes",
         },
     )
 

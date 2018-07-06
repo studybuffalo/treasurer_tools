@@ -1,0 +1,205 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+
+    <style>
+      #bank-transactions .item:nth-child(odd) {
+        background-color: rgb(237, 244, 242);
+      }
+
+      .item {
+        padding: 2rem 0.5rem;
+      }
+
+      .header {
+        display: none;
+      }
+
+      .buttons{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      @media screen and (min-width: 768px) {
+        #bank-transactions .item:nth-child(odd) {
+          background-color: transparent;
+        }
+
+        .item {
+          display: grid;
+          grid-gap: 1rem;
+          grid-template-columns: 2fr 4fr 4fr 2fr 2fr;
+          grid-template-areas: "date-transaction description-bank description-user amount-deb amount-credit";
+          padding: 0;
+        }
+
+        .input-help {
+          display: none;
+        }
+
+        .header {
+          display: grid;
+          font-weight: 700;
+        }
+
+          .header .input-help {
+            display: inline-block;
+          }
+
+        #bank-transactions label {
+          display: none;
+        }
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ page_name }}</h1>
+
+  {% include 'main/messages.html' %}
+
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+      {% include 'main/errors.html' with errors=statement_form.non_field_errors %}
+
+      <div class="flex-col flex-ctr-m flex-ctr-l">
+        <div class="input-flex-col account">
+          {% include 'main/input_field.html' with field=statement_form.account %}
+        </div>
+
+        <div class="input-flex-col date-start">
+          {% include 'main/input_field.html' with field=statement_form.date_start %}
+        </div>
+
+        <div class="input-flex-col date-end">
+          {% include 'main/input_field.html' with field=statement_form.date_end %}
+        </div>
+      </div>
+
+      {% for field in statement_form.hidden_fields %}
+          {{ field }}
+      {% endfor %}
+
+      <fieldset id="bank-transactions">
+        <legend>Bank Transactions</legend>
+
+        {% include 'main/errors.html' with errors=bank_transaction_formsets.non_form_errors %}
+
+        {% with bank_transaction_formsets.empty_form as header %}
+          <div class="item header">
+            <div>
+              {{ header.date_transaction.label }}
+              <div id="help-{{ header.date_transaction.auto_id }}" class="modal">{{  header.date_transaction.help_text }}</div>
+              <a href="#help-{{ header.date_transaction.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div>
+                {{ header.description_bank.label }}
+                <div id="help-{{ header.description_bank.auto_id }}" class="modal">{{  header.description_bank.help_text }}</div>
+                <a href="#help-{{ header.description_bank.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div>
+                {{ header.description_user.label }}
+                <div id="help-{{ header.description_user.auto_id }}" class="modal">{{  header.description_user.help_text }}</div>
+                <a href="#help-{{ header.description_user.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div>
+                {{ header.amount_debit.label }}
+                <div id="help-{{ header.amount_debit.auto_id }}" class="modal">{{  header.amount_debit.help_text }}</div>
+                <a href="#help-{{ header.amount_debit.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+            <div>
+                {{ header.amount_credit.label }}
+                <div id="help-{{ header.amount_credit.auto_id }}" class="modal">{{  header.amount_credit.help_text }}</div>
+                <a href="#help-{{ header.amount_credit.auto_id }}" rel="modal:open" class="input-help"></a>
+            </div>
+          </div>
+        {% endwith %}
+
+        {% for formset in bank_transaction_formsets %}
+          <div class="item">
+            {% include 'main/errors.html' with errors=formset.non_field_errors %}
+
+            <div>
+              {% include 'main/input_field.html' with field=formset.date_transaction %}
+            </div>
+
+            <div>
+              {% include 'main/input_field.html' with field=formset.description_bank %}
+            </div>
+
+            <div>
+              {% include 'main/input_field.html' with field=formset.description_user %}
+            </div>
+
+            <div>
+              {% include 'main/input_field.html' with field=formset.amount_debit %}
+            </div>
+
+            <div>
+              {% include 'main/input_field.html' with field=formset.amount_credit %}
+            </div>
+
+            {% for field in group.item_formset.hidden_fields %}
+              {{ field }}
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+        <div>
+          <button id="add-item">Add item</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Attachments</legend>
+        <!-- TODO: Improve UI for this drag and drop box -->
+        <label for="{{ new_attachment_form.files.id_for_label }}" id="attachment-drop-zone" class="input-flex-col">
+          Drag attachments here or click the button below
+
+          {{ new_attachment_form.files }}
+
+          {% include 'main/errors.html' with errors=new_attachment_form.files.errors %}
+        </label>
+
+        {% for field in new_attachment_form.hidden_fields %}
+          {{ field }}
+        {% endfor %}
+
+        <ul id="old-attachments">
+          {{ attachment_match_formsets.management_form }}
+
+          {% for attachment_form in attachment_match_formsets %}
+            <li class="flex-col">
+              <a href="{{ attachment_form.instance.attachment.location.url }}" target="_blank">
+                {{ attachment_form.instance.attachment }}
+              </a>
+              <label>{{ attachment_form.DELETE }} Delete</label>
+
+              {% for field in attachment_form.hidden_fields %}
+                {{ field }}
+                {% include 'main/errors.html' with errors=field.errors %}
+              {% endfor %}
+            </li>
+          {% endfor %}
+        </ul>
+      </fieldset>
+
+      {{ bank_transaction_formsets.management_form }}
+
+    <div class="buttons">
+      <a href="{% url 'bank_transactions:dashboard' %}" class="delete">Cancel changes</a>
+      <button type="submit" class="save">{{ submit_button }}</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block js %}
+  {% include 'bank_transactions/item_template.html' with formset=bank_transaction_formsets.empty_form %}
+
+  <script type="text/javascript" src="{% static 'js/add_formset.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bank_transactions/js/add_edit_functions.js' %}"></script>
+{% endblock %}

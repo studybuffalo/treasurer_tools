@@ -1,0 +1,29 @@
+<script type="text/html" id="item-template">
+  <div class="item">
+    {% include 'main/errors.html' with errors=formset.non_field_errors %}
+
+    <div>
+      {% include 'main/input_field.html' with field=formset.date_transaction %}
+    </div>
+
+    <div>
+      {% include 'main/input_field.html' with field=formset.description_bank %}
+    </div>
+
+    <div>
+      {% include 'main/input_field.html' with field=formset.description_user %}
+    </div>
+
+    <div>
+      {% include 'main/input_field.html' with field=formset.amount_debit %}
+    </div>
+
+    <div>
+      {% include 'main/input_field.html' with field=formset.amount_credit %}
+    </div>
+
+    {% for field in group.item_formset.hidden_fields %}
+      {{ field }}
+    {% endfor %}
+  </div>
+</script>
