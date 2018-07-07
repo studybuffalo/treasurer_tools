@@ -205,25 +205,61 @@ function handleTransactionClick(e) {
 function addTransactions(data) {
   if (data.type === 'financial') {
     $.each(data.data, (index, transaction) => {
+      // Add transaction date
+      const $dateDiv = $('<div></div>');
+      $dateDiv.addClass('date');
+
+      const $dateEm = $('<em></em>');
+      $dateEm
+        .text('Date: ')
+        .appendTo($dateDiv);
+
       const $date = $('<span></span>');
       $date
-        .addClass('date')
-        .text(transaction.date);
+        .text(transaction.date)
+        .appendTo($dateDiv);
+
+      // Add type
+      const $typeDiv = $('<div></div>');
+      $typeDiv.addClass('type');
+
+      const $typeEm = $('<em></em>');
+      $typeEm
+        .text('Type: ')
+        .appendTo($typeDiv);
 
       const $type = $('<span></span>');
       $type
-        .addClass('type')
-        .text(transaction.type);
+        .text(transaction.type)
+        .appendTo($typeDiv);
+
+      // Add description
+      const $descriptionDiv = $('<div></div>');
+      $descriptionDiv.addClass('description');
+
+      const $descriptionEm = $('<em></em>');
+      $descriptionEm
+        .text('Description: ')
+        .appendTo($descriptionDiv);
 
       const $description = $('<span></span>');
       $description
-        .addClass('description')
-        .text(transaction.description);
+        .text(transaction.description)
+        .appendTo($descriptionDiv);
+
+      // Add amount
+      const $amountDiv = $('<div></div>');
+      $amountDiv.addClass('amount');
+
+      const $amountEm = $('<em></em>');
+      $amountEm
+        .text('Amount: ')
+        .appendTo($amountDiv);
 
       const $amount = $('<span></span>');
       $amount
-        .addClass('amount')
-        .text(`$${transaction.total}`);
+        .text(`$${transaction.total}`)
+        .appendTo($amountDiv);
 
       if (transaction.type.toUpperCase() === 'EXPENSE') {
         $amount.addClass('negative');
@@ -236,10 +272,10 @@ function addTransactions(data) {
         .attr('data-type', transaction.type.toUpperCase())
         .attr('data-total', transaction.total)
         .on('click', handleTransactionClick)
-        .append($date)
-        .append($type)
-        .append($description)
-        .append($amount)
+        .append($dateDiv)
+        .append($typeDiv)
+        .append($descriptionDiv)
+        .append($amountDiv)
         .appendTo($('#financial-transactions'));
 
       if (transaction.reconciled) {
@@ -248,29 +284,65 @@ function addTransactions(data) {
     });
   } else if (data.type === 'bank') {
     $.each(data.data, (index, transaction) => {
+      // Add transaction date
+      const $dateDiv = $('<div></div>');
+      $dateDiv.addClass('date');
+
+      const $dateEm = $('<em></em>');
+      $dateEm
+        .text('Date: ')
+        .appendTo($dateDiv);
+
       const $date = $('<span></span>');
       $date
-        .addClass('date')
-        .text(transaction.date);
+        .text(transaction.date)
+        .appendTo($dateDiv);
+
+      // Add description
+      const $descriptionDiv = $('<div></div>');
+      $descriptionDiv.addClass('description');
+
+      const $descriptionEm = $('<em></em>');
+      $descriptionEm
+        .text('Description: ')
+        .appendTo($descriptionDiv);
 
       const $description = $('<span></span>');
       $description
-        .addClass('description')
-        .text(transaction.description);
+        .text(transaction.description)
+        .appendTo($descriptionDiv);
+
+      // Add debit
+      const $debitDiv = $('<div></div>');
+      $debitDiv.addClass('debit');
+
+      const $debitEm = $('<em></em>');
+      $debitEm
+        .text('Debit: ')
+        .appendTo($debitDiv);
 
       const $debit = $('<span></span>');
       $debit
-        .addClass('debit')
-        .text(`$${transaction.debit}`);
+        .text(`$${transaction.debit}`)
+        .appendTo($debitDiv);
 
       if (transaction.debit > 0) {
         $debit.addClass('negative');
       }
 
+      // Add credit
+      const $creditDiv = $('<div></div>');
+      $creditDiv.addClass('credit');
+
+      const $creditEm = $('<em></em>');
+      $creditEm
+        .text('Credit: ')
+        .appendTo($creditDiv);
+
       const $credit = $('<span></span>');
       $credit
-        .addClass('credit')
-        .text(`$${transaction.credit}`);
+        .text(`$${transaction.credit}`)
+        .appendTo($creditDiv);
 
       const $li = $('<li></li>');
       $li
@@ -279,10 +351,10 @@ function addTransactions(data) {
         .attr('data-amount-credit', transaction.credit)
         .addClass('bank-item')
         .on('click', handleTransactionClick)
-        .append($date)
-        .append($description)
-        .append($debit)
-        .append($credit)
+        .append($dateDiv)
+        .append($descriptionDiv)
+        .append($debitDiv)
+        .append($creditDiv)
         .appendTo($('#bank-transactions'));
 
       if (transaction.reconciled) {
