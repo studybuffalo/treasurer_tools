@@ -1,6 +1,18 @@
+from django.conf import settings
 from django.db import models
 
 from simple_history.models import HistoricalRecords
+
+class BranchMember(models.Model):
+    """Many-To-Many through model for user-branch relations"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    branch = models.ForeignKey(
+        "Branch",
+        on_delete=models.CASCADE,
+    )
 
 class Branch(models.Model):
     """Details on the branch"""
@@ -38,8 +50,13 @@ class Branch(models.Model):
     logo_small = models.ImageField(
         help_text="A reduced width logo for smaller screens",
     )
+    member = models.ManyToManyField(
+        to=settings.AUTH_USER_MODEL,
+        through=BranchMember,
+    )
 
     history = HistoricalRecords()
 
     def __str__(self):
         return self.branch_name
+
