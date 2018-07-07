@@ -14,6 +14,9 @@ class BranchMember(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return "{} - {}".format(self.branch.name_short, self.user.name)
+
 class Branch(models.Model):
     """Details on the branch"""
     name_full = models.CharField(
@@ -68,4 +71,4 @@ class Branch(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.branch_name
+        return self.name_full
