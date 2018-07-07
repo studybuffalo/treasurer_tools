@@ -65,8 +65,8 @@
         <li>
           <a class="menu-header">Banking</a>
           <ul>
-            <li><a href="{% url 'bank_transactions:dashboard' %}">Bank Statements</a></li>
-            <li><a href="{% url 'bank_reconciliation:dashboard' %}">Banking Reconciliation</a></li>
+            <li><a href="{% url 'bank_transactions:dashboard' %}">Bank statements</a></li>
+            <li><a href="{% url 'bank_reconciliation:dashboard' %}">Banking reconciliation</a></li>
           </ul>
         </li>
         <li>
@@ -75,9 +75,8 @@
         <li>
           <a class="menu-header">Admin and Branch Settings</a>
           <ul>
-            <li><a href="">User management</a></li>
-            <li><a href="">Branch Details</a></li>
-            <li><a href="{% url 'financial_codes:dashboard' %}">Accounting Codes</a></li>
+            <li><a href="{% url 'admin:index' %}">Branch &amp; user administration</a></li>
+            <li><a href="{% url 'financial_codes:dashboard' %}">Accounting codes</a></li>
             <li><a href="{% url 'bank_institutions:dashboard' %}">Banking details</a></li>
           </ul>
         </li>
