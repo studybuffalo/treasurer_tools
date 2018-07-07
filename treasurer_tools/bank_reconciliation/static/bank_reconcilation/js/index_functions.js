@@ -320,7 +320,7 @@ function clearTransactions(transactionType) {
   }
 }
 
-function updateReconciledFilter(e) {
+function updateReconciledFilter(e, $transactionList) {
   const $li = $(e.currentTarget);
   const $parentList = $li.closest('ul');
   const $allLi = $parentList.find('li');
@@ -336,9 +336,8 @@ function updateReconciledFilter(e) {
     newClass = 'reconciled';
   }
 
-  const $transactionList = $parentList.next();
   $transactionList
-    .removeClass()
+    .removeClass('unreconciled reconciled')
     .addClass(newClass);
 }
 
@@ -471,9 +470,13 @@ $(document).ready(() => {
     );
   });
 
-  $('#financial-reconciled-filter li, #bank-reconciled-filter li').on(
-    'click', updateReconciledFilter,
-  );
+  $('#financial-reconciled-filter li').on('click', (e) => {
+    updateReconciledFilter(e, $('#financial-transactions'));
+  });
+
+  $('#bank-reconciled-filter li').on('click', (e) => {
+    updateReconciledFilter(e, $('#bank-transactions'));
+  });
 
   $('#match').on('click', () => {
     matchTransactions();
