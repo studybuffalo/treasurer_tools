@@ -20,6 +20,7 @@ environ.Env.read_env(env_file=ROOT_DIR.path("..", "config").file("treasurer_tool
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
     # Default Django apps:
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
