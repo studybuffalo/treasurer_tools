@@ -261,7 +261,7 @@ function addTransactions(data) {
       const $debit = $('<span></span>');
       $debit
         .addClass('debit')
-        .text(`${transaction.debit}`);
+        .text(`$${transaction.debit}`);
 
       if (transaction.debit > 0) {
         $debit.addClass('negative');

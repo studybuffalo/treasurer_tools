@@ -96,12 +96,7 @@
     }
 
     .transactions.reconciled li.reconciled {
-      display: block;
-    }
-
-    .header {
-      font-weight: 700;
-      margin: 0 1rem;
+      display: grid;
     }
 
     .negative {
@@ -109,51 +104,19 @@
     }
 
     .financial-item {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-template-areas: "date type description amount";
+      display: flex;
+      flex-direction: column;
     }
-
-      .financial-item .date {
-        grid-area: date;
-      }
-
-      .financial-item .type {
-        grid-area: type;
-      }
-
-      .financial-item .description {
-        grid-area: description;
-      }
-
-      .financial-item .amount {
-        grid-area: amount;
-        justify-self: end;
-      }
 
     .bank-item {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-template-areas: "date description debit credit";
+      display: flex;
+      flex-direction: column;
     }
 
-      .bank-item .date {
-        grid-area: date;
-      }
+    .header {
+      display: none;
+    }
 
-      .bank-item .description {
-        grid-area: description;
-      }
-
-      .bank-item .debit {
-        grid-area: debit;
-        justify-self: end;
-      }
-
-      .bank-item .credit {
-        grid-area: credit;
-        justify-self: end;
-      }
 
     .buttons {
       display: flex;
@@ -174,6 +137,58 @@
         .status-container label {
           display: inline-block;
           vertical-align: top;
+        }
+
+      .header {
+        font-weight: 700;
+        margin: 0 1rem;
+      }
+
+      .financial-item {
+        display: grid;
+        grid-template-columns: 2fr 2fr 4fr 2fr;
+        grid-template-areas: "date type description amount";
+      }
+
+        .financial-item .date {
+          grid-area: date;
+        }
+
+        .financial-item .type {
+          grid-area: type;
+        }
+
+        .financial-item .description {
+          grid-area: description;
+        }
+
+        .financial-item .amount {
+          grid-area: amount;
+          justify-self: end;
+        }
+
+      .bank-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-areas: "date description debit credit";
+      }
+
+        .bank-item .date {
+          grid-area: date;
+        }
+
+        .bank-item .description {
+          grid-area: description;
+        }
+
+        .bank-item .debit {
+          grid-area: debit;
+          justify-self: end;
+        }
+
+        .bank-item .credit {
+          grid-area: credit;
+          justify-self: end;
         }
     }
   </style>
