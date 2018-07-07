@@ -261,6 +261,7 @@ select, input {
   border: none;
   border-radius: 1rem;
   color: rgb(255, 255, 255);
+  cursor: pointer;
   display: flex;
   font-size: 1.5rem;
   justify-content: center;
