@@ -1,5 +1,7 @@
 """Models for the transaction app"""
 
+from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
 
@@ -39,7 +41,6 @@ class FinancialTransaction(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        # pylint: disable=unsubscriptable-object
         if self.transaction_type == "e":
             return_string = "{} - Expense - {} - {}".format(
                 self.date_submitted, self.payee_payer, self.memo[:100]
@@ -54,16 +55,14 @@ class FinancialTransaction(models.Model):
     @property
     def total(self):
         """Calculates the total of all children items"""
-        # pylint: disable=no-member
         items = self.item_set.all()
 
-        total = 0
+        total = Decimal(0)
 
         for item in items:
-            total = total + item.amount + item.gst
+            total = Decimal(total) + Decimal(item.amount) + Decimal(item.gst)
 
-        # Return total as a proper dollar currency
-        return "${0:.2f}".format(total)
+        return total
 
 class Item(models.Model):
     """Holds data on an individual transaction item"""
