@@ -13,8 +13,9 @@ function setInitialDates() {
   $('#bank-end-date').val(endDate);
 }
 
-function toggleTransactionSelection(li) {
-  $(li).toggleClass('selected');
+function toggleTransactionSelection(e) {
+  const $li = $(e.currentTarget);
+  $li.toggleClass('selected');
 }
 
 function handleMessages(data, error = false) {
@@ -39,20 +40,12 @@ function addTransactions(data) {
       const $totalSpan = $('<span></span>');
       $totalSpan.text(transaction.total);
 
-      const $viewSpan = $('<span></span>');
-      const $viewLink = $('<a></a>');
-      $viewLink
-        .attr('href', transaction.id)
-        .text('View')
-        .appendTo($viewSpan);
-
       const $li = $('<li></li>');
       $li
         .attr('data-id', transaction.id)
-        .on('click', () => { toggleTransactionSelection(this); })
+        .on('click', toggleTransactionSelection)
         .append($titleSpan)
         .append($totalSpan)
-        .append($viewSpan)
         .appendTo($('#financial-transactions'));
 
       if (transaction.reconciled) {
@@ -70,21 +63,13 @@ function addTransactions(data) {
       const $creditSpan = $('<span></span>');
       $creditSpan.text(transaction.credit);
 
-      const $viewSpan = $('<span></span>');
-      const $viewLink = $('<a></a>');
-      $viewLink
-        .attr('href', transaction.id)
-        .text('View')
-        .appendTo($viewSpan);
-
       const $li = $('<li></li>');
       $li
         .attr('data-id', transaction.id)
-        .on('click', () => { toggleTransactionSelection(this); })
+        .on('click', toggleTransactionSelection)
         .append($titleSpan)
         .append($debitSpan)
         .append($creditSpan)
-        .append($viewSpan)
         .appendTo($('#bank-transactions'));
 
       if (transaction.reconciled) {
@@ -122,8 +107,8 @@ function clearTransactions(transactionType) {
   }
 }
 
-function updateReconciledFilter(li) {
-  const $li = $(li);
+function updateReconciledFilter(e) {
+  const $li = $(e.currentTarget);
   const $parentList = $li.closest('ul');
   const $allLi = $parentList.find('li');
 
@@ -255,9 +240,9 @@ $(document).ready(() => {
     );
   });
 
-  $('#financial-reconciled-filter li, #bank-reconciled-filter li').on('click', () => {
-    updateReconciledFilter(this);
-  });
+  $('#financial-reconciled-filter li, #bank-reconciled-filter li').on(
+    'click', updateReconciledFilter,
+  );
 
   $('#match').on('click', () => {
     matchTransactions();
