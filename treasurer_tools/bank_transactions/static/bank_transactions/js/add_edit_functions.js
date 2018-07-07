@@ -1,6 +1,7 @@
 function addItem() {
   // Get the current number of items
-  const count = Number($('[id$=TOTAL_FORMS').val());
+  const $totalForms = $('#id_banktransaction_set-TOTAL_FORMS');
+  const count = Number($totalForms.val());
 
   // Get the template and replace it with the proper item ID
   const template = $('#item-template').html();
@@ -10,7 +11,7 @@ function addItem() {
   $('#add-item').parent().before(replacedTemplate);
 
   // Update the form count
-  $('[id$=TOTAL_FORMS').val(count + 1);
+  $totalForms.val(count + 1);
 }
 
 function addEventListenersToNewFormsetRow(e) {
