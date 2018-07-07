@@ -435,7 +435,7 @@ function unmatchTransactions() {
 $(document).ready(() => {
   setInitialDates();
 
-  $('#financial-update').on('click', () => {
+  $('#financial-start-date').on('change', () => {
     clearTransactions('financial');
     retrieveTransactions(
       'financial',
@@ -444,7 +444,25 @@ $(document).ready(() => {
     );
   });
 
-  $('#bank-update').on('click', () => {
+  $('#financial-end-date').on('change', () => {
+    clearTransactions('financial');
+    retrieveTransactions(
+      'financial',
+      $('#financial-start-date').val(),
+      $('#financial-end-date').val(),
+    );
+  });
+
+  $('#bank-start-date').on('change', () => {
+    clearTransactions('bank');
+    retrieveTransactions(
+      'bank',
+      $('#bank-start-date').val(),
+      $('#bank-end-date').val(),
+    );
+  });
+
+  $('#bank-end-date').on('change', () => {
     clearTransactions('bank');
     retrieveTransactions(
       'bank',
