@@ -99,33 +99,57 @@
       display: block;
     }
 
+    .header {
+      font-weight: 700;
+      margin: 0 1rem;
+    }
+
     .financial-item {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-areas: "date type description amount";
     }
 
-    .header {
-      font-weight: 700;
-      margin: 0 1rem;
+      .financial-item .date {
+        grid-area: date;
+      }
+
+      .financial-item .type {
+        grid-area: type;
+      }
+
+      .financial-item .description {
+        grid-area: description;
+      }
+
+      .financial-item .amount {
+        grid-area: amount;
+        justify-self: end;
+      }
+
+    .bank-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-areas: "date description debit credit";
     }
 
-    .financial-item .date {
-      grid-area: date;
-    }
+      .bank-item .date {
+        grid-area: date;
+      }
 
-    .financial-item .type {
-      grid-area: type;
-    }
+      .bank-item .description {
+        grid-area: description;
+      }
 
-    .financial-item .description {
-      grid-area: description;
-    }
+      .bank-item .debit {
+        grid-area: debit;
+        justify-self: end;
+      }
 
-    .financial-item .amount {
-      grid-area: amount;
-      justify-self: end;
-    }
+      .bank-item .credit {
+        grid-area: credit;
+        justify-self: end;
+      }
 
     .buttons {
       display: flex;
@@ -228,11 +252,11 @@
   </div>
 
   <div>
-    <div class="header">
-      <div>Date</div>
-      <div>Description</div>
-      <div>Debit</div>
-      <div>Credit</div>
+    <div class="bank-item header">
+      <div class="date">Date</div>
+      <div class="description">Description</div>
+      <div class="debit">Debit</div>
+      <div class="credit">Credit</div>
     </div>
 
     <ul id="bank-transactions" class="transactions unreconciled"></ul>

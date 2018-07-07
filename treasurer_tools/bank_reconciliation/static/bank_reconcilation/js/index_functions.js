@@ -37,17 +37,17 @@ function addTransactions(data) {
       const $date = $('<span></span>');
       $date
         .addClass('date')
-        .text();
+        .text(transaction.date);
 
       const $type = $('<span></span>');
       $type
         .addClass('type')
-        .text();
+        .text(transaction.type);
 
       const $description = $('<span></span>');
       $description
         .addClass('description')
-        .text(transaction.transaction);
+        .text(transaction.description);
 
       const $amount = $('<span></span>');
       $amount
@@ -71,22 +71,36 @@ function addTransactions(data) {
     });
   } else if (data.type === 'bank') {
     $.each(data.data, (index, transaction) => {
-      const $titleSpan = $('<span></span>');
-      $titleSpan.text(transaction.transaction);
+      const $date = $('<span></span>');
+      $date
+        .addClass('date')
+        .text(transaction.date);
 
-      const $debitSpan = $('<span></span>');
-      $debitSpan.text(transaction.debit);
+      const $description = $('<span></span>');
+      $description
+        .addClass('description')
+        .text(transaction.description);
 
-      const $creditSpan = $('<span></span>');
-      $creditSpan.text(transaction.credit);
+      const $debit = $('<span></span>');
+      $debit
+        .addClass('debit')
+        .addClass('negative')
+        .text(transaction.debit);
+
+      const $credit = $('<span></span>');
+      $credit
+        .addClass('credit')
+        .text(transaction.credit);
 
       const $li = $('<li></li>');
       $li
         .attr('data-id', transaction.id)
+        .addClass('bank-item')
         .on('click', toggleTransactionSelection)
-        .append($titleSpan)
-        .append($debitSpan)
-        .append($creditSpan)
+        .append($date)
+        .append($description)
+        .append($debit)
+        .append($credit)
         .appendTo($('#bank-transactions'));
 
       if (transaction.reconciled) {
