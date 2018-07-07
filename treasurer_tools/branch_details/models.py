@@ -57,13 +57,8 @@ class Branch(models.Model):
         blank=True,
         null=True,
     )
-    logo_large = models.ImageField(
+    logo = models.ImageField(
         help_text="A logo for the branch",
-        blank=True,
-        null=True,
-    )
-    logo_small = models.ImageField(
-        help_text="A reduced width logo for smaller screens",
         blank=True,
         null=True,
     )
