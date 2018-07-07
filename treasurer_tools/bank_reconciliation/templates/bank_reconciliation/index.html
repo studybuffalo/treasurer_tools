@@ -3,101 +3,264 @@
 {% load static %}
 
 {% block styles %}
-    <style>
-        #financial-reconciled-filter li.selected, #bank-reconciled-filter li.selected {
-            background-color: rgb(86, 239, 159);
+  <style>
+    .filters {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .filters ul {
+      border: 1px solid rgb(69, 69, 69);
+      display: inline-block;
+      padding: 0;
+      margin: 0.5rem;
+    }
+
+      .filters li {
+        cursor: pointer;
+        list-style: none;
+        padding: 0.5rem;
+        margin: 0;
+        transition: all ease-in-out 0.3s;
+      }
+
+      .filters li:hover {
+        background-color: rgb(200, 225, 255);
+      }
+
+      .filters li.selected {
+        background-color: rgb(40, 120, 200);
+        color: rgb(255, 255, 255);
+      }
+
+        .filters li.selected:hover {
+          background-color: rgb(20, 95, 175);
+          color: rgb(255, 255, 255);
         }
 
-        #financial-transactions.unreconciled li.reconciled,
-        #bank-transactions.unreconciled li.reconciled {
-            display: none;
+    .date-container label {
+      display: inline-block;
+      font-weight: 700;
+      padding: 0.5rem;
+      width: 12rem;
+    }
+
+    .status-container {
+      padding-top: 2rem;
+    }
+
+      .status-container label {
+        display: block;
+        font-weight: 700;
+        padding: 0.5rem;
+      }
+
+    .transactions {
+      border: 1px solid rgb(69, 69, 69);
+      list-style: none;
+      margin: 0.5rem;
+      max-height: 20rem;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+      .transactions li {
+        cursor: pointer;
+        margin: 0;
+        padding: 0.5rem;
+        transition: all ease-in-out 0.3s;
+      }
+
+      .transactions li:hover {
+        background-color: rgb(200, 225, 255);
+      }
+
+      .transactions li.selected {
+        background-color: rgb(40, 120, 200);
+        color: rgb(255, 255, 255);
+      }
+
+        .transactions li.selected:hover {
+          background-color: rgb(20, 95, 175);
+          color: rgb(255, 255, 255);
         }
 
-        #financial-transactions.reconciled li,
-        #bank-transactions.reconciled li {
-            display: none;
-        }
 
-        #financial-transactions.reconciled li.reconciled,
-        #bank-transactions.reconciled li.reconciled {
-            display: block;
-        }
+    .transactions.unreconciled li.reconciled {
+      display: none;
+    }
 
-        #financial-transactions li.selected,
-        #bank-transactions li.selected {
-            background-color: rgb(86, 239, 159);
+    .transactions.reconciled li {
+      display: none;
+    }
+
+    .transactions.reconciled li.reconciled {
+      display: block;
+    }
+
+    .financial-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-areas: "date type description amount";
+    }
+
+    .header {
+      font-weight: 700;
+      margin: 0 1rem;
+    }
+
+    .financial-item .date {
+      grid-area: date;
+    }
+
+    .financial-item .type {
+      grid-area: type;
+    }
+
+    .financial-item .description {
+      grid-area: description;
+    }
+
+    .financial-item .amount {
+      grid-area: amount;
+      justify-self: end;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    @media screen and (min-width: 768px) {
+      .filters {
+        flex-direction: row;
+        max-width: 800px;
+      }
+
+      .status-container {
+        padding: 0 0 0 2rem;
+      }
+
+        .status-container label {
+          display: inline-block;
+          vertical-align: top;
         }
-    </style>
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Banking Reconciliation</h1>
+  <h1>Banking Reconciliation</h1>
 
-    <ul id="messages" class="message_list">
-      {% for message in messages %}
-        {% if message.level %}
-          <li class="level_{{ message.level }}">{{ message }}</li>
-        {% else %}
-          <li>{{ message }}</li>
-        {% endif %}
-      {% endfor %}
+  <ul id="messages" class="message_list">
+    {% for message in messages %}
+      {% if message.level %}
+        <li class="level_{{ message.level }}">{{ message }}</li>
+      {% else %}
+        <li>{{ message }}</li>
+      {% endif %}
+    {% endfor %}
   </ul>
 
-    <div>
-        <span>
-            <label>Start Date</label>
-            <input type="date" id="financial-start-date">
-        </span>
-        <span>
-            <label>End Date</label>
-            <input type="date" id="financial-end-date">
-        </span>
-        <span>
-            <button id="financial-update">Update</button>
-        </span>
+  <h2>Financial Transactions</h2>
 
-        <ul id="financial-reconciled-filter">
-            <li class="selected">Unreconciled</li>
-            <li>Reconciled</li>
-            <li>All transactions</li>
-        </ul>
+  <div class="filters">
+    <div class="date-container">
+      <div>
+        <label>Start Date:</label>
+        <input type="date" id="financial-start-date">
+      </div>
 
-        <ul id="financial-transactions" class="unreconciled"></ul>
+      <div>
+        <label>End Date:</label>
+        <input type="date" id="financial-end-date">
+      </div>
     </div>
 
-    <div>
-        <span>
-            <label>Start Date</label>
-            <input type="date" id="bank-start-date">
-        </span>
-        <span>
-            <label>End Date</label>
-            <input type="date" id="bank-end-date">
-        </span>
-        <span>
-            <button id="bank-update">Update</button>
-        </span>
+    <div class="status-container">
+      <label>Reconciled status:</label>
 
-        <ul id="bank-reconciled-filter">
-            <li class="selected">Unreconciled</li>
-            <li>Reconciled</li>
-            <li>All transactions</li>
-        </ul>
+      <ul id="financial-reconciled-filter">
+        <li class="selected">Unreconciled</li>
+        <li>Reconciled</li>
+        <li>All transactions</li>
+      </ul>
+    </div>
+  </div>
 
-        <ul id="bank-transactions" class="unreconciled"></ul>
+  <div>
+    <div class="financial-item header">
+      <div class="date">Date</div>
+      <div class="type">Type</div>
+      <div class="description">Description</div>
+      <div class="amount">Amount</div>
     </div>
 
-    <div>
-        <button id="match">Match transactions</button>
+    <ul id="financial-transactions" class="transactions unreconciled"></ul>
+  </div>
+
+  <h2>Banking Transactions</h2>
+
+  <div class="filters">
+      <div class="date-container">
+        <div>
+          <label>Start Date</label>
+          <input type="date" id="bank-start-date">
+        </div>
+
+        <div>
+          <label>End Date</label>
+          <input type="date" id="bank-end-date">
+        </div>
+      </div>
+
+    <div class="status-container">
+      <label>Reconciled status:</label>
+
+      <ul id="bank-reconciled-filter">
+        <li class="selected">Unreconciled</li>
+        <li>Reconciled</li>
+        <li>All transactions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="header">
+      <div>Date</div>
+      <div>Description</div>
+      <div>Debit</div>
+      <div>Credit</div>
     </div>
 
-    <div>
-        <button id="unmatch">Unmatch transactions</button>
-    </div>
+    <ul id="bank-transactions" class="transactions unreconciled"></ul>
+  </div>
 
-	{% csrf_token %}
+  <div>
+    <div>
+      <strong>Financial Transaction Total:</strong>
+      <span></span>
+    </div>
+    <div>
+        <strong>Banking Transaction Total:</strong>
+        <span></span>
+    </div>
+    <div>
+      <strong>Discrepancy:</strong>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button id="unmatch" class="delete">Unmatch transactions</button>
+    <button id="match" class="save">Match transactions</button>
+  </div>
+
+  {% csrf_token %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'bank_reconcilation/js/index_functions.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bank_reconcilation/js/index_functions.js' %}"></script>
 {% endblock %}

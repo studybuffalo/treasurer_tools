@@ -34,18 +34,35 @@ function handleMessages(data, error = false) {
 function addTransactions(data) {
   if (data.type === 'financial') {
     $.each(data.data, (index, transaction) => {
-      const $titleSpan = $('<span></span>');
-      $titleSpan.text(transaction.transaction);
+      const $date = $('<span></span>');
+      $date
+        .addClass('date')
+        .text();
 
-      const $totalSpan = $('<span></span>');
-      $totalSpan.text(transaction.total);
+      const $type = $('<span></span>');
+      $type
+        .addClass('type')
+        .text();
+
+      const $description = $('<span></span>');
+      $description
+        .addClass('description')
+        .text(transaction.transaction);
+
+      const $amount = $('<span></span>');
+      $amount
+        .addClass('amount')
+        .text(transaction.total);
 
       const $li = $('<li></li>');
       $li
+        .addClass('financial-item')
         .attr('data-id', transaction.id)
         .on('click', toggleTransactionSelection)
-        .append($titleSpan)
-        .append($totalSpan)
+        .append($date)
+        .append($type)
+        .append($description)
+        .append($amount)
         .appendTo($('#financial-transactions'));
 
       if (transaction.reconciled) {
@@ -165,8 +182,8 @@ function matchTransactions() {
         xhr.setRequestHeader('X-CSRFToken', CSRF);
       }
     },
-    success: (results) => {
-      handleMessages(results);
+    success: () => {
+      handleMessages('Transactions matched');
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
@@ -210,8 +227,8 @@ function unmatchTransactions() {
         xhr.setRequestHeader('X-CSRFToken', CSRF);
       }
     },
-    success: (results) => {
-      handleMessages(results);
+    success: () => {
+      handleMessages('Transactions unmatched');
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
