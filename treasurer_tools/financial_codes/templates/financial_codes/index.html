@@ -32,9 +32,10 @@
     }
 
     .financial-code-system > .edit, .financial-code-system > .delete,
-    .budget-year > .edit, .budget-year > .delete {
-        box-shadow: 2px 2px rgb(50, 50, 50);
-      }
+    .financial-code-system > .save, .budget-year > .edit,
+    .budget-year > .delete, .budget-year > .save {
+      box-shadow: 2px 2px rgb(50, 50, 50);
+    }
 
     .financial-code-system {
       align-items: center;
@@ -152,6 +153,7 @@
             <div class="budget-year">
               <span class="arrow">&#9650;</span>
               <h3>{{ budget_year.budget_year }} Budget Year</h3>
+              <a href="{% url 'financial_codes:year_copy' budget_year.budget_year.id %}" class="save">Copy</a>
               <a href="{% url 'financial_codes:year_edit' budget_year.budget_year.id %}" class="edit">Edit</a>
               <a href="{% url 'financial_codes:year_delete' budget_year.budget_year.id %}" class="delete">Delete</a>
             </div>

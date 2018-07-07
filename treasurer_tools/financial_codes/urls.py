@@ -15,6 +15,7 @@ urlpatterns = [
     url(r"^year/add/", views.year_add, name="year_add"),
     url(r"^year/edit/(?P<year_id>\d+)$", views.year_edit, name="year_edit"),
     url(r"^year/delete/(?P<year_id>\d+)$", views.year_delete, name="year_delete"),
+    url(r"^year/copy/(?P<year_id>\d+)$", views.year_copy, name="year_copy"),
     url(r"^code/add/", views.code_add, name="code_add"),
     url(r"^code/edit/(?P<code_id>\d+)$", views.code_edit, name="code_edit"),
     url(r"^code/delete/(?P<code_id>\d+)$", views.code_delete, name="code_delete"),

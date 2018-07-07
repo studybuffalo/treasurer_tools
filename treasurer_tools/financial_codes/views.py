@@ -258,6 +258,16 @@ def year_delete(request, year_id):
     )
 
 @login_required
+def year_copy(request, year_id):
+    """Copies a budget year's codes into a new budget year"""
+
+    return render(
+        request,
+        "financial_codes/copy.html",
+        {},
+    )
+
+@login_required
 def group_add(request):
     """Generates and processes form to add a new financial code group"""
     # If this is a POST request then process the Form data
