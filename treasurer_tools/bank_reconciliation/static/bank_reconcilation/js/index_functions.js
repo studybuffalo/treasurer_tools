@@ -2,7 +2,7 @@ function setInitialDates() {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() < 9 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
-  const day = today.getDate();
+  const day = today.getDate() < 9 ? `0${today.getDate()}` : today.getDate();
 
   const startDate = `${year - 1}-${month}-${day}`;
   $('#financial-start-date').val(startDate);
