@@ -6,7 +6,9 @@ class BranchAdmin(admin.ModelAdmin):
     pass
 
 class BranchMemberAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("branch", "user")
+    list_filter = ("branch", "user")
+    ordering = ("branch", "user")
 
 # Register the sites
 admin.site.register(Branch, BranchAdmin)
