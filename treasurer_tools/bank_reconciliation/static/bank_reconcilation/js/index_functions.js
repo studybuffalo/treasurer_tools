@@ -53,7 +53,7 @@ function checkForSelectionMismatch() {
       const type1 = $financialTransactions.eq(i).attr('data-type');
       const type2 = $financialTransactions.eq(j).attr('data-type');
 
-      if (type1 === type2) {
+      if (type1 !== type2) {
         errors.mismatchExpenseRevenue = true;
       }
     }
@@ -139,10 +139,10 @@ function updateTotal() {
   let financialTotal = 0;
 
   for (let i = 0; i < financialLength; i += 1) {
-    if ($financialTransactions.type === 'EXPENSE') {
-      financialTotal -= $financialTransactions.eq(i).attr('data-total');
+    if ($financialTransactions.attr('data-type') === 'EXPENSE') {
+      financialTotal -= Number($financialTransactions.eq(i).attr('data-total'));
     } else {
-      financialTotal += $financialTransactions.eq(i).attr('data-total');
+      financialTotal += Number($financialTransactions.eq(i).attr('data-total'));
     }
   }
 
@@ -150,20 +150,42 @@ function updateTotal() {
   let bankTotal = 0;
 
   for (let i = 0; i < bankLength; i += 1) {
-    if ($bankTransactions.debit > 0) {
-      bankTotal -= $bankTransactions.eq(i).attr('data-amount-debit');
+    if (Number($bankTransactions.eq(i).attr('data-amount-debit')) > 0) {
+      bankTotal -= Number($bankTransactions.eq(i).attr('data-amount-debit'));
     } else {
-      bankTotal -= $bankTransactions.eq(i).attr('data-amount-credit');
+      bankTotal += Number($bankTransactions.eq(i).attr('data-amount-credit'));
     }
   }
 
   // Get the discrepancy
   const discrepancy = financialTotal - bankTotal;
 
-  // Update the displays
-  $('#financial-total').text(`$${financialTotal}`);
-  $('#banking-total').text(`$${bankTotal}`);
-  $('#discrepancy').text(`$${discrepancy}`);
+  // Update the financial total display
+  const financialTotalString = (financialTotal >= 0
+    ? `$${financialTotal.toFixed(2)}`
+    : `-$${Math.abs(financialTotal).toFixed(2)}`
+  );
+  $('#financial-total').text(financialTotalString);
+
+  // Update the banking total display
+  const bankTotalString = (bankTotal >= 0
+    ? `$${bankTotal.toFixed(2)}`
+    : `-$${Math.abs(bankTotal).toFixed(2)}`
+  );
+  $('#banking-total').text(bankTotalString);
+
+  // Update the discrepancy display
+  const discrepancyTotal = (discrepancy >= 0
+    ? `$${discrepancy.toFixed(2)}`
+    : `-$${Math.abs(discrepancy).toFixed(2)}`
+  );
+  $('#discrepancy').text(discrepancyTotal);
+
+  if (discrepancy !== 0) {
+    $('#discrepancy').addClass('negative');
+  } else {
+    $('#discrepancy').removeClass('negative');
+  }
 }
 
 function handleTransactionClick(e) {
@@ -201,7 +223,11 @@ function addTransactions(data) {
       const $amount = $('<span></span>');
       $amount
         .addClass('amount')
-        .text(transaction.total);
+        .text(`$${transaction.total}`);
+
+      if (transaction.type.toUpperCase() === 'EXPENSE') {
+        $amount.addClass('negative');
+      }
 
       const $li = $('<li></li>');
       $li
