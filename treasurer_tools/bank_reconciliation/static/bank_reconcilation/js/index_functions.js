@@ -1,3 +1,16 @@
+function handleMessages(data, error = false) {
+  // Adds provided data to the message list
+  const $messageList = $('#messages');
+  const $item = $('<li></li>');
+  $item
+    .text(data)
+    .appendTo($messageList);
+
+  if (error) {
+    $item.addClass('level_50');
+  }
+}
+
 function setInitialDates() {
   const today = new Date();
   const year = today.getFullYear();
@@ -13,22 +26,158 @@ function setInitialDates() {
   $('#bank-end-date').val(endDate);
 }
 
-function toggleTransactionSelection(e) {
-  const $li = $(e.currentTarget);
+function toggleTransactionSelection($li) {
   $li.toggleClass('selected');
 }
 
-function handleMessages(data, error = false) {
-  // Adds provided data to the message list
-  const $messageList = $('#messages');
-  const $item = $('<li></li>');
-  $item
-    .text(data)
-    .appendTo($messageList);
+function checkForSelectionMismatch() {
+  // Error Check List
+  const errors = {
+    mismatchExpenseRevenue: false,
+    mismatchDebitCredit: false,
+    mismatchExpenseCredit: false,
+    mismatchRevenueDebit: false,
+  };
 
-  if (error) {
-    $item.addClass('level_50');
+  // Get all selected financial transactions
+  const $financialTransactions = $('#financial-transactions .selected');
+  const financialLength = $financialTransactions.length;
+
+  // Get all selected bank transactions
+  const $bankTransactions = $('#bank-transactions .selected');
+  const bankLength = $bankTransactions.length;
+
+  // Check if both expense and revenue are selected
+  for (let i = 0; i < financialLength; i += 1) {
+    for (let j = 1; j < financialLength; j += 1) {
+      const type1 = $financialTransactions.eq(i).attr('data-type');
+      const type2 = $financialTransactions.eq(j).attr('data-type');
+
+      if (type1 === type2) {
+        errors.mismatchExpenseRevenue = true;
+      }
+    }
   }
+
+  // Check if both debit and credit are selected
+  for (let i = 0; i < bankLength; i += 1) {
+    for (let j = 1; j < bankLength; j += 1) {
+      const debit1 = $bankTransactions.eq(i).attr('data-amount-debit');
+      const credit1 = $bankTransactions.eq(i).attr('data-amount-credit');
+      const debit2 = $bankTransactions.eq(j).attr('data-amount-debit');
+      const credit2 = $bankTransactions.eq(j).attr('data-amount-credit');
+
+      if ((debit1 > 0 && credit2 > 0) || (credit1 > 0 && debit2 > 0)) {
+        errors.mismatchDebitCredit = true;
+      }
+    }
+  }
+
+  // Check if expense and credit OR revenue and debit are selected
+  for (let i = 0; i < financialLength; i += 1) {
+    for (let j = 0; j < bankLength; j += 1) {
+      const type = $financialTransactions.eq(i).attr('data-type');
+      const debit = $bankTransactions.eq(j).attr('data-amount-debit');
+      const credit = $bankTransactions.eq(j).attr('data-amount-credit');
+
+      if (type === 'EXPENSE' && credit > 0) {
+        errors.mismatchExpenseCredit = true;
+      } else if (type === 'REVENUE' && debit > 0) {
+        errors.mismatchRevenueDebit = true;
+      }
+    }
+  }
+
+  // Clear the error message list
+  const $messages = $('#messages');
+  $messages.empty();
+
+  // Add warning messages
+  if (errors.mismatchExpenseRevenue) {
+    $messages.append(
+      $('<li></li>')
+        .addClass('level_30')
+        .text('Warning: you have both expense and revenue financial transactions selected.'),
+    );
+  }
+
+  if (errors.mismatchDebitCredit) {
+    $messages.append(
+      $('<li></li>')
+        .addClass('level_30')
+        .text('Warning: you have both debit and credit banking transactions selected.'),
+    );
+  }
+
+  if (errors.mismatchExpenseCredit) {
+    $messages.append(
+      $('<li></li>')
+        .addClass('level_30')
+        .text('Warning: you have both expense financial transactions and credit bank transactions selected.'),
+    );
+  }
+
+  if (errors.mismatchRevenueDebit) {
+    $messages.append(
+      $('<li></li>')
+        .addClass('level_30')
+        .text('Warning: you have both revenue financial transactions and debit bank transactions selected.'),
+    );
+  }
+}
+
+function updateTotal() {
+  // Get all selected financial transaction
+  const $financialTransactions = $('#financial-transactions .selected');
+  const financialLength = $financialTransactions.length;
+
+  // Get all selected bank transactions
+  const $bankTransactions = $('#bank-transactions .selected');
+  const bankLength = $bankTransactions.length;
+
+  // Get the financial total
+  let financialTotal = 0;
+
+  for (let i = 0; i < financialLength; i += 1) {
+    if ($financialTransactions.type === 'EXPENSE') {
+      financialTotal -= $financialTransactions.eq(i).attr('data-total');
+    } else {
+      financialTotal += $financialTransactions.eq(i).attr('data-total');
+    }
+  }
+
+  // Get the banking total
+  let bankTotal = 0;
+
+  for (let i = 0; i < bankLength; i += 1) {
+    if ($bankTransactions.debit > 0) {
+      bankTotal -= $bankTransactions.eq(i).attr('data-amount-debit');
+    } else {
+      bankTotal -= $bankTransactions.eq(i).attr('data-amount-credit');
+    }
+  }
+
+  // Get the discrepancy
+  const discrepancy = financialTotal - bankTotal;
+
+  // Update the displays
+  $('#financial-total').text(`$${financialTotal}`);
+  $('#banking-total').text(`$${bankTotal}`);
+  $('#discrepancy').text(`$${discrepancy}`);
+}
+
+function handleTransactionClick(e) {
+  // Get the clicked list element
+  const $li = $(e.currentTarget);
+
+  // Update the toggle class
+  toggleTransactionSelection($li);
+
+  // Check for selection mismatches
+  checkForSelectionMismatch();
+
+  // Update totals
+  updateTotal();
 }
 
 function addTransactions(data) {
@@ -58,7 +207,9 @@ function addTransactions(data) {
       $li
         .addClass('financial-item')
         .attr('data-id', transaction.id)
-        .on('click', toggleTransactionSelection)
+        .attr('data-type', transaction.type.toUpperCase())
+        .attr('data-total', transaction.total)
+        .on('click', handleTransactionClick)
         .append($date)
         .append($type)
         .append($description)
@@ -84,19 +235,24 @@ function addTransactions(data) {
       const $debit = $('<span></span>');
       $debit
         .addClass('debit')
-        .addClass('negative')
-        .text(transaction.debit);
+        .text(`${transaction.debit}`);
+
+      if (transaction.debit > 0) {
+        $debit.addClass('negative');
+      }
 
       const $credit = $('<span></span>');
       $credit
         .addClass('credit')
-        .text(transaction.credit);
+        .text(`$${transaction.credit}`);
 
       const $li = $('<li></li>');
       $li
         .attr('data-id', transaction.id)
+        .attr('data-amount-debit', transaction.debit)
+        .attr('data-amount-credit', transaction.credit)
         .addClass('bank-item')
-        .on('click', toggleTransactionSelection)
+        .on('click', handleTransactionClick)
         .append($date)
         .append($description)
         .append($debit)
@@ -294,4 +450,7 @@ $(document).ready(() => {
     $('#bank-start-date').val(),
     $('#bank-end-date').val(),
   );
+
+  // Run initial total calculation
+  updateTotal();
 });
