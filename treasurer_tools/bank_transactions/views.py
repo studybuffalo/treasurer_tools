@@ -91,6 +91,7 @@ def statement_add(request):
             "new_attachment_form": new_attachment_form,
             "page_name": "Add New Bank Statement",
             "submit_button": "Add new bank statement",
+            "type": "add",
         },
     )
 
@@ -192,6 +193,7 @@ def statement_edit(request, statement_id):
             "new_attachment_form": new_attachment_form,
             "page_name": "Edit Bank Statement",
             "submit_button": "Save changes",
+            "type": "edit",
         },
     )
 

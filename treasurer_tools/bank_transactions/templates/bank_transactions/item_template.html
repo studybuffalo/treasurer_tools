@@ -22,6 +22,12 @@
       {% include 'main/input_field.html' with field=formset.amount_credit %}
     </div>
 
+    {% if formset.DELETE %}
+      <div>
+        {% include 'main/input_field.html' with field=formset.DELETE %}
+      </div>
+    {% endif %}
+
     {% for field in group.item_formset.hidden_fields %}
       {{ field }}
     {% endfor %}

@@ -23,6 +23,7 @@
         flex-direction: row;
         justify-content: space-between;
       }
+
       @media screen and (min-width: 768px) {
         #bank-transactions .item:nth-child(odd) {
           background-color: transparent;
@@ -31,9 +32,14 @@
         .item {
           display: grid;
           grid-gap: 1rem;
-          grid-template-columns: 2fr 4fr 4fr 2fr 2fr;
-          grid-template-areas: "date-transaction description-bank description-user amount-deb amount-credit";
           padding: 0;
+          {% if type == "add" %}
+            grid-template-columns: 2fr 4fr 4fr 2fr 2fr;
+            grid-template-areas: "date-transaction description-bank description-user amount-debit amount-credit";
+          {% else %}
+          grid-template-columns: 2fr 4fr 4fr 2fr 2fr 1fr;
+            grid-template-areas: "date-transaction description-bank description-user amount-debit amount-credit delete";
+          {% endif %}
         }
 
         .input-help {
@@ -116,6 +122,10 @@
                 <div id="help-{{ header.amount_credit.auto_id }}" class="modal">{{  header.amount_credit.help_text }}</div>
                 <a href="#help-{{ header.amount_credit.auto_id }}" rel="modal:open" class="input-help"></a>
             </div>
+
+            {% if type == "edit" %}
+              <div>Delete?</div>
+            {% endif %}
           </div>
         {% endwith %}
 
@@ -142,6 +152,10 @@
             <div>
               {% include 'main/input_field.html' with field=formset.amount_credit %}
             </div>
+
+            {% if type == "edit" %}
+              {% include 'main/input_field.html' with field=formset.DELETE %}
+            {% endif %}
 
             {% for field in formset.hidden_fields %}
               {{ field }}
