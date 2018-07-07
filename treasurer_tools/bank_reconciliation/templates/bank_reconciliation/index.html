@@ -33,7 +33,15 @@
 {% block content %}
     <h1>Banking Reconciliation</h1>
 
-    {% include 'main/messages.html' %}
+    <ul id="messages" class="message_list">
+      {% for message in messages %}
+        {% if message.level %}
+          <li class="level_{{ message.level }}">{{ message }}</li>
+        {% else %}
+          <li>{{ message }}</li>
+        {% endif %}
+      {% endfor %}
+  </ul>
 
     <div>
         <span>
@@ -91,5 +99,5 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'bank_reconciliation/js/index_functions.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bank_reconcilation/js/index_functions.js' %}"></script>
 {% endblock %}

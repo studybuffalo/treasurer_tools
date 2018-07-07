@@ -17,6 +17,19 @@ function toggleTransactionSelection(li) {
   $(li).toggleClass('selected');
 }
 
+function handleMessages(data, error = false) {
+  // Adds provided data to the message list
+  const $messageList = $('#messages');
+  const $item = $('<li></li>');
+  $item
+    .text(data)
+    .appendTo($messageList);
+
+  if (error) {
+    $item.addClass('level_50');
+  }
+}
+
 function addTransactions(data) {
   if (data.type === 'financial') {
     $.each(data.data, (index, transaction) => {
@@ -96,7 +109,7 @@ function retrieveTransactions(transactionType, startDate, endDate) {
       addTransactions(responseData);
     },
     error: (jqXHR, status, error) => {
-      console.error(`${status} ${error}`);
+      handleMessages(`${status} ${error}`);
     },
   });
 }
@@ -168,11 +181,10 @@ function matchTransactions() {
       }
     },
     success: (results) => {
-      console.log('Success');
-      console.log(results);
+      handleMessages(results);
     },
     error: (jqXHR, status, error) => {
-      console.log(`Error: ${status} ${error}`);
+      handleMessages(`${status} ${error}`, true);
     },
   });
 }
@@ -214,11 +226,10 @@ function unmatchTransactions() {
       }
     },
     success: (results) => {
-      console.log('Success');
-      console.log(results);
+      handleMessages(results);
     },
     error: (jqXHR, status, error) => {
-      console.log(`Error: ${status} ${error}`);
+      handleMessages(`${status} ${error}`, true);
     },
   });
 }
