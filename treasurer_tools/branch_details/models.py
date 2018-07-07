@@ -50,13 +50,8 @@ class Branch(models.Model):
     logo_small = models.ImageField(
         help_text="A reduced width logo for smaller screens",
     )
-    member = models.ManyToManyField(
-        to=settings.AUTH_USER_MODEL,
-        through=BranchMember,
-    )
 
     history = HistoricalRecords()
 
     def __str__(self):
         return self.branch_name
-
