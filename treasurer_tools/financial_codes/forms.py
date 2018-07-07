@@ -10,7 +10,6 @@ from .widgets import FinancialCodeGroupWithYearID
 
 def get_years_with_opt_groups():
     """Creates nested dictionary financial code systems & budget years"""
-    # pylint: disable=no-member
     budget_year_choices = []
 
     for system in FinancialCodeSystem.objects.all():
@@ -55,8 +54,6 @@ class FinancialCodeSystemForm(forms.ModelForm):
 
 class BudgetYearForm(forms.ModelForm):
     """Form to add and edit budget years"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-
     class Meta:
         model = BudgetYear
 
@@ -115,8 +112,6 @@ class BudgetYearForm(forms.ModelForm):
 
 class FinancialCodeGroupForm(forms.ModelForm):
     """Form to add and edit financial code systems"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-
     class Meta:
         model = FinancialCodeGroup
 
@@ -135,8 +130,6 @@ class FinancialCodeGroupForm(forms.ModelForm):
 
 class FinancialCodeForm(forms.ModelForm):
     """Form to add and edit financial codes"""
-    # pylint: disable=missing-docstring,too-few-public-methods
-
     budget_year = forms.ChoiceField(
         choices=[],
         label="Budget Year",
