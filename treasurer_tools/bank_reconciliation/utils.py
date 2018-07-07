@@ -62,8 +62,10 @@ def return_transactions_as_json(request):
 
         for transaction in transactions:
             transaction_list.append({
-                "transaction": str(transaction),
                 "id": transaction.id,
+                "date": transaction.date_submitted,
+                "type": transaction.get_transaction_type_display().title(),
+                "description": transaction.memo,
                 "total": transaction.total,
                 "reconciled": transaction.rm_financial_transaction.all().exists()
             })
@@ -87,8 +89,9 @@ def return_transactions_as_json(request):
 
         for transaction in transactions:
             transaction_list.append({
-                "transaction": str(transaction),
                 "id": transaction.id,
+                "date": transaction.date_transaction,
+                "description": transaction.description_user if transaction.description_user else transaction.description_bank,
                 "debit": transaction.amount_debit,
                 "credit": transaction.amount_credit,
                 "reconciled": transaction.rm_bank_transaction.all().exists()
