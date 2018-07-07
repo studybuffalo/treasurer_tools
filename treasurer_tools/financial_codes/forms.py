@@ -152,4 +152,10 @@ class FinancialCodeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FinancialCodeForm, self).__init__(*args, **kwargs)
+
+        # Add the budget year choices
         self.fields["budget_year"].choices = get_years_with_opt_groups()
+
+        # Set the proper default budget year (if applicable)
+        if self.instance.id:
+            self.fields["budget_year"].initial = self.instance.financial_code_group.budget_year.id
