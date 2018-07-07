@@ -1,5 +1,7 @@
 """Test cases for the bank_transaction app"""
 
+from decimal import Decimal
+
 from django.test import TestCase
 
 from financial_transactions.models import FinancialCodeMatch
@@ -78,7 +80,7 @@ class TransactionModelTest(TestCase):
     def test_total_property(self):
         """Tests that total property returns proper value"""
 
-        self.assertEqual(self.transactions[0].total, "$210.00")
+        self.assertEqual(self.transactions[0].total, Decimal(210.00))
 
 class ItemModelTest(TestCase):
     """Test functions for the Item model"""
