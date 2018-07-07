@@ -27,28 +27,42 @@ class Branch(models.Model):
     contact_name = models.CharField(
         help_text="The main contact for the branch",
         max_length=255,
+        blank=True,
+        null=True,
     )
     address = models.TextField(
         help_text="The full address of the branch",
         max_length=1000,
+        blank=True,
+        null=True,
     )
     phone = models.CharField(
         help_text="The main phone number for the branch",
         max_length=20,
+        blank=True,
+        null=True,
     )
     fax = models.CharField(
         help_text="The main fax number for the branch",
         max_length=20,
+        blank=True,
+        null=True,
     )
     email = models.CharField(
         help_text="The main email for the branch",
         max_length=255,
+        blank=True,
+        null=True,
     )
     logo_large = models.ImageField(
         help_text="A logo for the branch",
+        blank=True,
+        null=True,
     )
     logo_small = models.ImageField(
         help_text="A reduced width logo for smaller screens",
+        blank=True,
+        null=True,
     )
 
     history = HistoricalRecords()
