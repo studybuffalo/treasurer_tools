@@ -260,11 +260,59 @@ def year_delete(request, year_id):
 @login_required
 def year_copy(request, year_id):
     """Copies a budget year's codes into a new budget year"""
+    # Retrieve the old budget year to copy from
+    old_year = get_object_or_404(BudgetYear, id=year_id)
+
+    # If this is a POST request then copy the budget year
+    if request.method == "POST":
+        # Populate the new budget year data
+        form = BudgetYearForm(request.POST)
+
+        # Validate the new budget year data
+        if form.is_valid():
+            # Create the new budget year
+            new_year = form.save()
+
+            # Cycle through each financial code group in old budget year
+            for group in old_year.financialcodegroup_set.all():
+                # Copy the financial code group
+                new_group = FinancialCodeGroup.objects.create(
+                    budget_year=new_year,
+                    title=group.title,
+                    description=group.description,
+                    type=group.type,
+                    status=group.status,
+                )
+
+                # Cycle through each financial code in old budget year
+                for code in group.financialcode_set.all():
+                    # Copy the financial codes over
+                    FinancialCode.objects.create(
+                        financial_code_group=new_group,
+                        code=code.code,
+                        description=code.description,
+                    )
+
+            # redirect to the dashboard
+            messages.success(request, "Budget year successfully copied")
+
+            return HttpResponseRedirect(reverse("financial_codes:dashboard"))
+    else:
+        form = BudgetYearForm()
+
+    # Get the revenue and expense groups
+    revenue_groups = old_year.financialcodegroup_set.filter(type="r")
+    expense_groups = old_year.financialcodegroup_set.filter(type="e")
 
     return render(
         request,
         "financial_codes/copy.html",
-        {},
+        {
+            "budget_year": old_year,
+            "revenue_groups": revenue_groups,
+            "expense_groups": expense_groups,
+            "form": form,
+        },
     )
 
 @login_required

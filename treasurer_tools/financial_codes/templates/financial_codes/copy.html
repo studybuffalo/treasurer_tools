@@ -1,0 +1,96 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
+  <style>
+    /* Override column widths */
+    .input-grid {
+      grid-template-columns: 25rem 20rem;
+    }
+
+    /* Override button styles */
+    .save, .delete {
+      width: 15rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h1>Copy Budget Year</h1>
+
+  {% include 'main/messages.html' %}
+
+  <h2>Original Budget Year: {{ budget_year }}</h2>
+
+  <div class="codes">
+    <div class="revenue">
+      <h3>Revenue Codes</h3>
+
+      <ul>
+        {% for group in revenue_groups %}
+          <li>
+              <strong>{{ group.title }}</strong>
+              <ul>
+                {% for code in group.financialcode_set.all %}
+                  <li>{{ code }}</li>
+                {% endfor %}
+              </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="expense">
+      <h3>Expense Codes</h3>
+
+      <ul>
+        {% for group in expense_groups %}
+          <li>
+              <strong>{{ group.title }}</strong>
+              <ul>
+                {% for code in group.financialcode_set.all %}
+                  <li>{{ code }}</li>
+                {% endfor %}
+              </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <p>
+    The above budget codes will be copied into a new budget year.
+    <strong>This cannot be automatically reversed.</strong>
+  </p>
+
+  <h2>New Budget Year</h2>
+
+  <form action="" method="post">
+    {% csrf_token %}
+
+    {% include 'main/errors.html' with errors=form.non_field_errors %}
+
+    {% for field in form.visible_fields %}
+      <div class="input-grid">
+        {% include 'main/input_field.html' with field=field %}
+      </div>
+    {% endfor %}
+
+    {% for field in form.hidden_fields %}
+      {{ field }}
+    {% endfor %}
+
+    <div class="buttons">
+      <a href="{% url 'financial_codes:dashboard' %}" class="delete">Cancel</a>
+      <button type="submit" class="save">Copy</a>
+    </div>
+  </form>
+{% endblock %}
