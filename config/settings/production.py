@@ -8,11 +8,7 @@ Production settings for Treasurer Tools project.
 - Use sentry for error logging
 """
 
-
-import logging
-
-
-from .base import *  # noqa
+from .base import env, INSTALLED_APPS, MIDDLEWARE, TEMPLATES
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -86,7 +82,7 @@ AWS_EXPIRY = 60 * 60 * 24 * 7
 # either django-storage-redux or boto
 control = 'max-age=%d, s-maxage=%d, must-revalidate' % (AWS_EXPIRY, AWS_EXPIRY)
 AWS_HEADERS = {
-   'Cache-Control': bytes(control, encoding='latin-1')
+    'Cache-Control': bytes(control, encoding='latin-1')
 }
 
 # URL that handles the media served from MEDIA_ROOT, used for managing
