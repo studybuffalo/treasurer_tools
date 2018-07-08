@@ -14,23 +14,10 @@ function addItem() {
   $totalForms.val(count + 1);
 }
 
-function addEventListenersToNewFormsetRow(e) {
-  // Get the last formset row (i.e. the added row)
-  const $lastRow = $('.formset-row:last');
-
-  // Cycle through each help button
-  $lastRow.find('button.input-help').each((index, button) => {
-    $(button).on('click', (e) => {
-      show_help_text(e, this);
-    });
-  });
-}
-
 $(document).ready(() => {
   $('#add-item').on('click', (e) => {
     e.preventDefault();
     addItem();
-    addEventListenersToNewFormsetRow(e);
   });
 
   // Handles drag and drop attachment functionality
