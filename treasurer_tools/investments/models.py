@@ -13,9 +13,17 @@ class Investment(models.Model):
     date_invested = models.DateField(
         help_text="Date of initial investment",
     )
-    amount = models.DecimalField(
+    date_matured = models.DateField(
+        help_text="Date of maturation"
+    )
+    amount_invested = models.DecimalField(
         decimal_places=2,
         help_text="Initial amount invested",
+        max_digits=12,
+    )
+    amount_matured = models.DecimalField(
+        decimal_places=2,
+        help_text="Amount currently or at maturation",
         max_digits=12,
     )
     rate = models.CharField(

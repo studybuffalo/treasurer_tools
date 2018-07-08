@@ -45,8 +45,8 @@
       .grid-investment {
         display: grid;
         grid-gap: 1rem;
-        grid-template-columns: 2fr 3fr 2fr 2fr 3fr;
-        grid-template-areas: "date name amount rate buttons";
+        grid-template-columns: 3fr 2fr 2fr 2fr 2fr 2fr 3fr;
+        grid-template-areas: "name date-invested amount-invested date-matured amount-matured rate buttons";
       }
 
       .grid-investment em {
@@ -57,16 +57,25 @@
         display: grid;
       }
 
-      .date {
-        grid-area: date;
-      }
-
       .name {
         grid-area: name;
       }
 
-      .amount {
-        grid-area: amount;
+      .date-invested {
+        grid-area: date-invested;
+      }
+
+      .amount-invested {
+        grid-area: amount-invested;
+        justify-self: end;
+      }
+
+      .date-matured {
+        grid-area: date-matured;
+      }
+
+      .amount-matured {
+        grid-area: amount-matured;
         justify-self: end;
       }
 
@@ -95,16 +104,22 @@
     </div>
 
     <div id="investments">
+      <div class="grid-investment header">
+        <div class="date-invested">Date Invested</div>
+        <div class="amount-invested">Amount Invested</div>
+        <div class="date-matured">Date Matured</div>
+        <div class="amount-matured">Amount Matured</div>
+        <div class="rate">Rate</div>
+      </div>
       {% for investment in investments %}
-        <div class="grid-investment header">
-          <div class="amount">Amount</div>
-          <div class="rate">Rate</div>
-        </div>
+
 
         <div class="grid-investment">
-          <div class="date">{{ investment.date_invested }}</div>
-          <div class="name">{{ investment.name }}</div>
-          <div class="amount"><em>Amount:</em> ${{ investment.amount }}</div>
+            <div class="name">{{ investment.name }}</div>
+          <div class="date-invested">{{ investment.date_invested }}</div>
+          <div class="amount-invested"><em>Amount:</em> ${{ investment.amount_invested }}</div>
+          <div class="date-matured">{{ investment.date_matured }}</div>
+          <div class="amount-matured"><em>Amount:</em> ${{ investment.amount_matured }}</div>
           <div class="rate"><em>Rate:</em> {{ investment.rate }}</div>
           <div class="buttons">
             <a href="{% url 'investments:edit' investment.id %}" class="edit">Edit</a>
