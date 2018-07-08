@@ -9,65 +9,32 @@
       font-weight: 700;
     }
 
-    #revenue-accounts, #expense-accounts {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    #assets .item:nth-child(even), #liabilities .item:nth-child(even) {
+      background-color: rgb(237, 244, 242);
     }
 
-    .transaction {
-      display: block;
+    .item {
+      display: grid;
+      grid-gap: 1rem;
+      grid-template-columns: 2fr 1fr;
+      grid-template-areas: "description amount";
+      max-width: 700px;
+      padding: 0.5rem;
     }
 
-      .transaction.header {
-        display: none;
-      }
+    .description {
+      grid-area: description;
+    }
 
-      .transaction em {
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
+    .amount {
+      grid-area: amount;
+      justify-self: end;
+    }
 
-    #final-totals {
+    .total {
+      background-color: rgb(40, 120, 200) !important;
+      color: rgb(255, 255, 255);
       font-weight: 700;
-      margin-top: 2rem;
-    }
-
-    @media screen and (min-width: 768px) {
-      .filters label {
-        display: inline-block;
-        width: 25rem;
-      }
-
-      .transaction {
-        display: grid;
-        grid-gap: 1rem;
-        grid-template-columns: 10rem 3fr 1fr;
-        grid-template-areas: "code description total";
-        max-width: 60rem;
-      }
-
-        .transaction.header {
-          display: grid;
-          font-weight: 700;
-        }
-
-        .transaction em {
-          display: none;
-        }
-
-      .code {
-        grid-area: code;
-      }
-
-      .description {
-        grid-area: description;
-      }
-
-      .total {
-        grid-area: total;
-        justify-self: end;
-      }
     }
   </style>
 {% endblock %}
@@ -79,7 +46,7 @@
 
   <div class="filters">
     <div>
-      <label for="budget-year">Budget Year</label>
+      <label for="budget-year">Budget Year: </label>
       <select id="budget-year">
         {% for system in financial_code_systems %}
           {% if forloop.first %}<option value="">----------</option>{% endif %}
@@ -110,7 +77,7 @@
         <div id="assets-accounts-receivable" class="amount"></div>
       </div>
       <div class="item total">
-        <div class="description">Total assets</div>
+        <div class="description">TOTAL</div>
         <div id="assets-total" class="amount"></div>
       </div>
     </div>
@@ -129,7 +96,7 @@
         <div id="liabilities-accounts-payable" class="amount"></div>
       </div>
       <div class="item total">
-        <div class="description">Total liabilities</div>
+        <div class="description">TOTAL</div>
         <div id="liabilities-total" class="amount"></div>
       </div>
     </div>
