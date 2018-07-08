@@ -8,7 +8,7 @@ Production settings for Treasurer Tools project.
 - Use sentry for error logging
 """
 
-from .base import env, INSTALLED_APPS, MIDDLEWARE, TEMPLATES
+from .base import *
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
