@@ -79,6 +79,7 @@ class PayeePayer(models.Model):
             ("a", "active"),
             ("i", "inactive"),
         ),
+        default="a",
         help_text=(
             "Whether this individual has recent expense or revenue activity"
         ),
