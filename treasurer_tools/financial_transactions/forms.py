@@ -342,11 +342,11 @@ class CompiledForms(object):
     def save(self):
         """Saves all item formsets and financial code matches"""
         # Save the transaction form
-        saved_transaction = self.forms.transaction_form.save()
+        transaction_instance = self.forms.transaction_form.save()
 
-        # Get the new transaction object
-        transaction_id = saved_transaction.id
-        transaction_instance = FinancialTransaction.objects.get(id=transaction_id)
+        # Update the transaction_instance with the proper type
+        transaction_instance.transaction_type = self.transaction_type
+        transaction_instance.save()
 
         # Cycle through each item formset
         for item_formset_group in self.forms.item_formsets:
@@ -394,7 +394,7 @@ class CompiledForms(object):
 
             # Create record in attachment matching model
             attachment_match = FinancialTransactionMatch(
-                transaction=FinancialTransaction.objects.get(id=transaction_id),
+                transaction=transaction_instance,
                 attachment=attachment_instance,
             )
             attachment_match.save()
