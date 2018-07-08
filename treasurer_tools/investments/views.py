@@ -81,12 +81,7 @@ def investment_edit(request, investment_id):
     else:
         # Populate the initial transaction data
         investment_data = get_object_or_404(Investment, id=investment_id)
-        form = InvestmentForm(initial={
-            "name": investment_data.name,
-            "date_invested": investment_data.date_invested,
-            "amount": investment_data.amount,
-            "rate": investment_data.rate,
-        })
+        form = InvestmentForm(instance=investment_data)
 
     return render(
         request,

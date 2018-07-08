@@ -56,7 +56,9 @@ class InvestmentAddTest(TestCase):
         self.valid_data = {
             "name": "Mutual Funds",
             "date_invested": "2017-03-01",
-            "amount": 1000.00,
+            "amount_invested": 1000.00,
+            "date_matured": "2017-06-01",
+            "amount_matured": 1005.00,
             "rate": "0.05% per month"
         }
 
@@ -140,13 +142,17 @@ class InvestmentEditTest(TestCase):
         self.current_data = {
             "name": investment.name,
             "date_invested": investment.date_invested,
-            "amount": investment.amount,
+            "amount_invested": investment.amount_invested,
+            "date_matured": investment.date_matured,
+            "amount_matured": investment.amount_matured,
             "rate": investment.rate
         }
         self.new_data = {
             "name": "Mutual Funds",
             "date_invested": "2017-03-01",
-            "amount": 1000.00,
+            "amount_invested": 1000.00,
+            "date_matured": "2017-06-01",
+            "amount_matured": 1005.00,
             "rate": "0.05% per month"
         }
         self.valid_args = {"investment_id": investment.id}

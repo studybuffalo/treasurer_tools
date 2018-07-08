@@ -15,7 +15,9 @@ class InvestmentFormTest(TestCase):
         self.valid_data = {
             "name": "Mutual Funds",
             "date_invested": "2017-03-01",
-            "amount": 1000.00,
+            "amount_invested": 1000.00,
+            "date_matured": "2017-06-01",
+            "amount_matured": 1005.00,
             "rate": "0.05% per month"
         }
 

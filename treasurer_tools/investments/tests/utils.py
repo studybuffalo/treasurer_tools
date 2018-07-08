@@ -20,7 +20,9 @@ def create_investment():
     investment_reference = Investment.objects.create(
         name="Term Deposit #1",
         date_invested="2017-02-01",
-        amount=10000.00,
+        amount_invested=10000.00,
+        date_matured="2017-08-01",
+        amount_matured=10005.00,
         rate="1% per anum"
     )
 

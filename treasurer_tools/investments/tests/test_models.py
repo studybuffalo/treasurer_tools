@@ -26,11 +26,24 @@ class InvestmentModelTest(TestCase):
             "date invested"
         )
 
-        # Test amount label
+        # Test amount_invested label
         self.assertEqual(
-            self.investment._meta.get_field("amount").verbose_name,
-            "amount"
+            self.investment._meta.get_field("amount_invested").verbose_name,
+            "amount invested"
         )
+
+        # Test date_matured label
+        self.assertEqual(
+            self.investment._meta.get_field("date_matured").verbose_name,
+            "date matured"
+        )
+
+        # Test amount_matured label
+        self.assertEqual(
+            self.investment._meta.get_field("amount_matured").verbose_name,
+            "amount matured"
+        )
+
 
         # Test rate label
         self.assertEqual(
