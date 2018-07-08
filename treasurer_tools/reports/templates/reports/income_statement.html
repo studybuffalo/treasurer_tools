@@ -3,53 +3,52 @@
 {% load static %}
 
 {% block styles %}
-<script>
+  <style>
     .hide {
-        display: none;
+      display: none;
     }
-</script>
+  </style>
 {% endblock %}
 
 {% block content %}
-<h1>Income Statement</h1>
+  <h1>Income Statement</h1>
 
-<div>
+  <div>
     <div>
-        <label>Financial Code System:</label>
-        <select id="financial-code-system">
-            {% for system in financial_code_systems %}
-                {% if forloop.first %}<option value="">----------</option>{% endif %}
-                <option value="{{ system.id }}">{{ system.title }}</option>
-            {% endfor %}
-        </select>
+      <label>Financial Code System:</label>
+      <select id="financial-code-system">
+        {% for system in financial_code_systems %}
+          {% if forloop.first %}<option value="">----------</option>{% endif %}
+          <option value="{{ system.id }}">{{ system.title }}</option>
+        {% endfor %}
+      </select>
     </div>
 
     <div>
-        <label>Reporting Period</label>
-        <select id="date-predefined">
-            <option value="last 30 days">Last 30 days</option>
-            <option value="last year">Last year</option>
-            <option value="year-to-date">Year-to-date</option>
-            <option value="custom">Custom range</option>
-        </select>
+      <label>Reporting Period</label>
+      <select id="date-predefined">
+        <option value="last 30 days">Last 30 days</option>
+        <option value="last year">Last year</option>
+        <option value="year-to-date">Year-to-date</option>
+        <option value="custom">Custom range</option>
+      </select>
     </div>
 
     <div>
-        <label>Start date:</label>
-        <input type="date" id="date-start">
+      <label>Start date:</label>
+      <input type="date" id="date-start">
     </div>
-    
+
     <div>
-        <label>End date:</label>
-        <input type="date" id="date-end">
+      <label>End date:</label>
+      <input type="date" id="date-end">
     </div>
-</div>
+  </div>
 
-<div id="report"></div>
-
+  <div id="report"></div>
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'reports/js/income_statement.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'reports/js/income_statement.js' %}"></script>
 {% endblock %}
