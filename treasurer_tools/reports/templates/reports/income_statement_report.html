@@ -2,9 +2,26 @@
 
 {% if revenue_codes %}
   <ul id="revenue-accounts">
+      <li class="transaction header">
+        <span class="code">Code</span>
+        <span class="description">Description</span>
+        <span class="total">Total</span>
+      </li>
+
     {% for code in revenue_codes %}
-      <li data-total="{{ code.total }}">
-        {{ code.code }} - {{ code.description }}: ${{ code.total }}
+      <li class="transaction" data-total="{{ code.total }}">
+        <div class="code">
+          <em>Code: </em>
+          <span>{{ code.code }}</span>
+        </div>
+        <div class="description">
+          <em>Description: </em>
+          <span>{{ code.description }}</span>
+        </div>
+        <div class="total">
+          <em>Total: </em>
+          <span>${{ code.total }}</span>
+        </div>
       </li>
     {% endfor %}
   </ul>
@@ -15,10 +32,27 @@
 <h2>Expenses</h2>
 
 {% if expense_codes %}
-  <ul id="expense_accounts">
+  <ul id="expense-accounts">
+    <li class="transaction header">
+      <span class="code">Code</span>
+      <span class="description">Description</span>
+      <span class="total">Total</span>
+    </li>
+
     {% for code in expense_codes %}
-      <li data-total="{{ code.total }}">
-        {{ code.code }} - {{ code.description }}: ${{ code.total }}
+      <li class="transaction" data-total="{{ code.total }}">
+        <div class="code">
+          <em>Code: </em>
+          <span>{{ code.code }}</span>
+        </div>
+        <div class="description">
+          <em>Description: </em>
+          <span>{{ code.description }}</span>
+        </div>
+        <div class="total">
+          <em>Total: </em>
+          <span>${{ code.total }}</span>
+        </div>
       </li>
     {% endfor %}
   </ul>

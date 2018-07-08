@@ -87,6 +87,10 @@ select, input {
   text-align: right;
 }
 
+.hide {
+  display: none;
+}
+
 #header-bar {
   align-items: center;
   background-color: rgb(237, 244, 242);

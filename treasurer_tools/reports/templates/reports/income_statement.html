@@ -4,8 +4,65 @@
 
 {% block styles %}
   <style>
-    .hide {
-      display: none;
+    .filters label {
+      display: block;
+      font-weight: 700;
+    }
+
+    #revenue-accounts, #expense-accounts {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .transaction {
+      display: block;
+    }
+
+      .transaction.header {
+        display: none;
+      }
+
+      .transaction em {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+    @media screen and (min-width: 768px) {
+      .filters label {
+        display: inline-block;
+        width: 25rem;
+      }
+
+      .transaction {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 10rem 3fr 1fr;
+        grid-template-areas: "code description total";
+        max-width: 60rem;
+      }
+
+        .transaction.header {
+          display: grid;
+          font-weight: 700;
+        }
+
+        .transaction em {
+          display: none;
+        }
+
+      .code {
+        grid-area: code;
+      }
+
+      .description {
+        grid-area: description;
+      }
+
+      .total {
+        grid-area: total;
+        justify-self: end;
+      }
     }
   </style>
 {% endblock %}
@@ -13,7 +70,7 @@
 {% block content %}
   <h1>Income Statement</h1>
 
-  <div>
+  <div class="filters">
     <div>
       <label>Financial Code System:</label>
       <select id="financial-code-system">
