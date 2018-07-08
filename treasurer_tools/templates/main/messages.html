@@ -1,11 +1,13 @@
-{% if messages or form.non_field_errors %}
-    <ul class="message_list">
-        {% for message in messages %}
-            {% if message.level %}
-                <li class="level_{{ message.level }}">{{ message }}</li>
-            {% else %}
-                <li>{{ message }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-{% endif %}
+<ul id="messages" class="message_list"></ul>
+  {% for message in messages %}
+    {% if message.level %}
+      <li class="level-{{ message.level }}">{{ message }}</li>
+    {% else %}
+      <li>{{ message }}</li>
+    {% endif %}
+  {% endfor %}
+
+  {% for error in form.non_field_errors %}
+    <li class="level-40">{{ error }}</li>
+  {% endfor %}
+</ul>

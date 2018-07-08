@@ -10,6 +10,7 @@
     "rules": {},
     "globals": {
         "Raven": true,
-        "moment": true
+        "moment": true,
+        "handleMessages": true,
     }
 }

@@ -95,6 +95,44 @@ select, input {
   color: rgb(233, 74, 55);
 }
 
+#messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+  #messages li {
+    margin: 0;
+    padding: 0
+  }
+
+  /* Debug message */
+  #messages .level-10 {
+    color: rgb(50, 50, 50);
+  }
+
+  /* Info message */
+  #messages .level-20 {
+    color: rgb(0, 0, 0);
+  }
+
+  /* Warning message */
+  #messages .level-30 {
+    color: rgb(241, 100, 69);
+  }
+
+  /* Error message */
+  #messages .level-40 {
+    color: rgb(233, 74, 55);
+
+  }
+
+  /* Critical message */
+  #messages .level-50 {
+    color: rgb(233, 74, 55);
+    font-weight: 700;
+  }
+
 #header-bar {
   align-items: center;
   background-color: rgb(237, 244, 242);
