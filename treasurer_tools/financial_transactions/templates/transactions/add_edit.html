@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 
   <style>
-    #transaction-items {
+    .transaction-item {
       display: grid;
       grid-gap: 1rem;
       grid-template-columns: 1fr;
@@ -51,7 +51,7 @@
         width: 9rem;
       }
 
-      #transaction-items {
+      .transaction-item {
         display: grid;
         grid-template-columns: 9rem 4fr 8rem 8rem {% for financial_code_form in forms.empty_financial_code_form %}2fr 2fr {% endfor %}{% if type == 'edit' %} 5rem;{% else %};{% endif %}
         grid-template-rows: auto;
@@ -157,89 +157,93 @@
 
           <!-- Header for table view -->
           {% with forms.forms.item_formset.empty_form as header %}
-            <div class="header-date">
-              {{ header.date_item.label }}
-              <div id="help-{{ header.date_item.auto_id }}" class="modal">{{  header.date_item.help_text }}</div>
-              <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help"></a>
-            </div>
-            <div class="header-description">
-              {{ header.description.label }}
-              <div id="help-{{ header.description.auto_id }}" class="modal">{{  header.description.help_text }}</div>
-              <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help"></a>
-            </div>
-            <div class="header-amount">
-              {{ header.amount.label }}
-              <div id="help-{{ header.amount.auto_id }}" class="modal">{{  header.amount.help_text }}</div>
-              <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help"></a>
-            </div>
-            <div class="header-gst">
-              {{ header.gst.label }}
-              <div id="help-{{ header.gst.auto_id }}" class="modal">{{  header.gst.help_text }}</div>
-              <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help"></a>
-            </div>
+            <div class="transaction-item">
+              <div class="header-date">
+                {{ header.date_item.label }}
+                <div id="help-{{ header.date_item.auto_id }}" class="modal">{{  header.date_item.help_text }}</div>
+                <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help"></a>
+              </div>
+              <div class="header-description">
+                {{ header.description.label }}
+                <div id="help-{{ header.description.auto_id }}" class="modal">{{  header.description.help_text }}</div>
+                <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help"></a>
+              </div>
+              <div class="header-amount">
+                {{ header.amount.label }}
+                <div id="help-{{ header.amount.auto_id }}" class="modal">{{  header.amount.help_text }}</div>
+                <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help"></a>
+              </div>
+              <div class="header-gst">
+                {{ header.gst.label }}
+                <div id="help-{{ header.gst.auto_id }}" class="modal">{{  header.gst.help_text }}</div>
+                <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help"></a>
+              </div>
 
-            {% with forms.empty_financial_code_form.0 as financial_code_form %}
-              <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
-              <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
-              <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
-            {% endwith %}
+              {% with forms.empty_financial_code_form.0 as financial_code_form %}
+                <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
+                <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
+                <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
+              {% endwith %}
 
-            {% with forms.empty_financial_code_form.1 as financial_code_form %}
-              <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
-              <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
-              <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
-            {% endwith %}
+              {% with forms.empty_financial_code_form.1 as financial_code_form %}
+                <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
+                <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
+                <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
+              {% endwith %}
 
-            {% if type == 'edit' %}
-              <div class="header-delete">Delete</div>
-            {% endif %}
+              {% if type == 'edit' %}
+                <div class="header-delete">Delete</div>
+              {% endif %}
+            </div>
           {% endwith %}
 
           {% with form.item_formsets as formsets %}
             {% include 'main/errors.html' with errors=form.item_formset.non_form_errors %}
 
             {% for group in formsets %}
-              {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
+              <div class="transaction-item">
+                {% include 'main/errors.html' with errors=group.formset.non_field_errors %}
 
-              <div class="date">
-                {% include 'main/input_field.html' with field=group.item_formset.date_item %}
-              </div>
-
-              <div class="description">
-                {% include 'main/input_field.html' with field=group.item_formset.description %}
-              </div>
-
-              <div class="amount">
-                {% include 'main/input_field.html' with field=group.item_formset.amount %}
-              </div>
-
-              <div class="gst">
-                {% include 'main/input_field.html' with field=group.item_formset.gst %}
-              </div>
-
-              {% for field in group.item_formset.hidden_fields %}
-                {{ field }}
-              {% endfor %}
-
-              {% for financial_code_form in group.financial_code_forms %}
-                {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
-
-                <div>
-                  {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+                <div class="date">
+                  {% include 'main/input_field.html' with field=group.item_formset.date_item %}
                 </div>
 
-                <div>
-                  {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+                <div class="description">
+                  {% include 'main/input_field.html' with field=group.item_formset.description %}
                 </div>
 
-                {% for field in financial_code_form.form.hidden_fields %}
+                <div class="amount">
+                  {% include 'main/input_field.html' with field=group.item_formset.amount %}
+                </div>
+
+                <div class="gst">
+                  {% include 'main/input_field.html' with field=group.item_formset.gst %}
+                </div>
+
+                {% for field in group.item_formset.hidden_fields %}
                   {{ field }}
                 {% endfor %}
-              {% endfor %}
 
-              {% if type == 'edit' %}
-                {% include 'main/input_field.html' with field=group.item_formset.DELETE %}
-              {% endif %}
+                {% for financial_code_form in group.financial_code_forms %}
+                  {% include 'main/errors.html' with errors=financial_code_form.form.non_field_errors %}
+
+                  <div>
+                    {% include 'main/input_field.html' with field=financial_code_form.form.budget_year %}
+                  </div>
+
+                  <div>
+                    {% include 'main/input_field.html' with field=financial_code_form.form.code %}
+                  </div>
+
+                  {% for field in financial_code_form.form.hidden_fields %}
+                    {{ field }}
+                  {% endfor %}
+                {% endfor %}
+
+                {% if type == 'edit' %}
+                  {% include 'main/input_field.html' with field=group.item_formset.DELETE %}
+                {% endif %}
+              </div>
             {% endfor %}
           {% endwith %}
         </fieldset>
