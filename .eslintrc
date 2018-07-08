@@ -9,6 +9,7 @@
     },
     "rules": {},
     "globals": {
-        "Raven": true
+        "Raven": true,
+        "moment": true
     }
 }
