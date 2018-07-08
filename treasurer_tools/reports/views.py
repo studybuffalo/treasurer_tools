@@ -82,7 +82,6 @@ def retrieve_balance_sheet(request):
 
     if budget_year_id:
         budget_year = get_object_or_404(BudgetYear, id=budget_year_id)
-        date_start = budget_year.date_start
         date_end = budget_year.date_end
 
         # CALCULATE CASH
