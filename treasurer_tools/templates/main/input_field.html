@@ -2,7 +2,7 @@
   {{ field.label }}:
   {% if field.help_text %}
     <div id="help-{{ field.auto_id }}" class="modal">{{ field.help_text }}</div>
-    <a href="#help-{{ field.auto_id }}" rel="modal:open" class="input-help"></a>
+    <a href="#help-{{ field.auto_id }}" rel="modal:open" class="input-help" tabindex=-1></a>
   {% endif %}
 </label>
 {{ field }}
