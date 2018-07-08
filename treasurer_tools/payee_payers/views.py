@@ -12,6 +12,7 @@ from .forms import PayeePayerForm
 @login_required
 def dashboard(request):
     """Main dashboard to manage payees and payers"""
+
     return render(
         request,
         "payee_payers/index.html",
@@ -21,12 +22,12 @@ def dashboard(request):
 @login_required
 def request_payee_payers(request):
     """List of all payee/payers"""
-    # pylint: disable=no-member
+
     return render(
         request,
         "payee_payers/payee_payer_list.html",
         context={
-            "payee_payer_list": PayeePayer.objects.all(),
+            "payee_payer_list": PayeePayer.objects.all().order_by("name"),
         }
     )
 
