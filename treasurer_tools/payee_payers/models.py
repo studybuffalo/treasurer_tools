@@ -88,6 +88,7 @@ class PayeePayer(models.Model):
     history = HistoricalRecords()
 
     class Meta:
+        ordering = ["name"]
         verbose_name_plural = "Payee/Payers"
 
     def __str__(self):
