@@ -28,6 +28,11 @@
         font-weight: 700;
       }
 
+    #final-totals {
+      font-weight: 700;
+      margin-top: 2rem;
+    }
+
     @media screen and (min-width: 768px) {
       .filters label {
         display: inline-block;
@@ -103,6 +108,22 @@
   </div>
 
   <div id="report"></div>
+
+  <div id="final-totals">
+    <div class="transaction">
+      <strong class="description">REVENUE TOTAL:</strong>
+      <span id="revenue-total" class="total"></span>
+    </div>
+    <div class="transaction">
+      <strong class="description">EXPENSE TOTAL:</strong>
+      <span id="expense-total" class="total negative"></span>
+    </div>
+    <div class="transaction">
+      <strong class="description">TOTAL:</strong>
+      <span id="net-total" class="total"></span>
+    </div>
+  </div>
+
 {% endblock %}
 
 {% block js %}

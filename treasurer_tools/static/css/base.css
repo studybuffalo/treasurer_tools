@@ -91,6 +91,10 @@ select, input {
   display: none;
 }
 
+.negative {
+  color: rgb(233, 74, 55);
+}
+
 #header-bar {
   align-items: center;
   background-color: rgb(237, 244, 242);
@@ -301,7 +305,6 @@ select, input {
   .delete:hover {
     background-color: rgb(149, 47, 35);
   }
-
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {
   #main-content {
