@@ -134,7 +134,7 @@ class ItemModelTest(TestCase):
         """Tests the total function for propery string generation"""
 
         # Tests that total matches desired total and format
-        self.assertEqual(self.items[0].total, "$105.00")
+        self.assertEqual(self.items[0].total, Decimal(105.00))
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
