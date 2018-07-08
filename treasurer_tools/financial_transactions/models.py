@@ -105,7 +105,7 @@ class Item(models.Model):
         total = self.amount + self.gst
 
         # Return total as a proper dollar currency
-        return "${0:.2f}".format(total)
+        return Decimal(total)
 
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
