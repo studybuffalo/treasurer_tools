@@ -71,8 +71,8 @@ def retrieve_income_statement(request):
     )
 
 @login_required
-def retrieve_income_statement(request):
-    """Retrieves data for account summary report"""
+def retrieve_balance_sheet(request):
+    """Retrieves data for the balance sheet report"""
 
     return render(
         request,
