@@ -88,7 +88,6 @@ def retrieve_balance_sheet(request):
         # CALCULATE CASH
         # Get all the bank transactions between start and end date
         bank_transaction_totals = BankTransaction.objects.filter(
-
             date_transaction__lte=date_end
         ).aggregate(
             debit=Sum("amount_debit"), credit=Sum("amount_credit")
