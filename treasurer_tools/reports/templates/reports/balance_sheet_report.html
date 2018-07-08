@@ -1,61 +1,41 @@
-﻿<h2>Revenue</h2>
+﻿{% load l10n %}
 
-{% if revenue_codes %}
-  <ul id="revenue-accounts">
-      <li class="transaction header">
-        <span class="code">Code</span>
-        <span class="description">Description</span>
-        <span class="total">Total</span>
-      </li>
+<h2>Assets</h2>
 
-    {% for code in revenue_codes %}
-      <li class="transaction" data-total="{{ code.total }}">
-        <div class="code">
-          <em>Code: </em>
-          <span>{{ code.code }}</span>
-        </div>
-        <div class="description">
-          <em>Description: </em>
-          <span>{{ code.description }}</span>
-        </div>
-        <div class="total">
-          <em>Total: </em>
-          <span>${{ code.total }}</span>
-        </div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <strong>No transactions found.</strong>
-{% endif %}
-
-<h2>Expenses</h2>
-
-{% if expense_codes %}
-  <ul id="expense-accounts">
-    <li class="transaction header">
-      <span class="code">Code</span>
-      <span class="description">Description</span>
-      <span class="total">Total</span>
-    </li>
-
-    {% for code in expense_codes %}
-      <li class="transaction" data-total="{{ code.total }}">
-        <div class="code">
-          <em>Code: </em>
-          <span>{{ code.code }}</span>
-        </div>
-        <div class="description">
-          <em>Description: </em>
-          <span>{{ code.description }}</span>
-        </div>
-        <div class="total">
-          <em>Total: </em>
-          <span>${{ code.total }}</span>
-        </div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <strong>No transactions found.</strong>
-{% endif %}
+<div id="balance-sheet">
+  <div class="item header">
+    <div class="description">Assets</div>
+  </div>
+  <div class="item">
+    <div class="description">Cash on hand</div>
+    <div class="amount">${{ cash|floatformat:2|localize }}</div>
+  </div>
+  <div class="item">
+    <div class="description">Investments</div>
+    <div class="amount">${{ investments|floatformat:2|localize }}</div>
+  </div>
+  <div class="item">
+    <div class="description">Accounts receivable</div>
+    <div class="amount">${{ accounts_receivable|floatformat:2|localize }}</div>
+  </div>
+  <div class="item total">
+    <div class="description">Total assets</div>
+    <div class="amount">${{ assets_total|floatformat:2|localize }}</div>
+  </div>
+  <hr>
+  <div class="item header">
+    Liabilities
+  </div>
+  <div class="item">
+    <div class="description">Debt</div>
+    <div class="amount">${{ debt|floatformat:2|localize }}</div>
+  </div>
+  <div class="item">
+    <div class="description">Accounts payable</div>
+    <div class="amount">${{ accounts_payable|floatformat:2|localize }}</div>
+  </div>
+  <div class="item total">
+    <div class="description">Total liabilities</div>
+    <div class="amount">${{ liabilities_total|floatformat:2|localize }}</div>
+  </div>
+</div>

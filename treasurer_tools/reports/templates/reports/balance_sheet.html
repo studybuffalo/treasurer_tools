@@ -77,56 +77,23 @@
 
   <div class="filters">
     <div>
-      <label>Financial Code System:</label>
-      <select id="financial-code-system">
+      <label for="budget-year">Budget Year</label>
+      <select id="budget-year">
         {% for system in financial_code_systems %}
           {% if forloop.first %}<option value="">----------</option>{% endif %}
-          <option value="{{ system.id }}">{{ system.title }}</option>
+          <optgroup label="{{ system.title }}">
+            {% for budget_year in system.budgetyear_set.all|dictsort:"date_start" %}
+              <option value="{{ budget_year.id }}">{{ budget_year }}</option>
+            {% endfor %}
+          </colgroup>
         {% endfor %}
       </select>
-    </div>
-
-    <div>
-      <label>Reporting Period</label>
-      <select id="date-predefined">
-        <option value="last 30 days">Last 30 days</option>
-        <option value="last year">Last year</option>
-        <option value="year-to-date">Year-to-date</option>
-        <option value="custom">Custom range</option>
-      </select>
-    </div>
-
-    <div>
-      <label>Start date:</label>
-      <input type="date" id="date-start">
-    </div>
-
-    <div>
-      <label>End date:</label>
-      <input type="date" id="date-end">
     </div>
   </div>
 
   <div id="report"></div>
-
-  <div id="final-totals">
-    <div class="transaction">
-      <strong class="description">REVENUE TOTAL:</strong>
-      <span id="revenue-total" class="total"></span>
-    </div>
-    <div class="transaction">
-      <strong class="description">EXPENSE TOTAL:</strong>
-      <span id="expense-total" class="total negative"></span>
-    </div>
-    <div class="transaction">
-      <strong class="description">TOTAL:</strong>
-      <span id="net-total" class="total"></span>
-    </div>
-  </div>
-
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'reports/js/balance_sheet.js' %}"></script>
 {% endblock %}
