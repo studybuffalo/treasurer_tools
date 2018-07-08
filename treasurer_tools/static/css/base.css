@@ -95,6 +95,10 @@ select, input {
   color: rgb(233, 74, 55);
 }
 
+.positive {
+  color: rgb(5, 150, 100);
+}
+
 #messages {
   list-style: none;
   margin: 0;
