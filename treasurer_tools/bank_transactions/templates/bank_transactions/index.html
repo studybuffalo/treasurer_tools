@@ -175,7 +175,13 @@
 
             <div class="transaction totals">
               <div class="total-header">TOTAL</div>
-              <div class="credit"><span>${{ statement.total }}</span></div>
+              <div class="credit">
+                {% if statement.total < 0 %}
+                  <span class="negative">-${{ statement.total|stringformat:"+d.00"|slice:"1:" }}</span>
+                {% else %}
+                  <span>${{ statement.total }}</span>
+                {% endif %}
+              </div>
             </div>
           </div>
 

@@ -1,5 +1,9 @@
 """Models for bank_transaction app"""
+
+from decimal import Decimal
+
 from django.db import models
+from django.db.models import Sum
 
 from simple_history.models import HistoricalRecords
 
@@ -25,6 +29,30 @@ class Statement(models.Model):
 
     def __str__(self):
         return "{} to {} statement".format(self.date_start, self.date_end)
+
+    @property
+    def total_debit(self):
+        """Calculates a statements debit total"""
+        debit_total = self.banktransaction_set.all().aggregate(total=Sum("amount_debit"))
+
+        return Decimal(debit_total["total"])
+
+    @property
+    def total_credit(self):
+        """Calculates a statements credit total"""
+        credit_total = self.banktransaction_set.all().aggregate(total=Sum("amount_credit"))
+
+        return Decimal(credit_total["total"])
+
+    @property
+    def total(self):
+        """Calculates a statements total"""
+        total = self.banktransaction_set.all().aggregate(
+            debit_total=Sum("amount_debit"),
+            credit_total=Sum("amount_credit")
+        )
+
+        return Decimal(total["credit_total"] - total["debit_total"])
 
 class BankTransaction(models.Model):
     """Details on a single bank transactions"""
