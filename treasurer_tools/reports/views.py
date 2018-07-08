@@ -2,6 +2,7 @@
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from bank_reconciliation.models import ReconciliationMatch
@@ -156,19 +157,15 @@ def retrieve_balance_sheet(request):
         accounts_payable = 0
         liabilities_total = 0
 
-    return render(
-        request,
-        "reports/balance_sheet_report.html",
-        context={
-            "cash": cash,
-            "investments": investments,
-            "accounts_receivable": accounts_receivable,
-            "assets_total": assets_total,
-            "debt": debt,
-            "accounts_payable": accounts_payable,
-            "liabilities_total": liabilities_total,
-        }
-    )
+    return JsonResponse({
+        "cash": cash,
+        "investments": investments,
+        "accounts_receivable": accounts_receivable,
+        "assets_total": assets_total,
+        "debt": debt,
+        "accounts_payable": accounts_payable,
+        "liabilities_total": liabilities_total,
+    })
 
 @login_required
 def balance_sheet_dashboard(request):

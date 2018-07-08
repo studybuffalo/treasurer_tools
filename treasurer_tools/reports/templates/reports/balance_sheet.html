@@ -75,6 +75,8 @@
 {% block content %}
   <h1>Balance Sheet</h1>
 
+  {% include 'main/messages.html' %}
+
   <div class="filters">
     <div>
       <label for="budget-year">Budget Year</label>
@@ -91,7 +93,48 @@
     </div>
   </div>
 
-  <div id="report"></div>
+  <div>
+    <h2>Assets</h2>
+
+    <div id="assets">
+      <div class="item">
+        <div class="description">Cash on hand</div>
+        <div id="assets-cash" class="amount"></div>
+      </div>
+      <div class="item">
+        <div class="description">Investments</div>
+        <div id="assets-investments" class="amount"></div>
+      </div>
+      <div class="item">
+        <div class="description">Accounts receivable</div>
+        <div id="assets-accounts-receivable" class="amount"></div>
+      </div>
+      <div class="item total">
+        <div class="description">Total assets</div>
+        <div id="assets-total" class="amount"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2>Liabilities</h2>
+
+    <div id="liabilities">
+      <div class="item">
+        <div class="description">Debt</div>
+        <div id="liabilities-debt" class="amount"></div>
+      </div>
+      <div class="item">
+        <div class="description">Accounts payable</div>
+        <div id="liabilities-accounts-payable" class="amount"></div>
+      </div>
+      <div class="item total">
+        <div class="description">Total liabilities</div>
+        <div id="liabilities-total" class="amount"></div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}
 
 {% block js %}
