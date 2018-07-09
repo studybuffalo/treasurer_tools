@@ -1,3 +1,31 @@
+function updateTotal() {
+  // Get all the amount fields
+  const $amounts = $('[id*="-amount"]');
+  let amount = 0;
+
+  // Loop through and total all the values
+  $amounts.each((index, input) => {
+    amount += Number($(input).val());
+  });
+
+  // Get all the GST fields
+  const $gsts = $('[id*="-gst"]');
+  let gst = 0;
+
+  // Loop through and total all the values
+  $gsts.each((index, input) => {
+    gst += Number($(input).val());
+  });
+
+  // Calculate the total
+  const total = amount + gst;
+
+  // Update the spans
+  $('#sub-total-amount').text(toCurrency(amount));
+  $('#sub-total-gst').text(toCurrency(gst));
+  $('#total-amount').text(toCurrency(total));
+}
+
 function updateFinancialCode(yearSelect) {
   // Shows only financial codes for the selected budget year
   const $yearSelect = $(yearSelect);
@@ -53,16 +81,26 @@ function addItem() {
   const template = $('#item-template').html();
   const replacedTemplate = template.replace(/__prefix__/g, count);
 
-  // Add the replaced template after the last formset-row
-  $('#transaction-items').append(replacedTemplate);
+  // Add the new row before the sub-total row
+  $(replacedTemplate).insertBefore('#sub-total');
 
   // Update the form count
   $('[id$=TOTAL_FORMS').val(count + 1);
 }
 
 function addEventListenersToNewFormsetRow() {
-  // Get the last formset row (i.e. the added row)
-  const $lastRow = $('.transaction-item:last');
+  // Get the newly added row
+  const $lastRow = $('#sub-total').prev();
+
+  // Add listeners to the amount input
+  $lastRow.find('[id*="-amount"]').on('change keyup', () => {
+    updateTotal();
+  });
+
+  // Add listeners to the GST input
+  $('[id*="-gst"]').on('change keyup', () => {
+    updateTotal();
+  });
 
   // Cycle through each budget year select
   $lastRow.find('[id*="-budget_year"]').each((index, select) => {
@@ -78,6 +116,14 @@ function addEventListenersToNewFormsetRow() {
 }
 
 $(document).ready(() => {
+  $('[id*="-amount"]').on('change keyup', () => {
+    updateTotal();
+  });
+
+  $('[id*="-gst"]').on('change keyup', () => {
+    updateTotal();
+  });
+
   $('[id*="-budget_year"]').on('change', (e) => {
     resetFinancialCode(e.currentTarget);
     updateFinancialCode(e.currentTarget);
@@ -93,6 +139,9 @@ $(document).ready(() => {
   $('[id*="-budget_year"]').each((index, select) => {
     updateFinancialCode(select);
   });
+
+  // Calculate the totals
+  updateTotal();
 
   // Handles drag and drop attachment functionality
   $('#attachment-drop-zone').on('drop', (e) => {

@@ -6,6 +6,12 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 
   <style>
+    #transaction-items em {
+      display: inline-block;
+      font-size: 1.5rem;
+      width: 8rem;
+    }
+
     .transaction-item {
       display: grid;
       grid-gap: 1rem;
@@ -14,6 +20,10 @@
 
     .header {
       display: none;
+    }
+
+    #total, #sub-total {
+      font-weight: 700;
     }
 
     @media screen and (min-width: 768px) and (max-width: 1024px) {
@@ -32,6 +42,10 @@
 
     @media screen and (min-width: 1024px) {
       #transaction-items label {
+        display: none;
+      }
+
+      #transaction-items em {
         display: none;
       }
 
@@ -102,6 +116,10 @@
 
       .delete {
         grid-area: delete;
+        justify-self: end;
+      }
+
+      #total .description, #sub-total .description {
         justify-self: end;
       }
     }
@@ -238,11 +256,30 @@
               </div>
             {% endfor %}
           {% endwith %}
-        </fieldset>
 
-        <div class="add">
-          <button id="add-item">Add item</button>
-        </div>
+          <div id="sub-total" class="transaction-item">
+            <div class="description">SUB-TOTAL</div>
+            <div class="amount">
+              <em>Amount: </em>
+              <span id="sub-total-amount">$0.00</span>
+            </div>
+            <div class="gst">
+              <em>GST: </em>
+              <span id="sub-total-gst">$0.00</span>
+            </div>
+          </div>
+
+          <div id="total" class="transaction-item">
+              <div class="description">TOTAL</div>
+              <div class="gst">
+                <span id="total-amount">$0.00</span>
+              </div>
+          </div>
+
+          <div class="add">
+            <button id="add-item">Add item</button>
+          </div>
+        </fieldset>
 
         {{ form.item_formset.management_form }}
 
