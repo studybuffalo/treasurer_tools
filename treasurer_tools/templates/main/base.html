@@ -95,24 +95,7 @@
   <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/jquery.modal.min.js' %}"></script>
   <script src="https://cdn.ravenjs.com/3.26.2/raven.min.js" crossorigin="anonymous"></script>
-
-  <!-- Initialize raven monitoring -->
-  <script>
-    Raven.config("https://9399448340a14ab39198ade192bf8284@sentry.studybuffalo.com/2").install()
-  </script>
-
-  <!-- Message functionality -->
-  <script>
-    function handleMessages(data, level = 20) {
-      const $messageList = $('#messages');
-      const $item = $('<li></li>');
-
-      $item
-        .text(data)
-        .addClass(`level-${level}`)
-        .appendTo($messageList);
-    }
-  </script>
+  <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
 
   <!-- Activate side bar if user is authenticated -->
   {% if user.is_authenticated %}
