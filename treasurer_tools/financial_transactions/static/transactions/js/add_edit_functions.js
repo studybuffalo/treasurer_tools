@@ -38,8 +38,11 @@ function updateFinancialCode(yearSelect) {
 }
 
 function resetFinancialCode(yearSelect) {
-  const $fieldset = $(yearSelect).closest('fieldset');
-  $fieldset.find('[id*="-code"]').val('');
+  const $yearSelect = $(yearSelect);
+  const codeID = $yearSelect.attr('id').replace('budget_year', 'code');
+  const $codeSelect = $(`#${codeID}`);
+
+  $codeSelect.val('');
 }
 
 function addItem() {
