@@ -407,6 +407,53 @@ class CompiledForms(object):
             except KeyError:
                 pass
 
+    def compile_css(self):
+        """Generates CSS to accomodate variable form fields"""
+        # Initial column widths
+        width_add = ["9rem", "4fr", "8rem", "8rem"]
+        width_edit = ["9rem", "4fr", "8rem", "8rem"]
+
+        # Initial area names
+        area_add = ["date", "description", "amount", "gst"]
+        area_edit = ["date", "description", "amount", "gst"]
+
+        # Cycle through each financial code system to generate the css
+        system_details = []
+
+        for system in FinancialCodeSystem.objects.all():
+            # Add the widths
+            width_add.extend(("2fr", "2fr"))
+            width_edit.extend(("2fr", "2fr"))
+
+            # Add the area names
+            name_system = system.title.replace(" ", "_").lower()
+
+            name_year = "{}-year".format(name_system)
+            name_code = "{}-code".format(name_system)
+
+            area_add.extend((name_year, name_code))
+            area_edit.extend((name_year, name_code))
+
+            # Add the system details
+            system_details.append({
+                "label": system.title,
+                "css": name_system,
+                "year": name_year,
+                "code": name_code,
+            })
+
+        # Add the delete details for edit
+        width_edit.append("5rem")
+        area_edit.append("delete")
+
+        return {
+            "width_add": " ".join(width_add),
+            "width_edit": " ".join(width_edit),
+            "area_add": " ".join(area_add),
+            "area_edit": " ".join(area_edit),
+            "system_details": system_details,
+        }
+
     def __init__(self, transaction_type="EXPENSE", request_type="GET", data=None, files=None, **kwargs):
         self.transaction_type = "e" if transaction_type.upper() == "EXPENSE" else "r"
         self.request_type = request_type.upper()
@@ -414,6 +461,7 @@ class CompiledForms(object):
         self.files = files
         self.forms = self.assemble_forms(kwargs)
         self.empty_financial_code_form = self.assemble_empty_financial_code_form()
+        self.css = self.compile_css()
 
 class TransactionForm(forms.ModelForm):
     """Form to add and edit transactions"""

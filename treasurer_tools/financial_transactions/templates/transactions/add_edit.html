@@ -10,14 +10,10 @@
       display: grid;
       grid-gap: 1rem;
       grid-template-columns: 1fr;
-      grid-template-rows: auto;
     }
 
-    .header-date, .header-description, .header-amount, .header-gst, .header-delete,
-    {% for financial_code_form in forms.empty_financial_code_form %}.header-{{ financial_code_form.name|lower }}, .header-{{ financial_code_form.name|lower }}-year, .header-{{ financial_code_form.name|lower }}-code{% if forloop.last %}{% else %}, {% endif %}{% endfor %} {
+    .header {
       display: none;
-      font-size: 1.75rem;
-      font-weight: 700;
     }
 
     @media screen and (min-width: 768px) and (max-width: 1024px) {
@@ -51,72 +47,62 @@
         width: 9rem;
       }
 
-      .transaction-item {
+      {% if type == 'add' %}
+        .transaction-item {
+          grid-template-columns: {{ forms.css.width_add }};
+          grid-template-areas: "{{ forms.css.area_add }}";
+        }
+      {% else %}
+        .transaction-item {
+          grid-template-columns: {{ forms.css.width_edit }};
+          grid-template-areas: "{{ forms.css.area_edit }}";
+        }
+      {% endif %}
+
+      .header {
         display: grid;
-        grid-template-columns: 9rem 4fr 8rem 8rem {% for financial_code_form in forms.empty_financial_code_form %}2fr 2fr {% endfor %}{% if type == 'edit' %} 5rem;{% else %};{% endif %}
-        grid-template-rows: auto;
-        grid-template-areas:
-          "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }} header-{{ financial_code_form.name|lower }} {% endfor %}{% if type == 'edit' %}header-delete{% endif %}"
-          "header-date header-description header-amount header-gst {% for financial_code_form in forms.empty_financial_code_form %}header-{{ financial_code_form.name|lower }}-year header-{{ financial_code_form.name|lower }}-code {% endfor %}{% if type == 'edit' %}header-delete{% endif %}"
-          ". . . . . . . . {% if type == 'edit' %}.{% endif %}";
+        font-size: 1.75rem;
+        font-weight: 700;
       }
 
-      .header-date {
-        align-self: end;
-        display: block;
-        grid-area: header-date;
+      .date {
+        grid-area: date;
       }
 
-      .header-description {
-        align-self: end;
-        display: block;
-        grid-area: header-description;
+      .description {
+        grid-area: description;
       }
 
-      .header-amount {
-        align-self: end;
-        display: block;
-        grid-area: header-amount;
+      .amount {
+        grid-area: amount;
         justify-self: end;
       }
 
-      .header-gst {
-        align-self: end;
-        display: block;
-        grid-area: header-gst;
+      .gst {
+        grid-area: gst;
         justify-self: end;
       }
 
-      {% for financial_code_form in forms.empty_financial_code_form %}
-        .header-{{ financial_code_form.name|lower }} {
-          align-self: end;
-          display: block;
-          grid-area: header-{{ financial_code_form.name|lower }};
+      {% for system in forms.css.system_details %}
+        .{{ system.css }} {
+          grid-area: 1 / {{ system.year }} / 1 / {{ system.code }};
           justify-self: center;
         }
 
-        .header-{{ financial_code_form.name|lower }}-year {
-          align-self: end;
-          display: block;
-          grid-area: header-{{ financial_code_form.name|lower }}-year;
+        .{{ system.year }} {
+          grid-area: {{ system.year }};
+          justify-self: center;
         }
 
-        .header-{{ financial_code_form.name|lower }}-code {
-         align-self: end;
-          display: block;
-          grid-area: header-{{ financial_code_form.name|lower }}-code;
+        .{{ system.code }} {
+          grid-area: {{ system.code }};
+          justify-self: center;
         }
       {% endfor %}
 
-      .header-delete {
-        align-self: end;
-        display: block;
-        grid-area: header-delete;
+      .delete {
+        grid-area: delete;
         justify-self: end;
-      }
-
-      .add {
-        grid-area: add;
       }
     }
 
@@ -156,40 +142,46 @@
           <legend>Transaction Items</legend>
 
           <!-- Header for table view -->
+          <div class="transaction-item header">
+            {% for system in forms.css.system_details %}
+              <div class="{{ system.css }}">
+                {{ system.label }}
+              </div>
+            {% endfor %}
+          </div>
+
           {% with forms.forms.item_formset.empty_form as header %}
-            <div class="transaction-item">
-              <div class="header-date">
+            <div class="transaction-item header">
+              <div class="date">
                 {{ header.date_item.label }}
                 <div id="help-{{ header.date_item.auto_id }}" class="modal">{{  header.date_item.help_text }}</div>
                 <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help"></a>
               </div>
-              <div class="header-description">
+              <div class="description">
                 {{ header.description.label }}
                 <div id="help-{{ header.description.auto_id }}" class="modal">{{  header.description.help_text }}</div>
                 <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help"></a>
               </div>
-              <div class="header-amount">
+              <div class="amount">
                 {{ header.amount.label }}
                 <div id="help-{{ header.amount.auto_id }}" class="modal">{{  header.amount.help_text }}</div>
                 <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help"></a>
               </div>
-              <div class="header-gst">
+              <div class="gst">
                 {{ header.gst.label }}
                 <div id="help-{{ header.gst.auto_id }}" class="modal">{{  header.gst.help_text }}</div>
                 <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help"></a>
               </div>
 
-              {% with forms.empty_financial_code_form.0 as financial_code_form %}
-                <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
-                <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
-                <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
-              {% endwith %}
+              {% for system in forms.css.system_details %}
+                <div class="{{ system.year }}">
+                  Budget Year
+                </div>
 
-              {% with forms.empty_financial_code_form.1 as financial_code_form %}
-                <div class="header-{{ financial_code_form.name|lower }}">{{ financial_code_form.name }}</div>
-                <div class="header-{{ financial_code_form.name|lower }}-year">{{ financial_code_form.form.budget_year.label }}</div>
-                <div class="header-{{ financial_code_form.name|lower }}-code">{{ financial_code_form.form.code.label }}</div>
-              {% endwith %}
+                <div class="{{ system.code }}">
+                  Financial Code
+                </div>
+              {% endfor %}
 
               {% if type == 'edit' %}
                 <div class="header-delete">Delete</div>
