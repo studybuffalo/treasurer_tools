@@ -63,8 +63,13 @@
     {% endif %}
 
     <div class="options">
-      <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}" class="edit">Edit</a>
-      <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}" class="delete">Delete</a>
+      {% if transaction.transaction_type == "e" %}
+        <a href="{% url 'financial_transactions:edit' 'expense' transaction.id %}" class="edit">Edit</a>
+        <a href="{% url 'financial_transactions:delete' 'expense' transaction.id %}" class="delete">Delete</a>
+      {% else %}
+        <a href="{% url 'financial_transactions:edit' 'revenue' transaction.id %}" class="edit">Edit</a>
+        <a href="{% url 'financial_transactions:delete' 'revenue' transaction.id %}" class="delete">Delete</a>
+      {% endif %}
     </div>
   </div>
 {% endfor %}
