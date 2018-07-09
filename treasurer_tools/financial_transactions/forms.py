@@ -520,7 +520,7 @@ class FinancialCodeAssignmentForm(forms.Form):
         # Retrieve all the children BudgetYears entries
         budget_years = BudgetYear.objects.filter(
             financial_code_system=financial_code_system
-        )
+        ).order_by('-date_start')
 
         # Create a choice list with the budget_years
         budget_year_choices = []
