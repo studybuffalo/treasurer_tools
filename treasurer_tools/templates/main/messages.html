@@ -1,4 +1,4 @@
-<ul id="messages" class="message_list"></ul>
+<ul id="messages" class="message_list">
   {% for message in messages %}
     {% if message.level %}
       <li class="level-{{ message.level }}">{{ message }}</li>
