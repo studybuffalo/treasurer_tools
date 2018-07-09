@@ -177,22 +177,22 @@
               <div class="date">
                 {{ header.date_item.label }}
                 <div id="help-{{ header.date_item.auto_id }}" class="modal">{{  header.date_item.help_text }}</div>
-                <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help"></a>
+                <a href="#help-{{ header.date_item.auto_id }}" rel="modal:open" class="input-help" tabindex="100"></a>
               </div>
               <div class="description">
                 {{ header.description.label }}
                 <div id="help-{{ header.description.auto_id }}" class="modal">{{  header.description.help_text }}</div>
-                <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help"></a>
+                <a href="#help-{{ header.description.auto_id }}" rel="modal:open" class="input-help" tabindex="100"></a>
               </div>
               <div class="amount">
                 {{ header.amount.label }}
                 <div id="help-{{ header.amount.auto_id }}" class="modal">{{  header.amount.help_text }}</div>
-                <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help"></a>
+                <a href="#help-{{ header.amount.auto_id }}" rel="modal:open" class="input-help" tabindex="100"></a>
               </div>
               <div class="gst">
                 {{ header.gst.label }}
                 <div id="help-{{ header.gst.auto_id }}" class="modal">{{  header.gst.help_text }}</div>
-                <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help"></a>
+                <a href="#help-{{ header.gst.auto_id }}" rel="modal:open" class="input-help" tabindex="100"></a>
               </div>
 
               {% for system in forms.css.system_details %}
