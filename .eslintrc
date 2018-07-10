@@ -11,6 +11,6 @@
     "globals": {
         "Raven": true,
         "moment": true,
-        "handleMessages": true,
+        "handleMessages": true
     }
 }
