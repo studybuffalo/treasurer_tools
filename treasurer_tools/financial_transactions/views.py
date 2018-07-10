@@ -18,7 +18,7 @@ def dashboard(request):
 def request_transactions_list(request):
     """Retrieves list of transactions"""
     # Get all transactions
-    transactions = FinancialTransaction.objects.all()
+    transactions = FinancialTransaction.objects.all().order_by("-date_submitted")
 
     # Filter by type
     transaction_type = request.GET.get("transaction_type", "a")
