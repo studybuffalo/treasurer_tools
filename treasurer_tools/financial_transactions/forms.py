@@ -529,7 +529,7 @@ class FinancialCodeAssignmentForm(forms.Form):
             budget_year_choices.append((year.id, str(year)))
 
         # Create a choice list with the budget_years
-        financial_code_choices = [["", "---------"]]
+        groups_and_codes = []
 
         # Retrieve all the children FinancialCodeGroup entries
         for year in budget_years:
@@ -538,12 +538,18 @@ class FinancialCodeAssignmentForm(forms.Form):
             for group in groups:
                 code_list = []
 
-                codes = group.financialcode_set.all()
+                codes = group.financialcode_set.all().order_by("code")
 
                 for code in codes:
                     code_list.append((code.id, str(code)))
 
-                financial_code_choices.append([group.title, code_list])
+                groups_and_codes.append([group.title, code_list])
+
+        # Sort the groups by the first code in each group
+        sorted_groups_and_codes = sorted(groups_and_codes, key=lambda x: x[1][0][1])
+
+        # Create the final financial code choice list
+        financial_code_choices = [["", "---------"]] + sorted_groups_and_codes
 
         super(FinancialCodeAssignmentForm, self).__init__(*args, **kwargs)
 
