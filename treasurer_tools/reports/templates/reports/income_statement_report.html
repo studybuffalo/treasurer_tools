@@ -9,7 +9,7 @@
       </li>
 
     {% for code in revenue_codes %}
-      <li class="transaction" data-total="{{ code.total }}">
+      <li class="transaction" data-total="{{ code.total|default_if_none:'0.00' }}">
         <div class="code">
           <em>Code: </em>
           <span>{{ code.code }}</span>
@@ -20,7 +20,7 @@
         </div>
         <div class="total">
           <em>Total: </em>
-          <span>${{ code.total }}</span>
+          <span>${{ code.total|default_if_none:"0.00" }}</span>
         </div>
       </li>
     {% endfor %}
@@ -40,7 +40,7 @@
     </li>
 
     {% for code in expense_codes %}
-      <li class="transaction" data-total="{{ code.total }}">
+      <li class="transaction" data-total="{{ code.total|default_if_none:'0.00' }}">
         <div class="code">
           <em>Code: </em>
           <span>{{ code.code }}</span>
@@ -51,7 +51,7 @@
         </div>
         <div class="total">
           <em>Total: </em>
-          <span>${{ code.total }}</span>
+          <span>${{ code.total|default_if_none:"0.00" }}</span>
         </div>
       </li>
     {% endfor %}

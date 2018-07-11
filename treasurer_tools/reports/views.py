@@ -30,6 +30,7 @@ def income_statement_dashboard(request):
         "reports/income_statement.html",
         context={
             "financial_code_systems": FinancialCodeSystem.objects.all(),
+            "budget_years": BudgetYear.objects.all().order_by("financial_code_system", "date_start"),
         },
     )
 
@@ -40,14 +41,16 @@ def retrieve_income_statement(request):
     financial_code_system = request.GET.get("financial_code_system", None)
     date_start = request.GET.get("date_start", None)
     date_end = request.GET.get("date_end", None)
+    budget_year = request.GET.get("budget_year", None)
 
+    # If all values available for a date search
     if all([financial_code_system, date_start, date_end]):
         revenue_code_totals = FinancialCode.objects.values("code", "description").filter(
             Q(financial_code_group__budget_year__financial_code_system__id=financial_code_system)
             & Q(financial_code_group__type="r")
             & Q(financialcodematch__item__transaction__date_submitted__gte=date_start)
             & Q(financialcodematch__item__transaction__date_submitted__lte=date_end)
-        ).annotate(
+        ).order_by("code").annotate(
             total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
         )
 
@@ -56,7 +59,22 @@ def retrieve_income_statement(request):
             & Q(financial_code_group__type="e")
             & Q(financialcodematch__item__transaction__date_submitted__gte=date_start)
             & Q(financialcodematch__item__transaction__date_submitted__lte=date_end)
-        ).annotate(
+        ).order_by("code").annotate(
+            total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
+        )
+    # If all values available for a budget year search
+    elif all([financial_code_system, budget_year]):
+        revenue_code_totals = FinancialCode.objects.values("code", "description").filter(
+            Q(financial_code_group__budget_year__id=budget_year)
+            & Q(financial_code_group__type="r")
+        ).order_by("code").annotate(
+            total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
+        )
+
+        expense_code_totals = FinancialCode.objects.values("code", "description").filter(
+            Q(financial_code_group__budget_year__id=budget_year)
+            & Q(financial_code_group__type="e")
+        ).order_by("code").annotate(
             total=Sum("financialcodematch__item__amount") + Sum("financialcodematch__item__gst")
         )
     else:

@@ -88,23 +88,35 @@
 
     <div>
       <label>Reporting Period</label>
-      <select id="date-predefined">
+      <select id="reporting-period">
         <option value="last 30 days">Last 30 days</option>
         <option value="last year">Last year</option>
         <option value="year-to-date">Year-to-date</option>
+        <option value="budget year">Budget year</option>
         <option value="custom">Custom range</option>
       </select>
     </div>
 
-    <div>
+    <div class="date-range">
       <label>Start date:</label>
       <input type="date" id="date-start">
     </div>
 
-    <div>
+    <div class="date-range">
       <label>End date:</label>
       <input type="date" id="date-end">
     </div>
+
+     <div id="budget-year-div">
+       <select id="budget-year">
+          {% for year in budget_years %}
+            {% if forloop.first %}<option value="">----------</option>{% endif %}
+            <option data-system-id="{{ year.financial_code_system.id }}" value="{{ year.id }}">
+              {{ year }}
+            </option>
+          {% endfor %}
+       </select>
+     </div>
   </div>
 
   <div id="report"></div>
