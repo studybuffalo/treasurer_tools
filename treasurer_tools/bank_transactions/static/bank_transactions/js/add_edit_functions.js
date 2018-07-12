@@ -24,7 +24,7 @@ $(document).ready(() => {
   $('#attachment-drop-zone').on('drop', (e) => {
     e.preventDefault();
 
-    const attachmentInput = document.getElementById('id_newattachment-attachment_files');
+    const attachmentInput = document.getElementById('id_files');
 
     // Add files to the attachment input
     attachmentInput.files = e.originalEvent.dataTransfer.files;
