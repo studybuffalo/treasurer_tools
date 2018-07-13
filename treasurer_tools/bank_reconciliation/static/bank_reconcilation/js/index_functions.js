@@ -204,6 +204,9 @@ function handleTransactionClick(e) {
 
 function addTransactions(data) {
   if (data.type === 'financial') {
+    // Clear any data already in list
+    $('#financial-transactions').empty();
+
     $.each(data.data, (index, transaction) => {
       // Add transaction date
       const $dateDiv = $('<div></div>');
@@ -286,6 +289,9 @@ function addTransactions(data) {
       }
     });
   } else if (data.type === 'bank') {
+    // Clear any data already in list
+    $('#bank-transactions').empty();
+
     $.each(data.data, (index, transaction) => {
       // Add transaction date
       const $dateDiv = $('<div></div>');
