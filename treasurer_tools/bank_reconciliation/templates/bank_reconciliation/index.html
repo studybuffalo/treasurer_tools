@@ -56,6 +56,15 @@
         padding: 0.5rem;
       }
 
+    .text-container {
+      padding: 2rem 0 2rem 0.5rem;;
+    }
+
+      .text-container label {
+        display: block;
+        font-weight: 700;
+      }
+
     .transactions {
       border: 1px solid rgb(69, 69, 69);
       list-style: none;
@@ -132,7 +141,7 @@
     @media screen and (min-width: 768px) {
       .filters {
         flex-direction: row;
-        max-width: 800px;
+        max-width: 900px;
       }
 
       .status-container {
@@ -143,6 +152,16 @@
           display: inline-block;
           vertical-align: top;
         }
+
+    .text-container {
+      padding: 0 0 0 2rem;
+    }
+
+      .text-container label {
+        display: inline-block;
+        vertical-align: top;
+      }
+
 
       .transactions em {
         display: none;
@@ -240,6 +259,11 @@
         <li>All transactions</li>
       </ul>
     </div>
+
+    <div class="text-container">
+      <label>Text:</label>
+      <input type="text" id="financial-text-filter">
+    </div>
   </div>
 
   <div>
@@ -276,6 +300,11 @@
         <li>Reconciled</li>
         <li>All transactions</li>
       </ul>
+    </div>
+
+    <div class="text-container">
+      <label>Text:</label>
+      <input type="text" id="bank-text-filter">
     </div>
   </div>
 

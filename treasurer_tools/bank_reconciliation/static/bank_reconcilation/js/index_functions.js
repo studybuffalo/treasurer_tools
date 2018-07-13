@@ -271,6 +271,9 @@ function addTransactions(data) {
         .attr('data-id', transaction.id)
         .attr('data-type', transaction.type.toUpperCase())
         .attr('data-total', transaction.total)
+        .attr('data-date', transaction.date)
+        .attr('data-description', transaction.description.toUpperCase())
+        .attr('data-amount', transaction.total)
         .on('click', handleTransactionClick)
         .append($dateDiv)
         .append($typeDiv)
@@ -349,6 +352,10 @@ function addTransactions(data) {
         .attr('data-id', transaction.id)
         .attr('data-amount-debit', transaction.debit)
         .attr('data-amount-credit', transaction.credit)
+        .attr('data-date', transaction.date)
+        .attr('data-description', transaction.description.toUpperCase())
+        .attr('data-amount', `${transaction.debit} ${transaction.credit}`)
+        .on('click', handleTransactionClick)
         .addClass('bank-item')
         .on('click', handleTransactionClick)
         .append($dateDiv)
@@ -411,6 +418,37 @@ function updateReconciledFilter(e, $transactionList) {
   $transactionList
     .removeClass('unreconciled reconciled')
     .addClass(newClass);
+}
+
+function filterResults(input, $list) {
+  // Get the text to filter against
+  const filterText = $(input.target).val().toUpperCase();
+
+  // Get the list items to search through
+  const $items = $list.find('.financial-item, .bank-item');
+
+  $items.each((index, item) => {
+    const $item = $(item);
+
+    // Hide the item by default
+    $item.addClass('hide');
+
+    // Check the values to compare
+    const itemDate = $item.attr('data-date');
+    const itemDescription = $item.attr('data-description');
+    const itemAmount = $item.attr('data-amount');
+
+    // Check if there are any matches
+    if (
+      itemDate.indexOf(filterText) !== -1
+      || itemDescription.indexOf(filterText) !== -1
+      || itemAmount.indexOf(filterText) !== -1
+    ) {
+      $item.removeClass('hide');
+    }
+
+    return true;
+  });
 }
 
 function matchTransactions() {
@@ -540,6 +578,14 @@ $(document).ready(() => {
       $('#bank-start-date').val(),
       $('#bank-end-date').val(),
     );
+  });
+
+  $('#financial-text-filter').on('keyup', (e) => {
+    filterResults(e, $('#financial-transactions'));
+  });
+
+  $('#bank-text-filter').on('keyup', (e) => {
+    filterResults(e, $('#bank-transactions'));
   });
 
   $('#financial-reconciled-filter li').on('click', (e) => {
