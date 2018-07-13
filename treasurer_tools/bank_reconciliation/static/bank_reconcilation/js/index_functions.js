@@ -492,6 +492,14 @@ function matchTransactions() {
       // Add reconciled filters to each item
       $selectedFinancialTransactions.addClass('reconciled');
       $selectedBankTransactions.addClass('reconciled');
+
+      // Remove the selected filter
+      $selectedFinancialTransactions.removeClass('selected');
+      $selectedBankTransactions.removeClass('selected');
+
+      // Update the totals and update messages
+      checkForSelectionMismatch();
+      updateTotal();
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
@@ -541,6 +549,14 @@ function unmatchTransactions() {
       // Remove the reconciled filter
       $selectedFinancialTransactions.removeClass('reconciled');
       $selectedBankTransactions.removeClass('reconciled');
+
+      // Remove the selected filter
+      $selectedFinancialTransactions.removeClass('selected');
+      $selectedBankTransactions.removeClass('selected');
+
+      // Update the totals and update messages
+      checkForSelectionMismatch();
+      updateTotal();
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
