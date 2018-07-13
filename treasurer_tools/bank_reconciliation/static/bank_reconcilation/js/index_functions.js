@@ -355,7 +355,6 @@ function addTransactions(data) {
         .attr('data-date', transaction.date)
         .attr('data-description', transaction.description.toUpperCase())
         .attr('data-amount', `${transaction.debit} ${transaction.credit}`)
-        .on('click', handleTransactionClick)
         .addClass('bank-item')
         .on('click', handleTransactionClick)
         .append($dateDiv)
