@@ -49,7 +49,7 @@ def return_transactions_as_json(request):
         try:
             transactions = FinancialTransaction.objects.filter(
                 Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
-            )
+            ).order_by("-date_submitted")
         except ValidationError:
             json_data["errors"] = {
                 "date_start": "Provided date(s) not in valid format ('yyyy-mm-dd').",
@@ -65,7 +65,7 @@ def return_transactions_as_json(request):
                 "id": transaction.id,
                 "date": transaction.date_submitted,
                 "type": transaction.get_transaction_type_display().title(),
-                "description": transaction.memo,
+                "description": "{} - {}".format(transaction.payee_payer, transaction.memo),
                 "total": transaction.total,
                 "reconciled": transaction.rm_financial_transaction.all().exists()
             })
@@ -77,7 +77,7 @@ def return_transactions_as_json(request):
         try:
             transactions = BankTransaction.objects.filter(
                 Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
-            )
+            ).order_by("-date_transaction")
         except ValidationError:
             json_data["errors"] = {
                 "date_start": "Provided date(s) not in valid format ('yyyy-mm-dd').",
@@ -91,7 +91,9 @@ def return_transactions_as_json(request):
             transaction_list.append({
                 "id": transaction.id,
                 "date": transaction.date_transaction,
-                "description": transaction.description_user if transaction.description_user else transaction.description_bank,
+                "description": (
+                    transaction.description_user if transaction.description_user else transaction.description_bank
+                ),
                 "debit": transaction.amount_debit,
                 "credit": transaction.amount_credit,
                 "reconciled": transaction.rm_bank_transaction.all().exists()
