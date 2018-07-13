@@ -488,6 +488,10 @@ function matchTransactions() {
     },
     success: () => {
       handleMessages('Transactions matched');
+
+      // Add reconciled filters to each item
+      $selectedFinancialTransactions.addClass('reconciled');
+      $selectedBankTransactions.addClass('reconciled');
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
@@ -533,6 +537,10 @@ function unmatchTransactions() {
     },
     success: () => {
       handleMessages('Transactions unmatched');
+
+      // Remove the reconciled filter
+      $selectedFinancialTransactions.removeClass('reconciled');
+      $selectedBankTransactions.removeClass('reconciled');
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
