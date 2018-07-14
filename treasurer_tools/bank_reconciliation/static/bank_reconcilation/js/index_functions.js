@@ -409,14 +409,40 @@ function clearUnreconciledTransactions(transactionType) {
 }
 
 function addReconciledTransactions(data) {
-  return data;
+  // Clear any data already in list
+  const $reconciledList = $('#reconciled-transactions');
+  $reconciledList.empty();
+
+  $.each(data, (index, group) => {
+    // Add transaction date
+    const $testDiv = $('<div></div>');
+    $testDiv.addClass('date');
+
+    const $testEm = $('<em></em>');
+    $testEm
+      .text('Test: ')
+      .appendTo($testDiv);
+
+    const $test = $('<span></span>');
+    $test
+      .text(group.financial_transactions[0].description)
+      .appendTo($testDiv);
+
+    const $li = $('<li></li>');
+    $li
+      .addClass('match-item')
+      .attr('data-id', group.id)
+      .on('click', handleTransactionClick)
+      .append($testDiv)
+      .appendTo($reconciledList);
+  });
 }
 
 function retrieveReconciledTransactions() {
-  const financialStartDate = $('financial-start-date').val();
-  const financialEndDate = $('financial-end-date').val();
-  const bankStartDate = $('bank-start-date').val();
-  const bankEndDate = $('bank-end-date').val();
+  const financialStartDate = $('#financial-start-date').val();
+  const financialEndDate = $('#financial-end-date').val();
+  const bankStartDate = $('#bank-start-date').val();
+  const bankEndDate = $('#bank-end-date').val();
 
   $.ajax({
     url: 'retrieve-matches/',
@@ -430,7 +456,23 @@ function retrieveReconciledTransactions() {
       bank_date_end: bankEndDate,
     },
     success: (responseData) => {
-      addReconciledTransactions(responseData);
+      if (responseData.errors.length) {
+        // Clear the error message list
+        const $messages = $('#messages');
+        $messages.empty();
+
+        // Display the returned error messages
+        $(responseData.errors).each((index, error) => {
+          // Iterate through each returned object
+          Object.keys(error).forEach((key) => {
+            // Generate error message
+            handleMessages(error[key], 30);
+          });
+        });
+      } else {
+        // Successful transaction - generate DOM
+        addReconciledTransactions(responseData.data);
+      }
     },
     error: (jqXHR, status, error) => {
       handleMessages(

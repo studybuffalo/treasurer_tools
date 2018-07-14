@@ -1,13 +1,11 @@
 """Objects and functions supporting bank_transactions app"""
 import json
 
+from bank_reconciliation.models import ReconciliationMatch, MatchGroup
+from bank_transactions.models import BankTransaction
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-
-from bank_transactions.models import BankTransaction
 from financial_transactions.models import FinancialTransaction
-
-from bank_reconciliation.models import ReconciliationMatch
 
 
 def return_transactions_as_json(request):
@@ -44,11 +42,19 @@ def return_transactions_as_json(request):
 
         return json_data
 
-    # Retrieves all financial transactions between the specified dates
+    # Retrieves all unreconciled financial transactions between the specified dates
     if transaction_type == "financial":
         try:
+            # Get list of all reconciled financial transactions
+            reconciled_transactions = ReconciliationMatch.objects.all().values_list(
+                'financial_transaction__id', flat=True
+            )
+
             transactions = FinancialTransaction.objects.filter(
-                Q(date_submitted__gte=date_start) & Q(date_submitted__lte=date_end)
+                Q(date_submitted__gte=date_start)
+                & Q(date_submitted__lte=date_end)
+            ).exclude(
+                Q(id__in=reconciled_transactions)
             ).order_by("-date_submitted")
         except ValidationError:
             json_data["errors"] = {
@@ -67,16 +73,20 @@ def return_transactions_as_json(request):
                 "type": transaction.get_transaction_type_display().title(),
                 "description": "{} - {}".format(transaction.payee_payer, transaction.memo),
                 "total": transaction.total,
-                "reconciled": transaction.rm_financial_transaction.all().exists()
             })
 
         json_data["data"] = transaction_list
 
-    # Retrieve all bank transactions between the specified dates
+    # Retrieve all unreconciled bank transactions between the specified dates
     elif transaction_type == "bank":
         try:
+            # Get list of all reconciled bank transactions
+            reconciled_transactions = ReconciliationMatch.objects.all().values_list('bank_transaction__id', flat=True)
+
             transactions = BankTransaction.objects.filter(
                 Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
+            ).exclude(
+                Q(id__in=reconciled_transactions)
             ).order_by("-date_transaction")
         except ValidationError:
             json_data["errors"] = {
@@ -96,11 +106,102 @@ def return_transactions_as_json(request):
                 ),
                 "debit": transaction.amount_debit,
                 "credit": transaction.amount_credit,
-                "reconciled": transaction.rm_bank_transaction.all().exists()
             })
 
         json_data["data"] = transaction_list
 
+    return json_data
+
+def return_matches_as_json(request):
+    """Returns bank and financial transactions as JSON data"""
+    # The blank json_data variable to return
+    json_data = {
+        "data": [],
+        "errors": [],
+    }
+
+    # Collect the variables from the GET request
+    financial_date_start = request.GET.get("financial_date_start", None)
+    financial_date_end = request.GET.get("financial_date_end", None)
+    bank_date_start = request.GET.get("bank_date_start", None)
+    bank_date_end = request.GET.get("bank_date_end", None)
+
+    # Checks that valid dates were provided
+    if not financial_date_start:
+        json_data["errors"].append({"financial_date_start": "Must specify financial start date."})
+
+    if not financial_date_end:
+        json_data["errors"].append({"financial_date_end": "Must specify financial end date."})
+
+    if not bank_date_start:
+        json_data["errors"].append({"bank_date_start": "Must specify bank start date."})
+
+    if not bank_date_end:
+        json_data["errors"].append({"bank_date_end": "Must specify bank end date."})
+
+    if json_data["errors"]:
+        return json_data
+
+    # Retrieve all the matches transactions that meet either date range
+    try:
+        # Get all the financial transactions in the specified date range
+        financial_transactions = FinancialTransaction.objects.filter(
+            Q(date_submitted__gte=financial_date_start)
+            & Q(date_submitted__lte=financial_date_end)
+        )
+
+        # Get all the bank transactions in the specified date range
+        bank_transactions = BankTransaction.objects.filter(
+            Q(date_transaction__gte=bank_date_start)
+            & Q(date_transaction__lte=bank_date_end)
+        )
+
+        # Get all the Match Groups containing above transactions
+        groups = ReconciliationMatch.objects.filter(
+            Q(financial_transaction__in=financial_transactions)
+            | Q(bank_transaction__in=bank_transactions)
+        ).values("group").distinct()
+    except ValidationError:
+        json_data["errors"].append({"dates": "Provided date(s) not in valid format ('yyyy-mm-dd')."})
+
+        return json_data
+
+    # Cycle through each group and assemble data to return
+    group_data = []
+
+    for group in groups:
+        group_id = group["group"]
+        financial_transactions = []
+        bank_transactions = []
+
+        for match in MatchGroup.objects.get(id=group_id).reconciliationmatch_set.all():
+            financial_transactions.append({
+                "date": match.financial_transaction.date_submitted,
+                "type": match.financial_transaction.get_transaction_type_display().title(),
+                "description": "{} - {}".format(
+                    match.financial_transaction.payee_payer, match.financial_transaction.memo
+                ),
+                "total": match.financial_transaction.total,
+            })
+
+            bank_transactions.append({
+                "date": match.bank_transaction.date_transaction,
+                "description": (
+                    match.bank_transaction.description_user
+                    if match.bank_transaction.description_user
+                    else match.bank_transaction.description_bank
+                ),
+                "debit": match.bank_transaction.amount_debit,
+                "credit": match.bank_transaction.amount_credit,
+            })
+
+        group_data.append({
+            "id": group_id,
+            "financial_transactions": financial_transactions,
+            "bank_transactions": bank_transactions,
+        })
+
+    json_data["data"] = group_data
     return json_data
 
 class BankReconciliation(object):

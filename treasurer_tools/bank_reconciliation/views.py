@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .utils import return_transactions_as_json, BankReconciliation
+from .utils import return_transactions_as_json, return_matches_as_json, BankReconciliation
 
 
 @login_required
@@ -39,6 +39,12 @@ def match_transactions(request):
         "success": reconciliation.success,
         "errors": reconciliation.errors,
     })
+
+@login_required
+def retrieve_matches(request):
+    json_data = return_matches_as_json(request)
+
+    return JsonResponse(json_data)
 
 @login_required
 def unmatch_transactions(request):
