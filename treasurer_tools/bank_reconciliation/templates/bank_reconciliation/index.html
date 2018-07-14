@@ -4,6 +4,29 @@
 
 {% block styles %}
   <style>
+    #reconciled-status-buttons button {
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      padding: 1rem;
+      font-size: 2rem;
+      transition: all ease-in-out 0.4s;
+    }
+
+      #reconciled-status-buttons button:hover {
+        background-color: rgb(150, 150, 150);
+      }
+
+      #reconciled-status-buttons button.selected {
+        background-color: rgb(40, 120, 200);
+        color: rgb(255, 255, 255);
+      }
+
+        #reconciled-status-buttons button.selected:hover {
+          background-color: rgb(21, 64, 106);
+        }
+
+
     .filters {
       display: flex;
       flex-direction: column;
@@ -246,15 +269,7 @@
 {% block content %}
   <h1>Banking Reconciliation</h1>
 
-  <ul id="messages" class="message_list">
-    {% for message in messages %}
-      {% if message.level %}
-        <li class="level_{{ message.level }}">{{ message }}</li>
-      {% else %}
-        <li>{{ message }}</li>
-      {% endif %}
-    {% endfor %}
-  </ul>
+  {% include 'main/messages.html' %}
 
   <div id="reconciled-status-buttons">
     <button id="button-reconcile-transactions" class="selected">Reconcile transactions</button>
@@ -354,6 +369,7 @@
   </div>
 
   <div class="unreconcile-div hide">
+    <ul id="reconciled-transactions"></ul>
 
   </div>
 

@@ -1,16 +1,3 @@
-function handleMessages(data, error = false) {
-  // Adds provided data to the message list
-  const $messageList = $('#messages');
-  const $item = $('<li></li>');
-  $item
-    .text(data)
-    .appendTo($messageList);
-
-  if (error) {
-    $item.addClass('level_50');
-  }
-}
-
 function setInitialDates() {
   const today = new Date();
   const year = today.getFullYear();
@@ -116,7 +103,7 @@ function checkForSelectionMismatch() {
   if (errors.mismatchExpenseRevenue) {
     $messages.append(
       $('<li></li>')
-        .addClass('level_30')
+        .addClass('level-30')
         .text('Warning: you have both expense and revenue financial transactions selected.'),
     );
   }
@@ -124,7 +111,7 @@ function checkForSelectionMismatch() {
   if (errors.mismatchDebitCredit) {
     $messages.append(
       $('<li></li>')
-        .addClass('level_30')
+        .addClass('level-30')
         .text('Warning: you have both debit and credit banking transactions selected.'),
     );
   }
@@ -132,7 +119,7 @@ function checkForSelectionMismatch() {
   if (errors.mismatchExpenseCredit) {
     $messages.append(
       $('<li></li>')
-        .addClass('level_30')
+        .addClass('level-30')
         .text('Warning: you have both expense financial transactions and credit bank transactions selected.'),
     );
   }
@@ -140,13 +127,13 @@ function checkForSelectionMismatch() {
   if (errors.mismatchRevenueDebit) {
     $messages.append(
       $('<li></li>')
-        .addClass('level_30')
+        .addClass('level-30')
         .text('Warning: you have both revenue financial transactions and debit bank transactions selected.'),
     );
   }
 }
 
-function updateTotal() {
+function updateUnreconciledTotal() {
   // Get all selected financial transaction
   const $financialTransactions = $('#financial-transactions .selected');
   const financialLength = $financialTransactions.length;
@@ -219,10 +206,10 @@ function handleTransactionClick(e) {
   checkForSelectionMismatch();
 
   // Update totals
-  updateTotal();
+  updateUnreconciledTotal();
 }
 
-function addTransactions(data) {
+function addUnreconciledTransactions(data) {
   if (data.type === 'financial') {
     // Clear any data already in list
     $('#financial-transactions').empty();
@@ -284,7 +271,9 @@ function addTransactions(data) {
         .text(`$${transaction.total}`)
         .appendTo($amountDiv);
 
-      if (transaction.type.toUpperCase() === 'EXPENSE') {
+      if (
+        (transaction.type.toUpperCase() === 'EXPENSE' && transaction.total > 0)
+        || (transaction.type.toUpperCase() === 'REVENUE' && transaction.total < 0)) {
         $amount.addClass('negative');
       }
 
@@ -303,10 +292,6 @@ function addTransactions(data) {
         .append($descriptionDiv)
         .append($amountDiv)
         .appendTo($('#financial-transactions'));
-
-      if (transaction.reconciled) {
-        $li.addClass('reconciled');
-      }
     });
   } else if (data.type === 'bank') {
     // Clear any data already in list
@@ -388,15 +373,11 @@ function addTransactions(data) {
         .append($debitDiv)
         .append($creditDiv)
         .appendTo($('#bank-transactions'));
-
-      if (transaction.reconciled) {
-        $li.addClass('reconciled');
-      }
     });
   }
 }
 
-function retrieveTransactions(transactionType, startDate, endDate) {
+function retrieveUnreconciledTransactions(transactionType, startDate, endDate) {
   $.ajax({
     url: 'retrieve-transactions/',
     method: 'GET',
@@ -408,15 +389,18 @@ function retrieveTransactions(transactionType, startDate, endDate) {
       date_end: endDate,
     },
     success: (responseData) => {
-      addTransactions(responseData);
+      addUnreconciledTransactions(responseData);
     },
     error: (jqXHR, status, error) => {
-      handleMessages(`${status} ${error}`);
+      handleMessages(
+        `${jqXHR.status} ${jqXHR.statusText}: ${status} ${error}`,
+        30,
+      );
     },
   });
 }
 
-function clearTransactions(transactionType) {
+function clearUnreconciledTransactions(transactionType) {
   if (transactionType === 'financial') {
     $('#financial-transactions').empty();
   } else if (transactionType === 'bank') {
@@ -424,35 +408,53 @@ function clearTransactions(transactionType) {
   }
 }
 
-function updateReconciledFilter(e, $transactionList) {
-  const $li = $(e.currentTarget);
-  const $parentList = $li.closest('ul');
-  const $allLi = $parentList.find('li');
-
-  $allLi.removeClass('selected');
-  $li.addClass('selected');
-
-  let newClass = '';
-
-  if ($li.text() === 'Unreconciled') {
-    newClass = 'unreconciled';
-  } else if ($li.text() === 'Reconciled') {
-    newClass = 'reconciled';
-  }
-
-  $transactionList
-    .removeClass('unreconciled reconciled')
-    .addClass(newClass);
+function addReconciledTransactions(data) {
+  return data;
 }
 
-function filterResults(input, $list) {
+function retrieveReconciledTransactions() {
+  const financialStartDate = $('financial-start-date').val();
+  const financialEndDate = $('financial-end-date').val();
+  const bankStartDate = $('bank-start-date').val();
+  const bankEndDate = $('bank-end-date').val();
+
+  $.ajax({
+    url: 'retrieve-matches/',
+    method: 'GET',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: {
+      financial_date_start: financialStartDate,
+      financial_date_end: financialEndDate,
+      bank_date_start: bankStartDate,
+      bank_date_end: bankEndDate,
+    },
+    success: (responseData) => {
+      addReconciledTransactions(responseData);
+    },
+    error: (jqXHR, status, error) => {
+      handleMessages(
+        `${jqXHR.status} ${jqXHR.statusText}: ${status} ${error}`,
+        30,
+      );
+    },
+  });
+}
+
+function clearReconciledTransactions() {
+  $('#reconciled-transactions').empty();
+}
+
+function filterResults() {
+  // FILTER THE UNRECONCILED FINANCIAL TRANSACTIONS
   // Get the text to filter against
-  const filterText = $(input.target).val().toUpperCase();
+  const financialFilterText = $('#financial-text-filter').val().toUpperCase();
 
-  // Get the list items to search through
-  const $items = $list.find('.financial-item, .bank-item');
+  // Get the items to filter
+  const $financialItems = $('.financial-item');
 
-  $items.each((index, item) => {
+  // Cycle through each item to see if filter applies
+  $financialItems.each((index, item) => {
     const $item = $(item);
 
     // Hide the item by default
@@ -465,14 +467,66 @@ function filterResults(input, $list) {
 
     // Check if there are any matches
     if (
-      itemDate.indexOf(filterText) !== -1
-      || itemDescription.indexOf(filterText) !== -1
-      || itemAmount.indexOf(filterText) !== -1
+      itemDate.indexOf(financialFilterText) !== -1
+      || itemDescription.indexOf(financialFilterText) !== -1
+      || itemAmount.indexOf(financialFilterText) !== -1
     ) {
       $item.removeClass('hide');
     }
+  });
 
-    return true;
+  // FILTER THE UNRECONCILED FINANCIAL TRANSACTIONS
+  // Get the text to filter against
+  const bankFilterText = $('#bank-text-filter').val().toUpperCase();
+
+  // Get the items to filter
+  const $bankItems = $('.bank-item');
+
+  // Cycle through each item to see if filter applies
+  $bankItems.each((index, item) => {
+    const $item = $(item);
+
+    // Hide the item by default
+    $item.addClass('hide');
+
+    // Check the values to compare
+    const itemDate = $item.attr('data-date');
+    const itemDescription = $item.attr('data-description');
+    const itemAmount = $item.attr('data-amount');
+
+    // Check if there are any matches
+    if (
+      itemDate.indexOf(bankFilterText) !== -1
+      || itemDescription.indexOf(bankFilterText) !== -1
+      || itemAmount.indexOf(bankFilterText) !== -1
+    ) {
+      $item.removeClass('hide');
+    }
+  });
+
+  // FILTER THE RECONCILED TRANSACTIONS
+  const $reconciledItems = $('.matched-item');
+
+  // Cycle through each item to see if filter applies
+  $reconciledItems.each((index, item) => {
+    const $item = $(item);
+
+    // Hide the item by default
+    $item.addClass('hide');
+
+    // Check the values to compare
+    // const itemDate = $item.attr('data-date');
+    // const itemDescription = $item.attr('data-description');
+    // const itemAmount = $item.attr('data-amount');
+
+    // // Check if there are any matches
+    // if (
+    //   itemDate.indexOf(bankFilterText) !== -1
+    //   || itemDescription.indexOf(bankFilterText) !== -1
+    //   || itemAmount.indexOf(bankFilterText) !== -1
+    // ) {
+    //   $item.removeClass('hide');
+    // }
   });
 }
 
@@ -525,7 +579,7 @@ function matchTransactions() {
 
       // Update the totals and update messages
       checkForSelectionMismatch();
-      updateTotal();
+      updateUnreconciledTotal();
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
@@ -582,7 +636,6 @@ function unmatchTransactions() {
 
       // Update the totals and update messages
       checkForSelectionMismatch();
-      updateTotal();
     },
     error: (jqXHR, status, error) => {
       handleMessages(`${status} ${error}`, true);
@@ -599,55 +652,55 @@ $(document).ready(() => {
   });
 
   $('#financial-start-date').on('change', () => {
-    clearTransactions('financial');
-    retrieveTransactions(
+    clearUnreconciledTransactions('financial');
+    retrieveUnreconciledTransactions(
       'financial',
       $('#financial-start-date').val(),
       $('#financial-end-date').val(),
     );
+    clearReconciledTransactions();
+    retrieveReconciledTransactions();
   });
 
   $('#financial-end-date').on('change', () => {
-    clearTransactions('financial');
-    retrieveTransactions(
+    clearUnreconciledTransactions('financial');
+    retrieveUnreconciledTransactions(
       'financial',
       $('#financial-start-date').val(),
       $('#financial-end-date').val(),
     );
+    clearReconciledTransactions();
+    retrieveReconciledTransactions();
   });
 
   $('#bank-start-date').on('change', () => {
-    clearTransactions('bank');
-    retrieveTransactions(
+    clearUnreconciledTransactions('bank');
+    retrieveUnreconciledTransactions(
       'bank',
       $('#bank-start-date').val(),
       $('#bank-end-date').val(),
     );
+    clearReconciledTransactions();
+    retrieveReconciledTransactions();
   });
 
   $('#bank-end-date').on('change', () => {
-    clearTransactions('bank');
-    retrieveTransactions(
+    clearUnreconciledTransactions('bank');
+    retrieveUnreconciledTransactions(
       'bank',
       $('#bank-start-date').val(),
       $('#bank-end-date').val(),
     );
+    clearReconciledTransactions();
+    retrieveReconciledTransactions();
   });
 
-  $('#financial-text-filter').on('keyup', (e) => {
-    filterResults(e, $('#financial-transactions'));
+  $('#financial-text-filter').on('keyup', () => {
+    filterResults();
   });
 
-  $('#bank-text-filter').on('keyup', (e) => {
-    filterResults(e, $('#bank-transactions'));
-  });
-
-  $('#financial-reconciled-filter li').on('click', (e) => {
-    updateReconciledFilter(e, $('#financial-transactions'));
-  });
-
-  $('#bank-reconciled-filter li').on('click', (e) => {
-    updateReconciledFilter(e, $('#bank-transactions'));
+  $('#bank-text-filter').on('keyup', () => {
+    filterResults();
   });
 
   $('#match').on('click', () => {
@@ -658,18 +711,20 @@ $(document).ready(() => {
     unmatchTransactions();
   });
 
-  retrieveTransactions(
+  retrieveUnreconciledTransactions(
     'financial',
     $('#financial-start-date').val(),
     $('#financial-end-date').val(),
   );
 
-  retrieveTransactions(
+  retrieveUnreconciledTransactions(
     'bank',
     $('#bank-start-date').val(),
     $('#bank-end-date').val(),
   );
 
+  retrieveReconciledTransactions();
+
   // Run initial total calculation
-  updateTotal();
+  updateUnreconciledTotal();
 });
