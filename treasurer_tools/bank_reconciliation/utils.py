@@ -1,7 +1,7 @@
 """Objects and functions supporting bank_transactions app"""
 import json
 
-from bank_reconciliation.models import ReconciliationMatch, MatchGroup
+from bank_reconciliation.models import ReconciliationMatch, ReconciliationGroup
 from bank_transactions.models import BankTransaction
 from django.core.exceptions import ValidationError
 from django.db.models import Q
@@ -174,7 +174,7 @@ def return_matches_as_json(request):
         financial_transactions = []
         bank_transactions = []
 
-        for match in MatchGroup.objects.get(id=group_id).reconciliationmatch_set.all():
+        for match in ReconciliationGroup.objects.get(id=group_id).reconciliationmatch_set.all():
             financial_transactions.append({
                 "date": match.financial_transaction.date_submitted,
                 "type": match.financial_transaction.get_transaction_type_display().title(),
