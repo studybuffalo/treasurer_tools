@@ -5,7 +5,7 @@ from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
-from bank_reconciliation.models import ReconciliationMatch
+from bank_reconciliation.models import ReconciliationGroup
 from bank_transactions.models import BankTransaction
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
 from financial_transactions.models import FinancialTransaction
