@@ -3,8 +3,6 @@ from django.db import models
 
 from simple_history.models import HistoricalRecords
 
-from bank_transactions.models import BankTransaction
-from financial_transactions.models import FinancialTransaction
 
 class ReconciliationGroup(models.Model):
     history = HistoricalRecords()
@@ -16,12 +14,12 @@ class ReconciliationMatch(models.Model):
         on_delete=models.CASCADE,
     )
     bank_transaction = models.ForeignKey(
-        BankTransaction,
+        'bank_transactions.BankTransaction',
         on_delete=models.CASCADE,
         related_name="rm_bank_transaction",
     )
     financial_transaction = models.ForeignKey(
-        FinancialTransaction,
+        'financial_transactions.FinancialTransaction',
         on_delete=models.CASCADE,
         related_name="rm_financial_transaction",
     )

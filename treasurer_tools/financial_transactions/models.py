@@ -7,8 +7,10 @@ from django.utils import timezone
 
 from simple_history.models import HistoricalRecords
 
-from payee_payers.models import PayeePayer
+from bank_reconciliation.models import ReconciliationGroup
 from financial_codes.models import FinancialCode
+from payee_payers.models import PayeePayer
+
 
 class FinancialTransaction(models.Model):
     """Holds data on the overall transaction"""
@@ -37,6 +39,12 @@ class FinancialTransaction(models.Model):
     date_submitted = models.DateField(
         default=timezone.now,
         verbose_name="submission date"
+    )
+    reconciled = models.ForeignKey(
+        ReconciliationGroup,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
     history = HistoricalRecords()
 

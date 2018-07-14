@@ -8,6 +8,7 @@ from django.db.models import Sum
 from simple_history.models import HistoricalRecords
 
 from bank_institutions.models import Account
+from bank_reconciliation.models import ReconciliationGroup
 
 
 class Statement(models.Model):
@@ -91,6 +92,12 @@ class BankTransaction(models.Model):
         help_text="The credit (deposit) amount of the transaction",
         max_digits=12,
         verbose_name="credit amount",
+    )
+    reconciled = models.ForeignKey(
+        ReconciliationGroup,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
     history = HistoricalRecords()
 
