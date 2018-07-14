@@ -6,8 +6,15 @@ from simple_history.models import HistoricalRecords
 from bank_transactions.models import BankTransaction
 from financial_transactions.models import FinancialTransaction
 
+class MatchGroup(models.Model):
+    history = HistoricalRecords()
+
 class ReconciliationMatch(models.Model):
     """Links bank transaction to one or more financial transactions"""
+    group = models.ForeignKey(
+        MatchGroup,
+        on_delete=models.CASCADE,
+    )
     bank_transaction = models.ForeignKey(
         BankTransaction,
         on_delete=models.CASCADE,
