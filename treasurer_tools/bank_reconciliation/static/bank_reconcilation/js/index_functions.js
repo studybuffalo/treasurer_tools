@@ -26,6 +26,26 @@ function setInitialDates() {
   $('#bank-end-date').val(endDate);
 }
 
+function toggleReconciledStatus(clickedButton) {
+  if (clickedButton.id === 'button-reconcile-transactions') {
+    $('#button-reconcile-transactions').addClass('selected');
+    $('#button-show-reconciled-transactions').removeClass('selected');
+  } else if (clickedButton.id === 'button-show-reconciled-transactions') {
+    $('#button-reconcile-transactions').removeClass('selected');
+    $('#button-show-reconciled-transactions').addClass('selected');
+  }
+}
+
+function updateReconciledView() {
+  if ($('#button-reconcile-transactions').hasClass('selected')) {
+    $('.reconcile-div').removeClass('hide');
+    $('.unreconcile-div').addClass('hide');
+  } else {
+    $('.reconcile-div').addClass('hide');
+    $('.unreconcile-div').removeClass('hide');
+  }
+}
+
 function toggleTransactionSelection($li) {
   $li.toggleClass('selected');
 }
@@ -572,6 +592,11 @@ function unmatchTransactions() {
 
 $(document).ready(() => {
   setInitialDates();
+
+  $('#reconciled-status-buttons').on('click', (e) => {
+    toggleReconciledStatus(e.target);
+    updateReconciledView();
+  });
 
   $('#financial-start-date').on('change', () => {
     clearTransactions('financial');

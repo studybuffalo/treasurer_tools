@@ -46,6 +46,16 @@
       width: 12rem;
     }
 
+    .type-container {
+      padding-top: 2rem;
+    }
+
+      .type-container label {
+        display: block;
+        font-weight: 700;
+        padding: 0.5rem;
+      }
+
     .status-container {
       padding-top: 2rem;
     }
@@ -144,6 +154,17 @@
         max-width: 900px;
       }
 
+
+
+      .type-container {
+        padding: 0 0 0 2rem;
+      }
+
+        .type-container label {
+          display: inline-block;
+          vertical-align: top;
+        }
+
       .status-container {
         padding: 0 0 0 2rem;
       }
@@ -235,6 +256,11 @@
     {% endfor %}
   </ul>
 
+  <div id="reconciled-status-buttons">
+    <button id="button-reconcile-transactions" class="selected">Reconcile transactions</button>
+    <button id="button-show-reconciled-transactions">Show reconciled transactions</button>
+  </div>
+
   <h2>Financial Transactions</h2>
 
   <div class="filters">
@@ -250,14 +276,13 @@
       </div>
     </div>
 
-    <div class="status-container">
-      <label>Reconciled status:</label>
-
-      <ul id="financial-reconciled-filter">
-        <li class="selected">Unreconciled</li>
-        <li>Reconciled</li>
-        <li>All transactions</li>
-      </ul>
+    <div class="type-container">
+      <label>Transaction Type</label>
+      <select>
+        <option value="e">Expense</option>
+        <option value="r">Revenue</option>
+        <option value="">All</option>
+      </select>
     </div>
 
     <div class="text-container">
@@ -266,7 +291,7 @@
     </div>
   </div>
 
-  <div>
+  <div class="reconcile-div">
     <div class="financial-item header">
       <div class="date">Date</div>
       <div class="type">Type</div>
@@ -274,32 +299,22 @@
       <div class="amount">Amount</div>
     </div>
 
-    <ul id="financial-transactions" class="transactions unreconciled"></ul>
+    <ul id="financial-transactions" class="transactions"></ul>
   </div>
 
   <h2>Banking Transactions</h2>
 
   <div class="filters">
-      <div class="date-container">
-        <div>
-          <label>Start Date</label>
-          <input type="date" id="bank-start-date">
-        </div>
-
-        <div>
-          <label>End Date</label>
-          <input type="date" id="bank-end-date">
-        </div>
+    <div class="date-container">
+      <div>
+        <label>Start Date</label>
+        <input type="date" id="bank-start-date">
       </div>
 
-    <div class="status-container">
-      <label>Reconciled status:</label>
-
-      <ul id="bank-reconciled-filter">
-        <li class="selected">Unreconciled</li>
-        <li>Reconciled</li>
-        <li>All transactions</li>
-      </ul>
+      <div>
+        <label>End Date</label>
+        <input type="date" id="bank-end-date">
+      </div>
     </div>
 
     <div class="text-container">
@@ -308,7 +323,7 @@
     </div>
   </div>
 
-  <div>
+  <div class="reconcile-div">
     <div class="bank-item header">
       <div class="date">Date</div>
       <div class="description">Description</div>
@@ -316,10 +331,10 @@
       <div class="credit">Credit</div>
     </div>
 
-    <ul id="bank-transactions" class="transactions unreconciled"></ul>
+    <ul id="bank-transactions" class="transactions"></ul>
   </div>
 
-  <div>
+  <div class="reconcile-div">
     <div>
       <strong>Financial Transaction Total:</strong>
       <span id="financial-total"></span>
@@ -334,11 +349,17 @@
     </div>
   </div>
 
-  <div class="buttons">
-    <button id="unmatch" class="delete">Unmatch transactions</button>
-    <button id="match" class="save">Match transactions</button>
+  <div class="reconcile-div">
+      <button id="match" class="save">Match transactions</button>
   </div>
 
+  <div class="unreconcile-div hide">
+
+  </div>
+
+  <div class="unreconcile-div hide">
+    <button id="unmatch" class="delete">Unmatch transactions</button>
+  </div>
   {% csrf_token %}
 {% endblock %}
 
