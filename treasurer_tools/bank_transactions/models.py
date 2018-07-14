@@ -98,6 +98,7 @@ class BankTransaction(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        related_name="banktransactions",
     )
     history = HistoricalRecords()
 
