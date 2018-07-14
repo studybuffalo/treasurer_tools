@@ -1,7 +1,7 @@
 """Objects and functions supporting bank_transactions app"""
 import json
 
-from bank_reconciliation.models import ReconciliationMatch, ReconciliationGroup
+from bank_reconciliation.models import ReconciliationGroup
 from bank_transactions.models import BankTransaction
 from django.core.exceptions import ValidationError
 from django.db.models import Q
@@ -45,16 +45,10 @@ def return_transactions_as_json(request):
     # Retrieves all unreconciled financial transactions between the specified dates
     if transaction_type == "financial":
         try:
-            # Get list of all reconciled financial transactions
-            reconciled_transactions = ReconciliationMatch.objects.all().values_list(
-                'financial_transaction__id', flat=True
-            )
-
             transactions = FinancialTransaction.objects.filter(
                 Q(date_submitted__gte=date_start)
                 & Q(date_submitted__lte=date_end)
-            ).exclude(
-                Q(id__in=reconciled_transactions)
+                & Q(reconciled=None)
             ).order_by("-date_submitted")
         except ValidationError:
             json_data["errors"] = {
@@ -80,13 +74,10 @@ def return_transactions_as_json(request):
     # Retrieve all unreconciled bank transactions between the specified dates
     elif transaction_type == "bank":
         try:
-            # Get list of all reconciled bank transactions
-            reconciled_transactions = ReconciliationMatch.objects.all().values_list('bank_transaction__id', flat=True)
-
             transactions = BankTransaction.objects.filter(
-                Q(date_transaction__gte=date_start) & Q(date_transaction__lte=date_end)
-            ).exclude(
-                Q(id__in=reconciled_transactions)
+                Q(date_transaction__gte=date_start)
+                & Q(date_transaction__lte=date_end)
+                & Q(reconciled=None)
             ).order_by("-date_transaction")
         except ValidationError:
             json_data["errors"] = {
@@ -145,22 +136,23 @@ def return_matches_as_json(request):
     # Retrieve all the matches transactions that meet either date range
     try:
         # Get all the financial transactions in the specified date range
-        financial_transactions = FinancialTransaction.objects.filter(
+        financial_transactions = list(FinancialTransaction.objects.filter(
             Q(date_submitted__gte=financial_date_start)
             & Q(date_submitted__lte=financial_date_end)
-        )
+        ).values_list("reconciled", flat=True))
 
         # Get all the bank transactions in the specified date range
-        bank_transactions = BankTransaction.objects.filter(
+        bank_transactions = list(BankTransaction.objects.filter(
             Q(date_transaction__gte=bank_date_start)
             & Q(date_transaction__lte=bank_date_end)
-        )
+        ).values_list("reconciled", flat=True))
+
+        # Get a unique list of the IDs
+        group_id_list = set(financial_transactions + bank_transactions)
 
         # Get all the Match Groups containing above transactions
-        groups = ReconciliationMatch.objects.filter(
-            Q(financial_transaction__in=financial_transactions)
-            | Q(bank_transaction__in=bank_transactions)
-        ).values("group").distinct()
+        groups = ReconciliationGroup.objects.filter(id__in=group_id_list)
+
     except ValidationError:
         json_data["errors"].append({"dates": "Provided date(s) not in valid format ('yyyy-mm-dd')."})
 
@@ -170,33 +162,33 @@ def return_matches_as_json(request):
     group_data = []
 
     for group in groups:
-        group_id = group["group"]
         financial_transactions = []
         bank_transactions = []
 
-        for match in ReconciliationGroup.objects.get(id=group_id).reconciliationmatch_set.all():
+        for financial_transaction in group.financialtransactions.all():
             financial_transactions.append({
-                "date": match.financial_transaction.date_submitted,
-                "type": match.financial_transaction.get_transaction_type_display().title(),
+                "date": financial_transaction.date_submitted,
+                "type": financial_transaction.get_transaction_type_display().title(),
                 "description": "{} - {}".format(
-                    match.financial_transaction.payee_payer, match.financial_transaction.memo
+                    financial_transaction.payee_payer, financial_transaction.memo
                 ),
-                "total": match.financial_transaction.total,
+                "total": financial_transaction.total,
             })
 
+        for bank_transaction in group.banktransactions.all():
             bank_transactions.append({
-                "date": match.bank_transaction.date_transaction,
+                "date": bank_transaction.date_transaction,
                 "description": (
-                    match.bank_transaction.description_user
-                    if match.bank_transaction.description_user
-                    else match.bank_transaction.description_bank
+                    bank_transaction.description_user
+                    if bank_transaction.description_user
+                    else bank_transaction.description_bank
                 ),
-                "debit": match.bank_transaction.amount_debit,
-                "credit": match.bank_transaction.amount_credit,
+                "debit": bank_transaction.amount_debit,
+                "credit": bank_transaction.amount_credit,
             })
 
         group_data.append({
-            "id": group_id,
+            "id": group.id,
             "financial_transactions": financial_transactions,
             "bank_transactions": bank_transactions,
         })
@@ -225,29 +217,20 @@ class BankReconciliation(object):
         for financial_id in financial_ids:
             # Checks that financial ID exists
             try:
-                entry_exists = FinancialTransaction.objects.filter(id=financial_id).exists()
-            except ValueError:
-                entry_exists = False
+                financial_transaction = FinancialTransaction.objects.get(id=financial_id)
+            except FinancialTransaction.DoesNotExist:
+                financial_transaction = False
 
-            if entry_exists:
-                # Performs additional testing for match/unmatch
-                if self.function_type == "match":
-                    if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists():
-                        valid = False
-                        self.errors["financial_id"].append(
-                            (
-                                "{} is already reconciled. "
-                                "Unmatch the transaction before reassigning it."
-                            ).format(str(FinancialTransaction.objects.get(id=financial_id)))
-                        )
-                elif self.function_type == "unmatch":
-                    if ReconciliationMatch.objects.filter(financial_transaction_id=financial_id).exists() is False:
-                        valid = False
-                        self.errors["financial_id"].append(
-                            "{} is not a matched transaction.".format(
-                                str(FinancialTransaction.objects.get(id=financial_id))
-                            )
-                        )
+            if financial_transaction:
+                # Checks if this entry has already been reconciled
+                if financial_transaction.reconciled:
+                    valid = False
+                    self.errors["financial_id"].append(
+                        (
+                            "{} is already reconciled. "
+                            "Unmatch the transaction before reassigning it."
+                        ).format(str(financial_transaction))
+                    )
             else:
                 valid = False
                 self.errors["financial_id"].append(
@@ -267,29 +250,20 @@ class BankReconciliation(object):
         for bank_id in bank_ids:
             # Checks that financial ID exists
             try:
-                entry_exists = BankTransaction.objects.filter(id__in=bank_ids).exists()
-            except ValueError:
-                entry_exists = False
+                bank_transaction = BankTransaction.objects.get(id=bank_id)
+            except BankTransaction.DoesNotExist:
+                bank_transaction = False
 
             # Check that the bank ID exists
-            if entry_exists:
-                if self.function_type == "match":
-                    if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists():
-                        valid = False
-                        self.errors["bank_id"].append(
-                            (
-                                "{} is already reconciled. "
-                                "Unmatch the transaction before reassigning it."
-                            ).format(str(BankTransaction.objects.get(id=bank_id)))
-                        )
-                elif self.function_type == "unmatch":
-                    if ReconciliationMatch.objects.filter(bank_transaction_id=bank_id).exists() is False:
-                        valid = False
-                        self.errors["bank_id"].append(
-                            "{} is not a matched transaction.".format(
-                                str(BankTransaction.objects.get(id=bank_id))
-                            )
-                        )
+            if bank_transaction:
+                if bank_transaction.reconciled:
+                    valid = False
+                    self.errors["bank_id"].append(
+                        (
+                            "{} is already reconciled. "
+                            "Unmatch the transaction before reassigning it."
+                        ).format(str(bank_transaction))
+                    )
             else:
                 valid = False
                 self.errors["bank_id"].append(
@@ -352,41 +326,26 @@ class BankReconciliation(object):
 
     def create_matches(self):
         """Matches provided financial and bank transactions"""
-        # Cycle through each financial transaction
+        # Create a reconcilation group
+        group = ReconciliationGroup.objects.create()
+
+        # Add the new group to each financial transaction
         for financial_id in self.json_data["financial_ids"]:
-            # Cycle through each bank transaction
-            for bank_id in self.json_data["bank_ids"]:
-                # Create the match
-                ReconciliationMatch.objects.create(
-                    financial_transaction=FinancialTransaction.objects.get(id=financial_id),
-                    bank_transaction=BankTransaction.objects.get(id=bank_id)
-                )
+            financial_transaction = FinancialTransaction.objects.get(id=financial_id)
+            financial_transaction.reconciled = group
+            financial_transaction.save()
+
+        # Add the new group to each bank transaction
+        for bank_id in self.json_data["bank_ids"]:
+            bank_transaction = BankTransaction.objects.get(id=bank_id)
+            bank_transaction.reconciled = group
+            bank_transaction.save()
 
         # Return the ids that were successfully matched
         self.success["financial_id"] = self.json_data["financial_ids"]
         self.success["bank_id"] = self.json_data["bank_ids"]
 
-    def delete_matches(self):
-        """Removes matches between provided financial and bank transactions"""
-
-        # Remove any matches with the provided financial ids
-        financial_matches = ReconciliationMatch.objects.filter(
-            financial_transaction_id__in=self.json_data["financial_ids"]
-        )
-        financial_matches.delete()
-
-        # Remove any matches with the provided bank ids
-        bank_matches = ReconciliationMatch.objects.filter(
-            bank_transaction_id__in=self.json_data["bank_ids"]
-        )
-        bank_matches.delete()
-
-        # Return the ids that were successfully deleted
-        self.success["financial_id"] = self.json_data["financial_ids"]
-        self.success["bank_id"] = self.json_data["bank_ids"]
-
-    def __init__(self, raw_data, function_type):
-        self.function_type = function_type
+    def __init__(self, raw_data):
         self.success = {"financial_id": [], "bank_id": [],}
         self.errors = {"post_data": [], "financial_id": [], "bank_id": [],}
         self.json_data = self.create_json_data(raw_data)

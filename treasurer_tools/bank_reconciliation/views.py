@@ -28,7 +28,7 @@ def retrieve_transactions(request):
 @login_required
 def match_transactions(request):
     """Matches financial and banking transactions (if valid)"""
-    reconciliation = BankReconciliation(request.body, "match")
+    reconciliation = BankReconciliation(request.body)
 
     # Check if provided data is valid
     if reconciliation.is_valid():
@@ -49,7 +49,7 @@ def retrieve_matches(request):
 @login_required
 def unmatch_transactions(request):
     """Unmatches financial and banking transactions (if valid)"""
-    reconciliation = BankReconciliation(request.body, "unmatch")
+    reconciliation = BankReconciliation(request.body)
 
     # Check if provided data is valid
     if reconciliation.is_valid():
