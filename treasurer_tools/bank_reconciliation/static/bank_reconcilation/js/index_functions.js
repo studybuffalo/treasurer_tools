@@ -574,11 +574,11 @@ function addReconciledBankingTransactions($div, transactions) {
     // Determine how to format amount
     let amount = 0;
 
-    if (transaction.debit) {
+    if (Number(transaction.debit)) {
       // Make debit a negative number
       amount = Number(transaction.debit) * -1;
     } else {
-      amount = transaction.credit;
+      amount = Number(transaction.credit);
     }
 
     // Add amount
