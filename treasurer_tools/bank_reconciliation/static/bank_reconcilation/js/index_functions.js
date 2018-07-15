@@ -756,7 +756,7 @@ function filterResults() {
 
     // Check the values to compare
     const itemDate = $item.attr('data-date');
-    const itemDescription = $item.attr('data-description');
+    const itemDescription = $item.attr('data-description').toUpperCase();
     const itemAmount = $item.attr('data-amount');
 
     // Check if there are any matches
@@ -785,7 +785,7 @@ function filterResults() {
 
     // Check the values to compare
     const itemDate = $item.attr('data-date');
-    const itemDescription = $item.attr('data-description');
+    const itemDescription = $item.attr('data-description').toUpperCase();
     const itemAmount = $item.attr('data-amount');
 
     // Check if there are any matches
@@ -799,28 +799,45 @@ function filterResults() {
   });
 
   // FILTER THE RECONCILED TRANSACTIONS
-  const $reconciledItems = $('.matched-item');
+  const $reconciledItems = $('#reconciled-transactions .match-item');
 
   // Cycle through each item to see if filter applies
   $reconciledItems.each((index, item) => {
     const $item = $(item);
+    const $financialItem = $item.find('.financial-transactions');
+    const $bankItem = $item.find('.banking-transactions');
 
     // Hide the item by default
     $item.addClass('hide');
 
     // Check the values to compare
-    // const itemDate = $item.attr('data-date');
-    // const itemDescription = $item.attr('data-description');
-    // const itemAmount = $item.attr('data-amount');
+    const financialDates = $financialItem.attr('data-dates');
+    const financialTypes = $financialItem.attr('data-types').toUpperCase();
+    const financialDescriptions = $financialItem.attr('data-descriptions').toUpperCase();
+    const financialAmounts = $financialItem.attr('data-amounts');
+    const financialTotal = $financialItem.attr('data-total');
+    const bankDates = $bankItem.attr('data-dates');
+    const bankDescriptions = $bankItem.attr('data-descriptions').toUpperCase();
+    const bankAmounts = $bankItem.attr('data-amounts');
+    const bankTotal = $bankItem.attr('data-total');
 
-    // // Check if there are any matches
-    // if (
-    //   itemDate.indexOf(bankFilterText) !== -1
-    //   || itemDescription.indexOf(bankFilterText) !== -1
-    //   || itemAmount.indexOf(bankFilterText) !== -1
-    // ) {
-    //   $item.removeClass('hide');
-    // }
+    // Need to work this out as an AND/OR to accomodate two search filters
+
+    // Check if there are any matches
+    if ((
+      financialDates.indexOf(financialFilterText) !== -1
+      || financialTypes.indexOf(financialFilterText) !== -1
+      || financialDescriptions.indexOf(financialFilterText) !== -1
+      || financialAmounts.indexOf(financialFilterText) !== -1
+      || financialTotal.indexOf(financialFilterText) !== -1
+    ) && (
+      bankDates.indexOf(bankFilterText) !== -1
+      || bankDescriptions.indexOf(bankFilterText) !== -1
+      || bankAmounts.indexOf(bankFilterText) !== -1
+      || bankTotal.indexOf(bankFilterText) !== -1
+    )) {
+      $item.removeClass('hide');
+    }
   });
 }
 
