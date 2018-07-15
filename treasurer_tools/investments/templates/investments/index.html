@@ -51,17 +51,6 @@
 
 
     @media screen and (min-width: 768px) {
-      .grid-investment {
-        display: grid;
-        grid-gap: 1rem;
-        grid-template-columns: 3fr 2fr 2fr 2fr 2fr 2fr 3fr;
-        grid-template-areas: "name date-invested amount-invested date-matured amount-matured rate buttons";
-      }
-
-      .grid-investment em {
-        display: none;
-      }
-
       .header {
         display: grid;
       }
@@ -70,26 +59,40 @@
         grid-area: name;
       }
 
-      .date-invested {
-        grid-area: date-invested;
+      .grid-investment {
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: 2fr 2fr 2fr 3fr;
+        grid-template-areas: "date status amount buttons";
       }
 
-      .amount-invested {
-        grid-area: amount-invested;
-        justify-self: end;
+        .grid-investment em {
+          display: none;
+        }
+
+        .grid-investment.title {
+          background-color: rgb(245, 245, 245);
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          padding: 0.5rem;
+        }
+
+          .grid-investment.title h2 {
+            margin: 0;
+            padding: 0.5rem 0;
+          }
+
+      .date {
+        grid-area: date;
       }
 
-      .date-matured {
-        grid-area: date-matured;
+      .status {
+        grid-area: status;
       }
 
-      .amount-matured {
-        grid-area: amount-matured;
-        justify-self: end;
-      }
-
-      .rate {
-        grid-area: rate;
+      .amount {
+        grid-area: amount;
         justify-self: end;
       }
 
@@ -125,10 +128,9 @@
         </div>
 
         <div class="grid-investment header">
-          <div class="date-invested">Date</div>
-          <div class="amount-invested">Status</div>
-          <div class="amount-matured">Amount Matured</div>
-          <div class="rate">Rate</div>
+          <div class="date">Date</div>
+          <div class="status">Status</div>
+          <div class="amount">Amount</div>
         </div>
 
         {% for detail in investment.investmentdetails.all %}
