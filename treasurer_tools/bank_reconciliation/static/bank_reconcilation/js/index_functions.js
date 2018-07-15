@@ -168,7 +168,6 @@ function checkForSelectionMismatch() {
 function updateUnreconciledTotal() {
   // Get all selected financial transaction
   const $financialTransactions = $('#financial-transactions .selected');
-  const financialLength = $financialTransactions.length;
 
   // Get all selected bank transactions
   const $bankTransactions = $('#bank-transactions .selected');
