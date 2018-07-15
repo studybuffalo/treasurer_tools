@@ -220,6 +220,8 @@ class BankReconciliation(object):
                 financial_transaction = FinancialTransaction.objects.get(id=financial_id)
             except FinancialTransaction.DoesNotExist:
                 financial_transaction = False
+            except ValueError:
+                financial_transaction = False
 
             if financial_transaction:
                 # Checks if this entry has already been reconciled
@@ -252,6 +254,8 @@ class BankReconciliation(object):
             try:
                 bank_transaction = BankTransaction.objects.get(id=bank_id)
             except BankTransaction.DoesNotExist:
+                bank_transaction = False
+            except ValueError:
                 bank_transaction = False
 
             # Check that the bank ID exists

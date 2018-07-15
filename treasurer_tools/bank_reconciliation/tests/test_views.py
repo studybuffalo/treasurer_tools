@@ -5,9 +5,7 @@ import json
 from django.urls import reverse
 from django.test import TestCase
 
-from bank_reconciliation.models import ReconciliationMatch
-from bank_transactions.models import BankTransaction
-from financial_transactions.models import FinancialTransaction
+from bank_reconciliation.models import ReconciliationGroup
 
 from .utils import create_user, create_bank_transactions, create_financial_transactions
 
@@ -202,12 +200,23 @@ class ReconciliationUnmatchTest(TestCase):
     def setUp(self):
         create_user()
 
+        # Create a reconcilation match for testing
+        group = ReconciliationGroup.objects.create()
+
+        bank_transactions = create_bank_transactions()
+        bank_transaction = bank_transactions[0]
+        bank_transaction.reconciled = group
+        bank_transaction.save()
+
+        financial_transactions = create_financial_transactions()
+        financial_transaction = financial_transactions[0]
+        financial_transaction.reconciled = group
+        financial_transaction.save()
+
         self.correct_url = "/banking/reconciliation/unmatch-transactions/"
-        self.bank_transactions = create_bank_transactions()
-        self.financial_transactions = create_financial_transactions()
+        self.group = group
         self.valid_data = {
-            "bank_ids": [self.bank_transactions[0].id],
-            "financial_ids": [self.financial_transactions[0].id],
+            "reconciliation_group_ids": [group.id],
         }
 
     def test_redirect_if_not_logged_in(self):
@@ -232,10 +241,6 @@ class ReconciliationUnmatchTest(TestCase):
     def test_for_response_on_valid_data(self):
         """Checks that a JSON response is received on valid data"""
         # Match transactions for test
-        ReconciliationMatch.objects.create(
-            bank_transaction=BankTransaction.objects.get(id=self.valid_data["bank_ids"][0]),
-            financial_transaction=FinancialTransaction.objects.get(id=self.valid_data["financial_ids"][0])
-        )
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -246,20 +251,13 @@ class ReconciliationUnmatchTest(TestCase):
 
         json_response = str(response.content, encoding="UTF-8")
 
-        self.assertTrue("success" in json_response)
         self.assertTrue("errors" in json_response)
 
     def test_for_response_on_invalid_data(self):
         """Checks that a JSON response is received on invalid data"""
-        # Match transactions for test
-        ReconciliationMatch.objects.create(
-            bank_transaction=BankTransaction.objects.get(id=self.valid_data["bank_ids"][0]),
-            financial_transaction=FinancialTransaction.objects.get(id=self.valid_data["financial_ids"][0])
-        )
-
         # Setup invalid data
         invalid_data = self.valid_data
-        invalid_data["bank_ids"] = [""]
+        invalid_data["reconciliation_group_ids"] = ["x"]
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -270,5 +268,4 @@ class ReconciliationUnmatchTest(TestCase):
 
         json_response = str(response.content, encoding="UTF-8")
 
-        self.assertTrue("success" in json_response)
         self.assertTrue("errors" in json_response)

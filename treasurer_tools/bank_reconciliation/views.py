@@ -69,6 +69,8 @@ def unmatch_transactions(request):
             group.delete()
         except ReconciliationGroup.DoesNotExist:
             errors.append({"ids": "Provided ID ({}) does not exist".format(group_id)})
+        except ValueError:
+            errors.append({"ids": "Provided ID ({}) is on wrong format".format(group_id)})
 
     return JsonResponse({
         "errors": errors,
