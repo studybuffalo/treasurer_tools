@@ -41,6 +41,7 @@ function checkForSelectionMismatch() {
   // Error Check List
   const errors = {
     mismatchExpenseRevenue: false,
+    mismatchFinancialInvestment: false,
     mismatchDebitCredit: false,
     mismatchExpenseCredit: false,
     mismatchRevenueDebit: false,
@@ -60,8 +61,31 @@ function checkForSelectionMismatch() {
       const type1 = $financialTransactions.eq(i).attr('data-type');
       const type2 = $financialTransactions.eq(j).attr('data-type');
 
-      if (type1 !== type2) {
+      if (
+        (type1 === 'EXPENSE' && type2 === 'REVENUE')
+        || (type1 === 'REVENUE' && type2 === 'EXPENSE')
+      ) {
         errors.mismatchExpenseRevenue = true;
+      }
+    }
+  }
+
+  // Check if both financial transactions and investments
+  for (let i = 0; i < financialLength; i += 1) {
+    for (let j = 1; j < financialLength; j += 1) {
+      const type1 = $financialTransactions.eq(i).attr('data-type');
+      const type2 = $financialTransactions.eq(j).attr('data-type');
+
+      if (
+        (
+          (type1 === 'EXPENSE' || type1 === 'REVENUE')
+          && (type2 === 'INVESTED' || type2 === 'MATURED' || type2 === 'INTEREST PAID' || type2 === 'CANCELLED')
+        ) || (
+          (type2 === 'EXPENSE' || type2 === 'REVENUE')
+          && (type1 === 'INVESTED' || type1 === 'MATURED' || type1 === 'INTEREST PAID' || type1 === 'CANCELLED')
+        )
+      ) {
+        errors.mismatchFinancialInvestment = true;
       }
     }
   }
@@ -105,6 +129,14 @@ function checkForSelectionMismatch() {
       $('<li></li>')
         .addClass('level-30')
         .text('Warning: you have both expense and revenue financial transactions selected.'),
+    );
+  }
+
+  if (errors.mismatchFinancialInvestment) {
+    $messages.append(
+      $('<li></li>')
+        .addClass('level-30')
+        .text('Warning: you have both expense/revenue transactions and investments selected.'),
     );
   }
 
@@ -273,7 +305,12 @@ function addUnreconciledTransactions(data) {
 
       if (
         (transaction.type.toUpperCase() === 'EXPENSE' && transaction.total > 0)
-        || (transaction.type.toUpperCase() === 'REVENUE' && transaction.total < 0)) {
+        || (transaction.type.toUpperCase() === 'REVENUE' && transaction.total < 0)
+        || (transaction.type.toUpperCase() === 'INVESTED' && transaction.total > 0)
+        || (transaction.type.toUpperCase() === 'MATURED' && transaction.total < 0)
+        || (transaction.type.toUpperCase() === 'INTEREST PAID' && transaction.total < 0)
+        || (transaction.type.toUpperCase() === 'CANCELLED' && transaction.total < 0)
+      ) {
         $amount.addClass('negative');
       }
 
@@ -500,7 +537,6 @@ function addReconciledFinancialTransactions($div, transactions) {
     const $itemDiv = $('<div></div>');
     $itemDiv
       .addClass('financial')
-      .on('click', handleTransactionClick)
       .append($dateDiv)
       .append($typeDiv)
       .append($descriptionDiv)
@@ -604,7 +640,6 @@ function addReconciledBankingTransactions($div, transactions) {
     const $itemDiv = $('<div></div>');
     $itemDiv
       .addClass('bank')
-      .on('click', handleTransactionClick)
       .append($dateDiv)
       .append($descriptionDiv)
       .append($amountDiv)
@@ -842,12 +877,20 @@ function filterResults() {
 }
 
 function matchTransactions() {
-  // Get the selected financial transactions
+  // Get the selected financial transactions and investments
   const $selectedFinancialTransactions = $('#financial-transactions li.selected');
   const financialIDs = [];
+  const investmentIDs = [];
 
   $selectedFinancialTransactions.each((index, transaction) => {
-    financialIDs.push($(transaction).attr('data-id'));
+    const $transaction = $(transaction);
+    const type = $transaction.attr('data-type');
+
+    if (type === 'EXPENSE' || type === 'REVENUE') {
+      financialIDs.push($transaction.attr('data-id'));
+    } else if (type === 'INVESTED' || type === 'MATURED' || type === 'INTEREST PAID' || type === 'CANCELLED') {
+      investmentIDs.push($transaction.attr('data-id'));
+    }
   });
 
   // Get the selected bank transactions
@@ -861,6 +904,7 @@ function matchTransactions() {
   // Setup post data
   const postData = {
     financial_ids: financialIDs,
+    investment_ids: investmentIDs,
     bank_ids: bankIDs,
   };
 
@@ -892,7 +936,11 @@ function matchTransactions() {
           });
         });
       } else {
-        handleMessages('Transactions matched');
+        // Clear the error message list
+        const $messages = $('#messages');
+        $messages.empty();
+
+        handleMessages('Transactions matched', 25);
 
         // Requery the displays
         retrieveUnreconciledTransactions(
@@ -958,7 +1006,11 @@ function unmatchTransactions() {
           });
         });
       } else {
-        handleMessages('Transactions unmatched');
+        // Clear the error message list
+        const $messages = $('#messages');
+        $messages.empty();
+
+        handleMessages('Transactions unmatched', 25);
 
         // Requery the displays
         retrieveUnreconciledTransactions(

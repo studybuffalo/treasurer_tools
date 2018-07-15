@@ -51,7 +51,7 @@ class InvestmentDetail(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name="investmentdetailss",
+        related_name="investmentdetails",
     )
 
     def __str__(self):
