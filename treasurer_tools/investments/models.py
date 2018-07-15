@@ -4,6 +4,9 @@ from django.db import models
 
 from simple_history.models import HistoricalRecords
 
+from bank_reconciliation.models import ReconciliationGroup
+
+
 class Investment(models.Model):
     """Records data on financial invetments"""
     name = models.CharField(
@@ -42,6 +45,13 @@ class InvestmentDetail(models.Model):
         default=0,
         help_text="The amount invested, matured, or paid out",
         max_digits=12,
+    )
+    reconciled = models.ForeignKey(
+        ReconciliationGroup,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="investmentdetailss",
     )
 
     def __str__(self):
