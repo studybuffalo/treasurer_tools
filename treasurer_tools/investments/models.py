@@ -10,22 +10,6 @@ class Investment(models.Model):
         help_text="Name to identify the investment",
         max_length=256,
     )
-    date_invested = models.DateField(
-        help_text="Date of initial investment",
-    )
-    date_matured = models.DateField(
-        help_text="Date of maturation"
-    )
-    amount_invested = models.DecimalField(
-        decimal_places=2,
-        help_text="Initial amount invested",
-        max_digits=12,
-    )
-    amount_matured = models.DecimalField(
-        decimal_places=2,
-        help_text="Amount currently or at maturation",
-        max_digits=12,
-    )
     rate = models.CharField(
         help_text="Details on rate, term duration, etc.",
         max_length=256,
@@ -33,4 +17,32 @@ class Investment(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return "{} - {}".format(self.date_invested, self.name)
+        return self.name
+
+class InvestmentDetail(models.Model):
+    STATUS_CHOICES = (
+        ("v", "invested"),
+        ("m", "matured"),
+        ("i", "interest paid"),
+        ("c", "cancelled"),
+    )
+
+    investment = models.ForeignKey(
+        Investment,
+        on_delete=models.CASCADE,
+        related_name="investmentdetails",
+    )
+    date_investment = models.DateField()
+    detail_status = models.CharField(
+        max_length=1,
+        choices=STATUS_CHOICES,
+    )
+    amount = models.DecimalField(
+        decimal_places=2,
+        default=0,
+        help_text="The amount invested, matured, or paid out",
+        max_digits=12,
+    )
+
+    def __str__(self):
+        return "{} ({} ${})".format(self.investment, self.detail_status, self.amount)

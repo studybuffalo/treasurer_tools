@@ -2,7 +2,7 @@
 
 from django import forms
 
-from .models import Investment
+from .models import Investment, InvestmentDetail
 
 
 class InvestmentForm(forms.ModelForm):
@@ -11,4 +11,12 @@ class InvestmentForm(forms.ModelForm):
     class Meta:
         model = Investment
 
-        fields = ("name", "date_invested", "amount_invested", "date_matured", "amount_matured", "rate")
+        fields = ("name", "rate",)
+
+class InvestmentDetailForm(forms.ModelForm):
+    """Form to add details to an investment"""
+
+    class Meta:
+        model = InvestmentDetail
+
+        fields = ("investment", "date_investment", "detail_status", "amount",)

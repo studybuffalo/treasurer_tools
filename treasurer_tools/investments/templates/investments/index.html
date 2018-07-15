@@ -3,17 +3,9 @@
 {% block styles %}
   <style>
     /* Override button styles */
-    .save {
-      width: 20rem;
-    }
-
-    .edit, .delete {
+    .save, .edit, .delete {
       font-size: 1.5rem;
       min-width: 7rem;
-    }
-
-    #investments > div:nth-child(even) {
-      background-color: rgba(40, 120, 200, 0.1);
     }
 
     .header {
@@ -37,9 +29,26 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      justify-content: space-between;
-      max-width: 280px;
+      justify-content: flex-start;
     }
+
+    .grid-investment.title {
+      background-color: rgb(245, 245, 245);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 0.5rem;
+    }
+
+      .grid-investment.title h2 {
+        margin: 0;
+        padding: 0.5rem 0;
+      }
+
+    .grid-investment.content:nth-child(even) {
+      background-color: rgba(40, 120, 200, 0.1);
+    }
+
 
     @media screen and (min-width: 768px) {
       .grid-investment {
@@ -98,33 +107,41 @@
     {% include 'main/messages.html' %}
 
     <div>
-      <a href="{% url 'investments:add'%}" class="save">
+      <a href="{% url 'investments:investment_add'%}" class="save">
         Add new investment
       </a>
     </div>
 
     <div id="investments">
-      <div class="grid-investment header">
-        <div class="date-invested">Date Invested</div>
-        <div class="amount-invested">Amount Invested</div>
-        <div class="date-matured">Date Matured</div>
-        <div class="amount-matured">Amount Matured</div>
-        <div class="rate">Rate</div>
-      </div>
-
       {% for investment in investments %}
-        <div class="grid-investment">
-            <div class="name">{{ investment.name }}</div>
-          <div class="date-invested">{{ investment.date_invested }}</div>
-          <div class="amount-invested"><em>Amount:</em> ${{ investment.amount_invested }}</div>
-          <div class="date-matured">{{ investment.date_matured }}</div>
-          <div class="amount-matured"><em>Amount:</em> ${{ investment.amount_matured }}</div>
-          <div class="rate"><em>Rate:</em> {{ investment.rate }}</div>
+        <div class="grid-investment title">
+          <div class="title"><h2>{{ investment.name }}</h2></div>
+          <div class="details">{{ investment.rate }}</div>
           <div class="buttons">
-            <a href="{% url 'investments:edit' investment.id %}" class="edit">Edit</a>
-            <a href="{% url 'investments:delete' investment.id %}" class="delete">Delete</a>
+            <a href="{% url 'investments:investment_edit' investment.id %}" class="edit">Edit</a>
+            <a href="{% url 'investments:investment_delete' investment.id %}" class="delete">Delete</a>
+            <a href="{% url 'investments:detail_add' investment.id %}" class="save">Add detail</a>
           </div>
         </div>
+
+        <div class="grid-investment header">
+          <div class="date-invested">Date</div>
+          <div class="amount-invested">Status</div>
+          <div class="amount-matured">Amount Matured</div>
+          <div class="rate">Rate</div>
+        </div>
+
+        {% for detail in investment.investmentdetails.all %}
+          <div class="grid-investment content">
+            <div class="date"><em>Date:</em> {{ detail.date_investment|date:"Y-m-d" }}</div>
+            <div class="status"><em>Type:</em> {{ detail.get_detail_status_display }}</div>
+            <div class="amount"><em>Amount:</em> ${{ detail.amount }}</div>
+            <div class="buttons">
+              <a href="{% url 'investments:detail_edit' detail.id %}" class="edit">Edit</a>
+              <a href="{% url 'investments:detail_delete' detail.id %}" class="delete">Delete</a>
+            </div>
+          </div>
+        {% endfor %}
       {% endfor %}
     </div>
 {% endblock %}
