@@ -1,13 +1,13 @@
 ﻿{% for transaction in transactions %}
   <div class="transaction"
     data-transaction-type="{{ transaction.transaction_type }}"
-    data-date-submitted="{{ transaction.date_submitted }}"
+    data-date-submitted="{{ transaction.date_submitted|date:'Y-m-d' }}"
     data-memo="{{ transaction.memo }}"
     data-payee-payer="{{ transaction.payee_payer }}"
     data-transaction-total="{{ transaction.total }}">
 
     <div class="transaction-details">
-      <span class="date-submitted">{{ transaction.date_submitted }}</span>
+      <span class="date-submitted">{{ transaction.date_submitted|date:"Y-m-d" }}</span>
       <span class="memo">{{ transaction.memo }}</span>
       <span class="payee-payer">{{ transaction.payee_payer }}</span>
     </div>
@@ -29,11 +29,11 @@
           data-gst="${{ item.gst }}"
           data-total="{{ item.total }}">
 
-          <div class="date-item">{{ item.date_item }}</div>
+          <div class="date-item">{{ item.date_item|date:"Y-m-d" }}</div>
           <div class="description">{{ item.description }}</div>
           <div class="amount"><em>Amount</em> ${{ item.amount }}</div>
           <div class="gst"><em>GST</em> ${{ item.gst }}</div>
-          <div class="total"><em>Total</em> {{ item.total }}</div>
+          <div class="total"><em>Total</em> ${{ item.total }}</div>
           <div class="financial-codes">
             <em>Account Codes</em>
             {% for financial_code in item.financialcodematch_set.all %}
@@ -49,7 +49,7 @@
       {% endfor %}
 
       <div class="item totals">
-        <div class="total"><em>Transaction Total</em> {{ transaction.total }}</div>
+        <div class="total"><em>Transaction Total</em> ${{ transaction.total }}</div>
       </div>
     </div>
 
