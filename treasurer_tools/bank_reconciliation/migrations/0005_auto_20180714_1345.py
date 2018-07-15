@@ -5,36 +5,6 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def create_match_groups(apps, schema_editor):
-    # Get the MatchGroup model
-    MatchGroup = apps.get_model('bank_reconciliation', 'MatchGroup')
-
-    # Get the ReconcilationMatch model and all its entries
-    ReconcilationMatch = apps.get_model('bank_reconciliation', 'ReconciliationMatch')
-    matches = ReconcilationMatch.objects.all()
-
-    # Cycle through all the matches and assing them to groups
-    for match in matches:
-        match_found = False
-
-        for match_group in MatchGroup.objects.all():
-            for group in match_group.reconciliationmatch_set.all():
-                if match.financial_transaction == group.financial_transaction or match.bank_transaction == group.bank_transaction:
-                    # Match found, save it to this match_group
-                    match.group = match_group
-                    match.save()
-
-                    match_found = True
-
-        # No match found, create new group
-        if match_found is False:
-            # Create the group
-            group = MatchGroup.objects.create()
-
-            # Assign the new group to this match
-            match.group = group
-            match.save()
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -76,10 +46,4 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bank_reconciliation.MatchGroup', null=True),
             preserve_default=False,
         ),
-        migrations.RunPython(create_match_groups),
-        migrations.AlterField(
-            model_name='reconciliationmatch',
-            name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bank_reconciliation.MatchGroup'),
-        )
     ]
