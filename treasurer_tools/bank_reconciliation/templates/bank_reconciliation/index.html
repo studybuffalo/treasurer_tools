@@ -160,6 +160,54 @@
       flex-direction: column;
     }
 
+    .match-item {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      transition: all ease-in-out 0.3s;
+    }
+
+      .match-item em {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .match-item.header {
+        margin: 0;
+      }
+
+      .match-item:nth-child(even) {
+        background-color: rgb(237, 244, 242);
+      }
+
+      .match-item .discrepancy {
+        display: block;
+      }
+
+        .match-item .discrepancy .discrepancy-header,
+        .match-item .discrepancy .discrepancy-amount {
+            display: inline-block;
+            font-weight: 700;
+            padding: 0 0.5rem;
+          }
+
+      .match-item .financial,
+      .match-item .bank {
+        background-color: rgb(250, 250, 250);
+        box-shadow: 2px 2px 3px 1px rgb(100, 100, 100);
+        margin: 0.75rem 1rem;
+        padding: 0.75rem;
+      }
+
+      .match-item:hover {
+        background-color: rgb(200, 200, 200);
+        cursor: pointer;
+      }
+
+      .match-item.selected {
+        background-color: rgb(120, 190, 245);
+      }
+
     .header {
       display: none;
     }
@@ -176,8 +224,6 @@
         flex-direction: row;
         max-width: 900px;
       }
-
-
 
       .type-container {
         padding: 0 0 0 2rem;
@@ -262,6 +308,112 @@
           grid-area: credit;
           justify-self: end;
         }
+
+      @media screen and (min-width: 1024px) {
+        .match-item {
+          display: grid;
+          grid-template-areas:
+            "financial bank"
+            "discrepancy discrepancy";
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto;
+        }
+
+
+          .match-item .financial-transactions {
+            grid-area: financial;
+          }
+
+          .match-item .banking-transactions {
+            grid-area: bank;
+          }
+
+          .match-item .discrepancy {
+            grid-area: discrepancy;
+            justify-self: center;
+          }
+
+          .match-item > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+
+          .match-item em {
+            display: none;
+          }
+
+          .match-item .financial {
+            display: grid;
+            font-size: 1.5rem;
+            grid-template-columns: 10rem 8rem 1fr 10rem;
+            grid-template-areas: "date type description amount";
+          }
+
+            .match-item .financial .date {
+              grid-area: date;
+            }
+
+            .match-item .financial .type {
+              grid-area: type;
+            }
+
+            .match-item .financial .description {
+              grid-area: description;
+            }
+
+            .match-item .financial .amount {
+              grid-area: amount;
+              justify-self: end;
+            }
+
+            .match-item .financial.total-row {
+              font-weight: 700;
+            }
+
+              .match-item .financial.total-row .total-header {
+                grid-area: 1 / date / 1 / description;
+                justify-self: end;
+              }
+
+              .match-item .financial.total-row .total-amount {
+                grid-area: amount;
+                justify-self: end;
+              }
+
+          .match-item .bank {
+            display: grid;
+            font-size: 1.5rem;
+            grid-template-columns: 10rem 1fr 10rem;
+            grid-template-areas: "date description amount";
+          }
+            .match-item .bank .date {
+                grid-area: date;
+              }
+
+            .match-item .bank .description {
+              grid-area: description;
+            }
+
+            .match-item .bank .amount {
+              grid-area: amount;
+              justify-self: end;
+            }
+
+            .match-item .bank.total-row {
+              font-weight: 700;
+            }
+
+              .match-item .bank.total-row .total-header {
+                grid-area: 1 / date / 1 / description;
+                justify-self: end;
+              }
+
+              .match-item .bank.total-row .total-amount {
+                grid-area: amount;
+                justify-self: end;
+              }
+      }
     }
   </style>
 {% endblock %}
@@ -369,7 +521,12 @@
   </div>
 
   <div class="unreconcile-div hide">
-    <ul id="reconciled-transactions"></ul>
+      <div class="match-item header">
+        <div>Financial Transactions</div>
+        <div>Banking Transactions</div>
+      </div>
+
+    <div id="reconciled-transactions"></div>
 
   </div>
 

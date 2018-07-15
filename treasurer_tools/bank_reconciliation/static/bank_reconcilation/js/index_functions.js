@@ -282,7 +282,6 @@ function addUnreconciledTransactions(data) {
         .addClass('financial-item')
         .attr('data-id', transaction.id)
         .attr('data-type', transaction.type.toUpperCase())
-        .attr('data-total', transaction.total)
         .attr('data-date', transaction.date)
         .attr('data-description', transaction.description.toUpperCase())
         .attr('data-amount', transaction.total)
@@ -408,32 +407,283 @@ function clearUnreconciledTransactions(transactionType) {
   }
 }
 
+function addReconciledFinancialTransactions($div, transactions) {
+  const dates = [];
+  const types = [];
+  const descriptions = [];
+  const amounts = [];
+
+  $.each(transactions, (index, transaction) => {
+    // Add transaction date
+    const $dateDiv = $('<div></div>');
+    $dateDiv.addClass('date');
+
+    const $dateEm = $('<em></em>');
+    $dateEm
+      .text('Date: ')
+      .appendTo($dateDiv);
+
+    const $date = $('<span></span>');
+    $date
+      .text(transaction.date)
+      .appendTo($dateDiv);
+
+    dates.push(transaction.date);
+
+    // Add type
+    const $typeDiv = $('<div></div>');
+    $typeDiv.addClass('type');
+
+    const $typeEm = $('<em></em>');
+    $typeEm
+      .text('Type: ')
+      .appendTo($typeDiv);
+
+    const $type = $('<span></span>');
+    $type
+      .text(transaction.type)
+      .appendTo($typeDiv);
+
+    const transactionType = transaction.type.toUpperCase();
+    types.push(transactionType);
+
+    // Add description
+    const $descriptionDiv = $('<div></div>');
+    $descriptionDiv.addClass('description');
+
+    const $descriptionEm = $('<em></em>');
+    $descriptionEm
+      .text('Description: ')
+      .appendTo($descriptionDiv);
+
+    const $description = $('<span></span>');
+    $description
+      .text(transaction.description)
+      .appendTo($descriptionDiv);
+
+    descriptions.push(transaction.description);
+
+    // Determine how to format amount
+    let amount = 0;
+
+    if (transactionType === 'EXPENSE') {
+      amount = Number(transaction.total) * -1;
+    } else if (transactionType === 'REVENUE') {
+      amount = Number(transaction.total);
+    } else if (transactionType === 'MATURATED') {
+      amount = Number(transaction.total);
+    } else if (transactionType === 'INVESTED') {
+      amount = Number(transaction.total) * -1;
+    }
+
+    // Add amount
+    const $amountDiv = $('<div></div>');
+    $amountDiv.addClass('amount');
+
+    const $amountEm = $('<em></em>');
+    $amountEm
+      .text('Amount: ')
+      .appendTo($amountDiv);
+
+    const $amount = $('<span></span>');
+    $amount
+      .text(toCurrency(amount))
+      .appendTo($amountDiv);
+
+    if (amount < 1) {
+      $amount.addClass('negative');
+    }
+
+    amounts.push(amount);
+
+    // Create the item
+    const $itemDiv = $('<div></div>');
+    $itemDiv
+      .addClass('financial')
+      .on('click', handleTransactionClick)
+      .append($dateDiv)
+      .append($typeDiv)
+      .append($descriptionDiv)
+      .append($amountDiv)
+      .appendTo($div);
+  });
+
+  // Add a total item
+  const total = amounts.reduce((a, b) => a + b, 0);
+
+  const $totalDiv = $('<div></div>');
+  $totalDiv
+    .addClass('financial')
+    .addClass('total-row')
+    .append($('<span></span>').addClass('total-header').text('TOTAL'))
+    .append($('<span></span>').addClass('total-amount').text(toCurrency(total)))
+    .appendTo($div);
+
+  if (total < 0) {
+    $totalDiv.find('.total-amount').addClass('negative');
+  }
+
+  // Add data attributes to $div
+  $div
+    .attr('data-dates', dates.join(' '))
+    .attr('data-types', types.join(' '))
+    .attr('data-descriptions', descriptions.join(' '))
+    .attr('data-amounts', amounts.join(' '))
+    .attr('data-total', total);
+}
+
+function addReconciledBankingTransactions($div, transactions) {
+  // Arrays to hold item values for data attributes
+  const dates = [];
+  const descriptions = [];
+  const amounts = [];
+
+  $.each(transactions, (index, transaction) => {
+    // Add transaction date
+    const $dateDiv = $('<div></div>');
+    $dateDiv.addClass('date');
+
+    const $dateEm = $('<em></em>');
+    $dateEm
+      .text('Date: ')
+      .appendTo($dateDiv);
+
+    const $date = $('<span></span>');
+    $date
+      .text(transaction.date)
+      .appendTo($dateDiv);
+
+    dates.push(transaction.date);
+
+    // Add description
+    const $descriptionDiv = $('<div></div>');
+    $descriptionDiv.addClass('description');
+
+    const $descriptionEm = $('<em></em>');
+    $descriptionEm
+      .text('Description: ')
+      .appendTo($descriptionDiv);
+
+    const $description = $('<span></span>');
+    $description
+      .text(transaction.description)
+      .appendTo($descriptionDiv);
+
+    descriptions.push(transaction.description);
+
+    // Determine how to format amount
+    let amount = 0;
+
+    if (transaction.debit) {
+      // Make debit a negative number
+      amount = Number(transaction.debit) * -1;
+    } else {
+      amount = transaction.credit;
+    }
+
+    // Add amount
+    const $amountDiv = $('<div></div>');
+    $amountDiv.addClass('amount');
+
+    const $amountEm = $('<em></em>');
+    $amountEm
+      .text('Amount: ')
+      .appendTo($amountDiv);
+
+    const $amount = $('<span></span>');
+    $amount
+      .text(`${toCurrency(amount)}`)
+      .appendTo($amountDiv);
+
+    if (amount < 0) {
+      $amount.addClass('negative');
+    }
+
+    amounts.push(amount);
+
+    const $itemDiv = $('<div></div>');
+    $itemDiv
+      .addClass('bank')
+      .on('click', handleTransactionClick)
+      .append($dateDiv)
+      .append($descriptionDiv)
+      .append($amountDiv)
+      .appendTo($div);
+  });
+
+  // Add a total item
+  const total = amounts.reduce((a, b) => a + b, 0);
+
+  const $totalDiv = $('<div></div>');
+  $totalDiv
+    .addClass('bank')
+    .addClass('total-row')
+    .append($('<span></span>').addClass('total-header').text('TOTAL'))
+    .append($('<span></span>').addClass('total-amount').text(toCurrency(total)))
+    .appendTo($div);
+
+  if (total < 0) {
+    $totalDiv.find('.total-amount').addClass('negative');
+  }
+
+
+  // Add the $div data attributes
+  $div
+    .attr('data-dates', dates.join(' '))
+    .attr('data-descriptions', descriptions.join(' '))
+    .attr('data-amounts', amounts.join(' '))
+    .attr('data-total', total);
+}
+
 function addReconciledTransactions(data) {
   // Clear any data already in list
   const $reconciledList = $('#reconciled-transactions');
   $reconciledList.empty();
 
   $.each(data, (index, group) => {
-    // Add transaction date
-    const $testDiv = $('<div></div>');
-    $testDiv.addClass('date');
+    // Add the financial transactions
+    const $financialDiv = $('<div></div>');
+    $financialDiv.addClass('financial-transactions');
 
-    const $testEm = $('<em></em>');
-    $testEm
-      .text('Test: ')
-      .appendTo($testDiv);
+    addReconciledFinancialTransactions($financialDiv, group.financial_transactions);
 
-    const $test = $('<span></span>');
-    $test
-      .text(group.financial_transactions[0].description)
-      .appendTo($testDiv);
+    // Add the banking transactions
+    const $bankingDiv = $('<div></div>');
+    $bankingDiv.addClass('banking-transactions');
 
+    addReconciledBankingTransactions($bankingDiv, group.bank_transactions);
+
+    // Add a discrepancy div
+    const $discrepancyDiv = $('<div></div>');
+    $discrepancyDiv.addClass('discrepancy');
+
+    const $discrepancyHeader = $('<span></span>');
+    $discrepancyHeader
+      .addClass('discrepancy-header')
+      .text('Discrepancy: ')
+      .appendTo($discrepancyDiv);
+
+    const discrepancy = Number($financialDiv.attr('data-total')) - Number($bankingDiv.attr('data-total'));
+
+    const $discrepancySpan = $('<span></span>');
+    $discrepancySpan
+      .addClass('discrepancy-amount')
+      .text(toCurrency(discrepancy))
+      .appendTo($discrepancyDiv);
+
+    if (discrepancy) {
+      $discrepancySpan.addClass('negative');
+    }
+
+    // Assemble the reconciled group item
     const $li = $('<li></li>');
     $li
       .addClass('match-item')
       .attr('data-id', group.id)
       .on('click', handleTransactionClick)
-      .append($testDiv)
+      .append($financialDiv)
+      .append($bankingDiv)
+      .append($discrepancyDiv)
       .appendTo($reconciledList);
   });
 }
