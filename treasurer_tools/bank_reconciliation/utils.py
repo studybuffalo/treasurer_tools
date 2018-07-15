@@ -88,11 +88,9 @@ def return_transactions_as_json(request):
             })
 
         # Sort the transaction list by reverse chronological order
-        json_data["data"] = sorted(
-            transaction_list,
-            key=lambda k: ["date"],
-            reverse=True,
-        )
+        sorted_list = sorted(transaction_list, key=lambda k: k["date"], reverse=True,)
+
+        json_data["data"] = sorted_list
 
     # Retrieve all unreconciled bank transactions between the specified dates
     elif transaction_type == "bank":
