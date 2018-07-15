@@ -673,6 +673,8 @@ function addReconciledTransactions(data) {
 
     if (discrepancy) {
       $discrepancySpan.addClass('negative');
+    } else {
+      $discrepancySpan.addClass('positive');
     }
 
     // Assemble the reconciled group item
