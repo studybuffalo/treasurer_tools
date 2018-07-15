@@ -745,7 +745,7 @@ function filterResults() {
   const financialFilterText = $('#financial-text-filter').val().toUpperCase();
 
   // Get the items to filter
-  const $financialItems = $('.financial-item');
+  const $financialItems = $('#financial-transactions .financial-item');
 
   // Cycle through each item to see if filter applies
   $financialItems.each((index, item) => {
@@ -774,7 +774,7 @@ function filterResults() {
   const bankFilterText = $('#bank-text-filter').val().toUpperCase();
 
   // Get the items to filter
-  const $bankItems = $('.bank-item');
+  const $bankItems = $('#bank-transactions .bank-item');
 
   // Cycle through each item to see if filter applies
   $bankItems.each((index, item) => {
