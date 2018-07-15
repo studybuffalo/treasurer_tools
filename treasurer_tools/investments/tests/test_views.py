@@ -55,23 +55,19 @@ class InvestmentAddTest(TestCase):
 
         self.valid_data = {
             "name": "Mutual Funds",
-            "date_invested": "2017-03-01",
-            "amount_invested": 1000.00,
-            "date_matured": "2017-06-01",
-            "amount_matured": 1005.00,
             "rate": "0.05% per month"
         }
 
     def test_add_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
-        response = self.client.get(reverse("investments:add"))
+        response = self.client.get(reverse("investments:investment_add"))
 
         self.assertEqual(response.status_code, 302)
 
     def test_add_no_redirect_if_logged_in(self):
         """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("investments:add"))
+        response = self.client.get(reverse("investments:investment_add"))
 
         # Check that user logged in
         self.assertEqual(str(response.context['user']), 'user')
@@ -90,7 +86,7 @@ class InvestmentAddTest(TestCase):
     def test_investment_add_template(self):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get(reverse("investments:add"))
+        response = self.client.get(reverse("investments:investment_add"))
 
         # Check for proper template
         self.assertTemplateUsed(response, "investments/add_edit.html")
@@ -99,7 +95,7 @@ class InvestmentAddTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("investments:add"), self.valid_data, follow=True,
+            reverse("investments:investment_add"), self.valid_data, follow=True,
         )
 
         # Check that redirection was successful
@@ -113,7 +109,7 @@ class InvestmentAddTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("investments:add"), invalid_data, follow=True,
+            reverse("investments:investment_add"), invalid_data, follow=True,
         )
 
         # Check that there was no redirect
@@ -126,7 +122,7 @@ class InvestmentAddTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("investments:add"), self.valid_data, follow=True,
+            reverse("investments:investment_add"), self.valid_data, follow=True,
         )
 
         # Check that one entry is added
@@ -141,27 +137,20 @@ class InvestmentEditTest(TestCase):
 
         self.current_data = {
             "name": investment.name,
-            "date_invested": investment.date_invested,
-            "amount_invested": investment.amount_invested,
-            "date_matured": investment.date_matured,
-            "amount_matured": investment.amount_matured,
             "rate": investment.rate
         }
         self.new_data = {
             "name": "Mutual Funds",
-            "date_invested": "2017-03-01",
-            "amount_invested": 1000.00,
-            "date_matured": "2017-06-01",
-            "amount_matured": 1005.00,
             "rate": "0.05% per month"
         }
+
         self.valid_args = {"investment_id": investment.id}
-        self.valid_url = "/investments/edit/{}".format(investment.id)
+        self.valid_url = "/investments/edit/{}/".format(investment.id)
 
     def test_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("investments:edit", kwargs=self.valid_args)
+            reverse("investments:investment_edit", kwargs=self.valid_args)
         )
 
         self.assertEqual(response.status_code, 302)
@@ -170,7 +159,7 @@ class InvestmentEditTest(TestCase):
         """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:edit", kwargs=self.valid_args)
+            reverse("investments:investment_edit", kwargs=self.valid_args)
         )
 
         # Check that user logged in
@@ -191,7 +180,7 @@ class InvestmentEditTest(TestCase):
         """Checks that edit page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:edit", kwargs={"investment_id": 999999999})
+            reverse("investments:investment_edit", kwargs={"investment_id": 999999999})
         )
 
         # Check that a 404 response is generated
@@ -201,7 +190,7 @@ class InvestmentEditTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:edit", kwargs=self.valid_args)
+            reverse("investments:investment_edit", kwargs=self.valid_args)
         )
 
         # Check for proper template
@@ -211,7 +200,7 @@ class InvestmentEditTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("investments:edit", kwargs=self.valid_args),
+            reverse("investments:investment_edit", kwargs=self.valid_args),
             self.current_data,
             follow=True,
         )
@@ -226,7 +215,7 @@ class InvestmentEditTest(TestCase):
 
         self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("investments:edit", kwargs=self.valid_args),
+            reverse("investments:investment_edit", kwargs=self.valid_args),
             self.new_data
         )
 
@@ -247,12 +236,12 @@ class InvestmentDeleteTest(TestCase):
         investment = create_investment()
 
         self.valid_args = {"investment_id": investment.id}
-        self.valid_url = "/investments/delete/{}".format(investment.id)
+        self.valid_url = "/investments/delete/{}/".format(investment.id)
 
     def test_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
         response = self.client.get(
-            reverse("investments:delete", kwargs=self.valid_args)
+            reverse("investments:investment_delete", kwargs=self.valid_args)
         )
 
         self.assertEqual(response.status_code, 302)
@@ -261,7 +250,7 @@ class InvestmentDeleteTest(TestCase):
         """Checks redirect to login page if user is not logged in"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:delete", kwargs=self.valid_args)
+            reverse("investments:investment_delete", kwargs=self.valid_args)
         )
 
         # Check that user logged in
@@ -282,7 +271,7 @@ class InvestmentDeleteTest(TestCase):
         """Checks that delete page URL name failed on invalid ID"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:delete", kwargs={"investment_id": 999999999})
+            reverse("investments:investment_delete", kwargs={"investment_id": 999999999})
         )
 
         # Check that page is accessible
@@ -292,7 +281,7 @@ class InvestmentDeleteTest(TestCase):
         """Checks that correct template is being used"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.get(
-            reverse("investments:delete", kwargs=self.valid_args)
+            reverse("investments:investment_delete", kwargs=self.valid_args)
         )
 
         # Check for proper template
@@ -302,7 +291,7 @@ class InvestmentDeleteTest(TestCase):
         """Checks that form redirects to the dashboard on success"""
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
-            reverse("investments:delete", kwargs=self.valid_args),
+            reverse("investments:investment_delete", kwargs=self.valid_args),
             follow=True,
         )
 
@@ -317,7 +306,7 @@ class InvestmentDeleteTest(TestCase):
         # Delete entry
         self.client.login(username="user", password="abcd123456")
         self.client.post(
-            reverse("investments:delete", kwargs=self.valid_args)
+            reverse("investments:investment_delete", kwargs=self.valid_args)
         )
 
         # Checks that investment was deleted
