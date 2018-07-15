@@ -177,13 +177,17 @@ function updateUnreconciledTotal() {
   // Get the financial total
   let financialTotal = 0;
 
-  for (let i = 0; i < financialLength; i += 1) {
-    if ($financialTransactions.attr('data-type') === 'EXPENSE') {
-      financialTotal -= Number($financialTransactions.eq(i).attr('data-amount'));
-    } else {
-      financialTotal += Number($financialTransactions.eq(i).attr('data-amount'));
+  $financialTransactions.each((index, transaction) => {
+    const $transaction = $(transaction);
+    const type = $transaction.attr('data-type');
+    const amount = Number($transaction.attr('data-amount'));
+
+    if (type === 'EXPENSE' || type === 'INVESTED') {
+      financialTotal -= amount;
+    } else if (type === 'REVENUE' || type === 'MATURED' || type === 'INTEREST PAID' || type === 'CANCELLED') {
+      financialTotal += amount;
     }
-  }
+  });
 
   // Get the banking total
   let bankTotal = 0;
