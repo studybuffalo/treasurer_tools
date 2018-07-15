@@ -290,6 +290,7 @@ class BankReconciliationObjectTest(TestCase):
         self.financial_transactions = create_financial_transactions()
         self.valid_data = {
             "bank_ids": [self.bank_transactions[0].id],
+            "investment_ids": [],
             "financial_ids": [self.financial_transactions[0].id],
         }
 
