@@ -24,6 +24,7 @@
 
       {% for item in transaction.item_set.all %}
         <div class="item"
+          data-date="{{ item.date_item|date:'Y-m-d' }}"
           data-description="{{ item.description }}"
           data-amount="${{ item.amount }}"
           data-gst="${{ item.gst }}"

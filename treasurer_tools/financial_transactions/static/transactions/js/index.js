@@ -101,86 +101,58 @@ function filterResults() {
 
   $transactions.addClass('hide');
 
-  $transactions.each((transactionIndex, transaction) => {
+  $transactions.each((index, transaction) => {
     const $transaction = $(transaction);
 
-    // Check transaction name
+    // Get fields to search against
+    const dateSubmitted = $transaction.attr('data-date-submitted').toUpperCase();
     const transactionMemo = $transaction.attr('data-memo').toUpperCase();
-
-    if (transactionMemo.indexOf(filterText) !== -1) {
-      $transaction.removeClass('hide');
-      return false;
-    }
-
-    // Check payee/payers
     const payeePayer = $transaction.attr('data-payee-payer').toUpperCase();
-
-    if (payeePayer.indexOf(filterText) !== -1) {
-      $transaction.removeClass('hide');
-      return false;
-    }
-
-    // Check transaction total
     const transactionTotal = $transaction.attr('data-transaction-total').toUpperCase();
 
-    if (transactionTotal.indexOf(filterText) !== -1) {
+    // Check for match
+    if (
+      dateSubmitted.indexOf(filterText) !== -1
+      || transactionMemo.indexOf(filterText) !== -1
+      || payeePayer.indexOf(filterText) !== -1
+      || transactionTotal.indexOf(filterText) !== -1
+    ) {
       $transaction.removeClass('hide');
-      return false;
     }
 
-    $transaction.find('.item').each((itemIndex, item) => {
+    // Check each item of the transaction
+    const $items = $transaction.find('.item').not('.header, .totals');
+
+    $items.each((itemIndex, item) => {
       const $item = $(item);
 
-      // Check item names
+      // Get fields to search against
+      const itemDate = $item.attr('data-date').toUpperCase();
       const itemDescription = $item.attr('data-description').toUpperCase();
-
-      if (itemDescription.indexOf(filterText) !== -1) {
-        $transaction.removeClass('hide');
-        return false;
-      }
-
-      // Check item amounts
       const itemAmount = $item.attr('data-amount').toUpperCase();
-
-      if (itemAmount.indexOf(filterText) !== -1) {
-        $transaction.removeClass('hide');
-        return false;
-      }
-
-      // Check item GST
       const itemGST = $item.attr('data-gst').toUpperCase();
-
-      if (itemGST.indexOf(filterText) !== -1) {
-        $transaction.removeClass('hide');
-        return false;
-      }
-
-      // Check item total
       const itemTotal = $item.attr('data-total').toUpperCase();
 
-      if (itemTotal.indexOf(filterText) !== -1) {
+      if (
+        itemDate.indexOf(filterText) !== -1
+        || itemDescription.indexOf(filterText) !== -1
+        || itemAmount.indexOf(filterText) !== -1
+        || itemGST.indexOf(filterText) !== -1
+        || itemTotal.indexOf(filterText) !== -1
+      ) {
         $transaction.removeClass('hide');
-        return false;
       }
 
-      // Check item accounting codes
+      // Check each accounting code of the item
       $item.find('.financial-code').each((codeIndex, code) => {
         const $code = $(code);
 
-        // Check the accounting code
+        // Get the fields to search against
         const codeCode = $code.attr('data-code').toUpperCase();
-
-        if (codeCode.indexOf(filterText) !== -1) {
-          $transaction.removeClass('hide');
-          return false;
-        }
-
-        // Check the accounting code description
-
-        // Check the accounting code
         const codeDescription = $code.attr('data-code-description').toUpperCase();
 
-        if (codeDescription.indexOf(filterText) !== -1) {
+
+        if (codeCode.indexOf(filterText) !== -1 || codeDescription.indexOf(filterText) !== -1) {
           $transaction.removeClass('hide');
           return false;
         }
