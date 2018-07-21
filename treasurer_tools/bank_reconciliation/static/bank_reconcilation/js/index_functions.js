@@ -1128,3 +1128,5 @@ $(document).ready(() => {
   // Run initial total calculation
   updateUnreconciledTotal();
 });
+
+// TODO: UPDATE TOTAL ON SUCCESSFUL MATCH
