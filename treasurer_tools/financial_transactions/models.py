@@ -64,12 +64,36 @@ class FinancialTransaction(models.Model):
     @property
     def total(self):
         """Calculates the total of all children items"""
-        items = self.item_set.all()
+        items = self.items.all()
 
         total = Decimal(0)
 
         for item in items:
             total = Decimal(total) + Decimal(item.amount) + Decimal(item.gst)
+
+        return total
+
+    @property
+    def total_before_tax(self):
+        """Calculates the pre-tax total of all children items."""
+        items = self.items.all()
+
+        total = Decimal(0)
+
+        for item in items:
+            total = Decimal(total) + Decimal(item.amount)
+
+        return total
+
+    @property
+    def total_tax(self):
+        """Calculates the tax total of all children items."""
+        items = self.items.all()
+
+        total = Decimal(0)
+
+        for item in items:
+            total = Decimal(total) + Decimal(item.gst)
 
         return total
 
