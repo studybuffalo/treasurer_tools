@@ -22,7 +22,7 @@
         <div class="financial-code">Financial Codes</div>
       </div>
 
-      {% for item in transaction.item_set.all %}
+      {% for item in transaction.items.all %}
         <div class="item"
           data-date="{{ item.date_item|date:'Y-m-d' }}"
           data-description="{{ item.description }}"

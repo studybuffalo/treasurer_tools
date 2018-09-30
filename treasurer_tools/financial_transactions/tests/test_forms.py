@@ -83,22 +83,22 @@ class CompiledFormsTest(TestCase):
             "payee_payer": payee_payer.id,
             "memo": "Travel Grant award 2017",
             "date_submitted": "2017-06-01",
-            "item_set-0-date_item": "2017-06-01",
-            "item_set-0-description": "Taxi costs",
-            "item_set-0-amount": "100.0",
-            "item_set-0-gst": "5.0",
-            "item_set-0-id": "",
-            "item_set-0-transaction": "",
-            "item_set-0-coding_set-0-financial_code_match_id": "",
-            "item_set-0-coding_set-0-budget_year": codes[0].financial_code_group.budget_year.id,
-            "item_set-0-coding_set-0-code": codes[0].id,
-            "item_set-0-coding_set-1-financial_code_match_id": "",
-            "item_set-0-coding_set-1-budget_year": codes[2].financial_code_group.budget_year.id,
-            "item_set-0-coding_set-1-code": codes[2].id,
-            "item_set-TOTAL_FORMS": "1",
-            "item_set-INITIAL_FORMS": "0",
-            "item_set-MIN_NUM_FORMS": "1",
-            "item_set-MAX_NUM_FORMS": "1000",
+            "items-0-date_item": "2017-06-01",
+            "items-0-description": "Taxi costs",
+            "items-0-amount": "100.0",
+            "items-0-gst": "5.0",
+            "items-0-id": "",
+            "items-0-transaction": "",
+            "items-0-coding_set-0-financial_code_match_id": "",
+            "items-0-coding_set-0-budget_year": codes[0].financial_code_group.budget_year.id,
+            "items-0-coding_set-0-code": codes[0].id,
+            "items-0-coding_set-1-financial_code_match_id": "",
+            "items-0-coding_set-1-budget_year": codes[2].financial_code_group.budget_year.id,
+            "items-0-coding_set-1-code": codes[2].id,
+            "items-TOTAL_FORMS": "1",
+            "items-INITIAL_FORMS": "0",
+            "items-MIN_NUM_FORMS": "1",
+            "items-MAX_NUM_FORMS": "1000",
             "financialtransactionmatch_set-TOTAL_FORMS": "0",
             "financialtransactionmatch_set-INITIAL_FORMS": "0",
             "financialtransactionmatch_set-MIN_NUM_FORMS": "0",
@@ -153,18 +153,18 @@ class CompiledFormsTest(TestCase):
 
         # Get the newly saved values
         transaction = FinancialTransaction.objects.last()
-        item = transaction.item_set.all()[0]
+        item = transaction.items.all()[0]
         code_matches = item.financialcodematch_set.all()
 
         # Create the edited data
         edited_data = self.valid_data
-        edited_data["item_set-0-id"] = item.id
-        edited_data["item_set-0-transaction"] = transaction.id
-        edited_data["item_set-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
-        edited_data["item_set-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
-        edited_data["item_set-INITIAL_FORMS"] = "1"
+        edited_data["items-0-id"] = item.id
+        edited_data["items-0-transaction"] = transaction.id
+        edited_data["items-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
+        edited_data["items-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
+        edited_data["items-INITIAL_FORMS"] = "1"
         edited_data["memo"] = "Travel Grant award 2018"
-        edited_data["item_set-0-description"] = "Food costs"
+        edited_data["items-0-description"] = "Food costs"
 
         new_forms = CompiledForms("expense", "POST", edited_data, transaction_id=transaction.id)
 
@@ -181,7 +181,7 @@ class CompiledFormsTest(TestCase):
         new_transaction = FinancialTransaction.objects.last()
         self.assertEqual(new_transaction.memo, "Travel Grant award 2018")
 
-        new_item = new_transaction.item_set.all()[0]
+        new_item = new_transaction.items.all()[0]
         self.assertEqual(new_item.description, "Food costs")
 
     def test_retrieval_of_saved_data(self):
@@ -219,7 +219,7 @@ class CompiledFormsTest(TestCase):
 
         model_ids = []
 
-        for instance in transaction.item_set.all()[0].financialcodematch_set.all():
+        for instance in transaction.items.all()[0].financialcodematch_set.all():
             model_ids.append(instance.financial_code.id)
 
         # Check that the listed codes match
@@ -229,19 +229,19 @@ class CompiledFormsTest(TestCase):
         """Tests that an item can be deleted via .save()"""
         # First save two items
         valid_data = self.valid_data
-        valid_data["item_set-1-date_item"] = "2017-06-02"
-        valid_data["item_set-1-description"] = "Meal"
-        valid_data["item_set-1-amount"] = "20.0"
-        valid_data["item_set-1-gst"] = "2.0"
-        valid_data["item_set-1-id"] = ""
-        valid_data["item_set-1-transaction"] = ""
-        valid_data["item_set-1-coding_set-0-financial_code_match_id"] = ""
-        valid_data["item_set-1-coding_set-0-budget_year"] = self.codes[0].financial_code_group.budget_year.id
-        valid_data["item_set-1-coding_set-0-code"] = self.codes[0].id
-        valid_data["item_set-1-coding_set-1-financial_code_match_id"] = ""
-        valid_data["item_set-1-coding_set-1-budget_year"] = self.codes[2].financial_code_group.budget_year.id
-        valid_data["item_set-1-coding_set-1-code"] = self.codes[2].id
-        valid_data["item_set-TOTAL_FORMS"] = "2"
+        valid_data["items-1-date_item"] = "2017-06-02"
+        valid_data["items-1-description"] = "Meal"
+        valid_data["items-1-amount"] = "20.0"
+        valid_data["items-1-gst"] = "2.0"
+        valid_data["items-1-id"] = ""
+        valid_data["items-1-transaction"] = ""
+        valid_data["items-1-coding_set-0-financial_code_match_id"] = ""
+        valid_data["items-1-coding_set-0-budget_year"] = self.codes[0].financial_code_group.budget_year.id
+        valid_data["items-1-coding_set-0-code"] = self.codes[0].id
+        valid_data["items-1-coding_set-1-financial_code_match_id"] = ""
+        valid_data["items-1-coding_set-1-budget_year"] = self.codes[2].financial_code_group.budget_year.id
+        valid_data["items-1-coding_set-1-code"] = self.codes[2].id
+        valid_data["items-TOTAL_FORMS"] = "2"
 
         # Save the items
         forms = CompiledForms("expense", "POST", valid_data)
@@ -253,21 +253,21 @@ class CompiledFormsTest(TestCase):
 
         # Retrieve the newly saved items to re-populate form
         transaction = FinancialTransaction.objects.last()
-        items = transaction.item_set.all().order_by("id")
+        items = transaction.items.all().order_by("id")
         code_matches = items[0].financialcodematch_set.all().order_by("id")
 
         # Update the data
         delete_data = valid_data
-        delete_data["item_set-0-id"] = items[0].id
-        delete_data["item_set-0-transaction"] = transaction.id
-        delete_data["item_set-1-id"] = items[1].id
-        delete_data["item_set-1-transaction"] = transaction.id
-        delete_data["item_set-1-DELETE"] = "on"
-        delete_data["item_set-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
-        delete_data["item_set-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
-        delete_data["item_set-1-coding_set-0-financial_code_match_id"] = code_matches[0].id
-        delete_data["item_set-1-coding_set-1-financial_code_match_id"] = code_matches[1].id
-        delete_data["item_set-INITIAL_FORMS"] = 2
+        delete_data["items-0-id"] = items[0].id
+        delete_data["items-0-transaction"] = transaction.id
+        delete_data["items-1-id"] = items[1].id
+        delete_data["items-1-transaction"] = transaction.id
+        delete_data["items-1-DELETE"] = "on"
+        delete_data["items-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
+        delete_data["items-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
+        delete_data["items-1-coding_set-0-financial_code_match_id"] = code_matches[0].id
+        delete_data["items-1-coding_set-1-financial_code_match_id"] = code_matches[1].id
+        delete_data["items-INITIAL_FORMS"] = 2
 
         # Delete the item
         delete_forms = CompiledForms("expense", "POST", delete_data, transaction_id=transaction.id)
@@ -354,10 +354,10 @@ class CompiledFormsTest(TestCase):
 
         # Create test data with the new attachment
         edited_data = self.valid_data
-        edited_data["item_set-0-id"] = item.id
-        edited_data["item_set-0-transaction"] = transaction.id
-        edited_data["item_set-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
-        edited_data["item_set-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
+        edited_data["items-0-id"] = item.id
+        edited_data["items-0-transaction"] = transaction.id
+        edited_data["items-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
+        edited_data["items-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
         edited_data["financialtransactionmatch_set-0-id"] = 1
         edited_data["financialtransactionmatch_set-0-attachment"] = 1
         edited_data["financialtransactionmatch_set-TOTAL_FORMS"] = 1
@@ -412,7 +412,7 @@ class CompiledFormsTest(TestCase):
     def test_invalid_item_date(self):
         """Confirms is_valid() returns false with invalid item date"""
         edited_data = self.valid_data
-        edited_data["item_set-0-date_item"] = ""
+        edited_data["items-0-date_item"] = ""
 
         forms = CompiledForms("expense", "POST", edited_data)
 
@@ -422,7 +422,7 @@ class CompiledFormsTest(TestCase):
     def test_invalid_item_description(self):
         """Confirms is_valid() returns false with invalid item description"""
         edited_data = self.valid_data
-        edited_data["item_set-0-description"] = ""
+        edited_data["items-0-description"] = ""
 
         forms = CompiledForms("expense", "POST", edited_data)
 
@@ -432,7 +432,7 @@ class CompiledFormsTest(TestCase):
     def test_invalid_item_amount(self):
         """Confirms is_valid() returns false with invalid item amount"""
         edited_data = self.valid_data
-        edited_data["item_set-0-amount"] = ""
+        edited_data["items-0-amount"] = ""
 
         forms = CompiledForms("expense", "POST", edited_data)
 
@@ -442,7 +442,7 @@ class CompiledFormsTest(TestCase):
     def test_invalid_item_gst(self):
         """Confirms is_valid() returns false with invalid item gst"""
         edited_data = self.valid_data
-        edited_data["item_set-0-gst"] = ""
+        edited_data["items-0-gst"] = ""
 
         forms = CompiledForms("expense", "POST", edited_data)
 
@@ -452,7 +452,7 @@ class CompiledFormsTest(TestCase):
     def test_invalid_financial_code_code(self):
         """Confirms is_valid() returns false with invalid code"""
         edited_data = self.valid_data
-        edited_data["item_set-0-coding_set-0-code"] = ""
+        edited_data["items-0-coding_set-0-code"] = ""
 
         forms = CompiledForms("expense", "POST", edited_data)
 
@@ -501,10 +501,10 @@ class CompiledFormsTest(TestCase):
     def test_invalid_with_no_items(self):
         """Tests that form is invalid if no items are submitted"""
         invalid_data = self.valid_data
-        invalid_data["item_set-0-date_item"] = ""
-        invalid_data["item_set-0-description"] = ""
-        invalid_data["item_set-0-amount"] = ""
-        invalid_data["item_set-0-gst"] = ""
+        invalid_data["items-0-date_item"] = ""
+        invalid_data["items-0-description"] = ""
+        invalid_data["items-0-amount"] = ""
+        invalid_data["items-0-gst"] = ""
 
         forms = CompiledForms("expense", "POST", invalid_data)
 
@@ -539,12 +539,12 @@ class CompiledFormsTest(TestCase):
 
         # Update the data
         delete_data = self.valid_data
-        delete_data["item_set-0-id"] = item.id
-        delete_data["item_set-0-transaction"] = transaction.id
-        delete_data["item_set-0-DELETE"] = "on"
-        delete_data["item_set-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
-        delete_data["item_set-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
-        delete_data["item_set-INITIAL_FORMS"] = 1
+        delete_data["items-0-id"] = item.id
+        delete_data["items-0-transaction"] = transaction.id
+        delete_data["items-0-DELETE"] = "on"
+        delete_data["items-0-coding_set-0-financial_code_match_id"] = code_matches[0].id
+        delete_data["items-0-coding_set-1-financial_code_match_id"] = code_matches[1].id
+        delete_data["items-INITIAL_FORMS"] = 1
 
         # Check that form is now invalid
         delete_forms = CompiledForms("expense", "POST", delete_data, transaction_id=transaction.id)

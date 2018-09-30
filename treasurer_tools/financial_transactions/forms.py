@@ -94,7 +94,7 @@ class CompiledForms(object):
 
         for form_id, system in enumerate(financial_code_systems):
             # Setup the proper prefix for the form fields
-            prefix = "item_set-{}-coding_set-{}".format(item_form_id, form_id)
+            prefix = "items-{}-coding_set-{}".format(item_form_id, form_id)
 
             data = self.__set_financial_code_data(item_id, system.id, prefix)
 
@@ -277,7 +277,7 @@ class CompiledForms(object):
 
         for system in financial_code_systems:
             # Setup the proper prefix for the form fields
-            prefix = "item_set-__prefix__-coding_set-{}".format(form_id)
+            prefix = "items-__prefix__-coding_set-{}".format(form_id)
 
             # Create a financial code form to act as the blank template
             financial_code_form = FinancialCodeAssignmentForm(

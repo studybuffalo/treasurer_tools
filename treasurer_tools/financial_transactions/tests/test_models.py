@@ -87,7 +87,7 @@ class ItemModelTest(TestCase):
 
     def setUp(self):
         transactions = create_financial_transactions()
-        self.items = transactions[0].item_set.all().order_by("id")
+        self.items = transactions[0].items.all().order_by("id")
 
     def test_labels(self):
         """tests a series of fields for proper label generation"""
@@ -152,7 +152,7 @@ class FinancialCodeMatchModelTest(TestCase):
         transactions = create_financial_transactions()
 
         self.match = FinancialCodeMatch.objects.create(
-            item=transactions[0].item_set.all()[0],
+            item=transactions[0].items.all()[0],
             financial_code=codes[0]
         )
 
