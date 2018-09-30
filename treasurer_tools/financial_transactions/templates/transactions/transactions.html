@@ -72,5 +72,9 @@
         <a href="{% url 'financial_transactions:delete' 'revenue' transaction.id %}" class="delete">Delete</a>
       {% endif %}
     </div>
+
+    <div class="print-options">
+      <a href="{% url 'financial_transactions:pdf' transaction.id %}" class="edit">Generate PDF</a>
+    </div>
   </div>
 {% endfor %}
