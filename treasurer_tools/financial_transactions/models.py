@@ -78,6 +78,7 @@ class Item(models.Model):
     transaction = models.ForeignKey(
         FinancialTransaction,
         on_delete=models.CASCADE,
+        related_name="items",
     )
     date_item = models.DateField(
         default=timezone.now,
@@ -100,6 +101,10 @@ class Item(models.Model):
         help_text="The tax (GST/HST) dollar value",
         max_digits=12,
         verbose_name="GST/HST",
+    )
+    financial_codes = models.ManyToManyField(
+        FinancialCode,
+        through='FinancialCodeMatch',
     )
     history = HistoricalRecords()
 
