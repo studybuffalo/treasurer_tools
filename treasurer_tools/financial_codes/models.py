@@ -49,6 +49,10 @@ class BudgetYear(models.Model):
         help_text="Last day of the budget year",
         verbose_name="end date",
     )
+    short_name = models.CharField(
+        help_text="A short name to identify the budget year",
+        max_length=16,
+    )
     history = HistoricalRecords()
 
     def __str__(self):
