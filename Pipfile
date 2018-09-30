@@ -6,9 +6,11 @@ name = "pypi"
 [packages]
 argon2-cffi = "==18.1.0"  # https://github.com/hynek/argon2_cffi
 boto3 = ">=1.7"  # https://github.com/boto/boto3
+pillow = ">=5.2.0"  # https://github.com/python-pillow/Pillow
 psycopg2-binary = "==2.7.4"  # https://github.com/psycopg/psycopg2
 raven = "==6.6.0"  # https://github.com/jschneier/django-storages
 redis = ">=2.10.5"  # https://github.com/antirez/redis
+reportlab = ">=3.5.8"  # https://www.reportlab.com/docs/reportlab-userguide.pdf
 Unipath = "<2.0,>=1.1"  # https://github.com/mikeorr/Unipath
 whitenoise = "==3.3.1"  # https://github.com/evansd/whitenoise
 # Django
@@ -21,7 +23,6 @@ django-multiupload = ">=0.5.2"  # https://github.com/Chive/django-multiupload
 django-redis = "==4.9.0"  # https://github.com/niwinz/django-redis
 django-simple-history = ">=1.9.0"  # https://github.com/treyhunner/django-simple-history
 django-storages = "==1.6.6"  # https://github.com/jschneier/django-storages
-pillow = "*"
 
 [dev-packages]
 # Code quality
