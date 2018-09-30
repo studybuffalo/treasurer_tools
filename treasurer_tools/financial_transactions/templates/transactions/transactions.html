@@ -74,7 +74,7 @@
     </div>
 
     <div class="print-options">
-      <a href="{% url 'financial_transactions:pdf' transaction.id %}" class="edit">Generate PDF</a>
+      <a href="{% url 'financial_transactions:pdf' transaction.id %}" class="edit" target="_blank" rel="noopener">Generate Submission Form</a>
     </div>
   </div>
 {% endfor %}
