@@ -13,6 +13,7 @@ from payee_payers.models import PayeePayer
 
 
 class FinancialTransaction(models.Model):
+    # TODO: Add proper tracking of submission details
     """Holds data on the overall transaction"""
     payee_payer = models.ForeignKey(
         PayeePayer,
