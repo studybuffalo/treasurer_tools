@@ -22,7 +22,7 @@
         <div class="financial-code">Financial Codes</div>
       </div>
 
-      {% for item in transaction.item_set.all %}
+      {% for item in transaction.items.all %}
         <div class="item"
           data-date="{{ item.date_item|date:'Y-m-d' }}"
           data-description="{{ item.description }}"
@@ -71,6 +71,10 @@
         <a href="{% url 'financial_transactions:edit' 'revenue' transaction.id %}" class="edit">Edit</a>
         <a href="{% url 'financial_transactions:delete' 'revenue' transaction.id %}" class="delete">Delete</a>
       {% endif %}
+    </div>
+
+    <div class="print-options">
+      <a href="{% url 'financial_transactions:pdf' transaction.id %}" class="edit" target="_blank" rel="noopener">Generate Submission Form</a>
     </div>
   </div>
 {% endfor %}

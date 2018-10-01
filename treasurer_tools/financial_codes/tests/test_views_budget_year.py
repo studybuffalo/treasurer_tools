@@ -17,7 +17,8 @@ class BudgetYearAddTest(TestCase):
         self.valid_data = {
             "financial_code_system": systems[0].id,
             "date_start": "2017-04-01",
-            "date_end": "2018-03-31"
+            "date_end": "2018-03-31",
+            "short_name": "2017-2018",
         }
 
     def test_year_add_redirect_if_not_logged_in(self):
@@ -106,6 +107,7 @@ class BudgetYearEditTest(TestCase):
             "financial_code_system":  year.financial_code_system.id,
             "date_start": year.date_start,
             "date_end": year.date_end,
+            "short_name": year.short_name,
         }
         self.year_id = year.id
         self.valid_url = "/settings/codes/year/delete/{}".format(year.id)
@@ -191,6 +193,7 @@ class BudgetYearEditTest(TestCase):
         edited_data = self.valid_data
         edited_data["date_start"] = "2017-01-01"
         edited_data["date_end"] = "2017-12-31"
+        edited_data["short_name"] = "2017"
 
         self.client.login(username="user", password="abcd123456")
         self.client.post(
@@ -211,6 +214,12 @@ class BudgetYearEditTest(TestCase):
         self.assertEqual(
             str(BudgetYear.objects.get(id=self.year_id).date_end),
             "2017-12-31"
+        )
+
+        # Confirm short_name has been updated properly
+        self.assertEqual(
+            str(BudgetYear.objects.get(id=self.year_id).short_name),
+            "2017"
         )
 
     def test_year_edit_no_redirect_on_invalid_data(self):

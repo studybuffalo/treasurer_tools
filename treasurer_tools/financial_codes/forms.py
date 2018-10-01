@@ -61,6 +61,7 @@ class BudgetYearForm(forms.ModelForm):
             "financial_code_system",
             "date_start",
             "date_end",
+            "short_name",
         ]
 
     def clean_date_end(self):

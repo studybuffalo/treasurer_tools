@@ -40,6 +40,7 @@ def create_budget_year():
         financial_code_system=systems[0],
         date_start="2017-01-01",
         date_end="2017-12-31",
+        short_name="2017",
     )
 
     return year_reference
