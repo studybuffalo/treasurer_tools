@@ -40,6 +40,12 @@ class FinancialTransaction(models.Model):
         default=timezone.now,
         verbose_name="submission date"
     )
+    submission_notes = models.CharField(
+        blank=True,
+        help_text='Additional notes and details about this submission.',
+        max_length=1000,
+        null=True,
+    )
     reconciled = models.ForeignKey(
         ReconciliationGroup,
         on_delete=models.SET_NULL,
