@@ -18,15 +18,261 @@ from treasurer_tools.pdf.canvases import PageNumCanvas
 from .forms import CompiledForms
 from .models import FinancialTransaction
 
+def generate_pdf_header(branch_details, transaction):
+    # Get and resize logo (max height = 25 mm, max width = 75 mm)
+    logo_details = lib.utils.ImageReader(branch_details.logo.path)
+    width, height = logo_details.getSize()
+
+    # If aspect ratio > 1/3, need to scale by max height
+    if (height / width) > 0.333:
+        logo = Image(
+            branch_details.logo.path,
+            width=((25 * mm) / height) * width,
+            height=25 * mm,
+        )
+    # Otherwise, need to scale by max width
+    else:
+        logo = Image(
+            branch_details.logo.path,
+            width=75 * mm,
+            height=((75 * mm) / width) * height,
+        )
+
+    if transaction.transaction_type == 'e':
+        header_title = 'Branch Expense Claim Form'
+    else:
+        header_title = 'Branch Deposit Form'
+
+    header_table = Table(
+        [[logo, header_title]],
+        colWidths=[90 * mm, 90 * mm],
+    )
+
+    header_table.setStyle(TableStyle([
+        ('FONT', (0, 0), (-1, -1), 'Helvetica-Bold', 16),
+        ('ALIGNMENT', (0, 0), (0, 0), 'LEFT'),
+        ('ALIGNMENT', (1, 0), (1, 0), 'RIGHT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+
+    return header_table
+
+def generate_pdf_transaction_details(branch_details, transaction):
+    # Table to hold the payee/payer details
+    payee_payer = transaction.payee_payer
+    details_table = Table(
+        [
+            [
+                'Branch Name:',
+                Paragraph(branch_details.name_full, STYLES['normal'])
+            ],
+            [
+                'Payee Name:',
+                Paragraph(payee_payer.name, STYLES['normal'])
+            ],
+            [
+                'Payee Address:',
+                Paragraph(payee_payer.address, STYLES['normal_center'])
+            ],
+            ['', 'Mailing address'],
+            [
+                '',
+                Paragraph(payee_payer.city, STYLES['normal_center']),
+                Paragraph(payee_payer.province, STYLES['normal_center']),
+                Paragraph(payee_payer.postal_code, STYLES['normal_center']),
+                Paragraph(payee_payer.phone, STYLES['normal_center'])],
+            ['', 'City', 'Province', 'Postal Code', 'Telephone'],
+        ],
+        colWidths=[40 * mm, 65 * mm, 20 * mm, 25 * mm, 40 * mm]
+    )
+
+    details_table.setStyle(TableStyle([
+        # Overall table styles
+        ('FONT', (0, 0), (-1, -1), 'Helvetica', 12),
+
+
+        # Branch Name styles
+        ('FONT', (0, 0), (0, -1), 'Helvetica-Bold', 10),
+        ('LINEBELOW', (1, 0), (-1, 0), 1, lib.colors.black),
+        ('SPAN', (1, 0), (-1, 0)),
+
+        # Payee/Payer Name styles
+        ('LINEBELOW', (1, 1), (-1, 1), 1, lib.colors.black),
+        ('SPAN', (1, 1), (-1, 1)),
+
+        # Payee/Payer Address styles
+        ('FONT', (1, 3), (-1, 3), 'Helvetica-Oblique', 8),
+        ('FONT', (1, 5), (-1, 5), 'Helvetica-Oblique', 8),
+        ('LINEBELOW', (1, 2), (-1, 2), 1, lib.colors.black),
+        ('LINEBELOW', (1, 4), (-1, 4), 1, lib.colors.black),
+        ('SPAN', (1, 2), (-1, 2)),
+        ('SPAN', (1, 3), (-1, 3)),
+        ('ALIGNMENT', (1, 2), (-1, 5), 'CENTER'),
+        ('VALIGN', (1, 3), (-1, 3), 'TOP'),
+        ('VALIGN', (1, 5), (-1, 5), 'TOP'),
+    ]))
+
+    return details_table
+
+def generate_pdf_transaction_items(transaction):
+    # Header data for the items table
+    items_rows = [
+        [
+            Paragraph(
+                'Purchase Date YYYY-MMM-DD',
+                STYLES['bold_tiny_center']
+            ),
+            Paragraph('Description', STYLES['bold_tiny_center']),
+            Paragraph('Amount Before Tax', STYLES['bold_tiny_center']),
+            Paragraph('GST/HST', STYLES['bold_tiny_center']),
+            Paragraph('Total', STYLES['bold_tiny_center']),
+            Paragraph('Budget Year', STYLES['bold_tiny_center']),
+            Paragraph('Account Code', STYLES['bold_tiny_center']),
+        ],
+    ]
+
+    # Add each transaction item
+    items = transaction.items.all()
+
+    for item in items:
+        # Get financial code details for item
+        code = item.financial_codes.first()
+
+        items_rows.append([
+            item.date_item,
+            Paragraph(item.description, STYLES['normal_tiny']),
+            '${}'.format(item.amount),
+            '${}'.format(item.gst),
+            '${}'.format(item.total),
+            Paragraph(
+                code.financial_code_group.budget_year.short_name,
+                STYLES['normal_tiny_center']
+            ),
+            code.code,
+        ])
+
+    # Add the table footer
+    items_rows.append([
+        '',
+        'TOTAL',
+        '${}'.format(transaction.total_before_tax),
+        '${}'.format(transaction.total_tax),
+        '${}'.format(transaction.total),
+        '',
+        ''
+    ])
+
+    items_table = Table(
+        items_rows,
+        colWidths=[
+            30 * mm, 50 * mm, 20 * mm, 20 * mm, 20 * mm, 30 * mm, 20 * mm
+        ]
+    )
+
+    items_table.setStyle(TableStyle([
+        # Overall table styles
+        ('FONT', (0, 0), (-1, -1), 'Helvetica', 8),
+        ('BOX', (0, 0), (-1, -2), 1, lib.colors.black),
+        ('INNERGRID', (0, 0), (-1, -2), 1, lib.colors.black),
+        ('ALIGNMENT', (0, 0), (-1, 0), 'CENTRE'),
+
+        # Header styles
+        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
+
+        # Item styles
+        ('VALIGN', (0, 1), (-1, -2), 'TOP'),
+
+        # Dollar amount styles
+        ('FONTSIZE', (2, 1), (4, -1), 8),
+        ('ALIGNMENT', (2, 1), (4, -1), 'RIGHT'),
+
+        # Account code styles
+        ('ALIGNMENT', (5, 1), (6, -1), 'CENTRE'),
+
+        # Footer style
+        ('FONT', (1, -1), (4, -1), 'Helvetica-Bold'),
+        ('BACKGROUND', (2, -1), (4, -1), lib.colors.lightgrey),
+        ('BOX', (2, -1), (4, -1), 1, lib.colors.black),
+        ('INNERGRID', (2, -1), (4, -1), 1, lib.colors.black),
+        ('ALIGNMENT', (1, -1), (4, -1), 'RIGHT'),
+        ('VALIGN', (1, -1), (4, -1), 'MIDDLE'),
+    ]))
+
+    return items_table
+
+def generate_pdf_submission_details(transaction):
+    # Table to hold submission & approval details
+    submission_table = Table(
+        [
+            ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
+            [
+                '', '', '',
+                '', '', '',
+                '', '', ''
+            ],
+            ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
+            [
+                '', '', '',
+                '', '', '',
+                '', 'CSHP-AB Treasurer', ''
+            ],
+            ['', '', '', '', 'Position', '', '', 'Position', ''],
+            [
+                '', transaction.date_submitted, '',
+                '', '', '',
+                '', '', ''
+            ],
+            ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
+        ],
+        colWidths=[
+            2 * mm, 59 * mm, 2 * mm,
+            2 * mm, 60 * mm, 2 * mm,
+            2 * mm, 59 * mm, 2 * mm
+        ],
+    )
+
+    submission_table.setStyle(TableStyle([
+        # Overall table styles
+        ('FONT', (0, 0), (-1, -1), 'Helvetica', 10),
+        ('FONT', (0, 2), (-1, 2), 'Helvetica-Oblique', 8),
+        ('FONT', (0, 4), (-1, 4), 'Helvetica-Oblique', 8),
+        ('FONT', (0, 6), (-1, 6), 'Helvetica-Oblique', 8),
+        ('ALIGNMENT', (0, 0), (-1, -1), 'CENTRE'),
+
+        # Submitted by styles
+        ('BOX', (0, 0), (2, -1), 1, lib.colors.black),
+        ('LINEBELOW', (1, 1), (1, 1), 0.5, lib.colors.black),
+        ('LINEBELOW', (1, 5), (1, 5), 0.5, lib.colors.black),
+
+        # Authorized by styles
+        ('BOX', (3, 0), (5, -1), 1, lib.colors.black),
+        ('LINEBELOW', (4, 1), (4, 1), 0.5, lib.colors.black),
+        ('LINEBELOW', (4, 3), (4, 3), 0.5, lib.colors.black),
+        ('LINEBELOW', (4, 5), (4, 5), 0.5, lib.colors.black),
+
+        # Processed by styles
+        ('BOX', (6, 0), (8, -1), 1, lib.colors.black),
+        ('LINEBELOW', (7, 1), (7, 1), 0.5, lib.colors.black),
+        ('LINEBELOW', (7, 3), (7, 3), 0.5, lib.colors.black),
+        ('LINEBELOW', (7, 5), (7, 5), 0.5, lib.colors.black),
+
+        # Header style
+        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
+        ('BOX', (0, 0), (-1, 0), 1, lib.colors.black),
+    ]))
+
+    return submission_table
+
 @login_required
 def dashboard(request):
     """Main dashboard to expenses and revenue"""
     return render(request, "transactions/index.html")
 
-
 @login_required
 def request_transactions_list(request):
     """Retrieves list of transactions"""
+
     # Get all transactions
     transactions = FinancialTransaction.objects.all().order_by("-date_submitted")
 
@@ -153,6 +399,10 @@ def transaction_pdf(request, transaction_id):
     response['Content-Disposition'] = 'filename="somefilename.pdf"'
     response['title'] = 'Test'
 
+    # Get the branch details for the header (currently uses last entry)
+    # TODO: Allow for multiple branches with different details
+    branch_details = Branch.objects.last()
+
     # Get the transaction instance
     transaction = get_object_or_404(FinancialTransaction, id=transaction_id)
 
@@ -172,189 +422,11 @@ def transaction_pdf(request, transaction_id):
     )
 
     elements = []
+    elements.append(generate_pdf_header(branch_details, transaction))
+    elements.append(generate_pdf_transaction_details(branch_details, transaction))
+    elements.append(generate_pdf_transaction_items(transaction))
 
-    # Get the branch details for the header (currently uses last entry)
-    # TODO: Allow for multiple branches with different details
-    branch_details = Branch.objects.last()
-
-    # Get and resize logo (max height = 25 mm, max width = 75 mm)
-    logo_details = lib.utils.ImageReader(branch_details.logo.path)
-    width, height = logo_details.getSize()
-
-    # If aspect ratio > 1/3, need to scale by max height
-    if (height / width) > 0.333:
-        logo = Image(
-            branch_details.logo.path,
-            width=((25 * mm) / height) * width,
-            height=25 * mm,
-        )
-    # Otherwise, need to scale by max width
-    else:
-        logo = Image(
-            branch_details.logo.path,
-            width=75 * mm,
-            height=((75 * mm) / width) * height,
-        )
-
-    if transaction.transaction_type == 'e':
-        header_title = 'Branch Expense Claim Form'
-    else:
-        header_title = 'Branch Deposit Form'
-
-    header_table = Table(
-        [[logo, header_title]],
-        colWidths=[90 * mm, 90 * mm],
-    )
-
-    header_table.setStyle(TableStyle([
-        ('FONT', (0, 0), (-1, -1), 'Helvetica-Bold', 16),
-        ('ALIGNMENT', (0, 0), (0, 0), 'LEFT'),
-        ('ALIGNMENT', (1, 0), (1, 0), 'RIGHT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ]))
-
-    elements.append(header_table)
-
-    # Table to hold the payee/payer details
-    payee_payer = transaction.payee_payer
-    details_table = Table(
-        [
-            [
-                'Branch Name:',
-                Paragraph(branch_details.name_full, STYLES['normal'])
-            ],
-            [
-                'Payee Name:',
-                Paragraph(payee_payer.name, STYLES['normal'])
-            ],
-            [
-                'Payee Address:',
-                Paragraph(payee_payer.address, STYLES['normal_center'])
-            ],
-            ['', 'Mailing address'],
-            [
-                '',
-                Paragraph(payee_payer.city, STYLES['normal_center']),
-                Paragraph(payee_payer.province, STYLES['normal_center']),
-                Paragraph(payee_payer.postal_code, STYLES['normal_center']),
-                Paragraph(payee_payer.phone, STYLES['normal_center'])],
-            ['', 'City', 'Province', 'Postal Code', 'Telephone'],
-        ],
-        colWidths=[40 * mm, 65 * mm, 20 * mm, 25 * mm, 40 * mm]
-    )
-
-    details_table.setStyle(TableStyle([
-        # Overall table styles
-        ('FONT', (0, 0), (-1, -1), 'Helvetica', 12),
-
-
-        # Branch Name styles
-        ('FONT', (0, 0), (0, -1), 'Helvetica-Bold', 10),
-        ('LINEBELOW', (1, 0), (-1, 0), 1, lib.colors.black),
-        ('SPAN', (1, 0), (-1, 0)),
-
-        # Payee/Payer Name styles
-        ('LINEBELOW', (1, 1), (-1, 1), 1, lib.colors.black),
-        ('SPAN', (1, 1), (-1, 1)),
-
-        # Payee/Payer Address styles
-        ('FONT', (1, 3), (-1, 3), 'Helvetica-Oblique', 8),
-        ('FONT', (1, 5), (-1, 5), 'Helvetica-Oblique', 8),
-        ('LINEBELOW', (1, 2), (-1, 2), 1, lib.colors.black),
-        ('LINEBELOW', (1, 4), (-1, 4), 1, lib.colors.black),
-        ('SPAN', (1, 2), (-1, 2)),
-        ('SPAN', (1, 3), (-1, 3)),
-        ('ALIGNMENT', (1, 2), (-1, 5), 'CENTER'),
-        ('VALIGN', (1, 3), (-1, 3), 'TOP'),
-        ('VALIGN', (1, 5), (-1, 5), 'TOP'),
-    ]))
-
-    elements.append(details_table)
-
-    # Header data for the items table
-    items_rows = [
-        [
-            Paragraph(
-                'Purchase Date YYYY-MMM-DD',
-                STYLES['bold_tiny_center']
-            ),
-            Paragraph('Description', STYLES['bold_tiny_center']),
-            Paragraph('Amount Before Tax', STYLES['bold_tiny_center']),
-            Paragraph('GST/HST', STYLES['bold_tiny_center']),
-            Paragraph('Total', STYLES['bold_tiny_center']),
-            Paragraph('Budget Year', STYLES['bold_tiny_center']),
-            Paragraph('Account Code', STYLES['bold_tiny_center']),
-        ],
-    ]
-
-    # Add each transaction item
-    items = transaction.items.all()
-
-    for item in items:
-        # Get financial code details for item
-        code = item.financial_codes.first()
-
-        items_rows.append([
-            item.date_item,
-            Paragraph(item.description, STYLES['normal_tiny']),
-            '${}'.format(item.amount),
-            '${}'.format(item.gst),
-            '${}'.format(item.total),
-            Paragraph(
-                code.financial_code_group.budget_year.short_name,
-                STYLES['normal_tiny_center']
-            ),
-            code.code,
-        ])
-
-    # Add the table footer
-    items_rows.append([
-        '',
-        'TOTAL',
-        '${}'.format(transaction.total_before_tax),
-        '${}'.format(transaction.total_tax),
-        '${}'.format(transaction.total),
-        '',
-        ''
-    ])
-
-    items_table = Table(
-        items_rows,
-        colWidths=[
-            30 * mm, 50 * mm, 20 * mm, 20 * mm, 20 * mm, 30 * mm, 20 * mm
-        ]
-    )
-
-    items_table.setStyle(TableStyle([
-        # Overall table styles
-        ('FONT', (0, 0), (-1, -1), 'Helvetica', 8),
-        ('BOX', (0, 0), (-1, -2), 1, lib.colors.black),
-        ('INNERGRID', (0, 0), (-1, -2), 1, lib.colors.black),
-        ('ALIGNMENT', (0, 0), (-1, 0), 'CENTRE'),
-
-        # Header styles
-        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
-
-        # Item styles
-        ('VALIGN', (0, 1), (-1, -2), 'TOP'),
-
-        # Dollar amount styles
-        ('FONTSIZE', (2, 1), (4, -1), 8),
-        ('ALIGNMENT', (2, 1), (4, -1), 'RIGHT'),
-
-        # Account code styles
-        ('ALIGNMENT', (5, 1), (6, -1), 'CENTRE'),
-
-        # Footer style
-        ('FONT', (1, -1), (4, -1), 'Helvetica-Bold'),
-        ('BACKGROUND', (2, -1), (4, -1), lib.colors.lightgrey),
-        ('BOX', (2, -1), (4, -1), 1, lib.colors.black),
-        ('INNERGRID', (2, -1), (4, -1), 1, lib.colors.black),
-        ('ALIGNMENT', (1, -1), (4, -1), 'RIGHT'),
-        ('VALIGN', (1, -1), (4, -1), 'MIDDLE'),
-    ]))
-
-    elements.append(items_table)
+    # TODO: Make this only show if there are notes
 
     # Table to hold any transation notes
     notes_table = Table(
@@ -366,69 +438,7 @@ def transaction_pdf(request, transaction_id):
 
     elements.append(notes_table)
 
-    # Table to hold submission & approval details
-    submission_table = Table(
-        [
-            ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
-            [
-                '', '', '',
-                '', '', '',
-                '', '', ''
-            ],
-            ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
-            [
-                '', '', '',
-                '', '', '',
-                '', 'CSHP-AB Treasurer', ''
-            ],
-            ['', '', '', '', 'Position', '', '', 'Position', ''],
-            [
-                '', transaction.date_submitted, '',
-                '', '', '',
-                '', '', ''
-            ],
-            ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
-        ],
-        colWidths=[
-            2 * mm, 59 * mm, 2 * mm,
-            2 * mm, 60 * mm, 2 * mm,
-            2 * mm, 59 * mm, 2 * mm
-        ],
-    )
-
-    submission_table.setStyle(TableStyle([
-        # Overall table styles
-        ('FONT', (0, 0), (-1, -1), 'Helvetica', 10),
-        ('FONT', (0, 2), (-1, 2), 'Helvetica-Oblique', 8),
-        ('FONT', (0, 4), (-1, 4), 'Helvetica-Oblique', 8),
-        ('FONT', (0, 6), (-1, 6), 'Helvetica-Oblique', 8),
-        ('ALIGNMENT', (0, 0), (-1, -1), 'CENTRE'),
-
-        # Submitted by styles
-        ('BOX', (0, 0), (2, -1), 1, lib.colors.black),
-        ('LINEBELOW', (1, 1), (1, 1), 0.5, lib.colors.black),
-        ('LINEBELOW', (1, 5), (1, 5), 0.5, lib.colors.black),
-
-        # Authorized by styles
-        ('BOX', (3, 0), (5, -1), 1, lib.colors.black),
-        ('LINEBELOW', (4, 1), (4, 1), 0.5, lib.colors.black),
-        ('LINEBELOW', (4, 3), (4, 3), 0.5, lib.colors.black),
-        ('LINEBELOW', (4, 5), (4, 5), 0.5, lib.colors.black),
-
-        # Processed by styles
-        ('BOX', (6, 0), (8, -1), 1, lib.colors.black),
-        ('LINEBELOW', (7, 1), (7, 1), 0.5, lib.colors.black),
-        ('LINEBELOW', (7, 3), (7, 3), 0.5, lib.colors.black),
-        ('LINEBELOW', (7, 5), (7, 5), 0.5, lib.colors.black),
-
-        # Header style
-        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
-        ('BOX', (0, 0), (-1, 0), 1, lib.colors.black),
-    ]))
-
-    elements.append(submission_table)
-
+    elements.append(generate_pdf_submission_details(transaction))
     # Assemble and return the final PDF document
     doc.build(elements, canvasmaker=PageNumCanvas)
 
