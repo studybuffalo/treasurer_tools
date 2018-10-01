@@ -9,6 +9,7 @@ from reportlab.platypus import (
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -22,24 +23,28 @@ from .forms import CompiledForms
 from .models import FinancialTransaction
 
 def generate_pdf_header(branch_details, transaction):
+    # Access image from the storage module (in case not saved locally)
+    logo_storage = default_storage.open(branch_details.logo.name, 'rb')
+
     # Get and resize logo (max height = 25 mm, max width = 75 mm)
-    logo_details = lib.utils.ImageReader(branch_details.logo.path)
+    logo_details = lib.utils.ImageReader(logo_storage)
     width, height = logo_details.getSize()
 
     # If aspect ratio > 1/3, need to scale by max height
     if (height / width) > 0.333:
         logo = Image(
-            branch_details.logo.path,
+            logo_storage,
             width=((25 * mm) / height) * width,
             height=25 * mm,
         )
     # Otherwise, need to scale by max width
     else:
         logo = Image(
-            branch_details.logo.path,
+            logo_storage,
             width=75 * mm,
             height=((75 * mm) / width) * height,
         )
+
 
     if transaction.transaction_type == 'e':
         header_title = 'Branch Expense Claim Form'
