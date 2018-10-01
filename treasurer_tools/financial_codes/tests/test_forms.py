@@ -106,6 +106,7 @@ class BudgetYearFormTest(TestCase):
             "financial_code_system": systems[0].id,
             "date_start": "2017-01-01",
             "date_end": "2017-12-31",
+            "short_name": "2017",
         }
         self.systems = systems
 
@@ -244,6 +245,7 @@ class BudgetYearFormTest(TestCase):
         self.assertEqual(self.valid_data["financial_code_system"], year.financial_code_system.id)
         self.assertEqual(self.valid_data["date_start"], str(year.date_start))
         self.assertEqual(self.valid_data["date_end"], str(year.date_end))
+        self.assertEqual(self.valid_data["short_name"], str(year.short_name))
 
 class FinancialCodeGroupFromTest(TestCase):
     """Tests for the FinancialCodeGroup form"""
