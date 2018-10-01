@@ -1,8 +1,11 @@
 """Views for the transactions app"""
 
+from datetime import datetime
 from reportlab import lib
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle, Image
+from reportlab.platypus import (
+    Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+)
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -139,7 +142,7 @@ def generate_pdf_transaction_items(transaction):
         code = item.financial_codes.first()
 
         items_rows.append([
-            item.date_item,
+            item.date_item.strftime('%Y-%b-%d'),
             Paragraph(item.description, STYLES['normal_tiny']),
             '${}'.format(item.amount),
             '${}'.format(item.gst),
@@ -165,7 +168,7 @@ def generate_pdf_transaction_items(transaction):
     items_table = Table(
         items_rows,
         colWidths=[
-            30 * mm, 50 * mm, 20 * mm, 20 * mm, 20 * mm, 30 * mm, 20 * mm
+            25 * mm, 55 * mm, 20 * mm, 20 * mm, 20 * mm, 30 * mm, 20 * mm
         ]
     )
 
@@ -181,6 +184,9 @@ def generate_pdf_transaction_items(transaction):
 
         # Item styles
         ('VALIGN', (0, 1), (-1, -2), 'TOP'),
+
+        # Date styles
+        ('ALIGNMENT', (0, 0), (0, -1), 'CENTRE'),
 
         # Dollar amount styles
         ('FONTSIZE', (2, 1), (4, -1), 8),
@@ -200,67 +206,109 @@ def generate_pdf_transaction_items(transaction):
 
     return items_table
 
-def generate_pdf_submission_details(transaction):
-    # Table to hold submission & approval details
-    submission_table = Table(
+def generate_pdf_transaction_notes(transaction):
+    # Table to hold any transation notes
+    notes_table = Table(
         [
-            ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
-            [
-                '', '', '',
-                '', '', '',
-                '', '', ''
-            ],
-            ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
-            [
-                '', '', '',
-                '', '', '',
-                '', 'CSHP-AB Treasurer', ''
-            ],
-            ['', '', '', '', 'Position', '', '', 'Position', ''],
-            [
-                '', transaction.date_submitted, '',
-                '', '', '',
-                '', '', ''
-            ],
-            ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
+            ['Notes:', Paragraph('', STYLES['normal'])],
         ],
-        colWidths=[
-            2 * mm, 59 * mm, 2 * mm,
-            2 * mm, 60 * mm, 2 * mm,
-            2 * mm, 59 * mm, 2 * mm
-        ],
+        colWidths=[20 * mm, 170 * mm],
     )
 
-    submission_table.setStyle(TableStyle([
+    return notes_table
+
+def generate_pdf_submission_details(transaction, user_name):
+    # TODO: Use proper submission tracking details in this section
+    base_style = [
         # Overall table styles
-        ('FONT', (0, 0), (-1, -1), 'Helvetica', 10),
-        ('FONT', (0, 2), (-1, 2), 'Helvetica-Oblique', 8),
-        ('FONT', (0, 4), (-1, 4), 'Helvetica-Oblique', 8),
-        ('FONT', (0, 6), (-1, 6), 'Helvetica-Oblique', 8),
+        ('FONT', (0, 0), (-1, -1), 'Helvetica', 10, 9),
+        ('FONT', (0, 2), (-1, 2), 'Helvetica-Oblique', 8, 8),
+        ('FONT', (0, 4), (-1, 4), 'Helvetica-Oblique', 8, 8),
+        ('FONT', (0, 6), (-1, 6), 'Helvetica-Oblique', 8, 8),
         ('ALIGNMENT', (0, 0), (-1, -1), 'CENTRE'),
+
+        # Header style
+        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold', 8, 10),
+        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
+        ('BOX', (0, 0), (-1, 0), 1, lib.colors.black),
+        ('VALIGN', (0, 0), (-1, 0), 'MIDDLE'),
 
         # Submitted by styles
         ('BOX', (0, 0), (2, -1), 1, lib.colors.black),
         ('LINEBELOW', (1, 1), (1, 1), 0.5, lib.colors.black),
         ('LINEBELOW', (1, 5), (1, 5), 0.5, lib.colors.black),
 
-        # Authorized by styles
+        # Authorized by or Processed by styles
         ('BOX', (3, 0), (5, -1), 1, lib.colors.black),
         ('LINEBELOW', (4, 1), (4, 1), 0.5, lib.colors.black),
         ('LINEBELOW', (4, 3), (4, 3), 0.5, lib.colors.black),
         ('LINEBELOW', (4, 5), (4, 5), 0.5, lib.colors.black),
+    ]
 
-        # Processed by styles
-        ('BOX', (6, 0), (8, -1), 1, lib.colors.black),
-        ('LINEBELOW', (7, 1), (7, 1), 0.5, lib.colors.black),
-        ('LINEBELOW', (7, 3), (7, 3), 0.5, lib.colors.black),
-        ('LINEBELOW', (7, 5), (7, 5), 0.5, lib.colors.black),
+    if transaction.transaction_type == 'e':
+        submission_table = Table(
+            [
+                ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
+                [
+                    '', '', '',
+                    '', '', '',
+                    '', user_name, ''
+                ],
+                ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
+                [
+                    '', '', '',
+                    '', '', '',
+                    '', 'CSHP-AB Treasurer', ''
+                ],
+                ['', '', '', '', 'Position', '', '', 'Position', ''],
+                [
+                    '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
+                    '', '', '',
+                    '', '', ''
+                ],
+                ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
+            ],
+            colWidths=[
+                2 * mm, 59 * mm, 2 * mm,
+                2 * mm, 60 * mm, 2 * mm,
+                2 * mm, 59 * mm, 2 * mm
+            ],
+        )
 
-        # Header style
-        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 0), (-1, 0), lib.colors.lightgrey),
-        ('BOX', (0, 0), (-1, 0), 1, lib.colors.black),
-    ]))
+        # Add the additional processed by styles
+        base_style.append(('BOX', (6, 0), (8, -1), 1, lib.colors.black))
+        base_style.append(('LINEBELOW', (7, 1), (7, 1), 0.5, lib.colors.black))
+        base_style.append(('LINEBELOW', (7, 3), (7, 3), 0.5, lib.colors.black))
+        base_style.append(('LINEBELOW', (7, 5), (7, 5), 0.5, lib.colors.black))
+    else:
+        submission_table = Table(
+            [
+                ['', 'SUBMITTED BY', '', '', 'PROCESSED BY', ''],
+                [
+                    '', '', '',
+                    '', user_name, '',
+                ],
+                ['', 'Name', '', '', 'Name', ''],
+                [
+                    '', '', '',
+                    '', 'CSHP-AB Treasurer', ''
+                ],
+                ['', '', '', '', 'Position', ''],
+                [
+                    '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
+                    '', '', ''
+                ],
+                ['', 'Date', '', '', 'Date', ''],
+            ],
+            colWidths=[
+                2 * mm, 59 * mm, 2 * mm,
+                2 * mm, 60 * mm, 2 * mm,
+                2 * mm, 59 * mm, 2 * mm
+            ],
+        )
+
+    # Apply table styles
+    submission_table.setStyle(TableStyle(base_style))
 
     return submission_table
 
@@ -422,23 +470,22 @@ def transaction_pdf(request, transaction_id):
     )
 
     elements = []
+
     elements.append(generate_pdf_header(branch_details, transaction))
+    elements.append(Spacer(190 * mm, 10))
     elements.append(generate_pdf_transaction_details(branch_details, transaction))
+    elements.append(Spacer(190 * mm, 10))
     elements.append(generate_pdf_transaction_items(transaction))
+    elements.append(Spacer(190 * mm, 10))
 
-    # TODO: Make this only show if there are notes
+    if transaction.submission_notes:
+        elements.append(generate_pdf_transaction_notes(transaction))
+        elements.append(Spacer(190 * mm, 10))
 
-    # Table to hold any transation notes
-    notes_table = Table(
-        [
-            ['Notes:', Paragraph('', STYLES['normal'])],
-        ],
-        colWidths=[20 * mm, 170 * mm],
+    elements.append(
+        generate_pdf_submission_details(transaction, request.user.name)
     )
 
-    elements.append(notes_table)
-
-    elements.append(generate_pdf_submission_details(transaction))
     # Assemble and return the final PDF document
     doc.build(elements, canvasmaker=PageNumCanvas)
 
