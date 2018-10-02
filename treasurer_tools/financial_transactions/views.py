@@ -66,29 +66,39 @@ def generate_pdf_header(branch_details, transaction):
     return header_table
 
 def generate_pdf_transaction_details(branch_details, transaction):
-    # Table to hold the payee/payer details
+    # Get all relevant details
+    branch_name = branch_details.name_full if branch_details.name_full else ''
     payee_payer = transaction.payee_payer
+    name = payee_payer.name if payee_payer.name else ''
+    address = payee_payer.address if payee_payer.address else ''
+    city = payee_payer.city if payee_payer.city else ''
+    province = payee_payer.province if payee_payer.province else ''
+    postal_code = payee_payer.postal_code if payee_payer.postal_code else ''
+    phone = payee_payer.phone if payee_payer.phone  else ''
+
+    # Table to hold the payee/payer details
+
     details_table = Table(
         [
             [
                 'Branch Name:',
-                Paragraph(branch_details.name_full, STYLES['normal'])
+                Paragraph(branch_name, STYLES['normal'])
             ],
             [
                 'Payee Name:',
-                Paragraph(payee_payer.name, STYLES['normal'])
+                Paragraph(name, STYLES['normal'])
             ],
             [
                 'Payee Address:',
-                Paragraph(payee_payer.address, STYLES['normal_center'])
+                Paragraph(address, STYLES['normal_center'])
             ],
             ['', 'Mailing address'],
             [
                 '',
-                Paragraph(payee_payer.city, STYLES['normal_center']),
-                Paragraph(payee_payer.province, STYLES['normal_center']),
-                Paragraph(payee_payer.postal_code, STYLES['normal_center']),
-                Paragraph(payee_payer.phone, STYLES['normal_center'])],
+                Paragraph(city, STYLES['normal_center']),
+                Paragraph(province, STYLES['normal_center']),
+                Paragraph(postal_code, STYLES['normal_center']),
+                Paragraph(phone, STYLES['normal_center'])],
             ['', 'City', 'Province', 'Postal Code', 'Telephone'],
         ],
         colWidths=[40 * mm, 65 * mm, 20 * mm, 25 * mm, 40 * mm]
