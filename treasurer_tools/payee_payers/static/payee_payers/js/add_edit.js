@@ -1,4 +1,4 @@
-function updateProvinceInput() {
+function updateProvinceInput(currentSelection = 'Alberta') {
   function createOptions(values) {
     // Converts an array of values into an array of option elements
     const options = [];
@@ -115,6 +115,9 @@ function updateProvinceInput() {
 
   // Add the new input
   $span.append($newInput);
+
+  // If provided, set the select to currentSelection
+  $newInput.val(currentSelection);
 }
 
 function setCountryToCanada() {
@@ -126,6 +129,9 @@ $(document).ready(() => {
   // If not country provided, set to Canada
   if (document.getElementById('id_country').value === '') {
     setCountryToCanada();
+  } else {
+    const currentSelection = $('#id_province').val();
+    updateProvinceInput(currentSelection);
   }
 
   $('#id_country').on('change', () => {
