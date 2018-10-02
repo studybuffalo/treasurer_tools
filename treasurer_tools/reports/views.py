@@ -9,7 +9,7 @@ from bank_reconciliation.models import ReconciliationGroup
 from bank_transactions.models import BankTransaction
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
 from financial_transactions.models import FinancialTransaction
-from investments.models import Investment
+from investments.models import InvestmentDetail
 
 
 @login_required
@@ -116,17 +116,28 @@ def retrieve_balance_sheet(request):
 
         # CALCULATE INVESTMENTS
         # Get all investments that started before/during this budget year
-        # and haven't matured
-        investment_totals = Investment.objects.filter(
-            Q(date_invested__lte=date_end)
-            & Q(date_matured__gte=date_end)
-        ).aggregate(total=Sum("amount_matured"))
-        investments = investment_totals['total'] if investment_totals['total'] else 0
+        investment_details = InvestmentDetail.objects.filter(
+            date_investment__lte=date_end
+        )
+
+        # Calculate the difference between invested and matured
+        investments = 0
+
+        for investment_detail in investment_details:
+            if investment_detail.detail_status == "v":
+                investments = investments + investment_detail.amount
+            elif investment_detail.detail_status == "m":
+                investments = investments - investment_detail.amount
+            elif investment_detail.detail_status == "c":
+                investments = investments - investment_detail.amount
+
+        if investments < 0:
+            investments = 0
 
         # CALCULATE ACCOUNTS RECEIVABLE
         # Get all the reconciled transactions
-        reconciled_transactions = list(ReconciliationMatch.objects.values_list(
-            "financial_transaction__id", flat=True
+        reconciled_transactions = list(ReconciliationGroup.objects.values_list(
+            "financialtransactions__id", flat=True
         ))
 
         # Get all the revenue transactions that have not been reconciled
