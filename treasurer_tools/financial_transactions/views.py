@@ -74,7 +74,7 @@ def generate_pdf_transaction_details(branch_details, transaction):
     city = payee_payer.city if payee_payer.city else ''
     province = payee_payer.province if payee_payer.province else ''
     postal_code = payee_payer.postal_code if payee_payer.postal_code else ''
-    phone = payee_payer.phone if payee_payer.phone  else ''
+    phone = payee_payer.phone if payee_payer.phone else ''
 
     # Table to hold the payee/payer details
 
