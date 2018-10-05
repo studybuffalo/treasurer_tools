@@ -8,7 +8,7 @@ pipeline {
       steps {
         echo 'Setup virtual environment'
         script {
-          sh 'pipenv install --dev'
+          sh 'pipenv install --dev  --ignore-pipfile'
         }
         echo 'Migrate database'
         script {
@@ -22,9 +22,17 @@ pipeline {
     }
     stage('Test') {
       steps {
-        echo 'This is the Testing Stage'
+        echo 'Running Django tests'
         script {
           sh 'pipenv run python manage.py jenkins --enable-coverage --settings=config.settings.test --noinput'
+        }
+      }
+    }
+    stage('Security') {
+      steps {
+        echo 'Running security checks'
+        script {
+          sh 'pipenv check'
         }
       }
     }
