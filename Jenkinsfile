@@ -6,6 +6,10 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+        echo 'Upgrade pip (if necessary)'
+        script {
+          sh 'pipenv run pip install --upgrade pip'
+        }
         echo 'Setup virtual environment'
         script {
           sh 'pipenv install --dev  --ignore-pipfile'
