@@ -4,38 +4,38 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-argon2-cffi = "==18.1.0"  # https://github.com/hynek/argon2_cffi
-boto3 = ">=1.7"  # https://github.com/boto/boto3
-pillow = ">=5.2.0"  # https://github.com/python-pillow/Pillow
-psycopg2-binary = "==2.7.4"  # https://github.com/psycopg/psycopg2
-raven = "==6.6.0"  # https://github.com/jschneier/django-storages
-redis = ">=2.10.5"  # https://github.com/antirez/redis
-reportlab = ">=3.5.8"  # https://www.reportlab.com/docs/reportlab-userguide.pdf
-Unipath = "<2.0,>=1.1"  # https://github.com/mikeorr/Unipath
-whitenoise = "==3.3.1"  # https://github.com/evansd/whitenoise
+argon2-cffi = "*"  # https://github.com/hynek/argon2_cffi
+boto3 = "*"  # https://github.com/boto/boto3
+pillow = "*"  # https://github.com/python-pillow/Pillow
+psycopg2-binary = "*"  # https://github.com/psycopg/psycopg2
+raven = "*"  # https://github.com/jschneier/django-storages
+redis = "*"  # https://github.com/antirez/redis
+reportlab = "*"  # https://www.reportlab.com/docs/reportlab-userguide.pdf
+Unipath = "*"  # https://github.com/mikeorr/Unipath
+whitenoise = "*"  # https://github.com/evansd/whitenoise
 # Django
 # ------------------------------------------------------------------------------
-django = "==2.0.3"  # https://www.djangoproject.com/
-django-allauth = "==0.35.0"  # https://github.com/pennersr/django-allauth
-django-environ = "==0.4.4"  # https://github.com/joke2k/django-environ
-django-jenkins = ">=0.11"  # https://github.com/kmmbvnr/django-jenkins
-django-multiupload = ">=0.5.2"  # https://github.com/Chive/django-multiupload
-django-redis = "==4.9.0"  # https://github.com/niwinz/django-redis
-django-simple-history = ">=1.9.0"  # https://github.com/treyhunner/django-simple-history
-django-storages = "==1.6.6"  # https://github.com/jschneier/django-storages
+django = "*"  # https://www.djangoproject.com/
+django-allauth = "*"  # https://github.com/pennersr/django-allauth
+django-environ = "*"  # https://github.com/joke2k/django-environ
+django-jenkins = "*"  # https://github.com/kmmbvnr/django-jenkins
+django-multiupload = "*"  # https://github.com/Chive/django-multiupload
+django-redis = "*"  # https://github.com/niwinz/django-redis
+django-simple-history = "*"  # https://github.com/treyhunner/django-simple-history
+django-storages = "*"  # https://github.com/jschneier/django-storages
 
 [dev-packages]
 # Code quality
 # ------------------------------------------------------------------------------
-pylint = ">=1.8"  # https://github.com/PyCQA/pylint/
-coverage = "==4.5.1"  # https://github.com/nedbat/coveragepy
+pylint = "*"  # https://github.com/PyCQA/pylint/
+coverage = "*"  # https://github.com/nedbat/coveragepy
 # Django
 # ------------------------------------------------------------------------------
-django_coverage_plugin = ">=1.5.0" # https://github.com/nedbat/django_coverage_plugin
-django-debug-toolbar = "==1.9.1"  # https://github.com/jazzband/django-debug-toolbar
-django-jenkins = ">=0.110.0"  # https://github.com/kmmbvnr/django-jenkins
-pylint-common = ">=0.2.5"  # https://github.com/landscapeio/pylint-common
-pylint-django = ">=0.11.1"  #https://github.com/PyCQA/pylint-django
+django_coverage_plugin = "*" # https://github.com/nedbat/django_coverage_plugin
+django-debug-toolbar = "*"  # https://github.com/jazzband/django-debug-toolbar
+django-jenkins = "*"  # https://github.com/kmmbvnr/django-jenkins
+pylint-common = "*"  # https://github.com/landscapeio/pylint-common
+pylint-django = "*"  #https://github.com/PyCQA/pylint-django
 
 [requires]
 python_version = "3.6"
