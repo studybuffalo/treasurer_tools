@@ -35,7 +35,9 @@ pipeline {
     stage('Security') {
       steps {
         echo 'Running security checks'
-        echo 'TODO: Readd "pipenv check" when it is working with pip'
+        script {
+          sh 'pipenv check'
+        }
       }
     }
   }
