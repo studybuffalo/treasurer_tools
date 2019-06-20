@@ -43,7 +43,6 @@ django-debug-toolbar = "*"  # https://github.com/jazzband/django-debug-toolbar
 # ------------------------------------------------------------------------------
 pytest = "*"  # https://github.com/pytest-dev/pytest
 pytest-django = "*"  # https://github.com/pytest-dev/pytest-django
-pytest-sugar = "*"  # https://github.com/Frozenball/pytest-sugar
 pytest-pythonpath = "*"  # https://github.com/bigsassy/pytest-pythonpath
 
 
