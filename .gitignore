@@ -6,7 +6,7 @@ staticfiles/
 treasurer_tools/media/
 
 # Environments
-.env
+*.env
 
 # Testing
 htmlcov/
