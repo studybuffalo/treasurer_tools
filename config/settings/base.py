@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3 # (treasurer_tools/config/settings/base.py - 3 = treasurer_tools/)
+ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR.path("treasurer_tools")
 
 # Connect to the .env file
 env = environ.Env()
-environ.Env.read_env(env_file=ROOT_DIR.path("..", "config").file("treasurer_tools.env"))
+env.read_env(str(ROOT_DIR.path('config').file('treasurer_tools.env')))
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
