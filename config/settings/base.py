@@ -14,7 +14,7 @@ APPS_DIR = ROOT_DIR.path('treasurer_tools')
 
 # Connect to the .env file
 env = environ.Env()
-env.read_env(str(ROOT_DIR.path('config').file('treasurer_tools.env')))
+env.read_env(str(ROOT_DIR.path('config', 'treasurer_tools.env')))
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ MIGRATION_MODULES = {
 # DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True if env('DEBUG') == 'True' else False
+DEBUG = env.bool('DEBUG', default=True)
 
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------

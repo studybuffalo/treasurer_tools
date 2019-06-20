@@ -9,12 +9,12 @@ Local settings for Treasurer Tools project.
 - Add django-extensions as app
 """
 
-from .base import *  # noqa
+from .base import * # pylint: disable=wildcard-import, unused-wildcard-import
+from .base import env
 
 # DEBUG
 # ------------------------------------------------------------------------------
-DEBUG = True if env("DEBUG") == "True" else False
-TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+DEBUG = env.bool('DEBUG', default=True)
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
