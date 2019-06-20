@@ -3,6 +3,7 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+
 [packages]
 argon2-cffi = "*"  # https://github.com/hynek/argon2_cffi
 boto3 = "*"  # https://github.com/boto/boto3
@@ -13,6 +14,7 @@ redis = "*"  # https://github.com/antirez/redis
 reportlab = "*"  # https://www.reportlab.com/docs/reportlab-userguide.pdf
 Unipath = "*"  # https://github.com/mikeorr/Unipath
 whitenoise = "*"  # https://github.com/evansd/whitenoise
+
 # Django
 # ------------------------------------------------------------------------------
 django = ">=2.0,<2.1"  # https://www.djangoproject.com/
@@ -24,18 +26,26 @@ django-redis = "*"  # https://github.com/niwinz/django-redis
 django-simple-history = "*"  # https://github.com/treyhunner/django-simple-history
 django-storages = "*"  # https://github.com/jschneier/django-storages
 
+
 [dev-packages]
 # Code quality
 # ------------------------------------------------------------------------------
-pylint = "*"  # https://github.com/PyCQA/pylint/
 coverage = "*"  # https://github.com/nedbat/coveragepy
+django_coverage_plugin = "*" # https://github.com/nedbat/django_coverage_plugin
+pylint = "*"  # https://github.com/PyCQA/pylint/
+pylint-django = "*"  #https://github.com/PyCQA/pylint-django
+
 # Django
 # ------------------------------------------------------------------------------
-django_coverage_plugin = "*" # https://github.com/nedbat/django_coverage_plugin
 django-debug-toolbar = "*"  # https://github.com/jazzband/django-debug-toolbar
-django-jenkins = "*"  # https://github.com/kmmbvnr/django-jenkins
-pylint-common = "*"  # https://github.com/landscapeio/pylint-common
-pylint-django = "*"  #https://github.com/PyCQA/pylint-django
+
+# Testing
+# ------------------------------------------------------------------------------
+pytest = "*"  # https://github.com/pytest-dev/pytest
+pytest-django = "*"  # https://github.com/pytest-dev/pytest-django
+pytest-sugar = "*"  # https://github.com/Frozenball/pytest-sugar
+pytest-pythonpath = "*"  # https://github.com/bigsassy/pytest-pythonpath
+
 
 [requires]
 python_version = "3.6"
