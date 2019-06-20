@@ -20,7 +20,6 @@ whitenoise = "*"  # https://github.com/evansd/whitenoise
 django = ">=2.0,<2.1"  # https://www.djangoproject.com/
 django-allauth = "*"  # https://github.com/pennersr/django-allauth
 django-environ = "*"  # https://github.com/joke2k/django-environ
-django-jenkins = "*"  # https://github.com/kmmbvnr/django-jenkins
 django-multiupload = "*"  # https://github.com/Chive/django-multiupload
 django-redis = "*"  # https://github.com/niwinz/django-redis
 django-simple-history = "*"  # https://github.com/treyhunner/django-simple-history

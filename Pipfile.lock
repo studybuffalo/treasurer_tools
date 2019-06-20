@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9b392ad78aeb1d3ed04ea7a2ccc8eaff2f89c2ac38f6719416e0a01fe2c2a79f"
+            "sha256": "37253bd7ef68a4cdd1f78bbb93421274d5506673314c8ac988a0848b87a24974"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -131,14 +131,6 @@
             ],
             "index": "pypi",
             "version": "==0.4.5"
-        },
-        "django-jenkins": {
-            "hashes": [
-                "sha256:2dda72ffc85311612cadf400b90900be4972867e074daf1f1602c607a9899ba8",
-                "sha256:a8a11487323c90dc77e781fce584341c8f40b50e93c846550167ea71e2b41956"
-            ],
-            "index": "pypi",
-            "version": "==0.110.0"
         },
         "django-multiupload": {
             "hashes": [
