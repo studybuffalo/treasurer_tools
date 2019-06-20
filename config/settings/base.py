@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path("treasurer_tools")
+APPS_DIR = ROOT_DIR.path('treasurer_tools')
 
 # Connect to the .env file
 env = environ.Env()
@@ -29,25 +29,25 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_PARTY_APPS = [
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "simple_history",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'simple_history',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
-    "treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig",
-    "treasurer_tools.bank_institutions.apps.BankInstitutionsConfig",
-    "treasurer_tools.bank_transactions.apps.BankTransactionsConfig",
-    "treasurer_tools.branch_details.apps.BranchDetailsConfig",
-    "treasurer_tools.documents.apps.DocumentsConfig",
-    "treasurer_tools.financial_codes.apps.FinancialCodesConfig",
-    "treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig",
-    "treasurer_tools.investments.apps.InvestmentsConfig",
-    "treasurer_tools.payee_payers.apps.PayeePayersConfig",
-    "treasurer_tools.reports.apps.ReportsConfig",
-    "treasurer_tools.users.apps.UsersConfig",
+    'treasurer_tools.bank_reconciliation.apps.BankReconciliationConfig',
+    'treasurer_tools.bank_institutions.apps.BankInstitutionsConfig',
+    'treasurer_tools.bank_transactions.apps.BankTransactionsConfig',
+    'treasurer_tools.branch_details.apps.BranchDetailsConfig',
+    'treasurer_tools.documents.apps.DocumentsConfig',
+    'treasurer_tools.financial_codes.apps.FinancialCodesConfig',
+    'treasurer_tools.financial_transactions.apps.FinancialTransactionsConfig',
+    'treasurer_tools.investments.apps.InvestmentsConfig',
+    'treasurer_tools.payee_payers.apps.PayeePayersConfig',
+    'treasurer_tools.reports.apps.ReportsConfig',
+    'treasurer_tools.users.apps.UsersConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "simple_history.middleware.HistoryRequestMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 # MIGRATIONS CONFIGURATION
@@ -75,7 +75,7 @@ MIGRATION_MODULES = {
 # DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True if env("DEBUG") == "True" else False
+DEBUG = True if env('DEBUG') == 'True' else False
 
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ MANAGERS = ADMINS
 # Uses django-environ to accept uri format
 # See: https://django-environ.readthedocs.io/en/latest/#supported-types
 DATABASES = {
-    "default": env.db(
+    'default': env.db(
         'DJANGO_DB_URL',
         default='postgres:///treasurer_tools'
     ),
@@ -144,7 +144,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
-            APPS_DIR("templates"),
+            APPS_DIR('templates'),
         ],
         'OPTIONS': {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
@@ -174,14 +174,14 @@ TEMPLATES = [
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = ROOT_DIR("staticfiles")
+STATIC_ROOT = ROOT_DIR('staticfiles')
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
-    APPS_DIR("static")
+    APPS_DIR('static')
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -193,7 +193,7 @@ STATICFILES_FINDERS = [
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR("media"))
+MEDIA_ROOT = str(APPS_DIR('media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
@@ -243,7 +243,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Some really nice defaults
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_USERNAME_REQUIRED = False
