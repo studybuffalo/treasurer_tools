@@ -3,7 +3,6 @@ from multiupload.fields import MultiFileField as OriginalField
 
 class MultiFileField(OriginalField):
     def render(self, name, value, attrs=None, renderer=None):
-        print('test message')
         if self.multiple:
             attrs['multiple'] = 'multiple'
 
