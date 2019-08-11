@@ -30,7 +30,6 @@ django-storages = "*"  # https://github.com/jschneier/django-storages
 # Code quality
 # ------------------------------------------------------------------------------
 coverage = "*"  # https://github.com/nedbat/coveragepy
-django_coverage_plugin = "*" # https://github.com/nedbat/django_coverage_plugin
 pylint = "*"  # https://github.com/PyCQA/pylint/
 pylint-django = "*"  #https://github.com/PyCQA/pylint-django
 
@@ -41,9 +40,10 @@ django-debug-toolbar = "*"  # https://github.com/jazzband/django-debug-toolbar
 # Testing
 # ------------------------------------------------------------------------------
 pytest = "*"  # https://github.com/pytest-dev/pytest
+pytest-cov = "*"  # https://github.com/pytest-dev/pytest-cov
 pytest-django = "*"  # https://github.com/pytest-dev/pytest-django
 pytest-pythonpath = "*"  # https://github.com/bigsassy/pytest-pythonpath
 
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
