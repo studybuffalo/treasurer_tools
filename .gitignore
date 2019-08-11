@@ -1,6 +1,3 @@
-# Python Files
-__pycache__/
-
 # Django Files
 staticfiles/
 treasurer_tools/media/
@@ -11,23 +8,9 @@ treasurer_tools/media/
 
 # Testing
 htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
 
-### VisualStudioCode template
-.vscode
+# Node Modules
+node_modules/*
 
-### Windows files
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
-
-# Node Files
-node_modules/
-
+# Local Development Files
+settings.json
