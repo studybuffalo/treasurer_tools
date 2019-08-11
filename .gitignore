@@ -5,8 +5,9 @@ __pycache__/
 staticfiles/
 treasurer_tools/media/
 
-# Environments
+# Environment files
 *.env
+!\.*.env
 
 # Testing
 htmlcov/
