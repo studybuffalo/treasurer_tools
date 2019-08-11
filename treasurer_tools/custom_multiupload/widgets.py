@@ -3,10 +3,10 @@ from django import forms
 from multiupload import fields
 
 class MultiUploadMetaInput(forms.ClearableFileInput):
-   """Copying from repo that hasn't be pushed to PyPi.
+    """Copying from repo that hasn't be pushed to PyPi.
 
         See: https://github.com/Chive/django-multiupload/blob/master/multiupload/fields.py
-   """
+    """
     def __init__(self, *args, **kwargs):
         self.multiple = kwargs.pop('multiple', True)
         super(MultiUploadMetaInput, self).__init__(*args, **kwargs)
