@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.forms import inlineformset_factory, ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from multiupload.fields import MultiFileField
+from custom_multiupload.widgets import MultiFileField
 
 from financial_codes.models import FinancialCodeSystem, BudgetYear, FinancialCode
 from documents.models import Attachment, FinancialTransactionMatch

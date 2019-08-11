@@ -99,12 +99,12 @@ class PayeePayerAddTest(TestCase):
         country = create_country()
 
         self.valid_data = {
-            "user": None,
+            "user": '',
             "name": "Another Test User",
             "address": "111-222 Fake Street",
             "city": "Edmonton",
             "province": "Alberta",
-            "country": country.id,
+            "country": country.id if country.id else '',
             "postal_code": "T1T 1T1",
             "phone": "111-222-3333",
             "fax": "444-555-6666",
@@ -178,25 +178,25 @@ class PayeePayerEditTest(TestCase):
         payee_payer = create_demographics()
 
         self.current_data = {
-            "user": payee_payer.user,
-            "name": payee_payer.name,
-            "address": payee_payer.address,
-            "city": payee_payer.city,
-            "province": payee_payer.province,
-            "country": payee_payer.country.id,
-            "postal_code": payee_payer.postal_code,
-            "phone": payee_payer.phone,
-            "fax": payee_payer.fax,
-            "email": payee_payer.email,
-            "status": payee_payer.status,
+            "user": payee_payer.user if payee_payer.user else '',
+            "name": payee_payer.name if payee_payer.name else '',
+            "address": payee_payer.address if payee_payer.address else '',
+            "city": payee_payer.city if payee_payer.city else '',
+            "province": payee_payer.province if payee_payer.province else '',
+            "country": payee_payer.country.id if payee_payer.country.id else '',
+            "postal_code": payee_payer.postal_code if payee_payer.postal_code else '',
+            "phone": payee_payer.phone if payee_payer.phone else '',
+            "fax": payee_payer.fax if payee_payer.fax else '',
+            "email": payee_payer.email if payee_payer.email else '',
+            "status": payee_payer.status if payee_payer.status else '',
         }
         self.new_data = {
-            "user": None,
+            "user": '',
             "name": "Another Test User",
             "address": "New Address",
             "city": "Edmonton",
             "province": "Alberta",
-            "country": country.id,
+            "country": country.id if country.id else '',
             "postal_code": "T1T 1T1",
             "phone": "111-222-3333",
             "fax": "444-555-6666",

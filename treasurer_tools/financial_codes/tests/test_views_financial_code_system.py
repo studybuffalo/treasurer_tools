@@ -204,7 +204,7 @@ class FinancialCodeSystemEditTest(TestCase):
     def test_system_edit_no_redirect_on_invalid_data(self):
         """Tests that user returns to edit page on invalid data"""
         invalid_data = self.valid_data
-        invalid_data["title"] = None
+        invalid_data["title"] = ''
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(

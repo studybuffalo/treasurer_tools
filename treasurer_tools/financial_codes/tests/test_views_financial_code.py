@@ -85,7 +85,7 @@ class FinancialCodeAddTest(TestCase):
         """Confirms user ends up on add page on invalid data"""
         # Setup invalid data
         invalid_data = self.valid_data
-        invalid_data["code"] = None
+        invalid_data["code"] = ''
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(

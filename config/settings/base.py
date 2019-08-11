@@ -14,7 +14,7 @@ APPS_DIR = ROOT_DIR.path('treasurer_tools')
 
 # Connect to the .env file
 env = environ.Env()
-env.read_env(str(ROOT_DIR.path('config', 'treasurer_tools.env')))
+env.read_env(str(ROOT_DIR.path('config', 'settings', 'treasurer_tools.env')))
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
