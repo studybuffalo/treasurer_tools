@@ -1,6 +1,6 @@
 """Forms for the documents app"""
 
-from multiupload.fields import MultiFileField
+from custom_multiupload.widgets import MultiFileField
 
 from django import forms
 
