@@ -105,7 +105,7 @@ class InvestmentAddTest(TestCase):
         """Confirms data is added to database on successful form submission"""
         # Setup invalid data
         invalid_data = self.valid_data
-        invalid_data["name"] = None
+        invalid_data["name"] = ''
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(

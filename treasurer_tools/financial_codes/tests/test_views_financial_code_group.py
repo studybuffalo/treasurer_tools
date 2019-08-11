@@ -90,7 +90,7 @@ class FinancialCodeGroupAddTest(TestCase):
         """Confirms user ends up on add page on invalid data"""
         # Setup invalid data
         invalid_data = self.valid_data
-        invalid_data["title"] = None
+        invalid_data["title"] = ''
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
@@ -217,7 +217,7 @@ class FinancialCodeGroupEditTest(TestCase):
         """Confirms user ends up on edit page on invalid data"""
         # Setup invalid data
         invalid_data = self.valid_data
-        invalid_data["title"] = None
+        invalid_data["title"] = ''
 
         self.client.login(username="user", password="abcd123456")
         response = self.client.post(
