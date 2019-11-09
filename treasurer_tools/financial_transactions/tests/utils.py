@@ -24,11 +24,13 @@ def create_financial_code_systems():
             title="National",
             date_start="2010-01-01",
             date_end=None,
+            submission_code=True
         ),
         FinancialCodeSystem.objects.create(
             title="Regional",
             date_start="2000-01-01",
             date_end="2020-12-31",
+            submission_code=False,
         ),
     ]
 
