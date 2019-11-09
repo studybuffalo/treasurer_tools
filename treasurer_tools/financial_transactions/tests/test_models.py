@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
+from financial_codes.models import FinancialCodeSystem
 from financial_transactions.models import FinancialCodeMatch
 
 from .utils import create_financial_transactions, create_financial_codes
@@ -130,18 +131,60 @@ class ItemModelTest(TestCase):
             500
         )
 
-    def test_total_function(self):
-        """Tests the total function for propery string generation"""
-
-        # Tests that total matches desired total and format
-        self.assertEqual(self.items[0].total, Decimal(105.00))
-
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
 
         self.assertEqual(
             str(self.items[0]),
             "2017-06-01 - Taxi costs (to hotel) - $105.00"
+        )
+
+    def test_total_function(self):
+        """Tests the total function for propery string generation"""
+
+        # Tests that total matches desired total and format
+        self.assertEqual(self.items[0].total, Decimal(105.00))
+
+    def test_get_submission_code(self):
+        """Tests that expected code is returned."""
+        # Get financial code systems
+        systems = FinancialCodeSystem.objects.all().order_by('title')
+        system_1 = systems[0]
+        system_2 = systems[1]
+
+        # Test for system 1
+        system_1.submission_code = True
+        system_1.save()
+        system_2.submission_code = False
+        system_2.save()
+
+        self.assertEqual(
+            self.items[0].get_submission_code.financial_code_group.budget_year.financial_code_system,
+            system_1
+        )
+
+        # Test for system 2
+        system_1.submission_code = False
+        system_1.save()
+        system_2.submission_code = True
+        system_2.save()
+
+        self.assertEqual(
+            self.items[0].get_submission_code.financial_code_group.budget_year.financial_code_system,
+            system_2
+        )
+
+        # Test for conflict resolution
+        system_1.submission_code = True
+        system_1.title = 'A'
+        system_1.save()
+        system_2.submission_code = True
+        system_2.title = 'B'
+        system_2.save()
+
+        self.assertEqual(
+            self.items[0].get_submission_code.financial_code_group.budget_year.financial_code_system,
+            system_1
         )
 
 class FinancialCodeMatchModelTest(TestCase):

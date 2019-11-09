@@ -8,7 +8,7 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from bank_reconciliation.models import ReconciliationGroup
-from financial_codes.models import FinancialCode
+from financial_codes.models import FinancialCodeSystem, FinancialCode
 from payee_payers.models import PayeePayer
 
 
@@ -151,6 +151,12 @@ class Item(models.Model):
 
         # Return total as a proper dollar currency
         return Decimal(total)
+
+    @property
+    def get_submission_code(self):
+        """Returns the proper submission code for this item."""
+        system = FinancialCodeSystem.objects.filter(submission_code=True).order_by('title').first()
+        return self.financial_codes.filter(financial_code_group__budget_year__financial_code_system=system).first()
 
 class FinancialCodeMatch(models.Model):
     """Links a transaction to a financial code"""
