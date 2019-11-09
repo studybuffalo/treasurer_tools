@@ -32,6 +32,7 @@ class FinancialCodeSystemForm(forms.ModelForm):
             "title",
             "date_start",
             "date_end",
+            "submission_code",
         ]
 
     def clean_date_end(self):
