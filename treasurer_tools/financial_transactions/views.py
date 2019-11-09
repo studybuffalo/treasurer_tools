@@ -154,7 +154,7 @@ def generate_pdf_transaction_items(transaction):
 
     for item in items:
         # Get financial code details for item
-        code = item.financial_codes.first()
+        code = item.get_submission_code
 
         items_rows.append([
             item.date_item.strftime('%Y-%b-%d'),
