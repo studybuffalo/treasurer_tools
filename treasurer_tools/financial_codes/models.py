@@ -20,6 +20,10 @@ class FinancialCodeSystem(models.Model):
         null=True,
         verbose_name="end date"
     )
+    submission_code = models.BooleanField(
+        help_text='Whether this code should be used for the financial code submission',
+        default=False,
+    )
     history = HistoricalRecords()
 
     def __str__(self):
