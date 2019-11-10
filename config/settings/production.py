@@ -1,12 +1,6 @@
-"""
-Production settings for Treasurer Tools project.
+"""Production settings for Treasurer Tools project."""
+import logging
 
-- Use WhiteNoise for serving static files
-- Use Amazon's S3 for storing uploaded media
-- Use mailgun to send emails
-- Use Redis for cache
-- Use sentry for error logging
-"""
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
