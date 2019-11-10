@@ -99,7 +99,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # https://docs.djangoproject.com/en/stable/ref/settings/#auth-user-model
 AUTH_USER_MODEL = 'users.User'
 # https://docs.djangoproject.com/en/stable/ref/settings/#login-redirect-url
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'home'
 # https://docs.djangoproject.com/en/stable/ref/settings/#login-url
 LOGIN_URL = 'account_login'
 LOGOUT_URL = 'account_logout'

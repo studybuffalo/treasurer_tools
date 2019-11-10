@@ -90,7 +90,7 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
 }
 # https://docs.djangoproject.com/en/stable/ref/settings/#default-file-storage
-DEFAULT_FILE_STORAGE = 'aws.s3boto3_signed.S3Boto3StorageSigned'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # https://docs.djangoproject.com/en/stable/ref/settings/#media-root
 MEDIA_URL = '{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, AWS_STORAGE_BUCKET_NAME)
 
