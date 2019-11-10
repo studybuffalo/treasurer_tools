@@ -1,35 +1,6 @@
-"""
-Local settings for Treasurer Tools project.
-
-- Run in Debug mode
-
-- Use console backend for emails
-
-- Add Django Debug Toolbar
-- Add django-extensions as app
-"""
-
+"""Local settings for Treasurer Tools project."""
 from .base import * # pylint: disable=wildcard-import, unused-wildcard-import
 from .base import env
-
-# DEBUG
-# ------------------------------------------------------------------------------
-DEBUG = env.bool('DEBUG', default=True)
-
-# SECRET CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-# Note: This key only used for development and testing.
-SECRET_KEY = env("SECRET_KEY", default='S>}{t(v|~SNz|uS%o:?8oMqJjmnR^q~00BYjc#wBr99,W.V*u;')
-
-# Mail settings
-# ------------------------------------------------------------------------------
-
-EMAIL_PORT = 1025
-
-EMAIL_HOST = 'localhost'
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.console.EmailBackend')
 
 
 # CACHING
@@ -40,6 +11,7 @@ CACHES = {
         'LOCATION': ''
     }
 }
+
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
@@ -56,9 +28,7 @@ DEBUG_TOOLBAR_CONFIG = {
     "JQUERY_URL": "",
 }
 
+
 # TESTING
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-# Your local stuff: Below this line define 3rd party library settings
-# ------------------------------------------------------------------------------
