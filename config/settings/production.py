@@ -79,10 +79,7 @@ INSTALLED_APPS += ['storages']
 # https://django-storages.readthedocs.io/en/stable/backends/amazon-S3.html#settings
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
-AWS_DEFAULT_ACL = None
-AWS_LOCATION = ''
 AWS_AUTO_CREATE_BUCKET = env('AWS_AUTO_CREATE_BUCKET', default=False)
 AWS_QUERYSTRING_AUTH = False
 _AWS_EXPIRY = 60 * 60 * 24 * 7
@@ -91,9 +88,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 # https://docs.djangoproject.com/en/stable/ref/settings/#default-file-storage
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# https://docs.djangoproject.com/en/stable/ref/settings/#media-root
-MEDIA_URL = '{}/{}/'.format(AWS_S3_CUSTOM_DOMAIN, AWS_STORAGE_BUCKET_NAME)
-
 
 
 # STATIC FILES
