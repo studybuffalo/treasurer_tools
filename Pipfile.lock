@@ -49,18 +49,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:05f7ae180813fbf11cb7397b43b6bd29463abdc246bee58127836f1a8f6a9a2f",
-                "sha256:3480c87b530e7f41d9264a6725dda68208de2697822cf02cd3a541b001872410"
+                "sha256:d89ee91f199f7b6c8840a40ccd0b6abef7925775f8606de268bb9688cc14bd70",
+                "sha256:f9def3c5c871291a2b4dbc1f3520e35573fce3783ff1c904a97dd3a4539b0e5b"
             ],
             "index": "pypi",
-            "version": "==1.11.9"
+            "version": "==1.11.12"
         },
         "botocore": {
             "hashes": [
-                "sha256:1909424c9544f92142c8e551888731e32a99f9c99cfe8d21fea3ec0c32981dae",
-                "sha256:e3e3c0f59dc30c86dd2116aece3bd554f8476446cf1c5770bbf5111993d676c8"
+                "sha256:054b195d7afee491a472e1462826042c805b4ab60c2ffd7137b90f41d52fd127",
+                "sha256:e20a7fa4bc3803b64bc59f9af1c86d13c825f209bed0edbf1b6da06bcf213212"
             ],
-            "version": "==1.14.9"
+            "version": "==1.14.12"
         },
         "certifi": {
             "hashes": [
@@ -309,10 +309,10 @@
         },
         "redis": {
             "hashes": [
-                "sha256:7595976eb0b4e1fc3ad5478f1fd44215a814ee184a7820de92726f559bdff9cd",
-                "sha256:e933bdb504c69cbd5bdf4e2bb819a99644a36731cef4c59aa637cebfd5ddd4f9"
+                "sha256:0dcfb335921b88a850d461dc255ff4708294943322bd55de6cfd68972490ca1f",
+                "sha256:b205cffd05ebfd0a468db74f0eedbff8df1a7bfc47521516ade4692991bb0833"
             ],
-            "version": "==3.4.0"
+            "version": "==3.4.1"
         },
         "reportlab": {
             "hashes": [
@@ -364,10 +364,10 @@
         },
         "s3transfer": {
             "hashes": [
-                "sha256:2525bae2a530195576da53671bae8ca8c55ee8e33bc2225a65e804476611ea5a",
-                "sha256:4924e10451cc37901945806423d16c2c2040a6530645a614ed87e995ccec764c"
+                "sha256:2482b4259524933a022d59da830f51bd746db62f047d6eb213f2f8855dcb8a13",
+                "sha256:921a37e2aefc64145e7b73d50c71bb4f26f46e4c9f414dc648c6245ff92cf7db"
             ],
-            "version": "==0.3.2"
+            "version": "==0.3.3"
         },
         "sentry-sdk": {
             "hashes": [
@@ -404,6 +404,7 @@
                 "sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc",
                 "sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc"
             ],
+            "markers": "python_version != '3.4'",
             "version": "==1.25.8"
         },
         "whitenoise": {
