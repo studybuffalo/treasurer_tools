@@ -14,7 +14,9 @@ class FinancialCodeGroupWithYearID(Select):
 
         # Use the option value (i.e. the model ID) to retrieve budget year ID
         if option["value"]:
-            year_id = FinancialCodeGroup.objects.get(id=option["value"]).budget_year.id
+            # Coerce value into a string to allow lookup to pass
+            option_id = str(option["value"])
+            year_id = FinancialCodeGroup.objects.get(id=option_id).budget_year.id
         else:
             year_id = ""
 
