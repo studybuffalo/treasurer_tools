@@ -21,7 +21,7 @@ class MyUserCreationForm(UserCreationForm):
 
 
 @admin.register(USER)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(AuthUserAdmin):
     form = MyUserChangeForm
     fieldsets = (
         (
