@@ -1,0 +1,86 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: friday
+    time: "12:00"
+  open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: boto3
+    versions:
+    - 1.16.58
+    - 1.16.62
+    - 1.17.11
+    - 1.17.16
+    - 1.17.2
+    - 1.17.21
+    - 1.17.26
+    - 1.17.32
+    - 1.17.38
+    - 1.17.43
+    - 1.17.48
+    - 1.17.53
+    - 1.17.6
+  - dependency-name: reportlab
+    versions:
+    - 3.5.59
+    - 3.5.62
+    - 3.5.65
+    - 3.5.66
+  - dependency-name: pillow
+    versions:
+    - 8.1.0
+    - 8.1.1
+    - 8.1.2
+  - dependency-name: pylint
+    versions:
+    - 2.6.2
+    - 2.7.1
+    - 2.7.2
+  - dependency-name: sentry-sdk
+    versions:
+    - 0.19.5
+    - 0.20.0
+    - 0.20.3
+  - dependency-name: django
+    versions:
+    - 3.1.5
+    - 3.1.6
+  - dependency-name: pytest
+    versions:
+    - 6.2.1
+    - 6.2.2
+  - dependency-name: coverage
+    versions:
+    - 5.3.1
+    - "5.4"
+  - dependency-name: pylint-django
+    versions:
+    - 2.4.2
+  - dependency-name: django-debug-toolbar
+    versions:
+    - "3.2"
+  - dependency-name: pytest-django
+    versions:
+    - 4.1.0
+  - dependency-name: django-simple-history
+    versions:
+    - 2.12.0
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: friday
+    time: "12:00"
+  open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: eslint
+    versions:
+    - 7.18.0
+    - 7.19.0
+    - 7.20.0
+    - 7.21.0
+    - 7.22.0
+    - 7.23.0
