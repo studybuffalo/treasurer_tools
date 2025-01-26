@@ -1,3 +1,6 @@
+# Python Interpreter Files
+__pycache__
+
 # Django Files
 staticfiles/
 treasurer_tools/media/
