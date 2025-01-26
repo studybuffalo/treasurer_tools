@@ -1,0 +1,51 @@
+[project]
+name = "treasurer_tools"
+version = "2.0.0"
+description = "A Django-based system to assist Non-Profit Organization treasurers in managing/tracking finances."
+authors = [
+    {name = "Joshua Torrance", email = "joshua@torrance.io"}
+]
+license = "GPLv3"
+readme = "README.rst"
+package-mode = false
+requires-python = ">=3.13,<4"
+dependencies = [
+    "argon2-cffi (>=23.1.0,<24.0.0)",  # https://github.com/hynek/argon2_cffi
+    "boto3 (>=1.36.6,<2.0.0)",  # https://github.com/boto/boto3
+    "colorama (>=0.4.6,<0.5.0)",  # https://github.com/pypa/pipenv/issues/1757
+    "pillow (>=11.1.0,<12.0.0)",  # https://github.com/python-pillow/Pillow
+    "psycopg2-binary (>=2.9.10,<3.0.0)",  # https://github.com/psycopg/psycopg2
+    "reportlab (>=4.2.5,<5.0.0)",  # https://www.reportlab.com/docs/reportlab-userguide.pdf
+    "sentry-sdk (>=2.20.0,<3.0.0)",  # https://docs.sentry.io/quickstart/?platform=python
+    "unipath (>=1.1,<2.0)",  # https://github.com/mikeorr/Unipath
+    "whitenoise (>=6.8.2,<7.0.0)",  # https://github.com/evansd/whitenoise
+    "django (>=5.1.5,<6.0.0)",  # https://www.djangoproject.com/
+    "django-allauth (>=65.3.1,<66.0.0)",  # https://github.com/pennersr/django-allauth
+    "django-environ (>=0.12.0,<0.13.0)",  # https://github.com/joke2k/django-environ
+    "django-multiupload (>=0.6.1,<0.7.0)",  # https://github.com/Chive/django-multiupload
+    "django-redis (>=5.4.0,<6.0.0)",  # https://github.com/niwinz/django-redis
+    "django-simple-history (>=3.8.0,<4.0.0)",  # https://github.com/treyhunner/django-simple-history
+    "django-storages (>=1.14.4,<2.0.0)"  # https://github.com/jschneier/django-storages
+]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.group.dev.dependencies]
+# Code quality
+# ------------------------------------------------------------------------------
+pylint = "^3.3.3"
+pylint-django = "^2.6.1"
+
+# Django
+# ------------------------------------------------------------------------------
+django-debug-toolbar = "^5.0.1"
+
+
+# Testing
+# ------------------------------------------------------------------------------
+pytest = "^8.3.4"
+pytest-django = "^4.9.0"
