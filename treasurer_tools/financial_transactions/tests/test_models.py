@@ -195,14 +195,13 @@ class FinancialCodeMatchModelTest(TestCase):
         transactions = create_financial_transactions()
 
         self.match = FinancialCodeMatch.objects.create(
-            item=transactions[0].items.all()[0],
+            item=transactions[0].items.all().order_by('id')[0],
             financial_code=codes[0]
         )
 
     def test_string_representation(self):
         """Tests that the model string representaton returns as expected"""
-
         self.assertEqual(
             str(self.match),
-            "2017-06-01 - Taxi costs (from hotel) - $105.00 - 1000 - Travel Grant"
+            "2017-06-01 - Taxi costs (to hotel) - $105.00 - 1000 - Travel Grant"
         )
