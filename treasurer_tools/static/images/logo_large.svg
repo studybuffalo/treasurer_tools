@@ -2,35 +2,34 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="538.67914mm"
-   height="125.23615mm"
-   viewBox="0 0 1908.7056 443.75009"
+   width="617.07953mm"
+   height="131.08728mm"
+   viewBox="0 0 2186.5023 464.48243"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="logo_large.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="logo_large_new.svg"
    inkscape:export-filename="E:\Desktop\CSHP-AB Logo + Text [Color].png"
    inkscape:export-xdpi="282.91"
-   inkscape:export-ydpi="282.91">
-  <defs
-     id="defs4" />
-  <sodipodi:namedview
+   inkscape:export-ydpi="282.91"
+   xml:space="preserve"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"><defs
+     id="defs4" /><sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="813.74059"
-     inkscape:cy="273.27557"
+     inkscape:zoom="0.7"
+     inkscape:cx="1432.8571"
+     inkscape:cy="136.42857"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -43,104 +42,108 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:snap-text-baseline="false" />
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Layer 2"
-     transform="translate(1412.6721,-643.01797)" />
-  <g
-     inkscape:label="Layer 1"
+     inkscape:snap-text-baseline="false"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050" /><metadata
+     id="metadata7"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><g
+     inkscape:label="Horizontal Logo"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(1279.7772,-870.38004)">
-    <g
+     transform="translate(1278.5473,-862.80402)"><g
+       id="g3"
+       inkscape:label="Alberta Branch"
+       transform="translate(0,-22.883842)"><text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:81.25px;line-height:0.95;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';text-align:end;letter-spacing:22.5px;text-anchor:end;fill:#00add8;fill-opacity:1;stroke:none;stroke-width:8.4375;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1.1;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+         x="911.71735"
+         y="1287.5675"
+         id="text3"
+         inkscape:label="Branch Text"><tspan
+           sodipodi:role="line"
+           id="tspan3"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:81.25px;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';stroke:none;stroke-width:8.4375;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1.1;paint-order:normal"
+           x="934.21735"
+           y="1287.5675">BRANCH</tspan></text><text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:331.25px;line-height:0.95;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';text-align:end;letter-spacing:16.875px;text-anchor:end;fill:#00add8;fill-opacity:1;stroke:none;stroke-width:8.4375;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         x="921.20471"
+         y="1179.3531"
+         id="text2"
+         inkscape:label="Alberta Text"
+         transform="translate(2.3279402e-5)"><tspan
+           sodipodi:role="line"
+           id="tspan2"
+           style="font-size:331.25px;letter-spacing:16.875px;fill:#00add8;fill-opacity:1;stroke:none;stroke-width:8.4375;stroke-linecap:round;stroke-linejoin:miter"
+           x="938.07971"
+           y="1179.3531">AB</tspan></text></g><path
+       style="fill:none;fill-opacity:1;stroke:#00add8;stroke-width:8.41931;stroke-linecap:square;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="M 384.95483,867.01367 V 1323.0768"
+       id="path1"
+       inkscape:label="Vertical Line"
+       transform="translate(2.3279402e-5)" /><g
        id="g4218"
-       transform="translate(0,643.01795)">
-      <path
-         inkscape:connector-curvature="0"
-         id="path4173"
-         d="m 253.51192,670.27889 c -0.45837,-0.4583 -0.83337,-22.9702 -0.83337,-50.0264 l 0,-49.1931 24.68749,0.3389 24.6875,0.3389 0.625,24.375 0.625,24.375 48.4375,0.3272 48.4375,0.3272 0,24.9853 0,24.9853 -72.9166,0 c -40.1043,0 -73.29176,-0.375 -73.75002,-0.8333 z"
-         style="fill:#f9bf13;fill-opacity:1" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path4171"
-         d="m 450.17854,646.13169 0,-24.9805 35.3125,-0.332 35.3125,-0.332 0.3521,-14.6875 0.3523,-14.6875 24.9602,0 24.9604,0 0,40 0,40 -60.625,0 -60.625,0 z"
-         style="fill:#0055a5;fill-opacity:1" />
-      <path
+       transform="translate(-327.6682,645.80811)"
+       inkscape:label="Logo"><path
          inkscape:connector-curvature="0"
          id="path4169"
-         d="m 326.42854,571.26849 0,-19.8438 -3.983,-0.7966 c -2.1906,-0.4381 -45.6437,-0.7754 -96.56249,-0.7496 l -92.5795,0.047 -0.32,-99.27 c -0.25375,-78.7529 0,-99.3933 1.25,-99.8664 0.8635,-0.328 23.22625,-0.53 49.695,-0.4491 l 48.125,0.1473 0,25 0,25 -24.6875,0.3389 -24.6875,0.3389 0,49.3486 0,49.3486 96.87499,0 96.875,0 0,45.625 0,45.625 -25,0 -25,0 z"
-         style="fill:#05b06e;fill-opacity:1" />
-      <path
+         d="m 326.42854,571.26849 v -19.8438 l -3.983,-0.7966 c -2.1906,-0.4381 -45.6437,-0.7754 -96.56249,-0.7496 l -92.5795,0.047 -0.32,-99.27 c -0.25375,-78.7529 0,-99.3933 1.25,-99.8664 0.8635,-0.328 23.22625,-0.53 49.695,-0.4491 l 48.125,0.1473 v 25 25 l -24.6875,0.3389 -24.6875,0.3389 v 49.3486 49.3486 h 96.87499 96.875 v 45.625 45.625 h -25 -25 z"
+         style="fill:#00bd71;fill-opacity:1"
+         inkscape:label="Green" /><path
+         inkscape:connector-curvature="0"
+         id="path4173"
+         d="m 253.51192,670.27889 c -0.45837,-0.4583 -0.83337,-22.9702 -0.83337,-50.0264 v -49.1931 l 24.68749,0.3389 24.6875,0.3389 0.625,24.375 0.625,24.375 48.4375,0.3272 48.4375,0.3272 v 24.9853 24.9853 h -72.9166 c -40.1043,0 -73.29176,-0.375 -73.75002,-0.8333 z"
+         style="fill:#f8bf00;fill-opacity:1"
+         transform="translate(2.3279402e-5)"
+         inkscape:label="Yellow" /><path
+         inkscape:connector-curvature="0"
+         id="path4171"
+         d="m 450.17854,646.13169 v -24.9805 l 35.3125,-0.332 35.3125,-0.332 0.3521,-14.6875 0.3523,-14.6875 h 24.9602 24.9604 v 40 40 h -60.625 -60.625 z"
+         style="fill:#0055a5;fill-opacity:1"
+         transform="translate(2.3279402e-5)"
+         inkscape:label="Blue 3" /><path
          inkscape:connector-curvature="0"
          id="path4167"
-         d="m 400.17854,545.47989 0,-45.6323 102.1875,0.3198 102.1875,0.3198 0,25 0,25 -77.1875,0.3221 -77.1875,0.322 0,19.9905 0,19.9904 -25,0 -25,0 z"
-         style="fill:#0055a5;fill-opacity:1" />
-      <path
+         d="m 400.17854,545.47989 v -45.6323 l 102.1875,0.3198 102.1875,0.3198 v 25 25 l -77.1875,0.3221 -77.1875,0.322 v 19.9905 19.9904 h -25 -25 z"
+         style="fill:#0055a5;fill-opacity:1"
+         inkscape:label="Blue 2" /><path
          inkscape:connector-curvature="0"
          id="path4165"
          d="m 508.48604,486.40749 c -0.675,-1.0922 82.7979,-85.4554 85.4176,-86.3287 1.6592,-0.553 35.0249,31.9815 35.0249,34.1522 0,0.7032 -11.6719,12.9215 -25.9375,27.1517 l -25.9375,25.8731 -33.9686,0.086 c -18.6826,0.047 -34.2521,-0.3732 -34.5989,-0.9341 z"
-         style="fill:#0055a5;fill-opacity:1" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path4163"
-         d="m 211.42855,448.03379 0,-25.6097 20.3125,-0.3434 20.3125,-0.3435 0,-97.18754 0,-97.18758 99.06249,8e-5 99.0625,6e-5 0,50 0,49.99998 -25,0 -25,0 0,-24.99998 0,-25 -48.7424,0 -48.7423,0 -0.3202,97.81248 -0.3201,97.8125 -45.31249,0.3281 -45.3125,0.3281 z"
-         style="fill:#e94a37;fill-opacity:1" />
-      <path
+         style="fill:#0055a5;fill-opacity:1"
+         inkscape:label="Blue 1" /><path
          inkscape:connector-curvature="0"
          id="path4147"
-         d="m 521.42854,416.11219 0,-18.75 -96.875,0 -96.875,0 0,-45.625 0,-45.62498 25,0 25,0 0,20.62498 0,20.625 96.875,0 96.875,0 0,19.6995 0,19.6996 -24.0742,24.0504 c -13.2408,13.2278 -24.4908,24.0505 -25,24.0505 -0.5092,0 -0.9258,-8.4375 -0.9258,-18.75 z"
-         style="fill:#00acd9;fill-opacity:1" />
-    </g>
-    <text
+         d="m 521.42854,416.11219 v -18.75 h -96.875 -96.875 v -45.625 -45.62498 h 25 25 v 20.62498 20.625 h 96.875 96.875 v 19.6995 19.6996 l -24.0742,24.0504 c -13.2408,13.2278 -24.4908,24.0505 -25,24.0505 -0.5092,0 -0.9258,-8.4375 -0.9258,-18.75 z"
+         style="fill:#00add8;fill-opacity:1"
+         inkscape:label="Teal" /><path
+         inkscape:connector-curvature="0"
+         id="path4163"
+         d="m 211.42855,448.03379 v -25.6097 l 20.3125,-0.3434 20.3125,-0.3435 v -97.18754 -97.18758 l 99.06249,8e-5 99.0625,6e-5 v 50 49.99998 h -25 -25 v -24.99998 -25 h -48.7424 -48.7423 l -0.3202,97.81248 -0.3201,97.8125 -45.31249,0.3281 -45.3125,0.3281 z"
+         style="fill:#e74c39;fill-opacity:1"
+         transform="translate(2.3279402e-5)"
+         inkscape:label="Red" /></g><text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:145px;line-height:1.04999995;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
-       x="-2557.873"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:112.5px;line-height:0.95;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;letter-spacing:-0.9375px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;white-space:pre;inline-size:1166.51;display:inline;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-1540.5352"
        y="1005.4636"
-       id="text4165"><tspan
-         sodipodi:role="line"
-         x="-1208.3392"
+       id="text4165"
+       transform="translate(92.940943,11.727635)"
+       inkscape:label="CSHP Text"><tspan
+         x="-1540.5352"
          y="1005.4636"
-         id="tspan4167"><tspan
-           x="-1208.3392"
-           y="1005.4636"
-           id="tspan4169"
-           style="text-align:start;text-anchor:start;">Canadian Society of</tspan></tspan><tspan
-         sodipodi:role="line"
-         x="-1291.8842"
-         y="1157.7136"
-         id="tspan4171"><tspan
-           x="-1291.8842"
-           y="1157.7136"
-           id="tspan4173"
-           style="text-align:start;text-anchor:start;">Hospital Pharmacists</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0055a5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-549.96277"
-       y="1276.5186"
-       id="text4159"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         x="-549.96277"
-         y="1276.5186"
-         id="tspan4161"><tspan
-           x="-549.96277"
-           y="1276.5186"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:87.5px;line-height:125%;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
-           id="tspan4163">Alberta Branch</tspan></tspan></text>
-  </g>
-</svg>
+         id="tspan4"><tspan
+           style="font-weight:500;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';text-align:end;text-anchor:end"
+           id="tspan1">Canadian Society of </tspan></tspan><tspan
+         x="-1540.5352"
+         y="1113.1301"
+         id="tspan6"><tspan
+           style="font-weight:500;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';text-align:end;text-anchor:end"
+           id="tspan5">Healthcare-Systems </tspan></tspan><tspan
+         x="-1540.5352"
+         y="1220.7966"
+         id="tspan8"><tspan
+           style="font-weight:500;font-family:Outfit;-inkscape-font-specification:'Outfit Medium';text-align:end;text-anchor:end"
+           id="tspan7">Pharmacy</tspan></tspan></text></g></svg>
