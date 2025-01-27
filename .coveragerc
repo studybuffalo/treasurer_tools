@@ -1,3 +1,0 @@
-[run]
-include = treasurer_tools/*
-omit = *migrations*, *tests*
