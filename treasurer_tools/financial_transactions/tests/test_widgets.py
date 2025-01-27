@@ -12,6 +12,7 @@ class FinancialCodeWithYearIDTest(TestCase):
         self.codes = create_financial_codes()
 
         system_id = self.codes[0].financial_code_group.budget_year.financial_code_system.id
+
         # Need to retrieve widget from form to get options initialized
         self.form = FinancialCodeAssignmentForm(system=system_id, transaction_type="e")
 
@@ -27,11 +28,11 @@ class FinancialCodeWithYearIDTest(TestCase):
         self.assertCountEqual(
             choices,
             [
-                ["", "---------"],
-                [
+                ("", "---------"),
+                (
                     self.codes[0].financial_code_group.title,
                     [(self.codes[0].id, str(self.codes[0]))]
-                ],
+                ),
             ]
         )
 
