@@ -10,16 +10,22 @@ A Django-based system to assist Non-Profit Organization treasurers in managing/t
 
 :License: GPLv3
 
-
-Settings
---------
-
-Moved to settings_.
-
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
-
 Basic Commands
 --------------
+Initialize Development Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1. Install the development environment with Poetry::
+    $ poetry install
+2. Copy the ``/config/settings/.treasurer_tools.env`` file to
+   ``/config/settings/treasurer_tools.env`` and update the details for
+   your environment.
+3. Run the database migrations::
+    $ poetry run python manage.py migrate
+
+Running The Test Server
+^^^^^^^^^^^^^^^^^^^^^^^
+1. Run the following command::
+    $ poetry run python manage.py runserver
 
 Setting Up Your Users
 ^^^^^^^^^^^^^^^^^^^^^
