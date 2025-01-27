@@ -1,5 +1,5 @@
 """Expense Transaction URLs"""
-from django.conf.urls import url
+from django.urls import path
 
 from .views import (
     dashboard, investment_add, investment_edit, investment_delete,
@@ -9,11 +9,11 @@ from .views import (
 app_name = "investments"
 
 urlpatterns = [
-    url(r"^add/$", investment_add, name="investment_add"),
-    url(r"^edit/(?P<investment_id>\d+)/$", investment_edit, name="investment_edit"),
-    url(r"^delete/(?P<investment_id>\d+)/$", investment_delete, name="investment_delete"),
-    url(r"^detail/add/(?P<investment_id>\d+)/$", detail_add, name="detail_add"),
-    url(r"^detail/edit/(?P<detail_id>\d+)/$", detail_edit, name="detail_edit"),
-    url(r"^detail/delete/(?P<detail_id>\d+)/$", detail_delete, name="detail_delete"),
-    url(r"^$", dashboard, name="dashboard"),
+    path('add/', investment_add, name="investment_add"),
+    path('edit/<int:investment_id>/', investment_edit, name="investment_edit"),
+    path('delete/<int:investment_id>/', investment_delete, name="investment_delete"),
+    path('detail/add/<int:investment_id>/', detail_add, name="detail_add"),
+    path('detail/edit/<int:detail_id>/', detail_edit, name="detail_edit"),
+    path('detail/delete/<int:detail_id>/', detail_delete, name="detail_delete"),
+    path('', dashboard, name="dashboard"),
 ]

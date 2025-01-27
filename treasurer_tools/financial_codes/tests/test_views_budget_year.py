@@ -110,7 +110,7 @@ class BudgetYearEditTest(TestCase):
             "short_name": year.short_name,
         }
         self.year_id = year.id
-        self.valid_url = "/settings/codes/year/delete/{}".format(year.id)
+        self.valid_url = "/settings/codes/year/delete/{}/".format(year.id)
         self.valid_args = {"year_id": year.id}
 
     def test_year_edit_redirect_if_not_logged_in(self):
@@ -247,7 +247,7 @@ class BudgetYearDeleteTest(TestCase):
 
         self.year_id = year.id
         self.valid_args = {"year_id": year.id}
-        self.valid_url = "/settings/codes/year/delete/{}".format(year.id)
+        self.valid_url = "/settings/codes/year/delete/{}/".format(year.id)
 
     def test_year_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""

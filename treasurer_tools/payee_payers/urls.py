@@ -1,5 +1,5 @@
 """Main Site URL Conf"""
-from django.conf.urls import url
+from django.urls import path
 
 from .views import (
     dashboard, request_payee_payers, add_payee_payer, edit_payee_payer,
@@ -9,9 +9,9 @@ from .views import (
 app_name = "payee_payers"
 
 urlpatterns = [
-    url(r"^retrieve-payee-payer-list/$", request_payee_payers),
-    url(r"^add/$", add_payee_payer, name="add"),
-    url(r"^edit/(?P<payee_payer_id>\d+)$", edit_payee_payer, name="edit"),
-    url(r"^delete/(?P<payee_payer_id>\d+)$", delete_payee_payer, name="delete"),
-    url(r"^$", dashboard, name="dashboard"),
+    path('retrieve-payee-payer-list/', request_payee_payers),
+    path('add/', add_payee_payer, name="add"),
+    path('edit/<int:payee_payer_id>/', edit_payee_payer, name="edit"),
+    path('delete/<int:payee_payer_id>/', delete_payee_payer, name="delete"),
+    path('', dashboard, name="dashboard"),
 ]

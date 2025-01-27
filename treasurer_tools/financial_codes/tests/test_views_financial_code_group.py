@@ -116,7 +116,7 @@ class FinancialCodeGroupEditTest(TestCase):
         }
         self.group_id = groups[0].id
         self.valid_args = {"group_id": groups[0].id}
-        self.valid_url = "/settings/codes/group/edit/{}".format(groups[0].id)
+        self.valid_url = "/settings/codes/group/edit/{}/".format(groups[0].id)
 
     def test_group_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -238,7 +238,7 @@ class FinancialCodeGroupDeleteTest(TestCase):
 
         self.group_id = groups[0].id
         self.valid_args = {"group_id": groups[0].id}
-        self.valid_url = "/settings/codes/group/delete/{}".format(groups[0].id)
+        self.valid_url = "/settings/codes/group/delete/{}/".format(groups[0].id)
 
     def test_group_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
