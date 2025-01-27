@@ -204,7 +204,7 @@ class PayeePayerEditTest(TestCase):
             "status": "a"
         }
         self.valid_args = {"payee_payer_id": payee_payer.id}
-        self.valid_url = "/payee-payer/edit/{}".format(payee_payer.id)
+        self.valid_url = "/payee-payer/edit/{}/".format(payee_payer.id)
 
     def test_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -295,7 +295,7 @@ class PayeePayerDeleteTest(TestCase):
         payee_payer = create_demographics()
 
         self.valid_args = {"payee_payer_id": payee_payer.id}
-        self.valid_url = "/payee-payer/delete/{}".format(payee_payer.id)
+        self.valid_url = "/payee-payer/delete/{}/".format(payee_payer.id)
 
     def test_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""

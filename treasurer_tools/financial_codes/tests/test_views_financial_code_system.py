@@ -95,7 +95,7 @@ class FinancialCodeSystemEditTest(TestCase):
             "date_end": systems[0].date_end if systems[0].date_end else "",
         }
         self.system_id = systems[0].id
-        self.valid_url = "/settings/codes/system/edit/{}".format(systems[0].id)
+        self.valid_url = "/settings/codes/system/edit/{}/".format(systems[0].id)
         self.valid_args = {"system_id": systems[0].id}
 
     def test_system_edit_redirect_if_not_logged_in(self):
@@ -224,7 +224,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         systems = create_financial_code_systems()
 
         self.system_id = systems[0].id
-        self.valid_url = "/settings/codes/system/edit/{}".format(systems[0].id)
+        self.valid_url = "/settings/codes/system/edit/{}/".format(systems[0].id)
         self.valid_args = {"system_id": systems[0].id}
 
     def test_system_delete_redirect_if_not_logged_in(self):

@@ -402,7 +402,7 @@ class FinancialTransactionEditTest(TestCase):
             "financialtransactionmatch_set-MAX_NUM_FORMS": 20,
         }
         self.valid_args = {"t_type": "expense", "transaction_id": transaction.id}
-        self.valid_url = "/transactions/expense/edit/{}".format(transaction.id)
+        self.valid_url = "/transactions/expense/edit/{}/".format(transaction.id)
 
     def test_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -482,7 +482,7 @@ class FinancialTransactionDeleteTest(TestCase):
         transaction = transactions[0]
 
         self.valid_args = {"t_type": "expense", "transaction_id": transaction.id}
-        self.valid_url = "/transactions/expense/delete/{}".format(transaction.id)
+        self.valid_url = "/transactions/expense/delete/{}/".format(transaction.id)
 
     def test_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""

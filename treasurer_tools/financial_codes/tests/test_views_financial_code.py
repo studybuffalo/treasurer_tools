@@ -109,7 +109,7 @@ class FinancialCodeEditTest(TestCase):
         }
         self.code_id = codes[0].id
         self.valid_args = {"code_id": codes[0].id}
-        self.valid_url = "/settings/codes/code/edit/{}".format(codes[0].id)
+        self.valid_url = "/settings/codes/code/edit/{}/".format(codes[0].id)
 
     def test_code_edit_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
@@ -214,7 +214,7 @@ class FinancialCodeDeleteTest(TestCase):
 
         self.code_id = codes[0].id
         self.valid_args = {"code_id": codes[0].id}
-        self.valid_url = "/settings/codes/code/delete/{}".format(codes[0].id)
+        self.valid_url = "/settings/codes/code/delete/{}/".format(codes[0].id)
 
     def test_code_delete_redirect_if_not_logged_in(self):
         """Checks user is redirected if not logged in"""
