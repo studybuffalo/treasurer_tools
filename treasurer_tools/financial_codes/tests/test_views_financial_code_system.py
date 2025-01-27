@@ -130,7 +130,7 @@ class FinancialCodeSystemEditTest(TestCase):
     def test_system_edit_html404_on_invalid_url(self):
         """Checks that the edit financial code system page URL fails on invalid ID"""
         self.client.login(username="user", password="abcd123456")
-        response = self.client.get("/settings/codes/system/edit/999999999")
+        response = self.client.get("/settings/codes/system/edit/999999999/")
 
         # Check that page is accessible
         self.assertEqual(response.status_code, 404)
@@ -224,7 +224,7 @@ class FinancialCodeSystemDeleteTest(TestCase):
         systems = create_financial_code_systems()
 
         self.system_id = systems[0].id
-        self.valid_url = "/settings/codes/system/edit/{}/".format(systems[0].id)
+        self.valid_url = "/settings/codes/system/delete/{}/".format(systems[0].id)
         self.valid_args = {"system_id": systems[0].id}
 
     def test_system_delete_redirect_if_not_logged_in(self):
