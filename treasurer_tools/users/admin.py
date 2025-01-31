@@ -17,7 +17,7 @@ class MyUserCreationForm(UserCreationForm):
     """Extending user creation form."""
     class Meta(UserCreationForm.Meta):
         model = USER
-        fields = ('name', 'email')
+        fields = ('name', 'email', 'username')
 
 
 @admin.register(USER)
@@ -26,7 +26,7 @@ class UserAdmin(AuthUserAdmin):
     fieldsets = (
         (
             None,
-            {'fields': ('email', 'password')}
+            {'fields': ('email', 'username', 'password')}
         ),
         (
             'Personal info',
@@ -45,6 +45,6 @@ class UserAdmin(AuthUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('name', 'email', 'password1', 'password2'),
+            'fields': ('name', 'email', 'username', 'password1', 'password2'),
         }),
     )
