@@ -67,3 +67,7 @@ class Branch(models.Model):
 
     def __str__(self):
         return self.name_full
+
+    class Meta:
+        verbose_name = "Branch"
+        verbose_name_plural = "Branches"
