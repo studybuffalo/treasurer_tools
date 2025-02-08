@@ -72,30 +72,34 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 ]
 
 
-# MEDIA AND STORAGES
+# STORAGES
 # ------------------------------------------------------------------------------
-# https://django-storages.readthedocs.io/en/stable/#installation
-INSTALLED_APPS += ['storages']
-# https://django-storages.readthedocs.io/en/stable/backends/amazon-S3.html#settings
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
-AWS_AUTO_CREATE_BUCKET = env('AWS_AUTO_CREATE_BUCKET', default=False)
-AWS_QUERYSTRING_AUTH = False
-_AWS_EXPIRY = 60 * 60 * 24 * 7
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
+# https://whitenoise.readthedocs.io/en/latest/django.html#enable-whitenoise
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+_AWS_EXPIRY = 60 * 60 * 24 * 7,
+
+STORAGES = {
+    # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#configuration-settings
+    'default': {
+        'BACKEND': 'storages.backends.s3.S3Storage',
+        'OPTIONS': {
+            'access_key': env('AWS_ACCESS_KEY_ID'),
+            'secret_key': env('AWS_SECRET_ACCESS_KEY'),
+            'bucket_name': env('AWS_STORAGE_BUCKET_NAME'),
+            'querystring_auth': False,
+            'object_parameters': {
+                'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
+            }
+        }
+    },
+
+    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
 }
-# https://docs.djangoproject.com/en/stable/ref/settings/#default-file-storage
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-
-# STATIC FILES
-# ------------------------------------------------------------------------------
-# Use Whitenoise to serve static files
-# See: https://whitenoise.readthedocs.io/
-WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware', ]
-MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 
 
 # EMAIL SETTINGS
@@ -105,7 +109,7 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True if env('EMAIL_USE_TLS') == "True" else False
+EMAIL_USE_TLS = True if env('EMAIL_USE_TLS') == 'True' else False
 EMAIL_PORT = env('EMAIL_PORT')
 
 
