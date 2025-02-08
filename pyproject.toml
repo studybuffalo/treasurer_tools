@@ -11,7 +11,6 @@ package-mode = false
 requires-python = ">=3.13,<4"
 dependencies = [
     "argon2-cffi (>=23.1.0,<24.0.0)",  # https://github.com/hynek/argon2_cffi
-    "boto3 (>=1.36.6,<2.0.0)",  # https://github.com/boto/boto3
     "colorama (>=0.4.6,<0.5.0)",  # https://github.com/pypa/pipenv/issues/1757
     "pillow (>=11.1.0,<12.0.0)",  # https://github.com/python-pillow/Pillow
     "psycopg2-binary (>=2.9.10,<3.0.0)",  # https://github.com/psycopg/psycopg2
@@ -25,7 +24,7 @@ dependencies = [
     "django-multiupload (>=0.6.1,<0.7.0)",  # https://github.com/Chive/django-multiupload
     "django-redis (>=5.4.0,<6.0.0)",  # https://github.com/niwinz/django-redis
     "django-simple-history (>=3.8.0,<4.0.0)",  # https://github.com/treyhunner/django-simple-history
-    "django-storages (>=1.14.4,<2.0.0)"  # https://github.com/jschneier/django-storages
+    "django-storages[s3] (>=1.14.4,<2.0.0)"  # https://github.com/jschneier/django-storages
 ]
 
 
