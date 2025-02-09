@@ -30,6 +30,9 @@ def generate_pdf_header(branch_details, transaction):
     logo_details = lib.utils.ImageReader(logo_storage)
     width, height = logo_details.getSize()
 
+    # Ensure logo file is open for next steps
+    logo_storage.open()
+
     # If aspect ratio > 1/3, need to scale by max height
     if (height / width) > 0.333:
         logo = Image(
@@ -44,7 +47,6 @@ def generate_pdf_header(branch_details, transaction):
             width=75 * mm,
             height=((75 * mm) / width) * height,
         )
-
 
     if transaction.transaction_type == 'e':
         header_title = 'Branch Expense Claim Form'
@@ -62,6 +64,9 @@ def generate_pdf_header(branch_details, transaction):
         ('ALIGNMENT', (1, 0), (1, 0), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
+
+    # Close logo file
+    logo_storage.close()
 
     return header_table
 
