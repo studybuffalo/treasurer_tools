@@ -35,6 +35,10 @@
         width: 25rem;
       }
 
+      .submitter input {
+        width: 25rem;
+      }
+
       .submission-date input {
         width: 9rem;
       }
@@ -54,6 +58,10 @@
       }
 
       .memo input {
+        width: 30rem;
+      }
+
+      .submitter input {
         width: 30rem;
       }
 
@@ -149,6 +157,10 @@
 
         <div class="input-flex-col memo">
           {% include 'main/input_field.html' with field=form.transaction_form.memo %}
+        </div>
+
+        <div class="input-flex-col submitter">
+          {% include 'main/input_field.html' with field=form.transaction_form.submitter %}
         </div>
 
         <div class="input-flex-col submission-date">
@@ -281,7 +293,7 @@
           </div>
 
           <div class="add">
-            <button id="add-item">Add item</button>
+            <button id="add-item" class="add">Add item</button>
           </div>
         </fieldset>
 
@@ -320,8 +332,8 @@
           </ul>
         </fieldset>
 
-        <div class="right-align">
-          <button type="submit">{{ page_name|title }}</button>
+        <div>
+          <button type="submit" class="save">{{ page_name|title }}</button>
         </div>
       </div>
     {% endwith %}

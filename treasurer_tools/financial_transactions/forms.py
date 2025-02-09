@@ -471,6 +471,7 @@ class TransactionForm(forms.ModelForm):
         fields = [
             "payee_payer",
             "memo",
+            "submitter",
             "date_submitted",
         ]
 

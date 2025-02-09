@@ -1,0 +1,166 @@
+[
+  {
+    "model": "financial_codes.historicalfinancialcodesystem",
+    "pk": 1,
+    "fields": {
+      "id": 1,
+      "title": "Test System",
+      "date_start": "2000-01-01",
+      "date_end": null,
+      "submission_code": true,
+      "history_date": "2025-02-09T15:02:28.038Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.financialcodesystem",
+    "pk": 1,
+    "fields": {
+      "title": "Test System",
+      "date_start": "2000-01-01",
+      "date_end": null,
+      "submission_code": true
+    }
+  },
+  {
+    "model": "financial_codes.historicalbudgetyear",
+    "pk": 1,
+    "fields": {
+      "id": 1,
+      "date_start": "2000-01-01",
+      "date_end": "2000-12-31",
+      "short_name": "Test Budget Year",
+      "financial_code_system": 1,
+      "history_date": "2025-02-09T15:02:50.031Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.budgetyear",
+    "pk": 1,
+    "fields": {
+      "financial_code_system": 1,
+      "date_start": "2000-01-01",
+      "date_end": "2000-12-31",
+      "short_name": "Test Budget Year"
+    }
+  },
+  {
+    "model": "financial_codes.historicalfinancialcodegroup",
+    "pk": 1,
+    "fields": {
+      "id": 1,
+      "title": "Test Expense",
+      "description": "A test group for testing expenses",
+      "type": "e",
+      "status": "a",
+      "budget_year": 1,
+      "history_date": "2025-02-09T15:03:12.083Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.historicalfinancialcodegroup",
+    "pk": 2,
+    "fields": {
+      "id": 2,
+      "title": "Test Revenue",
+      "description": "A test group for testing revenues",
+      "type": "r",
+      "status": "a",
+      "budget_year": 1,
+      "history_date": "2025-02-09T15:03:28.667Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 1,
+    "fields": {
+      "budget_year": 1,
+      "title": "Test Expense",
+      "description": "A test group for testing expenses",
+      "type": "e",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.financialcodegroup",
+    "pk": 2,
+    "fields": {
+      "budget_year": 1,
+      "title": "Test Revenue",
+      "description": "A test group for testing revenues",
+      "type": "r",
+      "status": "a"
+    }
+  },
+  {
+    "model": "financial_codes.historicalfinancialcode",
+    "pk": 1,
+    "fields": {
+      "id": 1,
+      "code": "1000",
+      "description": "The test revenue code",
+      "financial_code_group": 1,
+      "history_date": "2025-02-09T15:03:52.015Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.historicalfinancialcode",
+    "pk": 2,
+    "fields": {
+      "id": 2,
+      "code": "6000",
+      "description": "The test expense code",
+      "financial_code_group": 1,
+      "history_date": "2025-02-09T15:04:01.781Z",
+      "history_change_reason": null,
+      "history_type": "+",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.historicalfinancialcode",
+    "pk": 3,
+    "fields": {
+      "id": 1,
+      "code": "1000",
+      "description": "The test revenue code",
+      "financial_code_group": 2,
+      "history_date": "2025-02-09T15:04:09.166Z",
+      "history_change_reason": null,
+      "history_type": "~",
+      "history_user": 1
+    }
+  },
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 1,
+    "fields": {
+      "financial_code_group": 2,
+      "code": "1000",
+      "description": "The test revenue code"
+    }
+  },
+  {
+    "model": "financial_codes.financialcode",
+    "pk": 2,
+    "fields": {
+      "financial_code_group": 1,
+      "code": "6000",
+      "description": "The test expense code"
+    }
+  }
+]

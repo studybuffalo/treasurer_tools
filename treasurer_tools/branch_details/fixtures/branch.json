@@ -1,0 +1,16 @@
+[
+  {
+    "model": "branch_details.branch",
+    "pk": 1,
+    "fields": {
+      "name_full": "Test Branch",
+      "name_short": "Branch Name",
+      "contact_name": "Joshua Torrance",
+      "address": "1234 Fake Street",
+      "phone": "123-456-7890",
+      "fax": "123-456-7890",
+      "email": "email@email.com",
+      "logo": "test_logo.png"
+    }
+  }
+]

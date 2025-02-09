@@ -30,6 +30,9 @@ def generate_pdf_header(branch_details, transaction):
     logo_details = lib.utils.ImageReader(logo_storage)
     width, height = logo_details.getSize()
 
+    # Ensure logo file is open for next steps
+    logo_storage.open()
+
     # If aspect ratio > 1/3, need to scale by max height
     if (height / width) > 0.333:
         logo = Image(
@@ -44,7 +47,6 @@ def generate_pdf_header(branch_details, transaction):
             width=75 * mm,
             height=((75 * mm) / width) * height,
         )
-
 
     if transaction.transaction_type == 'e':
         header_title = 'Branch Expense Claim Form'
@@ -62,6 +64,9 @@ def generate_pdf_header(branch_details, transaction):
         ('ALIGNMENT', (1, 0), (1, 0), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
+
+    # Close logo file
+    logo_storage.close()
 
     return header_table
 
@@ -265,21 +270,21 @@ def generate_pdf_submission_details(transaction, user_name):
             [
                 ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
                 [
-                    '', '', '',
-                    '', '', '',
+                    '',transaction.submitter, '',
+                    '', user_name, '',
                     '', user_name, ''
                 ],
                 ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
                 [
                     '', '', '',
-                    '', '', '',
+                    '', 'CSHP-AB Treasurer', '',
                     '', 'CSHP-AB Treasurer', ''
                 ],
                 ['', '', '', '', 'Position', '', '', 'Position', ''],
                 [
                     '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
-                    '', '', '',
-                    '', '', ''
+                    '', datetime.today().strftime('%Y-%b-%d'), '',
+                    '', datetime.today().strftime('%Y-%b-%d'), ''
                 ],
                 ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
             ],
@@ -300,7 +305,7 @@ def generate_pdf_submission_details(transaction, user_name):
             [
                 ['', 'SUBMITTED BY', '', '', 'PROCESSED BY', ''],
                 [
-                    '', '', '',
+                    '', transaction.submitter, '',
                     '', user_name, '',
                 ],
                 ['', 'Name', '', '', 'Name', ''],
@@ -311,7 +316,7 @@ def generate_pdf_submission_details(transaction, user_name):
                 ['', '', '', '', 'Position', ''],
                 [
                     '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
-                    '', '', ''
+                    '', datetime.today().strftime('%Y-%b-%d'), ''
                 ],
                 ['', 'Date', '', '', 'Date', ''],
             ],
