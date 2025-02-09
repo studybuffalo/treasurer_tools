@@ -31,7 +31,7 @@ Initialize Development Environment
 
 4. Load the fixture data::
 
-   $ poetry run python manage.py loaddata country.json branch.json
+   $ poetry run python manage.py loaddata country.json branch.json financial_codes.json
 
 Running The Test Server
 ^^^^^^^^^^^^^^^^^^^^^^^
