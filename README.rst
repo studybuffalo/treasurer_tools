@@ -25,9 +25,13 @@ Initialize Development Environment
 
     $ poetry run python manage.py migrate
 
-4. Load the Country data::
+3. Copy the test logo file
+   (``/treasurer_tools/branch_details/fixtures/test_logo.png``) to the
+   ``/treasurer_tools/media`` folder.
 
-   $ poetry run python manage.py loaddata country.json
+4. Load the fixture data::
+
+   $ poetry run python manage.py loaddata country.json branch.json
 
 Running The Test Server
 ^^^^^^^^^^^^^^^^^^^^^^^
