@@ -15,16 +15,24 @@ Basic Commands
 Initialize Development Environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 1. Install the development environment with Poetry::
+
     $ poetry install
+
 2. Copy the ``/config/settings/.treasurer_tools.env`` file to
    ``/config/settings/treasurer_tools.env`` and update the details for
    your environment.
 3. Run the database migrations::
+
     $ poetry run python manage.py migrate
+
+4. Load the Country data::
+
+   $ poetry run python manage.py loaddata country.json
 
 Running The Test Server
 ^^^^^^^^^^^^^^^^^^^^^^^
 1. Run the following command::
+
     $ poetry run python manage.py runserver
 
 Setting Up Your Users
@@ -42,6 +50,7 @@ Test coverage
 ^^^^^^^^^^^^^
 
 To run the tests::
+
     $ poetry run pytest
 
 Issues to Workout
