@@ -35,6 +35,10 @@
         width: 25rem;
       }
 
+      .submitter input {
+        width: 25rem;
+      }
+
       .submission-date input {
         width: 9rem;
       }
@@ -54,6 +58,10 @@
       }
 
       .memo input {
+        width: 30rem;
+      }
+
+      .submitter input {
         width: 30rem;
       }
 
@@ -149,6 +157,10 @@
 
         <div class="input-flex-col memo">
           {% include 'main/input_field.html' with field=form.transaction_form.memo %}
+        </div>
+
+        <div class="input-flex-col submitter">
+          {% include 'main/input_field.html' with field=form.transaction_form.submitter %}
         </div>
 
         <div class="input-flex-col submission-date">
