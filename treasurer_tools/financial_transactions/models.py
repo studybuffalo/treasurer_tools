@@ -37,6 +37,10 @@ class FinancialTransaction(models.Model):
         help_text="Overall summary of the transaction",
         max_length=1000,
     )
+    submitter = models.CharField(
+        help_text='Individual who submitted or initiated this transaction',
+        max_length=256
+    )
     date_submitted = models.DateField(
         default=timezone.now,
         verbose_name="submission date"
