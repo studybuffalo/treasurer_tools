@@ -270,7 +270,7 @@ def generate_pdf_submission_details(transaction, user_name):
             [
                 ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
                 [
-                    '',transaction.submitter, '',
+                    '', transaction.submitter, '',
                     '', user_name, '',
                     '', user_name, ''
                 ],
