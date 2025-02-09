@@ -15,10 +15,10 @@ function handleMessages(data, level = 20) {
 // Convert number to currency string
 function toCurrency(currencyNumber) {
   const currencyString = currencyNumber.toLocaleString(
-    undefined,
+    'en-CA',
     {
       style: 'currency',
-      currency: 'USD',
+      currency: 'CAD',
       currencyDisplay: 'symbol',
     },
   );
