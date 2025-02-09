@@ -270,21 +270,21 @@ def generate_pdf_submission_details(transaction, user_name):
             [
                 ['', 'SUBMITTED BY', '', '', 'AUTHORIZED BY', '', '', 'PROCESSED BY', ''],
                 [
-                    '', '', '',
-                    '', '', '',
+                    '',transaction.submitter, '',
+                    '', user_name, '',
                     '', user_name, ''
                 ],
                 ['', 'Name', '', '', 'Name', '', '', 'Name', ''],
                 [
                     '', '', '',
-                    '', '', '',
+                    '', 'CSHP-AB Treasurer', '',
                     '', 'CSHP-AB Treasurer', ''
                 ],
                 ['', '', '', '', 'Position', '', '', 'Position', ''],
                 [
                     '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
-                    '', '', '',
-                    '', '', ''
+                    '', datetime.today().strftime('%Y-%b-%d'), '',
+                    '', datetime.today().strftime('%Y-%b-%d'), ''
                 ],
                 ['', 'Date', '', '', 'Date', '', '', 'Date', ''],
             ],
@@ -305,7 +305,7 @@ def generate_pdf_submission_details(transaction, user_name):
             [
                 ['', 'SUBMITTED BY', '', '', 'PROCESSED BY', ''],
                 [
-                    '', '', '',
+                    '', transaction.submitter, '',
                     '', user_name, '',
                 ],
                 ['', 'Name', '', '', 'Name', ''],
@@ -316,7 +316,7 @@ def generate_pdf_submission_details(transaction, user_name):
                 ['', '', '', '', 'Position', ''],
                 [
                     '', transaction.date_submitted.strftime('%Y-%b-%d'), '',
-                    '', '', ''
+                    '', datetime.today().strftime('%Y-%b-%d'), ''
                 ],
                 ['', 'Date', '', '', 'Date', ''],
             ],
