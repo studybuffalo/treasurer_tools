@@ -38,8 +38,10 @@ class FinancialTransaction(models.Model):
         max_length=1000,
     )
     submitter = models.CharField(
+        blank=True,
         help_text='Individual who submitted or initiated this transaction',
-        max_length=256
+        max_length=256,
+        null=True
     )
     date_submitted = models.DateField(
         default=timezone.now,
